@@ -13,7 +13,7 @@ const lightTheme = createTheme({
             main: "#1a778e",
         },
         background: {
-            default: "#f4f4f4",
+            default: "#fff",
         },
     },
     components: {

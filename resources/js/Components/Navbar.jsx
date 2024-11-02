@@ -12,22 +12,68 @@ import {
     List,
     ListItem,
     ListItemText,
+    Collapse,
     Divider,
 } from "@mui/material";
 import {
     ExpandMore,
+    ExpandLess,
     Menu as MenuIcon,
     Close as CloseIcon,
 } from "@mui/icons-material";
 import logo from "../../../public/images/logo/logo.png"; // Adjust the path to your logo
+import { router, usePage } from "@inertiajs/react";
+import ReusableModal from "./util/ReusableModal";
+import YesOrNoModal from "./util/YesOrNoModal";
 
+const Pricing = [
+    {
+        title: "Nanny Service",
+        service: "Nanny Service",
+    },
+    {
+        title: "Newborn Care",
+        service: "Newborn Care",
+    },
+    {
+        title: "Elderly Care",
+        service: "Elder Care",
+    },
+    {
+        title: "Nanny & Maid",
+        service: "Nanny Care + Maid Service",
+    },
+    {
+        title: "Elderly & Maid",
+        service: "Elder Care + Maid Service",
+    },
+];
+
+const JoinOurTeam = [
+    {
+        title: "Fill CV",
+        routeName: "cv.create",
+    },
+    {
+        title: "7 Days Training",
+        routeName: "#",
+    },
+];
 const Navbar = () => {
+    const user = usePage().props.auth.user;
     const [anchorElPricing, setAnchorElPricing] = useState(null);
     const [anchorElAbout, setAnchorElAbout] = useState(null);
     const [anchorElJoin, setAnchorElJoin] = useState(null);
     const [anchorElContact, setAnchorElContact] = useState(null);
 
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [openPricing, setOpenPricing] = useState(false);
+    const [openAbout, setOpenAbout] = useState(false);
+    const [openJoin, setOpenJoin] = useState(false);
+    const [openContact, setOpenContact] = useState(false);
+    const handleToggle = (setFunction) => {
+        setFunction((prevOpen) => !prevOpen);
+    };
 
     const handleMenuOpen = (event, setAnchorEl) => {
         setAnchorEl(event.currentTarget);
@@ -47,6 +93,10 @@ const Navbar = () => {
         setDrawerOpen(open);
     };
 
+    // Logout dialog state
+    const [openLogout, setOpenLogout] = useState(false);
+    const handleCloseLogout = () => setOpenLogout(false);
+
     return (
         <>
             <AppBar
@@ -58,7 +108,14 @@ const Navbar = () => {
                     sx={{ display: "flex", justifyContent: "space-between" }}
                 >
                     {/* Logo */}
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            cursor: "pointer",
+                        }}
+                        onClick={() => router.get("/")}
+                    >
                         <img
                             src={logo}
                             alt="Hearty Aid Logo"
@@ -85,23 +142,42 @@ const Navbar = () => {
                             anchorEl={anchorElPricing}
                             open={Boolean(anchorElPricing)}
                             onClose={() => handleMenuClose(setAnchorElPricing)}
+                            sx={{
+                                "& .MuiPaper-root": {
+                                    backgroundColor: "primary.main", // Set the dropdown background to primary color
+                                    p: 1,
+                                },
+                            }}
                         >
-                            <MenuItem
-                                onClick={() =>
-                                    handleMenuClose(setAnchorElPricing)
-                                }
-                            >
-                                Basic
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() =>
-                                    handleMenuClose(setAnchorElPricing)
-                                }
-                            >
-                                Premium
-                            </MenuItem>
+                            {Pricing.map((item, index) => (
+                                <MenuItem
+                                    key={index}
+                                    onClick={() => {
+                                        handleMenuClose(setAnchorElPricing);
+                                        router.get(
+                                            route(
+                                                "service.pricing",
+                                                item.service
+                                            )
+                                        );
+                                    }}
+                                    sx={{
+                                        color: "white", // Set text color to white
+                                        fontFamily: "Mina",
+                                        "&:hover": {
+                                            backgroundColor: "primary.dark", // Optional: Darker shade on hover
+                                        },
+                                        borderBottom:
+                                            index !== Pricing.length - 1
+                                                ? 2
+                                                : 0, // Apply borderBottom only if not the last item
+                                        borderColor: "#fff",
+                                    }}
+                                >
+                                    {item.title}
+                                </MenuItem>
+                            ))}
                         </Menu>
-
                         <Button
                             onClick={(e) => handleMenuOpen(e, setAnchorElAbout)}
                             endIcon={<ExpandMore />}
@@ -128,7 +204,6 @@ const Navbar = () => {
                                 Mission
                             </MenuItem>
                         </Menu>
-
                         <Button
                             onClick={(e) => handleMenuOpen(e, setAnchorElJoin)}
                             endIcon={<ExpandMore />}
@@ -139,19 +214,37 @@ const Navbar = () => {
                             anchorEl={anchorElJoin}
                             open={Boolean(anchorElJoin)}
                             onClose={() => handleMenuClose(setAnchorElJoin)}
+                            sx={{
+                                "& .MuiPaper-root": {
+                                    backgroundColor: "primary.main", // Set the dropdown background to primary color
+                                    p: 1,
+                                },
+                            }}
                         >
-                            <MenuItem
-                                onClick={() => handleMenuClose(setAnchorElJoin)}
-                            >
-                                Careers
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() => handleMenuClose(setAnchorElJoin)}
-                            >
-                                Internships
-                            </MenuItem>
+                            {JoinOurTeam.map((item, index) => (
+                                <MenuItem
+                                    key={index}
+                                    onClick={() => {
+                                        handleMenuClose(setAnchorElPricing);
+                                        router.get(route(item.routeName));
+                                    }}
+                                    sx={{
+                                        color: "white", // Set text color to white
+                                        fontFamily: "Mina",
+                                        "&:hover": {
+                                            backgroundColor: "primary.dark", // Optional: Darker shade on hover
+                                        },
+                                        borderBottom:
+                                            index !== Pricing.length - 1
+                                                ? 2
+                                                : 0, // Apply borderBottom only if not the last item
+                                        borderColor: "#fff",
+                                    }}
+                                >
+                                    {item.title}
+                                </MenuItem>
+                            ))}
                         </Menu>
-
                         <Button
                             onClick={(e) =>
                                 handleMenuOpen(e, setAnchorElContact)
@@ -183,28 +276,42 @@ const Navbar = () => {
                     </Box>
 
                     {/* Log In and Sign Up buttons */}
-                    <Box
-                        sx={{
-                            display: { xs: "none", md: "flex" },
-                            gap: 1,
-                            alignItems: "center",
-                        }}
-                    >
-                        <Button
-                            variant="contained"
-                            sx={{ borderRadius: 20, px: 2 }}
-                            size="small"
+                    {!user ? (
+                        <Box
+                            sx={{
+                                display: { xs: "none", md: "flex" },
+                                gap: 1,
+                                alignItems: "center",
+                            }}
                         >
-                            <Typography fontSize={13}>Log in</Typography>
-                        </Button>
-                        <Button
-                            variant="contained"
-                            sx={{ borderRadius: 20, px: 2 }}
-                            size="small"
-                        >
-                            <Typography fontSize={13}>Sign up</Typography>
-                        </Button>
-                    </Box>
+                            <Button
+                                variant="contained"
+                                sx={{ borderRadius: 20, px: 2 }}
+                                size="small"
+                                onClick={() => router.get(route("login"))}
+                            >
+                                <Typography fontSize={13}>Log in</Typography>
+                            </Button>
+                            <Button
+                                variant="contained"
+                                sx={{ borderRadius: 20, px: 2 }}
+                                size="small"
+                                onClick={() => router.get(route("signup"))}
+                            >
+                                <Typography fontSize={13}>Sign up</Typography>
+                            </Button>
+                        </Box>
+                    ) : (
+                        <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                            <Button
+                                size="small"
+                                color="error"
+                                onClick={() => setOpenLogout(true)}
+                            >
+                                <Typography fontSize={13}>Logout</Typography>
+                            </Button>
+                        </Box>
+                    )}
 
                     {/* Hamburger Menu Icon for sm screens */}
                     <IconButton
@@ -230,7 +337,7 @@ const Navbar = () => {
             >
                 <Box
                     sx={{
-                        width: 250,
+                        width: 200,
                         height: "100%",
                     }}
                     role="presentation"
@@ -250,128 +357,179 @@ const Navbar = () => {
                     </Box>
 
                     <List>
-                        {/* Pricing Dropdown */}
+                        {/* Pricing Section */}
                         <ListItem
                             button
-                            onClick={(e) =>
-                                handleMenuOpen(e, setAnchorElPricing)
-                            }
+                            sx={{ cursor: "pointer" }}
+                            onClick={() => handleToggle(setOpenPricing)}
                         >
                             <ListItemText primary="Pricing" />
-                            <ExpandMore />
+                            {openPricing ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
+                        <Collapse in={openPricing} timeout="auto" unmountOnExit>
+                            <List component="div" disablePadding>
+                                {Pricing.map((item, index) => (
+                                    <ListItem
+                                        key={index}
+                                        button
+                                        sx={{ pl: 4, cursor: "pointer" }}
+                                        onClick={() => {
+                                            toggleDrawer(false);
+                                            router.get(
+                                                route(
+                                                    "service.pricing",
+                                                    item.service
+                                                )
+                                            );
+                                        }}
+                                    >
+                                        <ListItemText
+                                            primaryTypographyProps={{
+                                                fontSize: 14, // Set your desired font size
+                                                fontFamily: "Mina", // Set your desired font family
+                                            }}
+                                            primary={item.title}
+                                        />
+                                    </ListItem>
+                                ))}
+                            </List>
+                        </Collapse>
                         <Divider />
-                        <Menu
-                            anchorEl={anchorElPricing}
-                            open={Boolean(anchorElPricing)}
-                            onClose={() => handleMenuClose(setAnchorElPricing)}
-                        >
-                            <MenuItem
-                                onClick={() =>
-                                    handleMenuClose(setAnchorElPricing)
-                                }
-                            >
-                                Basic
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() =>
-                                    handleMenuClose(setAnchorElPricing)
-                                }
-                            >
-                                Premium
-                            </MenuItem>
-                        </Menu>
 
-                        {/* About Us Dropdown */}
+                        {/* About Us Section */}
                         <ListItem
                             button
-                            onClick={(e) => handleMenuOpen(e, setAnchorElAbout)}
+                            sx={{ cursor: "pointer" }}
+                            onClick={() => handleToggle(setOpenAbout)}
                         >
                             <ListItemText primary="About Us" />
-                            <ExpandMore />
+                            {openAbout ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
+                        <Collapse in={openAbout} timeout="auto" unmountOnExit>
+                            <List component="div" disablePadding>
+                                <ListItem button sx={{ pl: 4 }}>
+                                    <ListItemText primary="Our Story" />
+                                </ListItem>
+                                <ListItem button sx={{ pl: 4 }}>
+                                    <ListItemText primary="Mission" />
+                                </ListItem>
+                            </List>
+                        </Collapse>
                         <Divider />
-                        <Menu
-                            anchorEl={anchorElAbout}
-                            open={Boolean(anchorElAbout)}
-                            onClose={() => handleMenuClose(setAnchorElAbout)}
-                        >
-                            <MenuItem
-                                onClick={() =>
-                                    handleMenuClose(setAnchorElAbout)
-                                }
-                            >
-                                Our Story
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() =>
-                                    handleMenuClose(setAnchorElAbout)
-                                }
-                            >
-                                Mission
-                            </MenuItem>
-                        </Menu>
 
-                        {/* Join Our Team Dropdown */}
+                        {/* Join Our Team Section */}
                         <ListItem
                             button
-                            onClick={(e) => handleMenuOpen(e, setAnchorElJoin)}
+                            sx={{ cursor: "pointer" }}
+                            onClick={() => handleToggle(setOpenJoin)}
                         >
                             <ListItemText primary="Join Our Team" />
-                            <ExpandMore />
+                            {openJoin ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
+                        <Collapse in={openJoin} timeout="auto" unmountOnExit>
+                            <List component="div" disablePadding>
+                                {JoinOurTeam.map((item, index) => (
+                                    <ListItem
+                                        button
+                                        sx={{ pl: 4 }}
+                                        onClick={() => {
+                                            toggleDrawer(false);
+                                            router.get(route(item.routeName));
+                                        }}
+                                    >
+                                        <ListItemText primary={item.title} />
+                                    </ListItem>
+                                ))}
+                            </List>
+                        </Collapse>
                         <Divider />
-                        <Menu
-                            anchorEl={anchorElJoin}
-                            open={Boolean(anchorElJoin)}
-                            onClose={() => handleMenuClose(setAnchorElJoin)}
-                        >
-                            <MenuItem
-                                onClick={() => handleMenuClose(setAnchorElJoin)}
-                            >
-                                Careers
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() => handleMenuClose(setAnchorElJoin)}
-                            >
-                                Internships
-                            </MenuItem>
-                        </Menu>
 
-                        {/* Contact Us Dropdown */}
+                        {/* Contact Us Section */}
                         <ListItem
                             button
-                            onClick={(e) =>
-                                handleMenuOpen(e, setAnchorElContact)
-                            }
+                            sx={{ cursor: "pointer" }}
+                            onClick={() => handleToggle(setOpenContact)}
                         >
                             <ListItemText primary="Contact Us" />
-                            <ExpandMore />
+                            {openContact ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
+                        <Collapse in={openContact} timeout="auto" unmountOnExit>
+                            <List component="div" disablePadding>
+                                <ListItem button sx={{ pl: 4 }}>
+                                    <ListItemText primary="Email" />
+                                </ListItem>
+                                <ListItem button sx={{ pl: 4 }}>
+                                    <ListItemText primary="Phone" />
+                                </ListItem>
+                            </List>
+                        </Collapse>
                         <Divider />
-                        <Menu
-                            anchorEl={anchorElContact}
-                            open={Boolean(anchorElContact)}
-                            onClose={() => handleMenuClose(setAnchorElContact)}
-                        >
-                            <MenuItem
-                                onClick={() =>
-                                    handleMenuClose(setAnchorElContact)
-                                }
+                        {/* Contact Us Section */}
+                        {!user ? (
+                            <ListItem
+                                sx={{
+                                    display: "flex",
+                                    gap: 2,
+                                    mt: 2,
+                                }}
                             >
-                                Email
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() =>
-                                    handleMenuClose(setAnchorElContact)
-                                }
+                                {/* <ListItemText primary="Contact Us" /> */}
+                                <Button
+                                    variant="contained"
+                                    sx={{ borderRadius: 10 }}
+                                    size="small"
+                                    onClick={() => router.get(route("login"))}
+                                >
+                                    <Typography fontSize={13}>
+                                        Log in
+                                    </Typography>
+                                </Button>
+                                <Button
+                                    variant="outlined"
+                                    sx={{ borderRadius: 10 }}
+                                    size="small"
+                                    onClick={() => router.get(route("signup"))}
+                                >
+                                    <Typography fontSize={13}>
+                                        Sign up
+                                    </Typography>
+                                </Button>
+                            </ListItem>
+                        ) : (
+                            <ListItem
+                                sx={{
+                                    mt: 2,
+                                }}
                             >
-                                Phone
-                            </MenuItem>
-                        </Menu>
+                                {/* <ListItemText primary="Contact Us" /> */}
+                                <Button
+                                    variant="outlined"
+                                    sx={{ borderRadius: 10 }}
+                                    size="small"
+                                    fullWidth
+                                    color="error"
+                                    onClick={() => {
+                                        setOpenLogout(true);
+                                        setDrawerOpen(false);
+                                    }}
+                                >
+                                    <Typography fontSize={13}>
+                                        Logout
+                                    </Typography>
+                                </Button>
+                            </ListItem>
+                        )}
                     </List>
                 </Box>
             </Drawer>
+
+            <YesOrNoModal
+                title={"Do you want to Logout?"}
+                open={openLogout}
+                onClose={handleCloseLogout}
+                confirmRoute={"logout"}
+                handleClose={handleCloseLogout}
+            />
         </>
     );
 };

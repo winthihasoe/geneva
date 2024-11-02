@@ -1,3 +1,4 @@
+import { router } from "@inertiajs/react";
 import {
     Box,
     Button,
@@ -7,7 +8,7 @@ import {
 } from "@mui/material";
 import React from "react";
 
-function CVForm() {
+function StartCVForm() {
     return (
         <Box
             sx={{
@@ -52,7 +53,6 @@ function CVForm() {
                 </Typography>
                 {[
                     "Full Name",
-                    "Date of birth",
                     "Gender",
                     "Nationality",
                     "Address",
@@ -84,13 +84,14 @@ function CVForm() {
                     variant="contained"
                     size="small"
                     sx={{ borderRadius: 20 }}
+                    onClick={() => router.get(route("cv.create"))}
                 >
                     <Typography
                         fontFamily={"Lilita One"}
                         fontWeight={500}
                         fontSize={20}
                     >
-                        SUBMIT
+                        NEXT
                     </Typography>
                 </Button>
             </Box>
@@ -109,4 +110,4 @@ function CVForm() {
     );
 }
 
-export default CVForm;
+export default StartCVForm;

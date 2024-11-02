@@ -41,7 +41,7 @@ function Footer() {
                         fontFamily={"Livvic"}
                         color="primary"
                     >
-                        Email: heartyaid@gmail.com
+                        Email: heartyaidbkk@gmail.com
                     </Typography>
                 </Box>
             </Grid2>
