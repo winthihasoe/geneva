@@ -6,10 +6,9 @@ function Explore() {
         <Box
             sx={{
                 display: "flex",
-                gap: 3,
                 justifyContent: "space-around",
                 flexWrap: "wrap",
-                gap: 2,
+                columnGap: 2,
                 rowGap: 10,
             }}
         >
