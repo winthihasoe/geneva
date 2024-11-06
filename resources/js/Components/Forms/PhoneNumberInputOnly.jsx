@@ -6,31 +6,15 @@ import { Typography } from "@mui/material";
 import { debounce } from "lodash";
 
 function PhoneNumberInputOnly({ onChange, value }) {
-    const [userCountryCode, setUserCountryCode] = useState("mm");
     const handleChange = (phone) => {
         onChange(`+${phone}`);
     };
-    useEffect(() => {
-        // Fetch the user's country code based on IP address
-        const fetchCountryCode = async () => {
-            try {
-                const response = await fetch("https://ipapi.co/json/");
-                const data = await response.json();
-                if (data && data.country_code) {
-                    setUserCountryCode(data.country_code.toLowerCase());
-                }
-            } catch (error) {
-                console.error("Error fetching the country code:", error);
-            }
-        };
 
-        fetchCountryCode();
-    }, []);
     return (
         <>
             <PhoneInput
                 value={value}
-                country={userCountryCode}
+                country="th"
                 enableSearch
                 inputProps={{
                     name: "phone",

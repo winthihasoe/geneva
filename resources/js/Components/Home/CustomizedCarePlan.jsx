@@ -1,3 +1,4 @@
+import { router } from "@inertiajs/react";
 import { Box, Button, Typography } from "@mui/material";
 import React from "react";
 
@@ -40,8 +41,15 @@ function CustomizedCarePlan() {
                 "Personalized care starts with our expert counseling to
                 understand and meet each patient's unique needs."
             </Typography>
-            <Button size="small" sx={{ borderRadius: 20 }} variant="contained">
-                <Typography fontSize={15}>+66 062 908578</Typography>
+            <Button
+                size="small"
+                sx={{ borderRadius: 20 }}
+                variant="contained"
+                onClick={() => router.get(route("care.start"))}
+            >
+                <Typography fontFamily={"Lilita One"} fontSize={18}>
+                    Start Now
+                </Typography>
             </Button>
             <img
                 src="/images/conversation.png"

@@ -1,34 +1,147 @@
-import React, { useEffect, useState } from "react";
-import {
-    Box,
-    Typography,
-    LinearProgress,
-    Divider,
-    Button,
-} from "@mui/material";
-import BodyText from "@/Components/Typo/BodyText";
-import UnderlinedText from "@/Components/Typo/UnderlinedText";
+import React, { useContext, useEffect, useState } from "react";
+import { Box, Typography, LinearProgress, Button } from "@mui/material";
 import Compressor from "compressorjs";
 import Subtitle from "@/Components/Typo/Subtitle";
 import TinyText from "@/Components/Typo/TinyText";
+import CvContext from "@/Context/CvContext";
 
-const PersonalIDUploadForm = ({
-    data,
-    setData,
-    oldId,
-    oldFamilyRecord,
-    oldRefLetter,
-}) => {
-    const [idUrl, setIdUrl] = useState(oldId ? oldId : null);
-    const [familyRecordUrl, setFamilyRecordUrl] = useState(
-        oldFamilyRecord ? oldFamilyRecord : null
+const PersonalIDUploadForm = ({ oldId, oldFamilyRecord, oldRefLetter }) => {
+    const { data, setData } = useContext(CvContext);
+    const [idPreview, setidPreview] = useState(
+        oldId
+            ? oldId
+            : typeof data.citizenship_certificate === "string"
+            ? `/storage/${data.citizenship_certificate}`
+            : null
     );
-    const [refLetterUrl, setRefLetterUrl] = useState(
-        oldRefLetter ? oldRefLetter : null
+
+    const [familyRecordPreview, setFamilyRecordPreview] = useState(
+        oldFamilyRecord
+            ? oldFamilyRecord
+            : typeof data.family_member_record === "string"
+            ? `/storage/${data.family_member_record}`
+            : null
     );
+
     const [idUploading, setIdUploading] = useState(false);
     const [familyRecordUploading, setFamilyRecordUploading] = useState(false);
-    const [refLetterUploading, setRefLetterUploading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const handleIdChange = (event) => {
+        const file = event.target.files[0];
+        setError(null);
+
+        if (file) {
+            setIdUploading(true);
+
+            // Compress the image using Compressor.js
+            new Compressor(file, {
+                quality: 0.6, // Adjust the quality as needed (0 to 1)
+                maxWidth: 600, // Resize to a maximum width of 600px
+                success(compressedFile) {
+                    if (compressedFile instanceof Blob) {
+                        setidPreview(URL.createObjectURL(compressedFile));
+                        setData((prevData) => ({
+                            ...prevData,
+                            citizenship_certificate: compressedFile,
+                        }));
+                    } else {
+                        console.error("Compression error:", err.message);
+                    }
+
+                    setIdUploading(false);
+                    uploadIdPhoto(compressedFile);
+                    console.log("save photo");
+                },
+                error(err) {
+                    console.error("Compression error:", err.message);
+                    setPassportUploading(false);
+                    setError(err);
+                },
+            });
+        }
+    };
+
+    const handleFamilyRecordChange = (event) => {
+        const file = event.target.files[0];
+        setError(null);
+
+        if (file) {
+            setFamilyRecordUploading(true);
+
+            // Compress the image using Compressor.js
+            new Compressor(file, {
+                quality: 0.6, // Adjust the quality as needed (0 to 1)
+                maxWidth: 600, // Resize to a maximum width of 600px
+                success(compressedFile) {
+                    if (compressedFile instanceof Blob) {
+                        setFamilyRecordPreview(
+                            URL.createObjectURL(compressedFile)
+                        );
+                        setData((prevData) => ({
+                            ...prevData,
+                            family_member_record: compressedFile,
+                        }));
+                    } else {
+                        console.error("Compression error:", err.message);
+                    }
+
+                    setFamilyRecordUploading(false);
+                    uploadFamilyRecordPhoto(compressedFile);
+                    console.log("save photo");
+                },
+                error(err) {
+                    console.error("Compression error:", err.message);
+                    setPassportUploading(false);
+                    setError(err);
+                },
+            });
+        }
+    };
+
+    const [uploadIdMessage, setUploadIdMessage] = useState("");
+    const [uploadFamilyRecordMessage, setUploadFamilyRecordMessage] =
+        useState("");
+
+    // Function to handle the photo upload
+    const uploadIdPhoto = async (photoFile) => {
+        const formData = new FormData();
+        formData.append("citizenship_certificate", photoFile, photoFile.name);
+
+        try {
+            const response = await axios.post(route("cv.store"), formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+            setUploadIdMessage(response.data.message);
+            setTimeout(() => setUploadIdMessage(""), 2000); // Clear message after 2 seconds
+        } catch (error) {
+            console.error("Error uploading photo:", error);
+            setUploadIdMessage("Failed to upload photo.");
+            setTimeout(() => setUploadIdMessage(""), 2000); // Clear message after 2 seconds
+        } finally {
+            setIdUploading(false); // Stop uploading indicator
+        }
+    };
+
+    // Function to handle the photo upload
+    const uploadFamilyRecordPhoto = async (photoFile) => {
+        const formData = new FormData();
+        formData.append("family_member_record", photoFile, photoFile.name);
+
+        try {
+            const response = await axios.post(route("cv.store"), formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+            setUploadFamilyRecordMessage(response.data.message);
+            setTimeout(() => setUploadFamilyRecordMessage(""), 2000); // Clear message after 2 seconds
+        } catch (error) {
+            console.error("Error uploading photo:", error);
+            setUploadFamilyRecordMessage("Failed to upload photo.");
+            setTimeout(() => setUploadFamilyRecordMessage(""), 2000); // Clear message after 2 seconds
+        } finally {
+            setFamilyRecordUploading(false); // Stop uploading indicator
+        }
+    };
 
     useEffect(() => {
         if (
@@ -38,7 +151,7 @@ const PersonalIDUploadForm = ({
             const newIdPreview = URL.createObjectURL(
                 data.citizenship_certificate
             );
-            setIdUrl(newIdPreview);
+            setidPreview(newIdPreview);
 
             // Clean up the object URL when the component unmounts
             return () => {
@@ -55,7 +168,7 @@ const PersonalIDUploadForm = ({
             const newFamilyRecord = URL.createObjectURL(
                 data.family_member_record
             );
-            setFamilyRecordUrl(newFamilyRecord);
+            setFamilyRecordPreview(newFamilyRecord);
 
             // Clean up the object URL when the component unmounts
             return () => {
@@ -63,48 +176,6 @@ const PersonalIDUploadForm = ({
             };
         }
     }, [data.family_member_record]);
-
-    useEffect(() => {
-        if (data.reference_letter && data.reference_letter instanceof Blob) {
-            const newRefLetter = URL.createObjectURL(data.reference_letter);
-            setRefLetterUrl(newRefLetter);
-
-            // Clean up the object URL when the component unmounts
-            return () => {
-                URL.revokeObjectURL(newRefLetter);
-            };
-        }
-    }, [data.reference_letter]);
-
-    const handleFileChange = (event, type, setUrl, setUploading) => {
-        const file = event.target.files[0];
-        if (file) {
-            setUploading(true);
-            // Check if the file is an image
-
-            // Compress the image using Compressor.js
-            new Compressor(file, {
-                quality: 0.6, // Adjust the quality as needed (0 to 1)
-                maxWidth: 600, // Resize to a maximum width of 600px
-                success(compressedFile) {
-                    if (compressedFile instanceof Blob) {
-                        setUrl(URL.createObjectURL(compressedFile));
-                        setData((prevData) => ({
-                            ...prevData,
-                            [type]: compressedFile,
-                        }));
-                    } else {
-                        console.error("Compressed file is not a valid Blob");
-                    }
-                    setUploading(false);
-                },
-                error(err) {
-                    console.error("Compression error:", err.message);
-                    setUploading(false);
-                },
-            });
-        }
-    };
 
     return (
         <Box sx={{ mb: 3, maxWidth: 400, margin: "0 auto" }}>
@@ -131,14 +202,14 @@ const PersonalIDUploadForm = ({
                 >
                     <Subtitle>Citizenship Certificate</Subtitle>
 
-                    {idUrl ? (
+                    {idPreview ? (
                         <img
-                            src={idUrl}
+                            src={idPreview}
                             style={{
                                 width: "100px",
                                 height: "100px",
                                 border: "2px solid #1c90a9",
-                                borderRadius: 3,
+                                borderRadius: "40px",
                                 objectFit: "cover",
                                 objectPosition: "center",
                                 margin: "auto",
@@ -150,7 +221,7 @@ const PersonalIDUploadForm = ({
                                 width: "100px",
                                 height: "100px",
                                 border: "2px solid #1c90a9",
-                                borderRadius: 3,
+                                borderRadius: 10,
                                 margin: "auto",
                             }}
                         />
@@ -166,6 +237,16 @@ const PersonalIDUploadForm = ({
                             </Typography>
                         </Box>
                     )}
+                    {uploadIdMessage && (
+                        <Typography
+                            fontSize={{ xs: 11, sm: 12, md: 13 }}
+                            fontWeight={600}
+                            fontFamily={"Mina"}
+                            mb={2}
+                        >
+                            {uploadIdMessage}
+                        </Typography>
+                    )}
                     <Button
                         variant="contained"
                         sx={{ mt: 2 }}
@@ -175,17 +256,10 @@ const PersonalIDUploadForm = ({
                         <input
                             type="file"
                             accept=".jpg, .jpeg, .png"
-                            onChange={(e) =>
-                                handleFileChange(
-                                    e,
-                                    "citizenship_certificate",
-                                    setIdUrl,
-                                    setIdUploading
-                                )
-                            }
+                            onChange={handleIdChange}
                             hidden
                         />
-                        <Typography fontSize={13}>Choose photo</Typography>
+                        <Typography fontSize={13}>Choose</Typography>
                     </Button>
                 </Box>
 
@@ -199,14 +273,14 @@ const PersonalIDUploadForm = ({
                 >
                     <Subtitle>Family Member Record</Subtitle>
 
-                    {familyRecordUrl ? (
+                    {familyRecordPreview ? (
                         <img
-                            src={familyRecordUrl}
+                            src={familyRecordPreview}
                             style={{
                                 width: "100px",
                                 height: "100px",
                                 border: "2px solid #1c90a9",
-                                borderRadius: 3,
+                                borderRadius: "40px",
                                 objectFit: "cover",
                                 objectPosition: "center",
                                 margin: "auto",
@@ -218,7 +292,7 @@ const PersonalIDUploadForm = ({
                                 width: "100px",
                                 height: "100px",
                                 border: "2px solid #1c90a9",
-                                borderRadius: 3,
+                                borderRadius: 10,
                                 margin: "auto",
                             }}
                         />
@@ -234,66 +308,15 @@ const PersonalIDUploadForm = ({
                             </Typography>
                         </Box>
                     )}
-                    <Button
-                        variant="contained"
-                        sx={{ mt: 2 }}
-                        size="small"
-                        component="label"
-                    >
-                        <input
-                            type="file"
-                            accept=".jpg, .jpeg, .png"
-                            onChange={(e) =>
-                                handleFileChange(
-                                    e,
-                                    "family_member_record",
-                                    setFamilyRecordUrl,
-                                    setFamilyRecordUploading
-                                )
-                            }
-                            hidden
-                        />
-                        <Typography fontSize={13}>Choose photo</Typography>
-                    </Button>
-                </Box>
-
-                {/* Reference Letter */}
-                <Box sx={{ textAlign: "center", width: 110 }}>
-                    <Subtitle>Reference Letter</Subtitle>
-                    {refLetterUrl ? (
-                        <img
-                            src={refLetterUrl}
-                            style={{
-                                width: "100px",
-                                height: "100px",
-                                border: "2px solid #1c90a9",
-                                borderRadius: 3,
-                                objectFit: "cover",
-                                objectPosition: "center",
-                                margin: "auto",
-                            }}
-                        />
-                    ) : (
-                        <Box
-                            sx={{
-                                width: "100px",
-                                height: "100px",
-                                border: "2px solid #1c90a9",
-                                borderRadius: 3,
-                                margin: "auto",
-                            }}
-                        />
-                    )}
-                    {refLetterUploading && (
-                        <Box sx={{ width: "100px", mb: 1 }}>
-                            <LinearProgress />
-                            <Typography
-                                fontSize={12}
-                                sx={{ textAlign: "center" }}
-                            >
-                                Compressing...
-                            </Typography>
-                        </Box>
+                    {uploadFamilyRecordMessage && (
+                        <Typography
+                            fontSize={{ xs: 11, sm: 12, md: 13 }}
+                            fontWeight={600}
+                            fontFamily={"Mina"}
+                            mb={2}
+                        >
+                            {uploadFamilyRecordMessage}
+                        </Typography>
                     )}
                     <Button
                         variant="contained"
@@ -304,17 +327,10 @@ const PersonalIDUploadForm = ({
                         <input
                             type="file"
                             accept=".jpg, .jpeg, .png"
-                            onChange={(e) =>
-                                handleFileChange(
-                                    e,
-                                    "reference_letter",
-                                    setRefLetterUrl,
-                                    setRefLetterUploading
-                                )
-                            }
+                            onChange={handleFamilyRecordChange}
                             hidden
                         />
-                        <Typography fontSize={13}>Choose photo</Typography>
+                        <Typography fontSize={13}>Choose</Typography>
                     </Button>
                 </Box>
             </Box>

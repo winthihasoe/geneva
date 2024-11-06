@@ -55,8 +55,16 @@ const JoinOurTeam = [
         routeName: "cv.create",
     },
     {
+        title: "My CV",
+        routeName: "cv.show",
+    },
+    {
+        title: "Certificate",
+        routeName: "certificates.show",
+    },
+    {
         title: "7 Days Training",
-        routeName: "#",
+        routeName: "training.sevenDays",
     },
 ];
 const Navbar = () => {
@@ -430,6 +438,7 @@ const Navbar = () => {
                             <List component="div" disablePadding>
                                 {JoinOurTeam.map((item, index) => (
                                     <ListItem
+                                        key={index}
                                         button
                                         sx={{ pl: 4 }}
                                         onClick={() => {

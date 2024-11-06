@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
     Box,
     TextField,
@@ -11,6 +11,7 @@ import {
     Checkbox,
 } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle";
+import CvContext from "@/Context/CvContext";
 
 const dietaryRestrictions = [
     "No restriction",
@@ -20,7 +21,8 @@ const dietaryRestrictions = [
 ];
 const foodHandling = ["No restriction", "No pork", "No beef"];
 
-const DietaryFoodHandlingForm = ({ data, handleChange }) => {
+const DietaryFoodHandlingForm = () => {
+    const { data, handleChange } = useContext(CvContext);
     const handleCheckboxChange = (section, value) => (event) => {
         const newValues = event.target.checked
             ? [...data[section], value]
@@ -72,7 +74,6 @@ const DietaryFoodHandlingForm = ({ data, handleChange }) => {
                     size="small"
                     label="Other dietary restrictions ..."
                     multiline
-                    minRows={2}
                     inputProps={{
                         maxLength: 220,
                     }}
@@ -114,7 +115,6 @@ const DietaryFoodHandlingForm = ({ data, handleChange }) => {
                     size="small"
                     label="Others food handling specific ..."
                     multiline
-                    minRows={2}
                     inputProps={{
                         maxLength: 220,
                     }}

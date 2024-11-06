@@ -14,8 +14,6 @@ import NannyAndMaid from "./components/NannyAndMaid";
 import ElderAndMaid from "./components/ElderAndMaid";
 
 function ServicePricing({ service }) {
-    console.log(service);
-
     return (
         <AppLayout>
             <Head title={service.name} />

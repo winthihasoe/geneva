@@ -1,19 +1,27 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import PastIllnessesForm from "./forms/PastIllnessesForm";
 import AllergiesPhysicalDisabilitiesForm from "./forms/AllergiesPhysicalDisabilitiesForm";
 import DietaryFoodHandlingForm from "./forms/DietaryFoodHandlingForm";
 import TitleCenterForCvForm from "@/Components/Typo/TitleCenterForCvForm";
+import CvContext from "@/Context/CvContext";
 
-const MedicalHistory = ({ data, onNext, handleBack, handleChange }) => {
+const MedicalHistory = () => {
+    const {
+        handleNext: onNext,
+        handleBack: onBack,
+        saveData,
+    } = useContext(CvContext);
     const [step, setStep] = useState(1);
     const totalSteps = 3;
     // These next steps functions are only use in this component, not from parent component
-    const handleNext = () => {
+    const handleNext = async () => {
         if (step < 3) {
+            await saveData();
             setStep(step + 1);
             window.scrollTo({ top: 0, behavior: "smooth" });
         } else {
+            await saveData();
             onNext();
         }
     };
@@ -23,7 +31,7 @@ const MedicalHistory = ({ data, onNext, handleBack, handleChange }) => {
             setStep(step - 1);
             window.scrollTo({ top: 0, behavior: "smooth" });
         } else {
-            handleBack();
+            onBack();
         }
     };
 
@@ -35,35 +43,22 @@ const MedicalHistory = ({ data, onNext, handleBack, handleChange }) => {
             </TitleCenterForCvForm>
             <Box
                 sx={{
-                    boxShadow: 2,
-                    borderRadius: 2,
-                    p: 3,
+                    boxShadow: { xs: 0, sm: 2 },
+                    borderRadius: 10,
+                    p: { xs: 1, sm: 3 },
                     maxWidth: 500,
                     margin: "auto",
-                    border: "2px solid",
-                    borderColor: "primary.main",
+                    border: {
+                        xs: "none",
+                        sm: "2px solid #21875C",
+                    },
                 }}
             >
-                {step == 1 && (
-                    <PastIllnessesForm
-                        data={data}
-                        handleChange={handleChange}
-                    />
-                )}
+                {step == 1 && <PastIllnessesForm />}
 
-                {step == 2 && (
-                    <AllergiesPhysicalDisabilitiesForm
-                        data={data}
-                        handleChange={handleChange}
-                    />
-                )}
+                {step == 2 && <AllergiesPhysicalDisabilitiesForm />}
 
-                {step == 3 && (
-                    <DietaryFoodHandlingForm
-                        data={data}
-                        handleChange={handleChange}
-                    />
-                )}
+                {step == 3 && <DietaryFoodHandlingForm />}
             </Box>
 
             <Box
@@ -73,6 +68,7 @@ const MedicalHistory = ({ data, onNext, handleBack, handleChange }) => {
                     variant="outlined"
                     onClick={handlePrevious}
                     size="small"
+                    sx={{ borderRadius: 20 }}
                 >
                     <Typography
                         fontFamily={"Lilita One"}
@@ -82,7 +78,12 @@ const MedicalHistory = ({ data, onNext, handleBack, handleChange }) => {
                         Previous
                     </Typography>
                 </Button>
-                <Button variant="contained" onClick={handleNext} size="small">
+                <Button
+                    variant="contained"
+                    sx={{ borderRadius: 20 }}
+                    onClick={handleNext}
+                    size="small"
+                >
                     <Typography
                         fontFamily={"Lilita One"}
                         fontWeight={500}

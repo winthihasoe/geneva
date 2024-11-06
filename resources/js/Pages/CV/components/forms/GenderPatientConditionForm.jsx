@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
     Box,
     Typography,
@@ -10,15 +10,17 @@ import {
     Checkbox,
 } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle";
+import CvContext from "@/Context/CvContext";
 
-const TypeOfCare = [
+const Services = [
     "Elder care",
     "Newborn care",
     "Nanny service",
     "Elder + Maid",
     "Nanny + Maid",
 ];
-const GenderPatientConditionForm = ({ data, handleChange }) => {
+const GenderPatientConditionForm = () => {
+    const { data, handleChange } = useContext(CvContext);
     const handleCheckboxChange = (section, value) => (event) => {
         const newValues = event.target.checked
             ? [...data[section], value]
@@ -68,24 +70,20 @@ const GenderPatientConditionForm = ({ data, handleChange }) => {
                 <Subtitle>Type of Care</Subtitle>
 
                 <FormGroup row sx={{ px: 2 }}>
-                    {TypeOfCare.map((condition) => (
+                    {Services.map((service) => (
                         <FormControlLabel
-                            key={condition}
+                            key={service}
                             control={
                                 <Checkbox
-                                    checked={data.patient_conditions.includes(
-                                        condition
-                                    )}
+                                    checked={data.services.includes(service)}
                                     onChange={handleCheckboxChange(
-                                        "patient_conditions",
-                                        condition
+                                        "services",
+                                        service
                                     )}
                                 />
                             }
                             label={
-                                <Typography fontSize={12}>
-                                    {condition}
-                                </Typography>
+                                <Typography fontSize={12}>{service}</Typography>
                             }
                             sx={{ width: 130 }}
                         />

@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Box, TextField, Typography } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle"; // Ensure this path is correct
+import CvContext from "@/Context/CvContext";
 
-const AllergiesPhysicalDisabilitiesForm = ({ data, handleChange }) => {
+const AllergiesPhysicalDisabilitiesForm = () => {
+    const { data, handleChange } = useContext(CvContext);
     return (
         <Box sx={{ mb: 3 }}>
             <Box mb={3}>
@@ -13,7 +15,6 @@ const AllergiesPhysicalDisabilitiesForm = ({ data, handleChange }) => {
                     fullWidth
                     size="small"
                     multiline
-                    minRows={2}
                     placeholder="Describe any allergy you have ..."
                 />
             </Box>
@@ -25,7 +26,6 @@ const AllergiesPhysicalDisabilitiesForm = ({ data, handleChange }) => {
                     onChange={handleChange("physical_disability")}
                     fullWidth
                     multiline
-                    minRows={2}
                     size="small"
                     placeholder="Describe any disability you have ..."
                 />

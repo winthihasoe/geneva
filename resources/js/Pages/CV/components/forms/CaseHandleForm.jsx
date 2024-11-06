@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
     Box,
     Checkbox,
@@ -8,6 +8,7 @@ import {
     Typography,
 } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle";
+import CvContext from "@/Context/CvContext";
 
 const elderHandle = [
     "COPD",
@@ -42,7 +43,8 @@ const babiesHandle = [
     "Malaria",
 ];
 
-const CaseHandleForm = ({ data, handleChange }) => {
+const CaseHandleForm = () => {
+    const { data, handleChange } = useContext(CvContext);
     const handleCheckboxChange = (section, value) => (event) => {
         const newValues = event.target.checked
             ? [...data[section], value]
@@ -60,9 +62,11 @@ const CaseHandleForm = ({ data, handleChange }) => {
                         key={skill}
                         control={
                             <Checkbox
-                                checked={data.nursing_skills.includes(skill)}
+                                checked={data.types_of_patients_handled.includes(
+                                    skill
+                                )}
                                 onChange={handleCheckboxChange(
-                                    "nursing_skills",
+                                    "types_of_patients_handled",
                                     skill
                                 )}
                             />
@@ -72,8 +76,14 @@ const CaseHandleForm = ({ data, handleChange }) => {
                     />
                 ))}
                 <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <Subtitle>Others:</Subtitle>
-                    <TextField size="small" />
+                    <Subtitle>Other cases:</Subtitle>
+                    <TextField
+                        value={data.other_types_of_patients_handled}
+                        size="small"
+                        onChange={handleChange(
+                            "other_types_of_patients_handled"
+                        )}
+                    />
                 </Box>
             </FormGroup>
 
@@ -85,9 +95,11 @@ const CaseHandleForm = ({ data, handleChange }) => {
                         key={skill}
                         control={
                             <Checkbox
-                                checked={data.nursing_skills.includes(skill)}
+                                checked={data.types_of_babies_handled.includes(
+                                    skill
+                                )}
                                 onChange={handleCheckboxChange(
-                                    "nursing_skills",
+                                    "types_of_babies_handled",
                                     skill
                                 )}
                             />
@@ -97,8 +109,12 @@ const CaseHandleForm = ({ data, handleChange }) => {
                     />
                 ))}
                 <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <Subtitle>Others:</Subtitle>
-                    <TextField size="small" />
+                    <Subtitle>Others cases:</Subtitle>
+                    <TextField
+                        value={data.other_types_of_babies_handled}
+                        size="small"
+                        onChange={handleChange("other_types_of_babies_handled")}
+                    />
                 </Box>
             </FormGroup>
         </Box>

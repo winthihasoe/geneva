@@ -20,16 +20,22 @@
         "vite": "^5.0.0"
     },
     "dependencies": {
+        "@date-io/date-fns": "^3.0.0",
         "@emotion/react": "^11.13.3",
         "@emotion/styled": "^11.13.0",
         "@inertiajs/inertia": "^0.11.1",
         "@inertiajs/inertia-react": "^0.8.1",
         "@inertiajs/progress": "^0.2.7",
         "@mui/icons-material": "^6.1.4",
+        "@mui/lab": "^6.0.0-beta.14",
         "@mui/material": "^6.1.4",
+        "@mui/x-date-pickers": "^7.22.1",
         "compressorjs": "^1.2.1",
+        "date-fns": "^3.6.0",
+        "dayjs": "^1.11.13",
         "framer-motion": "^11.11.10",
         "lodash": "^4.17.21",
+        "react-joyride": "^2.9.2",
         "react-phone-input-2": "^2.15.1"
     }
 }

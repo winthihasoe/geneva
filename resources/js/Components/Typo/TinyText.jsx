@@ -1,9 +1,9 @@
 import { Typography } from "@mui/material";
 import React from "react";
 
-export default function TinyText({ children }) {
+export default function TinyText({ children, textAlign = "left" }) {
     return (
-        <Typography fontSize={11} gutterBottom>
+        <Typography textAlign={textAlign} fontSize={11} gutterBottom>
             {children}
         </Typography>
     );

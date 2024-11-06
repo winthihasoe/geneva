@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
     Box,
     TextField,
@@ -9,6 +9,7 @@ import {
     InputLabel,
 } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle";
+import CvContext from "@/Context/CvContext";
 
 const years = Array.from(
     new Array(100),
@@ -28,12 +29,14 @@ const calculateAge = (year, month, day) => {
     return age;
 };
 
-const NameAndDOBForm = ({ data, handleChange }) => {
+const NameAndDOBForm = () => {
+    const { data, handleChange } = useContext(CvContext);
     const [selectedYear, setSelectedYear] = useState("");
     const [selectedMonth, setSelectedMonth] = useState("");
     const [selectedDay, setSelectedDay] = useState("");
     const [age, setAge] = useState("");
 
+    // Set local state based on initial `data.date_of_birth`
     useEffect(() => {
         if (data.date_of_birth) {
             const [year, month, day] = data.date_of_birth.split("-");
@@ -44,37 +47,45 @@ const NameAndDOBForm = ({ data, handleChange }) => {
         }
     }, [data.date_of_birth]);
 
+    // Update `date_of_birth` in context only when all date fields are selected
     useEffect(() => {
         if (selectedYear && selectedMonth && selectedDay) {
             const dateOfBirth = `${selectedYear}-${String(
                 selectedMonth
             ).padStart(2, "0")}-${String(selectedDay).padStart(2, "0")}`;
-            handleChange("date_of_birth")({ target: { value: dateOfBirth } });
+            // Avoid calling `handleChange` directly in render cycle
+            setTimeout(
+                () =>
+                    handleChange("date_of_birth")({
+                        target: { value: dateOfBirth },
+                    }),
+                0
+            );
         }
     }, [selectedYear, selectedMonth, selectedDay]);
 
+    // Handle individual date changes and calculate age
     const handleYearChange = (event) => {
-        setSelectedYear(event.target.value);
-        if (selectedMonth && selectedDay) {
-            setAge(
-                calculateAge(event.target.value, selectedMonth, selectedDay)
-            );
+        const year = event.target.value;
+        setSelectedYear(year);
+        if (year && selectedMonth && selectedDay) {
+            setAge(calculateAge(year, selectedMonth, selectedDay));
         }
     };
 
     const handleMonthChange = (event) => {
-        setSelectedMonth(event.target.value);
-        if (selectedYear && selectedDay) {
-            setAge(calculateAge(selectedYear, event.target.value, selectedDay));
+        const month = event.target.value;
+        setSelectedMonth(month);
+        if (selectedYear && month && selectedDay) {
+            setAge(calculateAge(selectedYear, month, selectedDay));
         }
     };
 
     const handleDayChange = (event) => {
-        setSelectedDay(event.target.value);
-        if (selectedYear && selectedMonth) {
-            setAge(
-                calculateAge(selectedYear, selectedMonth, event.target.value)
-            );
+        const day = event.target.value;
+        setSelectedDay(day);
+        if (selectedYear && selectedMonth && day) {
+            setAge(calculateAge(selectedYear, selectedMonth, day));
         }
     };
 
@@ -94,6 +105,32 @@ const NameAndDOBForm = ({ data, handleChange }) => {
                     sx={{ flexGrow: 1 }}
                     fullWidth
                     placeholder="Enter your name"
+                />
+            </Box>
+            <Box
+                sx={{
+                    mb: 3,
+                    gap: 2,
+                }}
+            >
+                <Subtitle>Nickname to show in CV</Subtitle>
+                <TextField
+                    size="small"
+                    value={data.nickname}
+                    onChange={handleChange("nickname")}
+                    sx={{ flexGrow: 1 }}
+                    fullWidth
+                />
+            </Box>
+            <Box sx={{ margin: "10px auto" }}>
+                <Subtitle>Introduction about yourself to show in CV</Subtitle>
+                <TextField
+                    size="small"
+                    placeholder="Hello, my name is ..."
+                    multiline
+                    value={data.introduction}
+                    onChange={handleChange("introduction")}
+                    fullWidth
                 />
             </Box>
             <Subtitle>Date of Birth</Subtitle>

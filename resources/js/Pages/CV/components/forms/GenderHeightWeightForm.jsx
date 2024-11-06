@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
     Box,
     TextField,
@@ -9,8 +9,11 @@ import {
     RadioGroup,
 } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle";
+import CvContext from "@/Context/CvContext";
+import TinyText from "@/Components/Typo/TinyText";
 
-const GenderHeightWeightForm = ({ data, handleChange }) => {
+const GenderHeightWeightForm = () => {
+    const { data, handleChange } = useContext(CvContext);
     return (
         <Box
             sx={{
@@ -42,31 +45,55 @@ const GenderHeightWeightForm = ({ data, handleChange }) => {
                     />
                 </RadioGroup>
             </FormControl>
-            <Box sx={{ display: "flex", alignItems: "center", mb: 2, gap: 2 }}>
-                <Subtitle>Height</Subtitle>
-                <TextField
-                    size="small"
-                    type="number"
-                    value={data.height}
-                    inputProps={{ min: 0 }}
-                    onChange={handleChange("height")}
-                    InputProps={{
-                        endAdornment: <Typography>cm</Typography>,
+            <Box mb={2}>
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        mb: 1,
+                        gap: 2,
                     }}
-                />
+                >
+                    <Subtitle>Height</Subtitle>
+                    <TextField
+                        size="small"
+                        type="number"
+                        value={data.height ?? ""}
+                        inputProps={{ min: 0 }}
+                        onChange={handleChange("height")}
+                        InputProps={{
+                            endAdornment: <Typography>cm</Typography>,
+                        }}
+                    />
+                </Box>
+                <TinyText>
+                    Height in "cm" and can't input decimal (point).
+                </TinyText>
             </Box>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <Subtitle>Weight</Subtitle>
-                <TextField
-                    size="small"
-                    type="number"
-                    value={data.weight}
-                    inputProps={{ min: 0 }}
-                    onChange={handleChange("weight")}
-                    InputProps={{
-                        endAdornment: <Typography>kg</Typography>,
+            <Box mb={2}>
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 2,
+                        mb: 1,
                     }}
-                />
+                >
+                    <Subtitle>Weight</Subtitle>
+                    <TextField
+                        size="small"
+                        type="number"
+                        value={data.weight ?? ""}
+                        inputProps={{ min: 0 }}
+                        onChange={handleChange("weight")}
+                        InputProps={{
+                            endAdornment: <Typography>kg</Typography>,
+                        }}
+                    />
+                </Box>
+                <TinyText>
+                    Weight in "kg" and can input decimal (point).
+                </TinyText>
             </Box>
         </Box>
     );

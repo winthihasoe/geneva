@@ -1,29 +1,39 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
     Box,
-    FormControl,
     FormControlLabel,
-    FormLabel,
     Radio,
     RadioGroup,
     TextField,
     Typography,
-    Button,
 } from "@mui/material";
-import Subtitle from "@/Components/Typo/Subtitle"; // Ensure this path is correct
-import UnderlinedText from "@/Components/Typo/UnderlinedText";
-import TransferForm from "./TransferForm";
+import Subtitle from "@/Components/Typo/Subtitle";
+import CvContext from "@/Context/CvContext";
 
-const ExperienceForm = ({ data, handleChange }) => {
-    const handleExperienceChange = (event) => {
-        const value = event.target.value;
-        handleChange("experience")(event);
-    };
+const Years = [
+    "More than 5 years",
+    "More than 3 years",
+    "More than 2 years",
+    "Less than 2 years",
+    "None",
+];
 
-    // Generate the URL to the uploaded transfer form
-    const transferFormUrl = data?.transfer_form
-        ? `/storage/documents/transfer_forms/${data.transfer_form}`
-        : null;
+const ExperienceForm = () => {
+    const { data, handleChange } = useContext(CvContext);
+    const Experiences = [
+        {
+            title: "Newborn Care (Baby age up to 12-months)",
+            handleChange: "newborn_experience_years",
+        },
+        {
+            title: "Nanny Care (Baby age from 1-year to 5-years)",
+            handleChange: "nanny_experience_years",
+        },
+        {
+            title: "Elder Care",
+            handleChange: "elder_experience_years",
+        },
+    ];
     return (
         <Box sx={{ mb: 3 }}>
             <Box
@@ -33,56 +43,51 @@ const ExperienceForm = ({ data, handleChange }) => {
             >
                 <Subtitle>Years of Experience</Subtitle>
 
-                <Box
-                    sx={{
-                        display: "flex",
-                        justifyContent: "space-around",
-                        alignItems: "center",
-                        mt: 2,
-                        gap: 2,
-                    }}
-                >
+                {Experiences.map((experience, index) => (
+                    <Box mt={2} key={index}>
+                        <Typography
+                            fontSize={15}
+                            color="primary"
+                            fontFamily={"Actor"}
+                            fontWeight={800}
+                        >
+                            {experience.title}
+                        </Typography>
+                        <RadioGroup
+                            row
+                            value={data[experience.handleChange]}
+                            onChange={handleChange(experience.handleChange)}
+                        >
+                            {Years.map((year, index) => (
+                                <FormControlLabel
+                                    key={index}
+                                    value={year}
+                                    control={<Radio />}
+                                    label={
+                                        <Typography
+                                            fontSize={13}
+                                            fontFamily={"Livvic"}
+                                        >
+                                            {year}
+                                        </Typography>
+                                    }
+                                />
+                            ))}
+                        </RadioGroup>
+                    </Box>
+                ))}
+                <Box sx={{ margin: "10px auto" }}>
+                    <Subtitle>Detail Experience to show in CV</Subtitle>
                     <TextField
-                        disabled={data.experience == "Fresh"}
-                        value={data.years_experience}
-                        onChange={handleChange("years_experience")}
-                        sx={{ flexBasis: 200 }}
-                        inputProps={{ min: 0 }}
-                        InputProps={{
-                            endAdornment: <Typography>years</Typography>,
-                        }}
                         size="small"
-                        type="number"
-                    />
-                    <TextField
-                        disabled={data.experience == "Fresh"}
-                        value={data.months_experience}
-                        onChange={handleChange("months_experience")}
-                        sx={{ flexBasis: 200 }}
-                        inputProps={{ min: 0 }}
-                        type="number"
-                        InputProps={{
-                            endAdornment: <Typography>months</Typography>,
-                        }}
-                        size="small"
+                        placeholder="With 2 years of experience in elder senior care..."
+                        multiline
+                        value={data.detail_experience}
+                        onChange={handleChange("detail_experience")}
+                        fullWidth
                     />
                 </Box>
             </Box>
-
-            {data?.transfer_form && (
-                <Typography fontSize={12} mb={1}>
-                    You have uploaded a transfer form. <br /> File name:{" "}
-                    <a
-                        href={transferFormUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <UnderlinedText>{data.transfer_form}</UnderlinedText>
-                    </a>
-                </Typography>
-            )}
-
-            {data?.experience == "Transfer" && <TransferForm />}
         </Box>
     );
 };

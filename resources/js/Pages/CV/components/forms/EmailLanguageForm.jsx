@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
     Box,
     TextField,
@@ -16,24 +16,13 @@ import {
 } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle";
 import TinyText from "@/Components/Typo/TinyText";
+import CvContext from "@/Context/CvContext";
 
 const languages = ["Thai", "Myanmar", "English", "Chinese", "Hindi"];
 
-const EmailLanguageForm = ({ data, setData, handleChange }) => {
+const EmailLanguageForm = () => {
     // Handle changes in the slider
-    const handleSliderChange = (language) => (event, value) => {
-        const selectedValue = `${language} ${value}`;
-
-        setData((prevData) => {
-            const updatedLanguages = prevData.language.filter(
-                (lang) => !lang.startsWith(language)
-            );
-            return {
-                ...prevData,
-                language: [...updatedLanguages, selectedValue],
-            };
-        });
-    };
+    const { data, handleChange, handleSliderChange } = useContext(CvContext);
     return (
         <Box sx={{ my: 2 }}>
             <Subtitle>Email address</Subtitle>

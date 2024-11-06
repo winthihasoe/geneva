@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
     Box,
     TextField,
@@ -8,8 +8,10 @@ import {
     Typography,
 } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle";
+import CvContext from "@/Context/CvContext";
 
-const SiblingsAndGlassesForm = ({ data, handleChange }) => {
+const SiblingsAndGlassesForm = () => {
+    const { data, handleChange } = useContext(CvContext);
     return (
         <Box sx={{ mb: 3 }}>
             <Subtitle>Number of Siblings</Subtitle>

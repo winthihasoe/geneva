@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
     Box,
     FormControl,
@@ -9,8 +9,10 @@ import {
     Typography,
 } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle";
+import CvContext from "@/Context/CvContext";
 
-const LocationAndWorkForm = ({ data, handleChange }) => {
+const LocationAndWorkForm = () => {
+    const { data, handleChange } = useContext(CvContext);
     return (
         <Box>
             <Subtitle>Current Location</Subtitle>

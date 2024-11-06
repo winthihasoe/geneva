@@ -7,7 +7,7 @@ export default function TitleCenterForCvForm({ children }) {
             fontSize={{ xs: 18, sm: 20, md: 24 }}
             textAlign="center"
             fontWeight={400}
-            mb={3}
+            mb={5}
             color="grey.700"
             fontFamily={"ADLaM Display"}
         >

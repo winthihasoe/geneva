@@ -9,7 +9,8 @@ import { Box, Grid2, Typography } from "@mui/material";
 import React from "react";
 import AppLayout from "@/Layouts/AppLayout";
 
-function Home() {
+function Home({ caregivers }) {
+    const CVs = Object.values(caregivers);
     return (
         <AppLayout>
             <Box position={"relative"}>
@@ -114,11 +115,17 @@ function Home() {
                                         flexWrap: "wrap",
                                         justifyContent: "center",
                                         alignItems: "center",
+                                        px: { xs: 1, sm: 0 },
                                     }}
                                 >
-                                    {[1, 2, 3, 4, 5, 6].map((item) => (
-                                        <CaregiverCardMini key={item} />
-                                    ))}
+                                    {CVs &&
+                                        CVs.length > 0 &&
+                                        CVs.slice(0, 6).map((cv) => (
+                                            <CaregiverCardMini
+                                                key={cv.id}
+                                                cv={cv}
+                                            />
+                                        ))}
                                 </Box>
                             </Grid2>
                         </Grid2>

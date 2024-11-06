@@ -1,12 +1,13 @@
 import { Box, Button, Typography } from "@mui/material";
 import React from "react";
+import AgeCalculator from "../util/AgeCalculator";
 
-function CaregiverCardMini() {
+function CaregiverCardMini({ cv }) {
     return (
         <Box pl={9}>
             <Box
                 sx={{
-                    width: 250,
+                    width: 230,
                     bgcolor: "white",
                     borderRadius: 5,
                     position: "relative",
@@ -15,7 +16,7 @@ function CaregiverCardMini() {
                 }}
             >
                 <img
-                    src="/images/caregivers/cg_sample1.jpeg"
+                    src={`/storage/${cv?.profile_photo}`}
                     alt="Caretiver photo"
                     style={{
                         width: 130,
@@ -33,36 +34,38 @@ function CaregiverCardMini() {
                         fontFamily={"ADLaM Display"}
                         mb={1}
                     >
-                        Hla May Oo
+                        {cv.nickname}
                     </Typography>
                     <Typography
                         fontSize={12}
                         fontFamily={"Actor"}
                         fontWeight={400}
                     >
-                        Age: 25 years old
+                        Age: <AgeCalculator date={cv.date_of_birth} /> years old
                     </Typography>
                     <Typography fontSize={12} fontFamily={"Actor"}>
-                        Nationality: Myanmar
+                        Nationality: {cv.nationality}
                     </Typography>
+
                     <Typography fontSize={12} fontFamily={"Actor"}>
-                        Experience: 3 years
-                    </Typography>
-                    <Typography fontSize={12} fontFamily={"Actor"}>
-                        Language: Myanmar/Thai/English
+                        Language:{" "}
+                        {cv?.language
+                            ?.map((lang) => lang.split(" ")[0])
+                            .join(" / ")}
                     </Typography>
                     <Typography
                         fontSize={12}
                         color="primary"
                         fontFamily={"Actor"}
                     >
-                        ID: 32450
+                        ID: {cv.ha_id}
                     </Typography>
                 </Box>
                 <Button
                     fullWidth
                     variant="contained"
                     sx={{ borderRadius: 20, px: 2, mt: 1 }}
+                    disabled
                 >
                     <Typography
                         fontSize={14}

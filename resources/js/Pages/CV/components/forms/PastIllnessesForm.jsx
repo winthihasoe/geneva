@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
     Box,
     FormControl,
@@ -9,6 +9,7 @@ import {
     Typography,
 } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle"; // Ensure this path is correct
+import CvContext from "@/Context/CvContext";
 
 const illnesses = [
     { label: "Mental illness", name: "Mental illness" },
@@ -22,7 +23,8 @@ const illnesses = [
     { label: "Operations", name: "Operations" },
 ];
 
-const PastIllnessesForm = ({ data, handleChange }) => {
+const PastIllnessesForm = () => {
+    const { data, handleChange } = useContext(CvContext);
     const handleRadioChange = (illnessName) => (event) => {
         const value = event.target.value === "yes" ? illnessName : null;
         const newPastIllnesses =
@@ -92,7 +94,6 @@ const PastIllnessesForm = ({ data, handleChange }) => {
                     onChange={handleChange("other_illness")}
                     fullWidth
                     multiline
-                    minRows={2}
                     size="small"
                     placeholder="Other illness ..."
                 />

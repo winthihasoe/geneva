@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Typography, Button } from "@mui/material";
 
-const LongText = ({ children, limit, fontSize }) => {
+const LongText = ({ children, limit, fontSize, fontFamily = "" }) => {
     const [expanded, setExpanded] = useState(false);
 
     const toggleExpand = () => {
@@ -17,7 +17,7 @@ const LongText = ({ children, limit, fontSize }) => {
     const isLongText = children.length > limit;
 
     return (
-        <Typography fontSize={fontSize}>
+        <Typography fontSize={fontSize} fontFamily={fontFamily}>
             {/* Show the full text if not long, otherwise toggle between shortened and full text */}
             {expanded || !isLongText
                 ? children

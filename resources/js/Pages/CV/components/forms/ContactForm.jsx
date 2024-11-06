@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Box, TextField, Typography } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle";
 import PhoneNumberInputOnly from "@/Components/Forms/PhoneNumberInputOnly";
+import CvContext from "@/Context/CvContext";
 
-const ContactForm = ({ data, handleChange }) => {
+const ContactForm = () => {
+    const { data, handleChange } = useContext(CvContext);
     return (
         <Box
             sx={{
@@ -31,13 +33,12 @@ const ContactForm = ({ data, handleChange }) => {
                         alt="Line"
                     />
                 </Subtitle>
-                <PhoneNumberInputOnly
-                    value={data.whatsapp_number}
-                    onChange={(phone) =>
-                        handleChange("whatsapp_number")({
-                            target: { value: phone },
-                        })
-                    }
+                <TextField
+                    value={data.line}
+                    size="small"
+                    onChange={handleChange("line")}
+                    sx={{ minWidth: 250 }}
+                    placeholder="Enter line ID"
                 />
             </Box>
         </Box>

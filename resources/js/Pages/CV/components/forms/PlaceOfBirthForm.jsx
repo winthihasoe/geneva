@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
     Box,
     TextField,
@@ -10,9 +10,7 @@ import {
     Radio,
 } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle";
-import BodyText from "@/Components/Typo/BodyText";
-import TinyText from "@/Components/Typo/TinyText";
-import ResumeText from "@/Components/Typo/ResumeText";
+import CvContext from "@/Context/CvContext";
 
 const nationalityOptions = [
     "Thailand",
@@ -24,7 +22,8 @@ const nationalityOptions = [
     "Sri Lanka",
 ];
 
-const PlaceOfBirthForm = ({ data, handleChange }) => {
+const PlaceOfBirthForm = () => {
+    const { data, handleChange } = useContext(CvContext);
     return (
         <Box sx={{ my: 2 }}>
             <Box sx={{ mb: 4 }}>
@@ -35,7 +34,6 @@ const PlaceOfBirthForm = ({ data, handleChange }) => {
                     sx={{ flexGrow: 1 }}
                     size="small"
                     multiline
-                    minRows={2}
                     fullWidth
                     inputProps={{
                         maxLength: 220,
@@ -66,7 +64,10 @@ const PlaceOfBirthForm = ({ data, handleChange }) => {
                 </FormControl>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                     <Subtitle>Other nationality</Subtitle>
-                    <TextField size="small" />
+                    <TextField
+                        size="small"
+                        onChange={handleChange("other_nationality")}
+                    />
                 </Box>
             </Box>
         </Box>

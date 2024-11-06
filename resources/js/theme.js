@@ -27,7 +27,6 @@ const lightTheme = createTheme({
                     },
                     // Apply to all input variants
                     "& .MuiInputBase-root": {
-                        height: "30px", // Set height for all variants
                         "& input": {
                             padding: "0", // Remove default padding
                             height: "30px", // Set input field height

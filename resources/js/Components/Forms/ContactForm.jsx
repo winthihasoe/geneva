@@ -19,7 +19,7 @@ function ContactForm() {
                 bgcolor: "white",
                 boxShadow: 2,
                 pb: 10,
-                mx: 10,
+                mx: { xs: 2, sm: 10 },
             }}
         >
             <Box textAlign={"center"}>

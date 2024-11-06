@@ -1,9 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Button, LinearProgress, Typography } from "@mui/material";
 import Compressor from "compressorjs";
+import CvContext from "@/Context/CvContext";
 
-const PhotoUploadField = ({ oldPhoto, setData, data }) => {
-    const [photoURL, setPhotoURL] = useState(oldPhoto ? oldPhoto : null);
+const PhotoUploadField = ({ oldPhoto }) => {
+    const { data, setData } = useContext(CvContext);
+
+    // Display either the current photo or a previously saved photo URL
+    // Determine the initial preview URL: use string URL if available, otherwise null
+    const initialPhotoURL =
+        typeof data.profile_photo === "string"
+            ? `/storage/${data.profile_photo}`
+            : oldPhoto || null;
+    const [photoURL, setPhotoURL] = useState(initialPhotoURL);
     const [uploading, setUploading] = useState(false); // For tracking compression status
 
     const handlePhotoChange = (e) => {
@@ -24,7 +33,7 @@ const PhotoUploadField = ({ oldPhoto, setData, data }) => {
                         // Set the compressed image to the form data
                         setData((prevData) => ({
                             ...prevData,
-                            photo: compressedFile,
+                            profile_photo: compressedFile,
                         }));
                     } else {
                         console.error("Compressed file is not a valid Blob");
@@ -32,6 +41,7 @@ const PhotoUploadField = ({ oldPhoto, setData, data }) => {
 
                     // Hide the progress bar after compression
                     setUploading(false);
+                    uploadPhoto(compressedFile);
                 },
                 error(err) {
                     console.error("Compression error:", err.message);
@@ -41,9 +51,28 @@ const PhotoUploadField = ({ oldPhoto, setData, data }) => {
         }
     };
 
+    const [uploadMessage, setUploadMessage] = useState("");
+    // Function to handle the photo upload
+    const uploadPhoto = async (photoFile) => {
+        const formData = new FormData();
+        formData.append("profile_photo", photoFile, photoFile.name);
+
+        try {
+            const response = await axios.post(route("cv.store"), formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+            setUploadMessage(response.data.message);
+            setTimeout(() => setUploadMessage(""), 2000); // Clear message after 2 seconds
+        } catch (error) {
+            console.error("Error uploading photo:", error);
+            setUploadMessage("Failed to upload photo.");
+            setTimeout(() => setUploadMessage(""), 2000); // Clear message after 2 seconds
+        }
+    };
+
     useEffect(() => {
-        if (data.photo && data.photo instanceof Blob) {
-            const newPhotoURL = URL.createObjectURL(data.photo);
+        if (data.profile_photo && data.profile_photo instanceof Blob) {
+            const newPhotoURL = URL.createObjectURL(data.profile_photo);
             setPhotoURL(newPhotoURL);
 
             // Clean up the object URL when the component unmounts
@@ -51,7 +80,7 @@ const PhotoUploadField = ({ oldPhoto, setData, data }) => {
                 URL.revokeObjectURL(newPhotoURL);
             };
         }
-    }, [data.photo]);
+    }, [data.profile_photo]);
 
     return (
         <Box
@@ -61,7 +90,7 @@ const PhotoUploadField = ({ oldPhoto, setData, data }) => {
                 alignItems: "center",
             }}
         >
-            {data.photo !== null || oldPhoto ? (
+            {data.profile_photo !== null || oldPhoto ? (
                 <img
                     src={photoURL ? photoURL : oldPhoto}
                     alt="Profile Photo"
@@ -98,7 +127,7 @@ const PhotoUploadField = ({ oldPhoto, setData, data }) => {
                 </>
             )}
 
-            {!data.photo && !uploading && (
+            {!data.profile_photo && !uploading && (
                 <Button variant="text" component="label">
                     Add your photo
                     <input
@@ -110,6 +139,17 @@ const PhotoUploadField = ({ oldPhoto, setData, data }) => {
                 </Button>
             )}
 
+            {uploadMessage && (
+                <Typography
+                    fontSize={{ xs: 11, sm: 12, md: 13 }}
+                    fontWeight={600}
+                    fontFamily={"Mina"}
+                    mb={2}
+                >
+                    {uploadMessage}
+                </Typography>
+            )}
+
             <Box
                 sx={{
                     display: "flex",
@@ -118,7 +158,7 @@ const PhotoUploadField = ({ oldPhoto, setData, data }) => {
                     alignItems: "center",
                 }}
             >
-                {(data.photo || photoURL) && !uploading && (
+                {(data.profile_photo || photoURL) && !uploading && (
                     <Button variant="outlined" component="label" size="small">
                         Change Photo
                         <input

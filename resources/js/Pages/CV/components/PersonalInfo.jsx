@@ -1,8 +1,6 @@
-// PersonalInfo.js
 import { Box, Button, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import NameAndDOBForm from "./forms/NameAndDOBForm";
-import TitleCenter from "@/Components/Typo/TitleCenter";
 import GenderHeightWeightForm from "./forms/GenderHeightWeightForm";
 import PlaceOfBirthForm from "./forms/PlaceOfBirthForm";
 import AddressForm from "./forms/AddressForm";
@@ -12,29 +10,23 @@ import ReligionHobbiesForm from "./forms/ReligionHobbiesForm";
 import EducationQualificationForm from "./forms/EducationQualificationForm";
 import MaritalStatusForm from "./forms/MaritalStatusForm";
 import SiblingsAndGlassesForm from "./forms/SiblingsAndGlassesForm";
-import NursingSkillsForm from "./forms/NursingSkillsForm";
 import TattooAndHabitsForm from "./forms/TattooAndHabitsForm";
-import LocationAndWorkForm from "./forms/LocationAndWorkForm";
-import CaseHandleForm from "./forms/CaseHandleForm";
 import TitleCenterForCvForm from "@/Components/Typo/TitleCenterForCvForm";
+import CvContext from "@/Context/CvContext";
+import TinyText from "@/Components/Typo/TinyText";
 
-const PersonalInfo = ({
-    onNext,
-    data,
-    setData,
-    handleChange,
-    handleCheckboxChange,
-    saveData,
-}) => {
+const PersonalInfo = () => {
+    const { handleNext: onNext, saveData, data, error } = useContext(CvContext);
     const [step, setStep] = useState(1);
-    const totalSteps = 14;
+    const totalSteps = 11;
 
-    // These next steps functions are only use in this component, not from parent component
-    const handleNext = () => {
-        if (step < 14) {
+    const handleNext = async () => {
+        if (step < totalSteps) {
+            await saveData();
             setStep(step + 1);
             window.scrollTo({ top: 0, behavior: "smooth" });
         } else {
+            await saveData();
             onNext();
         }
     };
@@ -43,8 +35,41 @@ const PersonalInfo = ({
         if (step > 1) {
             setStep(step - 1);
             window.scrollTo({ top: 0, behavior: "smooth" });
-        } else {
-            onBack();
+        }
+    };
+
+    // Validation function for each step
+    const validateStep = () => {
+        switch (step) {
+            case 1:
+                return (
+                    data.full_name &&
+                    data.nickname &&
+                    data.introduction &&
+                    data.date_of_birth
+                );
+            case 2:
+                return data.gender && data.height && data.weight;
+            case 3:
+                return data.place_of_birth && data.nationality;
+            case 4:
+                return data.residential_address;
+            case 5:
+                return data.emergency_contact;
+            case 6:
+                return data.email && data.language;
+            case 7:
+                return data.religion;
+            case 8:
+                return data.education_level && data.caregiver_qualification;
+            case 9:
+                return data.marital_status;
+            case 10:
+                return data.number_of_siblings && data.wears_glasses;
+            case 11:
+                return data.has_tattoo;
+            default:
+                return true;
         }
     };
 
@@ -54,98 +79,31 @@ const PersonalInfo = ({
                 Personal Information{" "}
                 <span style={{ fontSize: 11 }}>{`${step}/${totalSteps}`}</span>
             </TitleCenterForCvForm>
+            {error && <TinyText textAlign="center">{error}</TinyText>}
             <Box
                 sx={{
-                    boxShadow: 2,
-                    borderRadius: 2,
-                    p: 3,
+                    boxShadow: { xs: 0, sm: 2 },
+                    borderRadius: 10,
+                    p: { xs: 1, sm: 3 },
                     maxWidth: 500,
                     margin: "auto",
-                    border: "2px solid",
-                    borderColor: "primary.main",
+                    border: {
+                        xs: "none",
+                        sm: "2px solid #21875C",
+                    },
                 }}
             >
-                {step == 1 && (
-                    <NameAndDOBForm data={data} handleChange={handleChange} />
-                )}
-                {step == 2 && (
-                    <GenderHeightWeightForm
-                        data={data}
-                        handleChange={handleChange}
-                        handleCheckboxChange={handleCheckboxChange}
-                    />
-                )}
-                {step == 3 && (
-                    <PlaceOfBirthForm data={data} handleChange={handleChange} />
-                )}
-
-                {step == 4 && (
-                    <AddressForm data={data} handleChange={handleChange} />
-                )}
-
-                {step == 5 && (
-                    <ContactForm data={data} handleChange={handleChange} />
-                )}
-
-                {step == 6 && (
-                    <EmailLanguageForm
-                        data={data}
-                        setData={setData}
-                        handleChange={handleChange}
-                    />
-                )}
-
-                {step == 7 && (
-                    <ReligionHobbiesForm
-                        data={data}
-                        handleChange={handleChange}
-                    />
-                )}
-
-                {step == 8 && (
-                    <EducationQualificationForm
-                        data={data}
-                        handleChange={handleChange}
-                    />
-                )}
-
-                {step == 9 && (
-                    <MaritalStatusForm
-                        data={data}
-                        handleChange={handleChange}
-                    />
-                )}
-
-                {step == 10 && (
-                    <SiblingsAndGlassesForm
-                        data={data}
-                        handleChange={handleChange}
-                    />
-                )}
-
-                {step == 11 && (
-                    <NursingSkillsForm
-                        data={data}
-                        handleChange={handleChange}
-                    />
-                )}
-                {step == 12 && (
-                    <CaseHandleForm data={data} handleChange={handleChange} />
-                )}
-
-                {step == 13 && (
-                    <TattooAndHabitsForm
-                        data={data}
-                        handleChange={handleChange}
-                    />
-                )}
-
-                {step == 14 && (
-                    <LocationAndWorkForm
-                        data={data}
-                        handleChange={handleChange}
-                    />
-                )}
+                {step === 1 && <NameAndDOBForm />}
+                {step === 2 && <GenderHeightWeightForm />}
+                {step === 3 && <PlaceOfBirthForm />}
+                {step === 4 && <AddressForm />}
+                {step === 5 && <ContactForm />}
+                {step === 6 && <EmailLanguageForm />}
+                {step === 7 && <ReligionHobbiesForm />}
+                {step === 8 && <EducationQualificationForm />}
+                {step === 9 && <MaritalStatusForm />}
+                {step === 10 && <SiblingsAndGlassesForm />}
+                {step === 11 && <TattooAndHabitsForm />}
             </Box>
             <Box
                 sx={{ mt: 3, display: "flex", justifyContent: "space-between" }}
@@ -170,6 +128,7 @@ const PersonalInfo = ({
                     variant="contained"
                     onClick={handleNext}
                     size="small"
+                    disabled={!validateStep()}
                 >
                     <Typography
                         fontFamily={"Lilita One"}

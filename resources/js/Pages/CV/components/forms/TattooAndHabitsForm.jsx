@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
     Box,
     FormControl,
@@ -12,9 +12,11 @@ import {
     FormGroup,
 } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle";
+import CvContext from "@/Context/CvContext";
 
 const habits = ["Alcohol Consumption", "Smoking", "Gambling"];
-const TattooAndHabitsForm = ({ data, handleChange }) => {
+const TattooAndHabitsForm = () => {
+    const { data, handleChange } = useContext(CvContext);
     const handleCheckboxChange = (value) => (event) => {
         const newValues = event.target.checked
             ? [...data.habits, value]
@@ -62,15 +64,16 @@ const TattooAndHabitsForm = ({ data, handleChange }) => {
                     />
                 ))}
             </FormGroup>
-            <TextField
-                size="small"
-                fullWidth
-                multiline
-                minRows={2}
-                label="Other habits"
-                value={data.other_habits}
-                onChange={handleChange("other_habits")}
-            />
+
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                <Subtitle>Other habits:</Subtitle>
+                <TextField
+                    size="small"
+                    multiline
+                    value={data.other_habits}
+                    onChange={handleChange("other_habits")}
+                />
+            </Box>
         </Box>
     );
 };

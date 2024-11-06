@@ -1,20 +1,31 @@
-import React, { useEffect, useState } from "react";
-import { Box, Button, Typography, LinearProgress, Grid } from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
+import {
+    Box,
+    Button,
+    Typography,
+    LinearProgress,
+    Grid,
+    Grid2,
+    TextField,
+    Divider,
+} from "@mui/material";
 import Compressor from "compressorjs";
 import Subtitle from "@/Components/Typo/Subtitle";
 import TinyText from "@/Components/Typo/TinyText";
+import CvContext from "@/Context/CvContext";
 
-const DocumentUploadForm = ({ data, setData, oldPassport, oldEduCert }) => {
+const DocumentUploadForm = ({ oldPassport }) => {
+    const { data, setData, handleChange } = useContext(CvContext);
+
     const [passportPreview, setPassportPreview] = useState(
-        oldPassport ? oldPassport : null
-    );
-
-    const [eduCertPreview, setEduCertPreview] = useState(
-        oldEduCert ? oldEduCert : null
+        oldPassport
+            ? oldPassport
+            : typeof data.passport === "string"
+            ? `/storage/${data.passport}`
+            : null
     );
 
     const [passportUploading, setPassportUploading] = useState(false);
-    const [eduCertUploading, setEduCertUploading] = useState(false);
     const [error, setError] = useState(null);
 
     const handlePassportChange = (event) => {
@@ -37,10 +48,11 @@ const DocumentUploadForm = ({ data, setData, oldPassport, oldEduCert }) => {
                         }));
                     } else {
                         console.error("Compression error:", err.message);
-                        setUploading(false); // Hide the progress bar on error
                     }
 
                     setPassportUploading(false);
+                    uploadPhoto(compressedFile);
+                    console.log("save photo");
                 },
                 error(err) {
                     console.error("Compression error:", err.message);
@@ -50,34 +62,24 @@ const DocumentUploadForm = ({ data, setData, oldPassport, oldEduCert }) => {
         }
     };
 
-    const handleEducationCertificateChange = (event) => {
-        const file = event.target.files[0];
-        setError(null);
+    const [uploadMessage, setUploadMessage] = useState("");
+    // Function to handle the photo upload
+    const uploadPhoto = async (photoFile) => {
+        const formData = new FormData();
+        formData.append("passport", photoFile, photoFile.name);
 
-        if (file) {
-            setEduCertUploading(true);
-
-            // Compress the image using Compressor.js
-            new Compressor(file, {
-                quality: 0.6, // Adjust the quality as needed (0 to 1)
-                maxWidth: 600, // Resize to a maximum width of 600px
-                success(compressedFile) {
-                    if (compressedFile instanceof Blob) {
-                        setEduCertPreview(URL.createObjectURL(compressedFile));
-                        setData((prevData) => ({
-                            ...prevData,
-                            education_certificate: compressedFile,
-                        }));
-                    } else {
-                        console.error("Compressed file is not a valid Blob");
-                    }
-                    setEduCertUploading(false);
-                },
-                error(err) {
-                    console.error("Compression error:", err.message);
-                    setEduCertUploading(false);
-                },
+        try {
+            const response = await axios.post(route("cv.store"), formData, {
+                headers: { "Content-Type": "multipart/form-data" },
             });
+            setUploadMessage(response.data.message);
+            setTimeout(() => setUploadMessage(""), 2000); // Clear message after 2 seconds
+        } catch (error) {
+            console.error("Error uploading photo:", error);
+            setUploadMessage("Failed to upload photo.");
+            setTimeout(() => setUploadMessage(""), 2000); // Clear message after 2 seconds
+        } finally {
+            setPassportUploading(false); // Stop uploading indicator
         }
     };
 
@@ -92,23 +94,6 @@ const DocumentUploadForm = ({ data, setData, oldPassport, oldEduCert }) => {
             };
         }
     }, [data.passport]);
-
-    useEffect(() => {
-        if (
-            data.education_certificate &&
-            data.education_certificate instanceof Blob
-        ) {
-            const newEduCertPreview = URL.createObjectURL(
-                data.education_certificate
-            );
-            setEduCertPreview(newEduCertPreview);
-
-            // Clean up the object URL when the component unmounts
-            return () => {
-                URL.revokeObjectURL(newEduCertPreview);
-            };
-        }
-    }, [data.education_certificate]);
 
     return (
         <Box sx={{ mb: 3, maxWidth: 400, margin: "0 auto" }}>
@@ -130,172 +115,122 @@ const DocumentUploadForm = ({ data, setData, oldPassport, oldEduCert }) => {
                 </Typography>
             )}
 
-            <Grid
-                container
+            <Box
                 sx={{
                     display: "flex",
-                    justifyContent: "space-between",
-                    gap: 1,
+                    flexDirection: "column",
+                    alignItems: "center",
                 }}
             >
-                <Grid item xs={4}>
+                <Subtitle>Passport</Subtitle>
+                {data.passport !== null || oldPassport ? (
+                    <img
+                        src={passportPreview ? passportPreview : oldPassport}
+                        style={{
+                            width: "200px",
+                            height: "200px",
+                            border: "2px solid #1c90a9",
+                            borderRadius: "40px",
+                            objectFit: "cover",
+                            objectPosition: "center",
+                            margin: "auto",
+                        }}
+                    />
+                ) : (
                     <Box
                         sx={{
-                            mb: 2,
-                            textAlign: "center",
+                            width: "200px",
+                            height: "200px",
+                            border: "2px solid gray",
+                            borderRadius: 10,
+                            margin: "auto",
                         }}
-                    >
-                        <Subtitle>Passport</Subtitle>
-                        {data.passport !== null || oldPassport ? (
-                            <img
-                                src={
-                                    passportPreview
-                                        ? passportPreview
-                                        : oldPassport
-                                }
-                                style={{
-                                    width: "100px",
-                                    height: "100px",
-                                    border: "2px solid #1c90a9",
-                                    borderRadius: 3,
-                                    objectFit: "cover",
-                                    objectPosition: "center",
-                                    margin: "auto",
-                                }}
-                            />
-                        ) : (
-                            <Box
-                                sx={{
-                                    width: "100px",
-                                    height: "100px",
-                                    border: "2px solid gray",
-                                    borderRadius: 3,
-                                    margin: "auto",
-                                }}
-                            />
-                        )}
-                        {passportUploading && (
-                            <Box sx={{ width: "100px", mb: 2 }}>
-                                <LinearProgress />
-                                <Typography
-                                    fontSize={12}
-                                    sx={{ textAlign: "center" }}
-                                >
-                                    Compressing...
-                                </Typography>
-                            </Box>
-                        )}
-                        <Button
-                            variant="contained"
-                            sx={{ mt: 2 }}
-                            size="small"
-                            component="label"
-                        >
-                            <input
-                                type="file"
-                                accept=".jpg, .jpeg, .png"
-                                onChange={handlePassportChange}
-                                hidden
-                            />
-                            <Typography fontSize={12} textAlign={"center"}>
-                                Choose file
-                            </Typography>
-                        </Button>
+                    />
+                )}
+                {passportUploading && (
+                    <Box sx={{ width: "100px", mb: 2 }}>
+                        <LinearProgress />
+                        <Typography fontSize={12} sx={{ textAlign: "center" }}>
+                            Compressing...
+                        </Typography>
                     </Box>
-                </Grid>
-
-                <Grid item xs={7}>
-                    <Box
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            mb: 2,
-                        }}
+                )}
+                {uploadMessage && (
+                    <Typography
+                        fontSize={{ xs: 11, sm: 12, md: 13 }}
+                        fontWeight={600}
+                        fontFamily={"Mina"}
+                        mb={2}
                     >
-                        <Subtitle>Educational Certificate</Subtitle>
-                        <Box
-                            sx={{
-                                display: "flex",
-                                gap: 1,
-                                flexWrap: "wrap",
-                                alignItems: "flex-start",
-                            }}
-                        >
-                            {(data.education_certificate !== null ||
-                                oldEduCert) && (
-                                <Box>
-                                    <img
-                                        src={
-                                            eduCertPreview
-                                                ? eduCertPreview
-                                                : oldEduCert
-                                        }
-                                        style={{
-                                            width: "100px",
-                                            height: "100px",
-                                            border: "2px solid gray",
-                                            borderRadius: "12px",
-                                            objectFit: "cover",
-                                            objectPosition: "center",
-                                            margin: "auto",
-                                            overflow: "hidden",
-                                        }}
-                                    />
-                                </Box>
-                            )}
+                        {uploadMessage}
+                    </Typography>
+                )}
+                <Button
+                    variant="contained"
+                    sx={{ mt: 2 }}
+                    size="small"
+                    component="label"
+                >
+                    <input
+                        type="file"
+                        accept=".jpg, .jpeg, .png"
+                        onChange={handlePassportChange}
+                        hidden
+                    />
+                    <Typography fontSize={12} textAlign={"center"}>
+                        Choose
+                    </Typography>
+                </Button>
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        gap: 2,
+                        mt: 2,
+                    }}
+                >
+                    <Subtitle>Passport Number</Subtitle>
+                    <TextField
+                        value={data.passport_number}
+                        onChange={handleChange("passport_number")}
+                        size="small"
+                    />
+                </Box>
 
-                            <Box textAlign={"center"}>
-                                <Box
-                                    sx={{
-                                        width: "100px",
-                                        height: "100px",
-                                        border: "2px solid gray",
-                                        borderRadius: 3,
-                                        margin: "auto",
-                                    }}
-                                />
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        gap: 2,
+                        mt: 2,
+                    }}
+                >
+                    <Subtitle>Passport type</Subtitle>
+                    <TextField
+                        value={data.passport_type}
+                        onChange={handleChange("passport_type")}
+                        size="small"
+                    />
+                </Box>
 
-                                {eduCertUploading && (
-                                    <Box sx={{ width: "100px", my: 1 }}>
-                                        <LinearProgress />
-                                        <Typography
-                                            fontSize={12}
-                                            sx={{ textAlign: "center" }}
-                                        >
-                                            Compressing...
-                                        </Typography>
-                                    </Box>
-                                )}
-                                <Button
-                                    variant="contained"
-                                    sx={{ mt: 2 }}
-                                    size="small"
-                                    component="label"
-                                >
-                                    <Typography
-                                        textAlign={"center"}
-                                        fontSize={12}
-                                    >
-                                        Choose file
-                                    </Typography>
-                                    <input
-                                        type="file"
-                                        accept=".jpg, .jpeg, .png"
-                                        onChange={
-                                            handleEducationCertificateChange
-                                        }
-                                        hidden
-                                    />
-                                </Button>
-                            </Box>
-                        </Box>
-                    </Box>
-                </Grid>
-            </Grid>
-            <Box textAlign={"center"}>
-                <TinyText>Accept .jpg, .jpeg, .png file type.</TinyText>
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        gap: 2,
+                        my: 2,
+                    }}
+                >
+                    <Subtitle>Visa type</Subtitle>
+                    <TextField
+                        value={data.visa_type}
+                        onChange={handleChange("visa_type")}
+                        size="small"
+                    />
+                </Box>
             </Box>
         </Box>
     );

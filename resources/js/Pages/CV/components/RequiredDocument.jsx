@@ -1,35 +1,36 @@
 import { Box, Button, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import ProfileUploadForm from "./forms/ProfileUploadForm";
 import DocumentUploadForm from "./forms/DocumentUploadForm";
 import PersonalIDUploadForm from "./forms/PersonalIDUploadForm";
-import ExperienceForm from "./forms/ExperienceForm";
-import SummaryForm from "./forms/SummaryForm";
 import TitleCenterForCvForm from "@/Components/Typo/TitleCenterForCvForm";
+import CvContext from "@/Context/CvContext";
 
 export default function RequiredDocuments({
-    data,
     resumeId,
-    onNext,
-    handleBack,
-    handleChange,
     oldPhoto,
-    oldVideo,
     oldPassport,
     oldEduCert,
     oldId,
     oldFamilyRecord,
     oldRefLetter,
-    setData,
 }) {
     const [step, setStep] = useState(1);
-    const totalSteps = 5;
+    const {
+        handleNext: onNext,
+        handleBack: onBack,
+        saveData,
+        data,
+    } = useContext(CvContext);
+    const totalSteps = 3;
     // These next steps functions are only use in this component, not from parent component
-    const handleNext = () => {
-        if (step < 5) {
+    const handleNext = async () => {
+        if (step < totalSteps) {
+            await saveData();
             setStep(step + 1);
             window.scrollTo({ top: 0, behavior: "smooth" });
         } else {
+            await saveData();
             onNext();
         }
     };
@@ -39,7 +40,24 @@ export default function RequiredDocuments({
             setStep(step - 1);
             window.scrollTo({ top: 0, behavior: "smooth" });
         } else {
-            handleBack();
+            onBack();
+        }
+    };
+
+    // Validation function for each step
+    const validateStep = () => {
+        switch (step) {
+            case 1:
+                return data.profile_photo;
+            case 2:
+                return data.passport && data.passport_number && data.visa_type;
+            case 3:
+                return (
+                    data.citizenship_certificate && data.family_member_record
+                );
+
+            default:
+                return true;
         }
     };
 
@@ -51,30 +69,27 @@ export default function RequiredDocuments({
             </TitleCenterForCvForm>
             <Box
                 sx={{
-                    boxShadow: 2,
-                    borderRadius: 2,
-                    p: 3,
+                    boxShadow: { xs: 0, sm: 2 },
+                    borderRadius: 10,
+                    p: { xs: 1, sm: 3 },
                     maxWidth: 500,
                     margin: "auto",
-                    border: "2px solid",
-                    borderColor: "primary.main",
+                    border: {
+                        xs: "none",
+                        sm: "2px solid #21875C",
+                        md: "2px solid #21875C",
+                    },
                 }}
             >
                 {step == 1 && (
                     <ProfileUploadForm
-                        data={data}
                         resumeId={resumeId}
-                        handleChange={handleChange}
                         oldPhoto={oldPhoto}
-                        setData={setData}
                     />
                 )}
 
                 {step == 2 && (
                     <DocumentUploadForm
-                        data={data}
-                        setData={setData}
-                        handleChange={handleChange}
                         oldPassport={oldPassport}
                         oldEduCert={oldEduCert}
                     />
@@ -82,20 +97,10 @@ export default function RequiredDocuments({
 
                 {step == 3 && (
                     <PersonalIDUploadForm
-                        data={data}
-                        setData={setData}
-                        handleChange={handleChange}
                         oldId={oldId}
                         oldFamilyRecord={oldFamilyRecord}
                         oldRefLetter={oldRefLetter}
                     />
-                )}
-                {step == 4 && (
-                    <ExperienceForm data={data} handleChange={handleChange} />
-                )}
-
-                {step == 5 && (
-                    <SummaryForm data={data} handleChange={handleChange} />
                 )}
             </Box>
 
@@ -106,6 +111,7 @@ export default function RequiredDocuments({
                     variant="outlined"
                     onClick={handlePrevious}
                     size="small"
+                    sx={{ borderRadius: 20 }}
                 >
                     <Typography
                         fontFamily={"Lilita One"}
@@ -115,7 +121,13 @@ export default function RequiredDocuments({
                         Previous
                     </Typography>
                 </Button>
-                <Button variant="contained" onClick={handleNext} size="small">
+                <Button
+                    sx={{ borderRadius: 20 }}
+                    variant="contained"
+                    onClick={handleNext}
+                    size="small"
+                    disabled={!validateStep()}
+                >
                     <Typography
                         fontFamily={"Lilita One"}
                         fontWeight={500}

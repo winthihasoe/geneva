@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
     Box,
     TextField,
@@ -11,6 +11,7 @@ import {
     Checkbox,
 } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle";
+import CvContext from "@/Context/CvContext";
 
 const religions = [
     "Buddhism",
@@ -33,7 +34,8 @@ const hobbies = [
     "Playing Piano",
 ];
 
-const ReligionHobbiesForm = ({ data, handleChange }) => {
+const ReligionHobbiesForm = () => {
+    const { data, handleChange } = useContext(CvContext);
     const handleCheckboxChange = (value) => (event) => {
         const newValues = event.target.checked
             ? [...data.hobbies, value]
@@ -93,7 +95,6 @@ const ReligionHobbiesForm = ({ data, handleChange }) => {
                 onChange={handleChange("other_hobbies")}
                 fullWidth
                 multiline
-                minRows={2}
             />
         </Box>
     );

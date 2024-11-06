@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
     Box,
     Typography,
@@ -8,6 +8,7 @@ import {
     RadioGroup,
 } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle";
+import CvContext from "@/Context/CvContext";
 
 const educationLevels = [
     "8-10 Years Formal Education",
@@ -22,7 +23,8 @@ const caregiverQuas = [
     "Diploma in Nursing / Caregiver",
     "Degree / BSC in Nursing / Caregiver",
 ];
-const EducationQualificationForm = ({ data, handleChange }) => {
+const EducationQualificationForm = () => {
+    const { data, handleChange } = useContext(CvContext);
     return (
         <Box>
             <Box

@@ -19,7 +19,10 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->boolean('is_caregiver')->default(false);
+            $table->string('cg_status')->nullable();
             $table->boolean('is_employer')->default(false);
+            $table->string('employer_status')->nullable();
+            $table->timestamp('last_active_at')->nullable();
             $table->timestamps();
         });
     }

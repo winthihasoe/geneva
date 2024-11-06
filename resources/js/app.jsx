@@ -7,6 +7,7 @@ import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { lightTheme } from "./theme";
 import { EmailProvider } from "./Context/EmailContext";
+import { CarePlanProvider } from "./Context/CarePlanContext";
 
 const appName = import.meta.env.VITE_APP_NAME || "Hearty Aid";
 
@@ -24,7 +25,9 @@ createInertiaApp({
             <ThemeProvider theme={lightTheme}>
                 <CssBaseline />
                 <EmailProvider>
-                    <App {...props} />
+                    <CarePlanProvider>
+                        <App {...props} />
+                    </CarePlanProvider>
                 </EmailProvider>
             </ThemeProvider>
         );

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import {
     Box,
     TextField,
@@ -8,9 +8,11 @@ import {
     Typography,
 } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle";
+import CvContext from "@/Context/CvContext";
 
 const maritalStatus = ["Single", "Married", "Divorced", "Separated", "Widowed"];
-const MaritalStatusForm = ({ data, handleChange }) => {
+const MaritalStatusForm = () => {
+    const { data, handleChange } = useContext(CvContext);
     useEffect(() => {
         if (data.marital_status == "Single") {
             handleChange("number_of_children")({
@@ -18,7 +20,6 @@ const MaritalStatusForm = ({ data, handleChange }) => {
             });
         }
     }, [data.marital_status]);
-    console.log(data.number_of_children);
 
     return (
         <Box sx={{ mb: 3 }}>
@@ -45,9 +46,10 @@ const MaritalStatusForm = ({ data, handleChange }) => {
                         value={data.number_of_children}
                         onChange={handleChange("number_of_children")}
                         fullWidth
+                        multiline
                         inputProps={{ maxLength: 220 }}
                         size="small"
-                        helperText="Example. 2 children, one is 2 year old and another is 6 year old."
+                        placeholder="2 children, one is 2 year old and another is 6 year old."
                     />
                 </>
             )}
