@@ -1,0 +1,1 @@
+import{j as o}from"./app-D_ZaBilW.js";import{T as r}from"./Typography-ejjE029g.js";function m({children:t}){return o.jsx(r,{fontSize:{xs:18,sm:20,md:24},textAlign:"center",fontWeight:400,mb:5,color:"grey.700",fontFamily:"ADLaM Display",children:t})}export{m as T};
