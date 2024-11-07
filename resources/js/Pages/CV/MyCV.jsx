@@ -38,7 +38,7 @@ const MyCV = ({ cv, certificates }) => {
                         container
                         sx={{
                             maxWidth: 800,
-                            height: 1300,
+                            minHeight: 1300,
                             margin: "auto",
                             border: "1px solid #ddd",
                             position: "relative",
@@ -538,16 +538,15 @@ const MyCV = ({ cv, certificates }) => {
                                     {cv?.nursing_skills_for_child.length >
                                         0 && (
                                         <Box>
-                                            <Subtitle>Newborn care</Subtitle>
-                                            {cv?.nursing_skills_for_child
-                                                .slice(0, 4)
-                                                .map((skill, index) => (
+                                            <Subtitle>Baby care</Subtitle>
+                                            {cv?.nursing_skills_for_child.map(
+                                                (skill, index) => (
                                                     <Typography
                                                         key={index}
                                                         mb={1}
                                                         fontSize={{
-                                                            xs: 14,
-                                                            sm: 15,
+                                                            xs: 12,
+                                                            sm: 14,
                                                             md: 17,
                                                         }}
                                                     >
@@ -563,22 +562,22 @@ const MyCV = ({ cv, certificates }) => {
                                                         />{" "}
                                                         {skill}
                                                     </Typography>
-                                                ))}
+                                                )
+                                            )}
                                         </Box>
                                     )}
                                     {cv?.nursing_skills_for_elder.length >
                                         0 && (
                                         <Box>
                                             <Subtitle>Elder care</Subtitle>
-                                            {cv?.nursing_skills_for_elder
-                                                .slice(0, 4)
-                                                .map((skill, index) => (
+                                            {cv?.nursing_skills_for_elder.map(
+                                                (skill, index) => (
                                                     <Typography
                                                         key={index}
                                                         mb={1}
                                                         fontSize={{
-                                                            xs: 14,
-                                                            sm: 15,
+                                                            xs: 12,
+                                                            sm: 14,
                                                             md: 17,
                                                         }}
                                                     >
@@ -594,7 +593,8 @@ const MyCV = ({ cv, certificates }) => {
                                                         />{" "}
                                                         {skill}
                                                     </Typography>
-                                                ))}
+                                                )
+                                            )}
                                         </Box>
                                     )}
                                 </Box>
