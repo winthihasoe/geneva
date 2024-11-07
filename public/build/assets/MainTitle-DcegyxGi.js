@@ -1,0 +1,1 @@
+import{j as r}from"./app-BoubJfCG.js";import{T as o}from"./Typography-BsOJXdjo.js";function m({children:t}){return r.jsx(o,{variant:"h5",fontSize:{xs:30,sm:33,md:45},fontWeight:400,mb:3,fontFamily:"Karma",color:"primary",textAlign:"center",children:t})}export{m as default};

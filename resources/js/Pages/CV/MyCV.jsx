@@ -242,7 +242,7 @@ const MyCV = ({ cv, certificates }) => {
 
                                         {/* Relevant course  */}
                                         {certificates &&
-                                        certificates.length > 0 ? (
+                                        certificates?.length > 0 ? (
                                             <>
                                                 <Typography fontWeight={600}>
                                                     RELEVANT COURSES
@@ -535,7 +535,7 @@ const MyCV = ({ cv, certificates }) => {
                                         rowGap: 2,
                                     }}
                                 >
-                                    {cv?.nursing_skills_for_child.length >
+                                    {cv?.nursing_skills_for_child?.length >
                                         0 && (
                                         <Box>
                                             <Subtitle>Baby care</Subtitle>
@@ -566,7 +566,7 @@ const MyCV = ({ cv, certificates }) => {
                                             )}
                                         </Box>
                                     )}
-                                    {cv?.nursing_skills_for_elder.length >
+                                    {cv?.nursing_skills_for_elder?.length >
                                         0 && (
                                         <Box>
                                             <Subtitle>Elder care</Subtitle>

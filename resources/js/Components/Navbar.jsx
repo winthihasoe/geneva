@@ -104,6 +104,9 @@ const Navbar = () => {
     // Logout dialog state
     const [openLogout, setOpenLogout] = useState(false);
     const handleCloseLogout = () => setOpenLogout(false);
+    const handleLogout = () => {
+        router.post(route("logout"));
+    };
 
     return (
         <>
@@ -538,6 +541,7 @@ const Navbar = () => {
                 onClose={handleCloseLogout}
                 confirmRoute={"logout"}
                 handleClose={handleCloseLogout}
+                onConfirm={handleLogout}
             />
         </>
     );
