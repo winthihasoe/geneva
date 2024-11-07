@@ -356,7 +356,7 @@ class CVController extends Controller
         $cv = CV::where('user_id', Auth::user()->id)->first();
         return Inertia::render('CV/MyCV', [
             'cv' => $cv,
-            'certificates' => $cv->certificates,
+            'certificates' => $cv ? $cv->certificates : collect(), // Return an empty collection if no CV exists
         ]);
     }
 

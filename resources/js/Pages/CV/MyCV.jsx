@@ -5,35 +5,18 @@ import React, { useEffect, useState } from "react";
 import { Box, Typography, Divider, Grid2 } from "@mui/material";
 import LongText from "@/Components/Typo/LongText";
 import Subtitle from "@/Components/Typo/Subtitle";
-import ReactJoyride from "react-joyride";
 import logo from "../../../../public/images/logo/logo.png"; // Adjust the path to your logo
 
 const MyCV = ({ cv, certificates }) => {
-    // const [tourActive, setTourActive] = useState(false);
-
     const renderStars = (count) => {
         const stars = [];
-        const starCount = Math.round(count / 2); // Divide by 2 and round
+        const starCount = Math.round(count / 2);
         for (let i = 0; i < starCount; i++) {
             stars.push(" * ");
         }
         return stars;
     };
 
-    // Check if the user has any certificates, and if not, start the tour
-    // useEffect(() => {
-    //     if (!certificates || certificates.length === 0) {
-    //         setTourActive(true);
-    //     }
-    // }, [certificates]);
-
-    // const steps = [
-    //     {
-    //         target: ".certificate-section", // CSS selector for the certificate section
-    //         content:
-    //             "You haven't uploaded any certificates yet. Add one to enhance your resume.",
-    //     },
-    // ];
     return (
         <AppLayout>
             <Head title="My CV" />
@@ -634,21 +617,6 @@ const MyCV = ({ cv, certificates }) => {
                         </Box>
                     </Grid2>
                 )}
-                {/* 
-            <ReactJoyride
-                steps={steps}
-                run={tourActive}
-                continuous
-                showSkipButton
-                callback={(data) => {
-                    if (
-                        data.status === "finished" ||
-                        data.status === "skipped"
-                    ) {
-                        setTourActive(false);
-                    }
-                }}
-            /> */}
             </Box>
         </AppLayout>
     );

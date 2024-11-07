@@ -10,8 +10,6 @@ import Certificate from "./components/Certificate";
 import NoData from "@/Components/util/NoData";
 
 function MyCertificates({ certificates }) {
-    console.log(certificates);
-
     const [isAdding, setIsAdding] = useState(false);
     const { data, setData, post, processing } = useForm({
         training_center_name: "",

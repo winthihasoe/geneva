@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('cg_status')->nullable();
             $table->boolean('is_employer')->default(false);
             $table->string('employer_status')->nullable();
+            $table->boolean('is_admin')->default(false);
             $table->timestamp('last_active_at')->nullable();
             $table->timestamps();
         });

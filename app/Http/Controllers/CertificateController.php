@@ -14,12 +14,12 @@ class CertificateController extends Controller
     public function show()
     {
         $user = Auth::user();
-        $certificates = $user->cv->certificates;
+        $certificates = $user->cv ? $user->cv->certificates : collect(); // Return an empty collection if no CV exists
+    
         return Inertia::render('Certificate/MyCertificates', [
             'certificates' => $certificates
         ]);
     }
-
     public function store(Request $request)
     {
         $cv = Auth::user()->cv;

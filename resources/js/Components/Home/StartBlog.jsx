@@ -87,7 +87,7 @@ function StartBlog() {
                         <DataSaverOnOutlinedIcon />
                     </IconButton>
                     <img
-                        src="/images/blogs/Maternity.png"
+                        src="/images/blogs/maternity.png"
                         alt="Elder health"
                         style={{ height: 80 }}
                     />
