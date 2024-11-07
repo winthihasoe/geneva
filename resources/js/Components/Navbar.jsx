@@ -106,6 +106,7 @@ const Navbar = () => {
     const handleCloseLogout = () => setOpenLogout(false);
     const handleLogout = () => {
         router.post(route("logout"));
+        handleCloseLogout();
     };
 
     return (
@@ -535,6 +536,7 @@ const Navbar = () => {
                 </Box>
             </Drawer>
 
+            {/* Logout dialog */}
             <YesOrNoModal
                 title={"Do you want to Logout?"}
                 open={openLogout}
