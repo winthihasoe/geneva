@@ -1,12 +1,14 @@
 import NoData from "@/Components/util/NoData";
 import { Head } from "@inertiajs/react";
-import React, { useEffect, useState } from "react";
-import { Box, Typography, Divider, Grid2 } from "@mui/material";
+import React from "react";
+import { Box, Typography, Divider, Grid2, Button } from "@mui/material";
 import LongText from "@/Components/Typo/LongText";
 import Subtitle from "@/Components/Typo/Subtitle";
 import logo from "../../../../../public/images/logo/logo.png"; // Adjust the path to your logo
 import AdminLayout from "@/Layouts/AdminLayout";
 import EditLevel from "./components/EditLevel";
+import EditApprove from "./components/EditApprove";
+import Certificates from "./components/Certificates";
 
 const AdminSingleCV = ({ cv }) => {
     const renderStars = (count) => {
@@ -161,17 +163,7 @@ const AdminSingleCV = ({ cv }) => {
                                                 <strong>Marital Status:</strong>{" "}
                                                 {cv.marital_status}
                                             </Typography>
-                                            <Typography
-                                                fontSize={{
-                                                    xs: 12,
-                                                    sm: 13,
-                                                    md: 15,
-                                                }}
-                                                mb={1}
-                                            >
-                                                <strong>Address:</strong>{" "}
-                                                {cv.current_address}
-                                            </Typography>
+
                                             <Typography
                                                 fontSize={{
                                                     xs: 12,
@@ -354,13 +346,33 @@ const AdminSingleCV = ({ cv }) => {
                             >
                                 {cv.nickname.toUpperCase()}
                             </Typography>
-                            <Typography
-                                fontSize={{ xs: 15, sm: 26, md: 30 }}
-                                variant="h6"
-                                color="text.secondary"
-                            >
-                                {(cv.level || "CAREGIVER").toUpperCase()}
-                            </Typography>
+                            <Box mb={1}>
+                                {/* Showing Newborn care Level  */}
+                                <Typography
+                                    fontSize={{ xs: 10, sm: 20, md: 23 }}
+                                    variant="h6"
+                                    color="text.secondary"
+                                >
+                                    {cv?.newborn_care_level?.toUpperCase()}
+                                </Typography>
+
+                                {/* Showing Nanny care Level  */}
+                                <Typography
+                                    fontSize={{ xs: 10, sm: 20, md: 23 }}
+                                    variant="h6"
+                                    color="text.secondary"
+                                >
+                                    {cv?.nanny_care_level?.toUpperCase()}
+                                </Typography>
+                                {/* Showing Elder care level  */}
+                                <Typography
+                                    fontSize={{ xs: 10, sm: 20, md: 23 }}
+                                    variant="h6"
+                                    color="text.secondary"
+                                >
+                                    {cv?.level?.toUpperCase()}
+                                </Typography>
+                            </Box>
                             <LongText
                                 fontSize={{ xs: 12, sm: 14, md: 15 }}
                                 limit={150}
@@ -619,7 +631,22 @@ const AdminSingleCV = ({ cv }) => {
                     </Grid2>
                 )}
             </Box>
-            <EditLevel cv={cv} />
+
+            <Box>
+                {cv.certificates && cv.certificates?.length > 0 && (
+                    <Certificates certificates={cv.certificates} />
+                )}
+            </Box>
+
+            {/* Edit caregiver level and approved status  */}
+            <Grid2 container sx={{ my: 5 }} rowGap={3}>
+                <Grid2 size={{ xs: 12, sm: 6 }}>
+                    <EditLevel cv={cv} />
+                </Grid2>
+                <Grid2 size={{ xs: 12, sm: 6 }}>
+                    <EditApprove cv={cv} />
+                </Grid2>
+            </Grid2>
         </AdminLayout>
     );
 };

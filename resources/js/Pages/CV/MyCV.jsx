@@ -160,17 +160,7 @@ const MyCV = ({ cv }) => {
                                                 <strong>Marital Status:</strong>{" "}
                                                 {cv.marital_status}
                                             </Typography>
-                                            <Typography
-                                                fontSize={{
-                                                    xs: 12,
-                                                    sm: 13,
-                                                    md: 15,
-                                                }}
-                                                mb={1}
-                                            >
-                                                <strong>Address:</strong>{" "}
-                                                {cv.current_address}
-                                            </Typography>
+
                                             <Typography
                                                 fontSize={{
                                                     xs: 12,
@@ -353,13 +343,33 @@ const MyCV = ({ cv }) => {
                             >
                                 {cv.nickname.toUpperCase()}
                             </Typography>
-                            <Typography
-                                fontSize={{ xs: 15, sm: 26, md: 30 }}
-                                variant="h6"
-                                color="text.secondary"
-                            >
-                                {(cv.level || "CAREGIVER").toUpperCase()}
-                            </Typography>
+                            <Box mb={1}>
+                                {/* Showing Newborn care Level  */}
+                                <Typography
+                                    fontSize={{ xs: 10, sm: 20, md: 23 }}
+                                    variant="h6"
+                                    color="text.secondary"
+                                >
+                                    {cv?.newborn_care_level?.toUpperCase()}
+                                </Typography>
+
+                                {/* Showing Nanny care Level  */}
+                                <Typography
+                                    fontSize={{ xs: 10, sm: 20, md: 23 }}
+                                    variant="h6"
+                                    color="text.secondary"
+                                >
+                                    {cv?.nanny_care_level?.toUpperCase()}
+                                </Typography>
+                                {/* Showing Elder care level  */}
+                                <Typography
+                                    fontSize={{ xs: 10, sm: 20, md: 23 }}
+                                    variant="h6"
+                                    color="text.secondary"
+                                >
+                                    {cv?.level?.toUpperCase()}
+                                </Typography>
+                            </Box>
                             <LongText
                                 fontSize={{ xs: 12, sm: 14, md: 15 }}
                                 limit={150}

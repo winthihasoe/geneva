@@ -380,6 +380,7 @@ class CVController extends Controller
         $approveResume = CV::findOrFail($cvId);
         $approveResume->is_approved = true;
         $approveResume->approved_at = Carbon::now();
+        $approveResume->approved_by = Auth::user()->name;
         $approveResume->update();
 
         return back()->with('success', 'CV Approved');
@@ -427,9 +428,11 @@ class CVController extends Controller
     {
         $cv = CV::findOrFail($id);
         $cv->level = $request->level;
+        $cv->nanny_care_level = $request->nanny_care_level;
+        $cv->newborn_care_level = $request->newborn_care_level;
         $cv->save();
 
-        return back()->with('success', 'Caregiver level updated successfully.');
+        return back()->with('success', 'Levels updated successfully.');
     }
 
   

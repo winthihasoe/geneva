@@ -72,7 +72,7 @@ function CertificateForm({ data, handleChange, handleSubmit }) {
                 size="small"
                 sx={{ mb: 3 }}
             >
-                {[...Array(12)].map((_, i) => (
+                {[...Array(48)].map((_, i) => (
                     <MenuItem key={i + 1} value={i + 1}>
                         {i + 1} Month{i + 1 > 1 ? "s" : ""}
                     </MenuItem>

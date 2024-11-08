@@ -26,7 +26,7 @@ const PackageAndPackageDurationForm = () => {
         <Box>
             <Subtitle>How Long can you contract with an employer? </Subtitle>
             <FormGroup row sx={{ mb: 3, px: 2 }}>
-                {["3-months", "6-months", "1-year"].map((duration, index) => (
+                {["3-month", "6-month", "1-year"].map((duration, index) => (
                     <FormControlLabel
                         key={index}
                         control={
