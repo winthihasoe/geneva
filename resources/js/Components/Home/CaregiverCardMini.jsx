@@ -21,6 +21,7 @@ function CaregiverCardMini({ cv }) {
                     style={{
                         width: 130,
                         height: 130,
+                        objectFit: "cover",
                         borderRadius: "50%",
                         position: "absolute",
                         left: -80,

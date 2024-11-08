@@ -7,7 +7,7 @@ import LongText from "@/Components/Typo/LongText";
 import Subtitle from "@/Components/Typo/Subtitle";
 import logo from "../../../../public/images/logo/logo.png"; // Adjust the path to your logo
 
-const MyCV = ({ cv, certificates }) => {
+const MyCV = ({ cv }) => {
     const renderStars = (count) => {
         const stars = [];
         const starCount = Math.round(count / 2);
@@ -241,14 +241,14 @@ const MyCV = ({ cv, certificates }) => {
                                         </Typography>
 
                                         {/* Relevant course  */}
-                                        {certificates &&
-                                        certificates?.length > 0 ? (
+                                        {cv.certificates &&
+                                        cv.certificates?.length > 0 ? (
                                             <>
                                                 <Typography fontWeight={600}>
                                                     RELEVANT COURSES
                                                 </Typography>
                                                 <Divider sx={{ my: 1 }} />
-                                                {certificates.map((cert) => (
+                                                {cv.certificates.map((cert) => (
                                                     <Box key={cert.id}>
                                                         <Typography
                                                             fontFamily={"Karma"}
@@ -358,7 +358,7 @@ const MyCV = ({ cv, certificates }) => {
                                 variant="h6"
                                 color="text.secondary"
                             >
-                                SUPER NANNY <br /> ADVANCED CAREGIVER
+                                {(cv.level || "CAREGIVER").toUpperCase()}
                             </Typography>
                             <LongText
                                 fontSize={{ xs: 12, sm: 14, md: 15 }}

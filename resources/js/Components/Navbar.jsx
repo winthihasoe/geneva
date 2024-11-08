@@ -287,6 +287,17 @@ const Navbar = () => {
                         </Menu>
                     </Box>
 
+                    {/* Get into the Admin site */}
+                    {user && user.is_admin && (
+                        <Button
+                            variant="contained"
+                            sx={{ borderRadius: 20, px: 2 }}
+                            size="small"
+                            onClick={() => router.get(route("admin.dashboard"))}
+                        >
+                            <Typography fontSize={13}>Admin</Typography>
+                        </Button>
+                    )}
                     {/* Log In and Sign Up buttons */}
                     {!user ? (
                         <Box

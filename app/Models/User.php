@@ -23,7 +23,9 @@ class User extends Authenticatable
         'password',
         'uid',
         'is_employer',
-        'is_caregiver'
+        'is_caregiver',
+        'is_admin',
+        'last_active_at',
     ];
 
     /**
@@ -44,6 +46,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'last_active_at' => 'datetime',
     ];
 
     public function cv()

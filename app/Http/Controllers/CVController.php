@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CV;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -353,13 +354,83 @@ class CVController extends Controller
    
     public function myCV ()
     {
-        $cv = CV::where('user_id', Auth::user()->id)->first();
+        $cv = CV::with('certificates')->where('user_id', Auth::user()->id)->first();
         return Inertia::render('CV/MyCV', [
             'cv' => $cv,
             'certificates' => $cv ? $cv->certificates : collect(), // Return an empty collection if no CV exists
         ]);
     }
 
+    // Show all CV to admin
+    public function adminCVs ()
+    {
+       
+        $resumeNeedToApprove = CV::with('user')->where('is_approved', false)->orderBy('id', 'desc')->get();
+        $resumes = CV::with('user')->where('is_approved', true)->orderBy('id', 'desc')->paginate(6);
+        $resumeCount = CV::where('is_approved', true)->count();
+        return Inertia::render('Admin/CV/AdminCVs', [
+            'resumeNeedToApprove' => $resumeNeedToApprove,
+            'resumes' => $resumes,
+            'resumeCount' => $resumeCount
+        ]);
+    }
+    // approve caregiver resume by admin
+    public function approveResume($cvId)
+    {
+        $approveResume = CV::findOrFail($cvId);
+        $approveResume->is_approved = true;
+        $approveResume->approved_at = Carbon::now();
+        $approveResume->update();
+
+        return back()->with('success', 'CV Approved');
+    }
+
+    // unapprove caregiver resume by admin
+    public function unApproveResume($cvId)
+    {
+        $approveResume = CV::findOrFail($cvId);
+        $approveResume->is_approved = false;
+        $approveResume->approved_at = null;
+        $approveResume->update();
+
+        return back()->with('success', 'CV Unapproved');
+    }
+    
+    // Admin Single CV
+    public function adminSingleCV ($cvId)
+    {
+        $cv = CV::with('user', 'certificates')->findOrFail($cvId);
+        return Inertia::render('Admin/CV/AdminSingleCV', [
+            'cv' => $cv,
+        ]);
+    }
+
+    public function adminSearchCV(Request $request)
+    {
+        $search = strtolower($request->input('search'));
+        // Perform the search
+        $searchResults = CV::with('user')
+            ->whereHas('user', function($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%");
+            })
+            ->orWhere('full_name', 'like', "%{$search}%")
+            ->orWhere('nickname', 'like', "%{$search}%")
+            ->get();
+
+        return Inertia::render('Admin/CV/CVSearchResult', [
+            'searchTerm' => $search,
+            'searchResults' => $searchResults,
+        ]);
+    }
+
+    public function updateLevel(Request $request, $id)
+    {
+        $cv = CV::findOrFail($id);
+        $cv->level = $request->level;
+        $cv->save();
+
+        return back()->with('success', 'Caregiver level updated successfully.');
+    }
 
   
 }

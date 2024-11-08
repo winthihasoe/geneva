@@ -1,1 +1,0 @@
-import{j as m}from"./app-CbYrEMf4.js";import{T as r}from"./Typography-Bl7Z-oTN.js";function s({children:o}){return m.jsx(r,{fontFamily:"Livvic",mb:1,fontSize:{xs:11,sm:13,md:14},children:o})}export{s as F};

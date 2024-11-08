@@ -10,8 +10,13 @@ class PageController extends Controller
 {
    public function index ()
    {
+      $caregivers = CV::where('is_approved', true)
+      ->inRandomOrder()
+      ->take(6)
+      ->get();
+
       return Inertia::render('Home', [
-         'caregivers' => CV::get(),
+         'caregivers' => $caregivers,
       ]);
    }
 

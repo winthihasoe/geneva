@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\CarePlanController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\CVController;
@@ -43,6 +44,24 @@ Route::middleware(['auth', 'is.caregiver'])->group(function () {
     Route::delete('/certificates/{certId}', [CertificateController::class, 'delete'])->name('certificates.delete');
     
     Route::get('/seven-day-training', [PageController::class, 'sevenDaysTraining'])->name('training.sevenDays');
+});
+
+Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/cv', [CVController::class, 'adminCVs'])->name('admin.cv.all');
+    Route::get('/cv/{cvId}', [CVController::class, 'adminSingleCV'])->name('admin.cv.single');
+
+    // Approve and unapprove CV
+    Route::put('cv/{cvId}/approve', [CVController::class, 'approveResume'])->name('admin.cv.approve');
+    Route::put('cv/{cvId}/unapprove', [CVController::class, 'unApproveResume'])->name('admin.cv.unapprove');
+
+    // search CV
+    Route::get('cv-search-result', [CVController::class, 'adminSearchCV'])->name('admin.cv.search');
+
+    // Update CV level
+    Route::post('/cv/{id}/update-level', [CVController::class, 'updateLevel'])->name('cv.update.level');
+
+
 });
 
 require __DIR__.'/auth.php';
