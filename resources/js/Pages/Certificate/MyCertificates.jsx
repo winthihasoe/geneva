@@ -11,7 +11,7 @@ import NoData from "@/Components/util/NoData";
 
 function MyCertificates({ certificates }) {
     const [isAdding, setIsAdding] = useState(false);
-    const { data, setData, post, processing } = useForm({
+    const { data, setData, post, processing, errors, setError } = useForm({
         training_center_name: "",
         course: "",
         start_date: "",
@@ -86,6 +86,7 @@ function MyCertificates({ certificates }) {
             },
             onError: (errors) => {
                 console.error("Error saving certificate:", errors);
+                setError(errors);
             },
         });
     };
@@ -128,6 +129,7 @@ function MyCertificates({ certificates }) {
                             data={data}
                             handleChange={handleChange}
                             handleSubmit={handleSubmit}
+                            errors={errors}
                         />
                     </Box>
                 )}

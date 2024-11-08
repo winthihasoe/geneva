@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle";
 import CvContext from "@/Context/CvContext";
+import TinyText from "@/Components/Typo/TinyText";
 
 const dietaryRestrictions = [
     "No restriction",
@@ -78,6 +79,7 @@ const DietaryFoodHandlingForm = () => {
                         maxLength: 220,
                     }}
                 />
+                <TinyText>Only 220 words</TinyText>
             </FormControl>
 
             {/* Food Handling  */}
@@ -119,6 +121,7 @@ const DietaryFoodHandlingForm = () => {
                         maxLength: 220,
                     }}
                 />
+                <TinyText>Only 220 words</TinyText>
             </FormControl>
         </Box>
     );

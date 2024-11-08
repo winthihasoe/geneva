@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle";
 import CvContext from "@/Context/CvContext";
+import TinyText from "@/Components/Typo/TinyText";
 
 const Years = [
     "More than 5 years",
@@ -85,7 +86,9 @@ const ExperienceForm = () => {
                         value={data.detail_experience}
                         onChange={handleChange("detail_experience")}
                         fullWidth
+                        inputProps={{ maxLength: 500 }}
                     />
+                    <TinyText>Only 500 words</TinyText>
                 </Box>
             </Box>
         </Box>

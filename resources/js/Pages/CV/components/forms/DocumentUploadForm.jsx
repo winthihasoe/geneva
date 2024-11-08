@@ -195,6 +195,7 @@ const DocumentUploadForm = ({ oldPassport }) => {
                         value={data.passport_number}
                         onChange={handleChange("passport_number")}
                         size="small"
+                        inputProps={{ maxLength: 200 }}
                     />
                 </Box>
 
@@ -212,6 +213,7 @@ const DocumentUploadForm = ({ oldPassport }) => {
                         value={data.passport_type}
                         onChange={handleChange("passport_type")}
                         size="small"
+                        inputProps={{ maxLength: 200 }}
                     />
                 </Box>
 
@@ -229,6 +231,7 @@ const DocumentUploadForm = ({ oldPassport }) => {
                         value={data.visa_type}
                         onChange={handleChange("visa_type")}
                         size="small"
+                        inputProps={{ maxLength: 200 }}
                     />
                 </Box>
             </Box>

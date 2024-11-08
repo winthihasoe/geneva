@@ -83,6 +83,7 @@ const CaseHandleForm = () => {
                         onChange={handleChange(
                             "other_types_of_patients_handled"
                         )}
+                        inputProps={{ maxLength: 220 }}
                     />
                 </Box>
             </FormGroup>
@@ -114,6 +115,7 @@ const CaseHandleForm = () => {
                         value={data.other_types_of_babies_handled}
                         size="small"
                         onChange={handleChange("other_types_of_babies_handled")}
+                        inputProps={{ maxLength: 220 }}
                     />
                 </Box>
             </FormGroup>

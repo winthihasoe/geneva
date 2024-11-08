@@ -56,10 +56,6 @@ const JobPreference = () => {
             case 1:
                 return data.gender_of_patient && data.services.length > 0;
 
-            case 2:
-                return data.nursing_skills_for_child.length > 2;
-            case 3:
-                return data.nursing_skills_for_elder.length > 2;
             case 4:
                 return (
                     data.newborn_experience_years &&

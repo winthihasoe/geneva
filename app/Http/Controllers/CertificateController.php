@@ -28,8 +28,8 @@ class CertificateController extends Controller
         $validatedData = $request->validate([
             'training_center_name' => 'required|string|max:255',
             'course' => 'nullable|string|max:255',
-            'start_date' => 'required|date',
-            'duration' => 'required|integer|min:1|max:20',
+            'start_date' => 'required|date|before_or_equal:today',
+            'duration' => 'required|integer|min:1|max:50',
             'certificate_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10048', // Image validation
         ]);
         $validatedData['cv_id'] = $cv->id;

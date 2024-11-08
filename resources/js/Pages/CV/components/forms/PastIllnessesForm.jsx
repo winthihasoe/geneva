@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle"; // Ensure this path is correct
 import CvContext from "@/Context/CvContext";
+import TinyText from "@/Components/Typo/TinyText";
 
 const illnesses = [
     { label: "Mental illness", name: "Mental illness" },
@@ -96,7 +97,9 @@ const PastIllnessesForm = () => {
                     multiline
                     size="small"
                     placeholder="Other illness ..."
+                    inputProps={{ maxLength: 500 }}
                 />
+                <TinyText>Only 500 words</TinyText>
             </Box>
         </Box>
     );

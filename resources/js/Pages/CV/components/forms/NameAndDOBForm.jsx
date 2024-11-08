@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle";
 import CvContext from "@/Context/CvContext";
+import TinyText from "@/Components/Typo/TinyText";
 
 const years = Array.from(
     new Array(100),
@@ -131,7 +132,9 @@ const NameAndDOBForm = () => {
                     value={data.introduction}
                     onChange={handleChange("introduction")}
                     fullWidth
+                    inputProps={{ maxLength: 500 }}
                 />
+                <TinyText>Only 500 words</TinyText>
             </Box>
             <Subtitle>Date of Birth</Subtitle>
             <Box

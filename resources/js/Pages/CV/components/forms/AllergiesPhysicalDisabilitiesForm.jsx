@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Box, TextField, Typography } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle"; // Ensure this path is correct
 import CvContext from "@/Context/CvContext";
+import TinyText from "@/Components/Typo/TinyText";
 
 const AllergiesPhysicalDisabilitiesForm = () => {
     const { data, handleChange } = useContext(CvContext);
@@ -16,7 +17,9 @@ const AllergiesPhysicalDisabilitiesForm = () => {
                     size="small"
                     multiline
                     placeholder="Describe any allergy you have ..."
+                    inputProps={{ maxLength: 500 }}
                 />
+                <TinyText>Only 500 words</TinyText>
             </Box>
             <Box>
                 <Subtitle>Physical Disabilities</Subtitle>
@@ -28,7 +31,9 @@ const AllergiesPhysicalDisabilitiesForm = () => {
                     multiline
                     size="small"
                     placeholder="Describe any disability you have ..."
+                    inputProps={{ maxLength: 500 }}
                 />
+                <TinyText>Only 500 words</TinyText>
             </Box>
         </Box>
     );

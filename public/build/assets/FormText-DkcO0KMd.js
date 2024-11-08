@@ -1,0 +1,1 @@
+import{j as m}from"./app-6rcIBqfv.js";import{T as r}from"./Typography-D_gpJSDg.js";function s({children:o}){return m.jsx(r,{fontFamily:"Livvic",mb:1,fontSize:{xs:11,sm:13,md:14},children:o})}export{s as F};
