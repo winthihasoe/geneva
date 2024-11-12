@@ -1,0 +1,1 @@
+import{j as o}from"./app-QD3O8TAM.js";import{T as r}from"./Typography-DKLuvGpp.js";function n({children:t}){return o.jsx(r,{variant:"h6",fontSize:{xs:13,sm:14,md:15},fontWeight:600,mb:1,mr:1,color:"grey.800",fontFamily:"Mina",children:t})}export{n as S};

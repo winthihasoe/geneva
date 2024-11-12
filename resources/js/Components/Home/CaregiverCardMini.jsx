@@ -1,9 +1,10 @@
 import { Box, Button, Typography } from "@mui/material";
 import React from "react";
 import AgeCalculator from "../util/AgeCalculator";
-import LongText from "../Typo/LongText";
 
 function CaregiverCardMini({ cv }) {
+    console.log(cv);
+
     return (
         <Box pl={9}>
             <Box
@@ -79,11 +80,12 @@ function CaregiverCardMini({ cv }) {
                         {cv.newborn_experience_years !== "None" &&
                             cv.newborn_experience_years !== null && <br />}
 
-                        {cv.nanny_experience_years !== "None" &&
+                        {/* {cv.nanny_experience_years !== "None" &&
                             cv.nanny_experience_years !== null &&
-                            `${cv.nanny_experience_years} in Nanny care`}
-                        {cv.nanny_experience_years !== "None" &&
-                            cv.nanny_experience_years !== null && <br />}
+                            `${cv.nanny_experience_years} in Nanny care`} */}
+
+                        {/* {cv.nanny_experience_years !== "None" &&
+                            cv.nanny_experience_years !== null && <br />} */}
 
                         {cv.elder_experience_years !== "None" &&
                             cv.elder_experience_years !== null &&
