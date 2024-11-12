@@ -30,7 +30,7 @@ return new class extends Migration
 
         // Insert initial data into the table 
         foreach ($maidServiceData as $service) {
-            DB::table('nanny_maid_service')->insert([
+            DB::table('elder_maid_service')->insert([
                 'service_name' => $service,
                 'created_by' => 'admin', 
                 'created_at' => now(),

@@ -15,8 +15,9 @@ const getColorForStep = (index, active) => {
     return active ? colors[index % colors.length] : "#d3d3d3";
 };
 
-// Styled component for each step
-const StepBox = styled(Box)(({ color, active }) => ({
+const StepBox = styled(Box, {
+    shouldForwardProp: (prop) => prop !== "active" && prop !== "color",
+})(({ color, active }) => ({
     backgroundColor: active ? color : "#d3d3d3",
     color: active ? "#fff" : "#333",
     padding: "15px 20px",

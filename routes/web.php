@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\CarePlanController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\CVController;
+use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceController;
@@ -15,19 +16,28 @@ Route::get('/', [PageController::class, 'index'])->name('home');
 
 Route::get('/services/{name}', [ServiceController::class, 'getServiceByName'])->name('service.pricing');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-     
-    
+Route::middleware('auth', 'is.employer')->group(function () {
     Route::get('care/start', [CarePlanController::class, 'startCare'])->name('care.start');
+
+    // Baby care can choose Newborn care and nanny service
     Route::get('baby-care/start', [CarePlanController::class, 'startBabyCare'])->name('care.baby.start');
-    Route::get('baby-care/newborn/{name}', [CarePlanController::class, 'newbornCare'])->name('care.newborn.start');
+    
+    // Newborn care
+    Route::get('baby-care/newborn', [CarePlanController::class, 'newbornCare'])->name('care.newborn.start');
+    
+    // Option to choose in Nanny
+    Route::get('/nanny-care-options', [CarePlanController::class, 'optionNanny'])->name('startNanny');
+    
+    // Nanny service only
+    Route::get('/baby-care/nanny-only', [CarePlanController::class, 'nannyOnly'])->name('care.nanny.start');
+    Route::get('/baby-care/nanny-maid', [CarePlanController::class, 'nannyMaid'])->name('care.nanny.maid.start');
+
+    Route::post('plan/store', [CarePlanController::class, 'store'])->name('plan.store');
+
+    // Show CV to employer
+    Route::get('book-interview/{slug}', [InterviewController::class, 'showCV'])->name('care.cv.shows');
+    Route::post('book-interview', [InterviewController::class, 'store'])->name('interview.create');
+    Route::get('book/interview/success', [InterviewController::class, 'bookSuccess'])->name('interview.book.success');
 });
 
 
@@ -61,6 +71,9 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     // Update CV level
     Route::post('/cv/{id}/update-level', [CVController::class, 'updateLevel'])->name('cv.update.level');
 
+    // Care plans
+    Route::get('/care-plans', [CarePlanController::class, 'adminCarePlans'])->name('admin.care.plans');
+    Route::get('/care-plans/{id}', [CarePlanController::class, 'adminSingleCarePlan'])->name('admin.care.plan.detail');
 
 });
 

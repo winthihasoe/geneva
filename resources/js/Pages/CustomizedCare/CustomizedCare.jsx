@@ -1,12 +1,16 @@
 import AppLayout from "@/Layouts/AppLayout";
-import { Head, router } from "@inertiajs/react";
+import { Head, router, usePage } from "@inertiajs/react";
 import { Box, Button, Container, Grid2, Typography } from "@mui/material";
 import React from "react";
-import babyVideoSrc from "../../../../public/images/babyCare/hearty_aid_baby.mp4";
-import elderVideoSrc from "../../../../public/images/elderCare/two_elder.mp4";
+import babyVideoSrc from "../../../../public/images/babyCare/baby.gif";
+import elderVideoSrc from "../../../../public/images/elderCare/two_elder.gif";
 import MainTitle from "./components/MainTitle";
+import Noodle from "@/Components/Fancy/Noodle";
+import Title from "@/Components/Typo/Title";
+import MyCarePlans from "./components/MyCarePlans";
 
 function CustomizedCare() {
+    const carePlans = usePage().props.carePlans;
     return (
         <AppLayout>
             <Head title="Customize care" />
@@ -92,11 +96,8 @@ function CustomizedCare() {
                                 mt: 2,
                             }}
                         >
-                            <video
+                            <img
                                 src={babyVideoSrc}
-                                autoPlay
-                                loop
-                                muted
                                 style={{
                                     width: "100%",
                                     height: "100%",
@@ -104,26 +105,8 @@ function CustomizedCare() {
                                 }}
                             />
                         </Box>
-                        <Box
-                            sx={{
-                                display: {
-                                    xs: "none",
-                                    sm: "flex",
-                                    md: "flex",
-                                },
-                            }}
-                        >
-                            <img
-                                src="/images/noodle.png"
-                                alt="leaves"
-                                style={{
-                                    width: 200,
-                                    position: "absolute",
-                                    bottom: 0,
-                                    left: -100,
-                                }}
-                            />
-                        </Box>
+
+                        <Noodle bottom={0} left={-100} />
                     </Grid2>
                     <Grid2
                         size={{ xs: 12, sm: 6 }}
@@ -152,11 +135,8 @@ function CustomizedCare() {
                                 mb: 2,
                             }}
                         >
-                            <video
+                            <img
                                 src={elderVideoSrc}
-                                autoPlay
-                                loop
-                                muted
                                 style={{
                                     width: "100%",
                                     height: "100%",
@@ -184,28 +164,12 @@ function CustomizedCare() {
                             </Typography>
                         </Button>
 
-                        <Box
-                            sx={{
-                                display: {
-                                    xs: "none",
-                                    sm: "flex",
-                                    md: "flex",
-                                },
-                            }}
-                        >
-                            <img
-                                src="/images/noodle.png"
-                                alt="leaves"
-                                style={{
-                                    width: 200,
-                                    position: "absolute",
-                                    top: 0,
-                                    right: -100,
-                                }}
-                            />
-                        </Box>
+                        <Noodle top={0} right={-100} />
                     </Grid2>
                 </Grid2>
+                {carePlans && carePlans.length > 0 && (
+                    <MyCarePlans carePlans={carePlans} />
+                )}
             </Container>
         </AppLayout>
     );

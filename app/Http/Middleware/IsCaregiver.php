@@ -22,6 +22,6 @@ class IsCaregiver
         }
 
         // If the user is not a caregiver, redirect back with a message
-        return redirect()->back()->with('error', 'You are not a caregiver');
+        return redirect()->back()->with('error', 'Only Caregivers can continue.');
     }
 }

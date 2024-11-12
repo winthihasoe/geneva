@@ -7,18 +7,24 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import MainTitle from "@/Pages/CustomizedCare/components/MainTitle";
 import ServiceTable from "@/Pages/Pricing/components/ServiceTable";
+import Noodle from "@/Components/Fancy/Noodle";
+import { CarePlanContext } from "@/Context/CarePlanContext";
 
 function CareSchedule({ service }) {
-    const [carePackage, setCarePackage] = useState("");
-    const [duty, setDuty] = useState("");
+    const { carePlanData, updateCarePlan, updateNestedField } =
+        useContext(CarePlanContext);
+
+    const [showDutyTime, setShowDutyTime] = useState(false);
     const handlePackage = (event) => {
-        const value = event.target.value;
-        setCarePackage(value);
-        if (value == "Live-in") {
-            setDuty("");
+        updateNestedField("schedule", "package", event.target.value);
+        if (event.target.value == "Live-out") {
+            setShowDutyTime(true);
+        } else {
+            setShowDutyTime(false);
+            updateNestedField("schedule", "duty_time", "");
         }
     };
     return (
@@ -67,6 +73,7 @@ function CareSchedule({ service }) {
                         }}
                     >
                         <Box>
+                            {/* Start date  */}
                             <Box
                                 sx={{
                                     display: "flex",
@@ -81,7 +88,7 @@ function CareSchedule({ service }) {
                                         fontSize: 18,
                                     }}
                                 >
-                                    Date of Birth
+                                    Start Date
                                 </Typography>
                                 <TextField
                                     sx={{
@@ -91,8 +98,16 @@ function CareSchedule({ service }) {
                                         width: 200,
                                     }}
                                     type="date"
+                                    value={carePlanData.start_date}
+                                    onChange={(e) =>
+                                        updateCarePlan(
+                                            "start_date",
+                                            e.target.value
+                                        )
+                                    }
                                 />
                             </Box>
+
                             <Box my={2}>
                                 <Typography
                                     sx={{
@@ -103,7 +118,11 @@ function CareSchedule({ service }) {
                                 >
                                     Choose package
                                 </Typography>
-                                <RadioGroup row onChange={handlePackage}>
+                                <RadioGroup
+                                    row
+                                    onChange={(e) => handlePackage(e)}
+                                    value={carePlanData.schedule.package}
+                                >
                                     <FormControlLabel
                                         value="Live-out"
                                         control={<Radio size="small" />}
@@ -135,7 +154,8 @@ function CareSchedule({ service }) {
                                         }
                                     />
                                 </RadioGroup>
-                                {carePackage == "Live-out" && (
+
+                                {showDutyTime && (
                                     <Box sx={{ pl: 3 }}>
                                         <Typography
                                             sx={{
@@ -146,7 +166,19 @@ function CareSchedule({ service }) {
                                         >
                                             Select duty time
                                         </Typography>
-                                        <RadioGroup row>
+                                        <RadioGroup
+                                            row
+                                            value={
+                                                carePlanData.schedule.duty_time
+                                            }
+                                            onChange={(e) =>
+                                                updateNestedField(
+                                                    "schedule",
+                                                    "duty_time",
+                                                    e.target.value
+                                                )
+                                            }
+                                        >
                                             <FormControlLabel
                                                 value="7am - 5pm"
                                                 control={<Radio size="small" />}
@@ -191,9 +223,18 @@ function CareSchedule({ service }) {
                                 >
                                     Choose care program duration
                                 </Typography>
-                                <RadioGroup row>
+                                <RadioGroup
+                                    row
+                                    value={carePlanData.duration}
+                                    onChange={(e) =>
+                                        updateCarePlan(
+                                            "duration",
+                                            e.target.value
+                                        )
+                                    }
+                                >
                                     <FormControlLabel
-                                        value="3-months"
+                                        value={3}
                                         control={<Radio size="small" />}
                                         label={
                                             <Typography
@@ -203,12 +244,12 @@ function CareSchedule({ service }) {
                                                     fontSize: 13,
                                                 }}
                                             >
-                                                3-months
+                                                3-month
                                             </Typography>
                                         }
                                     />
                                     <FormControlLabel
-                                        value="6-months"
+                                        value={6}
                                         control={<Radio size="small" />}
                                         label={
                                             <Typography
@@ -218,12 +259,12 @@ function CareSchedule({ service }) {
                                                     fontSize: 13,
                                                 }}
                                             >
-                                                6-months
+                                                6-month
                                             </Typography>
                                         }
                                     />
                                     <FormControlLabel
-                                        value="1-year"
+                                        value={1}
                                         control={<Radio size="small" />}
                                         label={
                                             <Typography
@@ -241,22 +282,7 @@ function CareSchedule({ service }) {
                             </Box>
                         </Box>
                     </Box>
-                    <Box
-                        sx={{
-                            display: { xs: "none", sm: "none", md: "flex" },
-                        }}
-                    >
-                        <img
-                            src="/images/noodle.png"
-                            alt="leaves"
-                            style={{
-                                width: 200,
-                                position: "absolute",
-                                bottom: 0,
-                                right: -80,
-                            }}
-                        />
-                    </Box>
+                    <Noodle bottom={0} right={0} />
 
                     <Box
                         sx={{

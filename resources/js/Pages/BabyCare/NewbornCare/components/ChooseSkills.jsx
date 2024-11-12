@@ -9,48 +9,23 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Subtitle from "@/Components/Typo/Subtitle";
 import MainTitle from "@/Pages/CustomizedCare/components/MainTitle";
+import Noodle from "@/Components/Fancy/Noodle";
+import { CarePlanContext } from "@/Context/CarePlanContext";
 
-const BasicCare = [
-    "Bottle-feeding",
-    "Breastfeeding",
-    "Bathing & Grooming",
-    "Diapering & Hygiene",
-    "Sleep Routines & Soothing",
-    "Tummy time & Gentle playing",
-    "Emotional Comforting (example: holding, rocking & gentle interaction)",
-    "Monitoring Vital Signs",
-    "Routine Care Log (Docummenting daily activities such as feeding, sleeping & etc)",
-];
+// For Newborn nanny
+function ChooseSkills({ advSkills, basicSkills }) {
+    const { carePlanData, updateCarePlan } = useContext(CarePlanContext);
 
-const AdvancedCare = [
-    "Early development assessments",
-    "Activities for motor & sensory development",
-    "Colic & reflux management",
-    "Medication administration",
-    "Respiratory support (assisting with nebulizer & oxygen therapy)",
-    "Feeding tube management",
-    "Care for premature infants",
-    "Blood sugar monitoring",
-    "Jaundice management",
-    "Vital Signs monitoring & reporting",
-    "Seizures care & monitoring",
-    "Infant CPR & First Aid Readiness",
-    "Emergency Preparedness and Care Planning",
-];
-
-function ChooseSkills() {
-    const [carePackage, setCarePackage] = useState("");
-    const [duty, setDuty] = useState("");
-    const handlePackage = (event) => {
-        const value = event.target.value;
-        setCarePackage(value);
-        if (value == "Live-in") {
-            setDuty("");
-        }
+    const handleCheckboxChange = (section, value) => (event) => {
+        const newValues = event.target.checked
+            ? [...carePlanData[section], value]
+            : carePlanData[section].filter((item) => item !== value);
+        updateCarePlan(section, newValues);
     };
+
     return (
         <>
             <Box textAlign="center">
@@ -101,7 +76,7 @@ function ChooseSkills() {
                         flexDirection: "column",
                     }}
                 >
-                    <Box>
+                    <Box sx={{ maxWidth: 400 }}>
                         <Subtitle>
                             Essential Daily needs &{" "}
                             <span
@@ -126,10 +101,20 @@ function ChooseSkills() {
                                 flexDirection: "column",
                             }}
                         >
-                            {BasicCare.map((skill) => (
+                            {basicSkills.map((skill) => (
                                 <FormControlLabel
                                     key={skill}
-                                    control={<Checkbox />}
+                                    control={
+                                        <Checkbox
+                                            checked={carePlanData.services.includes(
+                                                skill
+                                            )}
+                                            onChange={handleCheckboxChange(
+                                                "services",
+                                                skill
+                                            )}
+                                        />
+                                    }
                                     label={
                                         <Typography
                                             sx={{
@@ -150,22 +135,7 @@ function ChooseSkills() {
                         </FormGroup>
                     </Box>
 
-                    <Box
-                        sx={{
-                            display: { xs: "none", sm: "none", md: "flex" },
-                            position: "absolute",
-                            bottom: 300,
-                            left: -120,
-                        }}
-                    >
-                        <img
-                            src="/images/noodle.png"
-                            alt="leaves"
-                            style={{
-                                width: 200,
-                            }}
-                        />
-                    </Box>
+                    <Noodle bottom={300} left={-30} />
                     <img
                         src="/images/babyCare/baby_growth.png"
                         alt="leaves"
@@ -185,22 +155,7 @@ function ChooseSkills() {
                         position: "relative",
                     }}
                 >
-                    <Box
-                        sx={{
-                            display: { xs: "none", sm: "none", md: "flex" },
-                            position: "absolute",
-                            top: 0,
-                            right: -120,
-                        }}
-                    >
-                        <img
-                            src="/images/noodle.png"
-                            alt="leaves"
-                            style={{
-                                width: 200,
-                            }}
-                        />
-                    </Box>
+                    <Noodle top={0} right={10} />
                     <Box>
                         <Subtitle>
                             <span
@@ -225,10 +180,20 @@ function ChooseSkills() {
                                 flexDirection: "column",
                             }}
                         >
-                            {AdvancedCare.map((skill) => (
+                            {advSkills.map((skill) => (
                                 <FormControlLabel
                                     key={skill}
-                                    control={<Checkbox />}
+                                    control={
+                                        <Checkbox
+                                            checked={carePlanData.services.includes(
+                                                skill
+                                            )}
+                                            onChange={handleCheckboxChange(
+                                                "services",
+                                                skill
+                                            )}
+                                        />
+                                    }
                                     label={
                                         <Typography
                                             sx={{

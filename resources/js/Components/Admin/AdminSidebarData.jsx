@@ -21,11 +21,11 @@ export const AdminSidebarData = [
         icon: <DescriptionRoundedIcon />,
         link: "/admin/cv",
     },
-    // {
-    //     title: "Interviews",
-    //     icon: <EventAvailableRoundedIcon />,
-    //     link: "/admin/appointments",
-    // },
+    {
+        title: "Care Plan",
+        icon: <EventAvailableRoundedIcon />,
+        link: "/admin/care-plans",
+    },
     // {
     //     title: "Job offers",
     //     icon: <WorkHistoryRoundedIcon />,

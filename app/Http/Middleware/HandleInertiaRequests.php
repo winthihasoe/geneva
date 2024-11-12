@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\CarePlan;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
@@ -45,6 +46,18 @@ class HandleInertiaRequests extends Middleware
                     'error' => $request->session()->get('error'),
                 ];
             },
+            'carePlans' => $this->getCarePlan($request)
         ];
+    }
+
+    private function getCarePlan(Request $request){
+        $user = $request->user();
+        if($user){
+            if($user->is_employer) {
+                return CarePlan::where('user_id', $user->id)->get();
+            } else {
+                return null;
+            }
+        }
     }
 }

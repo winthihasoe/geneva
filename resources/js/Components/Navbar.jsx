@@ -287,54 +287,64 @@ const Navbar = () => {
                         </Menu>
                     </Box>
 
-                    {/* Get into the Admin site */}
-                    {user && user.is_admin && (
-                        <Button
-                            variant="contained"
-                            sx={{ borderRadius: 20, px: 2 }}
-                            size="small"
-                            onClick={() => router.get(route("admin.dashboard"))}
-                        >
-                            <Typography fontSize={13}>Admin</Typography>
-                        </Button>
-                    )}
                     {/* Log In and Sign Up buttons */}
-                    {!user ? (
-                        <Box
-                            sx={{
-                                display: { xs: "none", md: "flex" },
-                                gap: 1,
-                                alignItems: "center",
-                            }}
-                        >
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                        {/* Get into the Admin site */}
+                        {user && user.is_admin && (
                             <Button
                                 variant="contained"
                                 sx={{ borderRadius: 20, px: 2 }}
                                 size="small"
-                                onClick={() => router.get(route("login"))}
+                                onClick={() =>
+                                    router.get(route("admin.dashboard"))
+                                }
                             >
-                                <Typography fontSize={13}>Log in</Typography>
+                                <Typography fontSize={13}>Admin</Typography>
                             </Button>
-                            <Button
-                                variant="contained"
-                                sx={{ borderRadius: 20, px: 2 }}
-                                size="small"
-                                onClick={() => router.get(route("signup"))}
+                        )}
+                        {!user ? (
+                            <Box
+                                sx={{
+                                    display: { xs: "none", md: "flex" },
+                                    gap: 1,
+                                    alignItems: "center",
+                                }}
                             >
-                                <Typography fontSize={13}>Sign up</Typography>
-                            </Button>
-                        </Box>
-                    ) : (
-                        <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                            <Button
-                                size="small"
-                                color="error"
-                                onClick={() => setOpenLogout(true)}
-                            >
-                                <Typography fontSize={13}>Logout</Typography>
-                            </Button>
-                        </Box>
-                    )}
+                                <Button
+                                    variant="contained"
+                                    sx={{ borderRadius: 20, px: 2 }}
+                                    size="small"
+                                    onClick={() => router.get(route("login"))}
+                                >
+                                    <Typography fontSize={13}>
+                                        Log in
+                                    </Typography>
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    sx={{ borderRadius: 20, px: 2 }}
+                                    size="small"
+                                    onClick={() => router.get(route("signup"))}
+                                >
+                                    <Typography fontSize={13}>
+                                        Sign up
+                                    </Typography>
+                                </Button>
+                            </Box>
+                        ) : (
+                            <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                                <Button
+                                    size="small"
+                                    color="error"
+                                    onClick={() => setOpenLogout(true)}
+                                >
+                                    <Typography fontSize={13}>
+                                        Logout
+                                    </Typography>
+                                </Button>
+                            </Box>
+                        )}
+                    </Box>
 
                     {/* Hamburger Menu Icon for sm screens */}
                     <IconButton

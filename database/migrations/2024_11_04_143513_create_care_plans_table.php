@@ -16,15 +16,15 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->enum('care_type', ['Baby', 'Elder']);
             $table->date('start_date');
-            $table->integer('duration');
+            $table->integer('duration'); // 3-month or 6-month or 1-year
             $table->string('preferred_language')->nullable();
-            $table->string('service_type')->nullable();
-            $table->json('care_recipient_info')->nullable();
-            $table->json('contact_info')->nullable();
-            $table->json('preferences')->nullable();
-            $table->json('services')->nullable();
-            $table->json('medical_conditions')->nullable();
-            $table->json('schedule')->nullable();
+            $table->string('service_type')->nullable(); // Nanny care + Maid or something like that.
+            $table->json('care_recipient_info')->nullable(); // Baby or Patient info
+            $table->json('contact_info')->nullable(); // Gurdian info
+            $table->json('preferences')->nullable(); 
+            $table->json('services')->nullable(); // Needed nursing skills
+            $table->json('medical_conditions')->nullable(); 
+            $table->json('schedule')->nullable(); // day time or 24 hours 
             $table->text('additional_notes')->nullable();
             $table->timestamps();
         });

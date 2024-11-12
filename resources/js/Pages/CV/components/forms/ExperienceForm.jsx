@@ -86,9 +86,9 @@ const ExperienceForm = () => {
                         value={data.detail_experience}
                         onChange={handleChange("detail_experience")}
                         fullWidth
-                        inputProps={{ maxLength: 500 }}
+                        inputProps={{ maxLength: 2000 }}
                     />
-                    <TinyText>Only 500 words</TinyText>
+                    <TinyText>Only 2000 words</TinyText>
                 </Box>
             </Box>
         </Box>

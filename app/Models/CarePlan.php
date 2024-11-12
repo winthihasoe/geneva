@@ -23,6 +23,8 @@ class CarePlan extends Model
         'medical_conditions',
         'schedule',
         'additional_notes',
+        'is_read',
+        'current_step',
     ];
 
     protected $casts = [

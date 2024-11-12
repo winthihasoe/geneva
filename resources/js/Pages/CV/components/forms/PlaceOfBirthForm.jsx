@@ -16,9 +16,9 @@ const nationalityOptions = [
     "Thailand",
     "Myanmar",
     "Laos",
-    "Indonesia",
-    "Philippines",
-    "India",
+    "Indonesian",
+    "Filipino",
+    "Indian",
     "Sri Lanka",
 ];
 

@@ -91,7 +91,7 @@ class CVController extends Controller
                     'newborn_experience_years' => 'nullable|string|max: 255',
                     'nanny_experience_years' => 'nullable|string|max: 255',
                     'elder_experience_years' => 'nullable|string|max: 255',
-                    'detail_experience' => 'nullable|string|max: 1000',
+                    'detail_experience' => 'nullable|string|max: 2000',
  
                     'gender_of_patient' => 'nullable|string|max:255',
 

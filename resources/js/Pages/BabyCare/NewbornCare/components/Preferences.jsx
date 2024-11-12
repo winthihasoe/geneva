@@ -10,11 +10,12 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import ServiceTable from "@/Pages/Pricing/components/ServiceTable";
 import Subtitle from "@/Components/Typo/Subtitle";
 import Noodle from "@/Components/Fancy/Noodle";
 import MainTitle from "@/Pages/CustomizedCare/components/MainTitle";
+import { CarePlanContext } from "@/Context/CarePlanContext";
 
 const Ages = ["< 30 years old", "> 30 years old", "It's okay, whatever!"];
 
@@ -27,10 +28,12 @@ const Religions = [
 ];
 
 const Nationalities = [
+    "Thailand",
     "Myanmar",
+    "Laos",
     "Indonesian",
     "Filipino",
-    "Thai",
+    "Indian",
     "It's okay, whatever!",
 ];
 
@@ -43,10 +46,10 @@ const Languages = [
 ];
 
 const Experiences = [
-    "< 2 years",
-    "> 2 years",
-    "> 3 years",
-    "> 5 years",
+    "More than 5 years",
+    "More than 3 years",
+    "More than 2 years",
+    "Less than 2 years",
     "It's okay, whatever!",
 ];
 
@@ -57,15 +60,9 @@ const Communications = [
 ];
 
 function Preferences() {
-    const [carePackage, setCarePackage] = useState("");
-    const [duty, setDuty] = useState("");
-    const handlePackage = (event) => {
-        const value = event.target.value;
-        setCarePackage(value);
-        if (value == "Live-in") {
-            setDuty("");
-        }
-    };
+    const { carePlanData, updateNestedField, updateCarePlan } =
+        useContext(CarePlanContext);
+
     return (
         <Box
             sx={{
@@ -103,12 +100,18 @@ function Preferences() {
                     sx={{
                         fontFamily: "Karma",
                         color: "primary.main",
-                        fontSize: 30,
+                        fontSize: { xs: 20, sm: 25, md: 30 },
                     }}
                 >
                     Age Preference
                 </Typography>
-                <RadioGroup row>
+                <RadioGroup
+                    row
+                    value={carePlanData.preferences.age}
+                    onChange={(e) =>
+                        updateNestedField("preferences", "age", e.target.value)
+                    }
+                >
                     {Ages.map((age, index) => (
                         <FormControlLabel
                             key={index}
@@ -139,12 +142,22 @@ function Preferences() {
                     sx={{
                         fontFamily: "Karma",
                         color: "primary.main",
-                        fontSize: 30,
+                        fontSize: { xs: 20, sm: 25, md: 30 },
                     }}
                 >
                     Religion
                 </Typography>
-                <RadioGroup row>
+                <RadioGroup
+                    row
+                    value={carePlanData.preferences.religion}
+                    onChange={(e) =>
+                        updateNestedField(
+                            "preferences",
+                            "religion",
+                            e.target.value
+                        )
+                    }
+                >
                     {Religions.map((reg, index) => (
                         <FormControlLabel
                             key={index}
@@ -159,6 +172,7 @@ function Preferences() {
                                             sm: 14,
                                             md: 16,
                                         },
+                                        mr: 4,
                                     }}
                                 >
                                     {reg}
@@ -175,12 +189,22 @@ function Preferences() {
                     sx={{
                         fontFamily: "Karma",
                         color: "primary.main",
-                        fontSize: 30,
+                        fontSize: { xs: 20, sm: 25, md: 30 },
                     }}
                 >
                     Nationality
                 </Typography>
-                <RadioGroup row>
+                <RadioGroup
+                    row
+                    value={carePlanData.preferences.nationality}
+                    onChange={(e) =>
+                        updateNestedField(
+                            "preferences",
+                            "nationality",
+                            e.target.value
+                        )
+                    }
+                >
                     {Nationalities.map((nationality, index) => (
                         <FormControlLabel
                             key={index}
@@ -195,6 +219,7 @@ function Preferences() {
                                             sm: 14,
                                             md: 16,
                                         },
+                                        mr: 4,
                                     }}
                                 >
                                     {nationality}
@@ -211,12 +236,18 @@ function Preferences() {
                     sx={{
                         fontFamily: "Karma",
                         color: "primary.main",
-                        fontSize: 30,
+                        fontSize: { xs: 20, sm: 25, md: 30 },
                     }}
                 >
                     Language Spoken
                 </Typography>
-                <RadioGroup row>
+                <RadioGroup
+                    row
+                    value={carePlanData.preferred_language}
+                    onChange={(e) =>
+                        updateCarePlan("preferred_language", e.target.value)
+                    }
+                >
                     {Languages.map((lang, index) => (
                         <FormControlLabel
                             key={index}
@@ -231,6 +262,7 @@ function Preferences() {
                                             sm: 14,
                                             md: 16,
                                         },
+                                        mr: 4,
                                     }}
                                 >
                                     {lang}
@@ -249,12 +281,22 @@ function Preferences() {
                     sx={{
                         fontFamily: "Karma",
                         color: "primary.main",
-                        fontSize: 30,
+                        fontSize: { xs: 20, sm: 25, md: 30 },
                     }}
                 >
                     Years of experiences
                 </Typography>
-                <RadioGroup row>
+                <RadioGroup
+                    row
+                    value={carePlanData.preferences.experience}
+                    onChange={(e) =>
+                        updateNestedField(
+                            "preferences",
+                            "experience",
+                            e.target.value
+                        )
+                    }
+                >
                     {Experiences.map((exp, index) => (
                         <FormControlLabel
                             key={index}
@@ -269,6 +311,7 @@ function Preferences() {
                                             sm: 14,
                                             md: 16,
                                         },
+                                        mr: 4,
                                     }}
                                 >
                                     {exp}
@@ -285,12 +328,22 @@ function Preferences() {
                     sx={{
                         fontFamily: "Karma",
                         color: "primary.main",
-                        fontSize: 30,
+                        fontSize: { xs: 20, sm: 25, md: 30 },
                     }}
                 >
                     Level of communication required
                 </Typography>
-                <RadioGroup row>
+                <RadioGroup
+                    row
+                    value={carePlanData.preferences.communication}
+                    onChange={(e) =>
+                        updateNestedField(
+                            "preferences",
+                            "communication",
+                            e.target.value
+                        )
+                    }
+                >
                     {Communications.map((commu, index) => (
                         <FormControlLabel
                             key={index}
@@ -305,6 +358,7 @@ function Preferences() {
                                             sm: 14,
                                             md: 16,
                                         },
+                                        mr: 4,
                                     }}
                                 >
                                     {commu}
@@ -314,11 +368,35 @@ function Preferences() {
                     ))}
                 </RadioGroup>
             </Box>
+
+            <Divider sx={{ my: 3 }} />
+
+            <Box>
+                <Typography
+                    sx={{
+                        fontFamily: "Karma",
+                        color: "primary.main",
+                        fontWeight: "bold",
+                        fontSize: { xs: 20, sm: 25, md: 30 },
+                    }}
+                >
+                    Additional instructions you want to give to a Nanny
+                </Typography>
+                <TextField
+                    multiline
+                    fullWidth
+                    value={carePlanData.additional_notes || ""}
+                    onChange={(e) =>
+                        updateCarePlan("additional_notes", e.target.value)
+                    }
+                />
+            </Box>
+
             {/* right noodle  */}
-            <Noodle top={0} right={-120} />
+            <Noodle top={0} right={-10} />
 
             {/* left noodle  */}
-            <Noodle bottom={0} left={-120} />
+            <Noodle bottom={0} left={-10} />
         </Box>
     );
 }

@@ -4,13 +4,14 @@ import CaregiverCardMini from "@/Components/Home/CaregiverCardMini";
 import CustomizedCarePlan from "@/Components/Home/CustomizedCarePlan";
 import Explore from "@/Components/Home/Explore";
 import StartBlog from "@/Components/Home/StartBlog";
-import { Head } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import { Box, Grid2, Typography } from "@mui/material";
 import React from "react";
 import AppLayout from "@/Layouts/AppLayout";
 
 function Home({ caregivers }) {
     const CVs = Object.values(caregivers);
+    const user = usePage().props.auth.user;
     return (
         <AppLayout>
             <Box position={"relative"}>
@@ -105,7 +106,7 @@ function Home({ caregivers }) {
                         >
                             <Grid2 size={{ xs: 12, sm: 12, md: 6 }}>
                                 {/* Customized your care plan section (Demo)  */}
-                                <CustomizedCarePlan />
+                                <CustomizedCarePlan user={user} />
                                 <StartBlog />
                             </Grid2>
                             <Grid2 size={{ xs: 12, sm: 12, md: 6 }}>
@@ -122,7 +123,7 @@ function Home({ caregivers }) {
                                         CVs.length > 0 &&
                                         CVs.slice(0, 6).map((cv) => (
                                             <CaregiverCardMini
-                                                key={cv.id}
+                                                key={cv.ha_id}
                                                 cv={cv}
                                             />
                                         ))}

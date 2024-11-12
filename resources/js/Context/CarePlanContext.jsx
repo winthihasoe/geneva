@@ -1,37 +1,63 @@
+import axios from "axios";
 import React, { createContext, useState } from "react";
 
 // Create the context
 export const CarePlanContext = createContext();
 
 // Provider component
-export const CarePlanProvider = ({ children }) => {
-    const [carePlanData, setCarePlanData] = useState({
-        user_id: null, // Set this after fetching the user, if applicable
-        service: "",
-        start_date: "",
-        duration: "",
-        preferred_language: "",
-        service_type: "",
-        care_recipient_info: {
-            full_name: "",
+export const CarePlanProvider = ({ children, carePlan }) => {
+    // const storedCarePlanData = JSON.parse(localStorage.getItem("carePlanData"));
+    const [carePlanData, setCarePlanData] = useState(() => ({
+        care_type: carePlan?.care_type || "",
+        start_date: carePlan?.start_date || "",
+        duration: carePlan?.duration || "",
+        preferred_language: carePlan?.preferred_language || "",
+        service_type: carePlan?.service_type || "",
+        care_recipient_info: carePlan?.care_recipient_info || {
+            name: "",
             date_of_birth: "",
             age: "",
+            weight: "",
+            height: "",
             gender: "",
-        },
-        contact_info: {
-            full_name: "",
-            relationship: "",
+            home_address: "",
             phone_number: "",
             otp: "",
+            baby_medical_condition: "",
+            allergies: "",
+        },
+        contact_info: carePlan?.contact_info || {
+            name: "",
+            relationship: "",
+            phone_number: "",
             email: "",
             line_id: "",
-            home_address: "",
         },
-        preferences: {},
-        medical_conditions: {},
-        schedule: {},
-        additional_notes: "",
-    });
+        preferences: carePlan?.preferences || {
+            age: "",
+            religion: "",
+            nationality: "",
+            language: "",
+            experience: "",
+            communication: "",
+        },
+        services: carePlan?.services || [],
+        medical_conditions: carePlan?.medical_conditions || [],
+        schedule: carePlan?.schedule || {
+            package: "",
+            duty_time: "",
+        },
+        additional_note: carePlan?.additional_note || "",
+        current_step: carePlan?.current_step || 0,
+        care_plan_id: carePlan?.care_plan_id || "",
+    }));
+
+    console.log(carePlanData);
+
+    // Save carePlanData to local storage whenever it changes
+    // useEffect(() => {
+    //     localStorage.setItem("carePlanData", JSON.stringify(carePlanData));
+    // }, [carePlanData]);
 
     // Function to update care plan fields
     const updateCarePlan = (field, value) => {
@@ -52,36 +78,23 @@ export const CarePlanProvider = ({ children }) => {
         }));
     };
 
-    // Function to reset the care plan data (if needed)
-    const resetCarePlan = () => {
-        setCarePlanData({
-            user_id: null,
-            care_type: "",
-            start_date: "",
-            duration: "",
-            preferred_language: "",
-            service_type: "",
-            care_recipient_info: {
-                full_name: "",
-                date_of_birth: "",
-                age: "",
-                gender: "",
-            },
-            contact_info: {
-                full_name: "",
-                relationship: "",
-                phone_number: "",
-                otp: "",
-                email: "",
-                line_id: "",
-                home_address: "",
-            },
-            preferences: {},
-            services: {},
-            medical_conditions: {},
-            schedule: {},
-            additional_notes: "",
-        });
+    // Function to submit the care plan data
+    const handleSubmit = async () => {
+        try {
+            const response = await axios.post(
+                route("plan.store"),
+                carePlanData
+            );
+
+            if (response.status === 200 && response.data.care_plan_id) {
+                setCarePlanData((prevData) => ({
+                    ...prevData,
+                    care_plan_id: response.data.care_plan_id,
+                }));
+            }
+        } catch (error) {
+            console.error("Error saving care plan:", error);
+        }
     };
 
     return (
@@ -90,7 +103,7 @@ export const CarePlanProvider = ({ children }) => {
                 carePlanData,
                 updateCarePlan,
                 updateNestedField,
-                resetCarePlan,
+                handleSubmit,
             }}
         >
             {children}

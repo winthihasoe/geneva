@@ -1,3 +1,5 @@
+import Noodle from "@/Components/Fancy/Noodle";
+import { CarePlanContext } from "@/Context/CarePlanContext";
 import {
     Box,
     FormControlLabel,
@@ -7,20 +9,64 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+
+// Function to calculate age as a human-readable string
+const calculateAge = (dateOfBirth) => {
+    const birthDate = new Date(dateOfBirth);
+    const today = new Date();
+
+    // Calculate the difference in days
+    const oneDay = 1000 * 60 * 60 * 24;
+    const diffInDays = Math.floor((today - birthDate) / oneDay);
+
+    if (diffInDays < 30) {
+        // Less than 30 days, return days
+        return `${diffInDays} day${diffInDays > 1 ? "s" : ""} old`;
+    } else if (diffInDays < 365) {
+        // Between 30 days and 1 year, return months and days
+        const months = Math.floor(diffInDays / 30);
+        const days = diffInDays % 30;
+        return `${months} month${months > 1 ? "s" : ""}${
+            days > 0 ? `, ${days} day${days > 1 ? "s" : ""}` : ""
+        } old`;
+    } else {
+        // 1 year or more, return years, months, and days
+        const years = Math.floor(diffInDays / 365);
+        const remainingDays = diffInDays % 365;
+        const months = Math.floor(remainingDays / 30);
+        const days = remainingDays % 30;
+        return `${years} year${years > 1 ? "s" : ""}${
+            months > 0 ? `, ${months} month${months > 1 ? "s" : ""}` : ""
+        }${days > 0 ? `, ${days} day${days > 1 ? "s" : ""}` : ""} old`;
+    }
+};
 
 function BabyInfo() {
+    const { carePlanData, updateNestedField } = useContext(CarePlanContext);
     const [medicalCondition, setMedicalCondition] = useState(false);
-    const [conditionDetails, setConditionDetails] = useState("");
     const handleMedicalCondition = (event) => {
         const value = event.target.value === "true"; // Convert to boolean
         setMedicalCondition(value);
 
         // Clear the details text field if 'No' is selected
         if (!value) {
-            setConditionDetails("");
+            updateNestedField(
+                "care_recipient_info",
+                "baby_medical_condition",
+                ""
+            );
         }
     };
+
+    useEffect(() => {
+        const dob = carePlanData.care_recipient_info.date_of_birth;
+        if (dob) {
+            const age = calculateAge(dob);
+            updateNestedField("care_recipient_info", "age", age);
+        }
+    }, [carePlanData.care_recipient_info.date_of_birth]);
+
     return (
         <Grid2
             container
@@ -39,7 +85,7 @@ function BabyInfo() {
                 <Box
                     sx={{
                         minWidth: 300,
-                        maxWidth: 450,
+                        maxWidth: 400,
                         borderRadius: 10,
                         backgroundColor: "#2c7a57", // Adjust the color as needed
                         position: "relative",
@@ -63,15 +109,23 @@ function BabyInfo() {
                             fontSize: 13,
                         }}
                     >
-                        Full Name
+                        Name
                     </Typography>
                     <TextField
                         sx={{
                             bgcolor: "#f5f5f5",
                             borderRadius: 20,
                             px: 1,
-                            width: 180,
+                            width: 250,
                         }}
+                        value={carePlanData.care_recipient_info.name}
+                        onChange={(e) =>
+                            updateNestedField(
+                                "care_recipient_info",
+                                "name",
+                                e.target.value
+                            )
+                        }
                     />
                     <Box sx={{ display: "flex", gap: 3, my: 1 }}>
                         <Box>
@@ -89,9 +143,27 @@ function BabyInfo() {
                                     bgcolor: "#f5f5f5",
                                     borderRadius: 20,
                                     px: 1,
-                                    width: 200,
+                                    width: 160,
                                 }}
                                 type="date"
+                                value={
+                                    carePlanData.care_recipient_info
+                                        .date_of_birth
+                                }
+                                onChange={(e) =>
+                                    updateNestedField(
+                                        "care_recipient_info",
+                                        "date_of_birth",
+                                        e.target.value
+                                    )
+                                }
+                                InputProps={{
+                                    inputProps: {
+                                        max: new Date()
+                                            .toISOString()
+                                            .split("T")[0], // Today's date in YYYY-MM-DD format
+                                    },
+                                }}
                             />
                         </Box>
                         <Box>
@@ -105,6 +177,8 @@ function BabyInfo() {
                                 Age
                             </Typography>
                             <TextField
+                                disabled
+                                value={carePlanData.care_recipient_info.age}
                                 sx={{
                                     bgcolor: "#f5f5f5",
                                     borderRadius: 20,
@@ -123,7 +197,17 @@ function BabyInfo() {
                     >
                         Gender
                     </Typography>
-                    <RadioGroup row>
+                    <RadioGroup
+                        row
+                        value={carePlanData.care_recipient_info.gender}
+                        onChange={(e) =>
+                            updateNestedField(
+                                "care_recipient_info",
+                                "gender",
+                                e.target.value
+                            )
+                        }
+                    >
                         <FormControlLabel
                             value="Male"
                             control={<Radio size="small" />}
@@ -165,7 +249,19 @@ function BabyInfo() {
                         >
                             Known Allergies
                         </Typography>
-                        <TextField multiline />
+                        <TextField
+                            multiline
+                            value={
+                                carePlanData.care_recipient_info.allergies || ""
+                            }
+                            onChange={(e) =>
+                                updateNestedField(
+                                    "care_recipient_info",
+                                    "allergies",
+                                    e.target.value
+                                )
+                            }
+                        />
                     </Box>
                     <Box mt={2}>
                         <Typography
@@ -216,30 +312,23 @@ function BabyInfo() {
                                 multiline
                                 size="small"
                                 fullWidth
-                                value={conditionDetails}
+                                value={
+                                    carePlanData.care_recipient_info
+                                        .baby_medical_condition || ""
+                                }
                                 onChange={(e) =>
-                                    setConditionDetails(e.target.value)
+                                    updateNestedField(
+                                        "care_recipient_info",
+                                        "baby_medical_condition",
+                                        e.target.value
+                                    )
                                 }
                             />
                         )}
                     </Box>
                 </Box>
-                <Box
-                    sx={{
-                        display: { xs: "none", sm: "none", md: "flex" },
-                    }}
-                >
-                    <img
-                        src="/images/noodle.png"
-                        alt="leaves"
-                        style={{
-                            width: 200,
-                            position: "absolute",
-                            bottom: 0,
-                            left: -80,
-                        }}
-                    />
-                </Box>
+
+                <Noodle bottom={0} left={-10} />
                 <Box
                     sx={{
                         display: { xs: "none", sm: "none", md: "flex" },
@@ -251,8 +340,8 @@ function BabyInfo() {
                         style={{
                             width: 120,
                             position: "absolute",
-                            bottom: 130,
-                            left: -50,
+                            bottom: 90,
+                            left: -55,
                         }}
                     />
                 </Box>
@@ -268,7 +357,7 @@ function BabyInfo() {
                 <Box
                     sx={{
                         minWidth: 300,
-                        maxWidth: 450,
+                        maxWidth: 400,
                         borderRadius: 10,
                         backgroundColor: "#2c7a57", // Adjust the color as needed
                         position: "relative",
@@ -292,15 +381,23 @@ function BabyInfo() {
                             fontSize: 13,
                         }}
                     >
-                        Full Name
+                        Name
                     </Typography>
                     <TextField
                         sx={{
                             bgcolor: "#f5f5f5",
                             borderRadius: 20,
                             px: 1,
-                            width: 180,
+                            width: 250,
                         }}
+                        value={carePlanData.contact_info.name}
+                        onChange={(e) =>
+                            updateNestedField(
+                                "contact_info",
+                                "name",
+                                e.target.value
+                            )
+                        }
                     />
                     <Box sx={{ display: "flex", gap: 3, my: 1 }}>
                         <Box>
@@ -319,6 +416,14 @@ function BabyInfo() {
                                     borderRadius: 20,
                                     px: 1,
                                 }}
+                                value={carePlanData.contact_info.relationship}
+                                onChange={(e) =>
+                                    updateNestedField(
+                                        "contact_info",
+                                        "relationship",
+                                        e.target.value
+                                    )
+                                }
                             />
                         </Box>
                     </Box>
@@ -349,6 +454,14 @@ function BabyInfo() {
                                     borderRadius: 20,
                                     px: 1,
                                 }}
+                                value={carePlanData.contact_info.phone_number}
+                                onChange={(e) =>
+                                    updateNestedField(
+                                        "contact_info",
+                                        "phone_number",
+                                        e.target.value
+                                    )
+                                }
                             />
                         </Box>
                         <Box>
@@ -370,7 +483,14 @@ function BabyInfo() {
                             />
                         </Box>
                     </Box>
-                    <Box sx={{ display: "flex", gap: 3, my: 1 }}>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 1,
+                            my: 1,
+                        }}
+                    >
                         <Box>
                             <Typography
                                 sx={{
@@ -386,7 +506,17 @@ function BabyInfo() {
                                     bgcolor: "#f5f5f5",
                                     borderRadius: 20,
                                     px: 1,
+                                    width: 200,
                                 }}
+                                value={carePlanData.contact_info.email}
+                                // onChange={(e) =>
+                                //     updateNestedField(
+                                //         "contact_info",
+                                //         "email",
+                                //         e.target.value
+                                //     )
+                                // }
+                                disabled
                             />
                         </Box>
                         <Box>
@@ -405,6 +535,14 @@ function BabyInfo() {
                                     borderRadius: 20,
                                     px: 1,
                                 }}
+                                value={carePlanData.contact_info.line_id}
+                                onChange={(e) =>
+                                    updateNestedField(
+                                        "contact_info",
+                                        "line_id",
+                                        e.target.value
+                                    )
+                                }
                             />
                         </Box>
                     </Box>
@@ -429,25 +567,21 @@ function BabyInfo() {
                             }}
                             fullWidth
                             multiline
+                            value={
+                                carePlanData.care_recipient_info.home_address
+                            }
+                            onChange={(e) =>
+                                updateNestedField(
+                                    "care_recipient_info",
+                                    "home_address",
+                                    e.target.value
+                                )
+                            }
                         />
                     </Box>
                 </Box>
-                <Box
-                    sx={{
-                        display: { xs: "none", sm: "none", md: "flex" },
-                    }}
-                >
-                    <img
-                        src="/images/noodle.png"
-                        alt="leaves"
-                        style={{
-                            width: 200,
-                            position: "absolute",
-                            bottom: 0,
-                            right: -80,
-                        }}
-                    />
-                </Box>
+
+                <Noodle top={0} right={0} />
             </Grid2>
         </Grid2>
     );

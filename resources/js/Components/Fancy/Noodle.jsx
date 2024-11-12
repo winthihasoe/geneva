@@ -17,7 +17,7 @@ function Noodle({ top = null, bottom = null, left = null, right = null }) {
                 src="/images/noodle.png"
                 alt="leaves"
                 style={{
-                    width: 200,
+                    width: 40,
                 }}
             />
         </Box>
