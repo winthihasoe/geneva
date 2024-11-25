@@ -28,7 +28,7 @@ class JobApplyController extends Controller
                 'weight' => 'required|numeric',
                 'nationality' => 'required|string|max:100',
                 'religion' => 'required|string|max:100',
-                'phone' => 'required|string|max:15',
+                'phone' => 'required|string|max:20',
                 'email' => 'nullable|email|max:255',
                 'line' => 'nullable|string|max:255',
                 'current_address' => 'required|string|max:255',
@@ -78,7 +78,6 @@ class JobApplyController extends Controller
                 'certificate_details' => $validatedData['certificate_details'],
             ]);
 
-            // dd($newCV);
 
             if($newCV)
             {
@@ -125,8 +124,8 @@ class JobApplyController extends Controller
                     ]);
                 }
             }
-            // return redirect()->route('job.apply.success')->with('success', 'Application submitted successfully!');
-            return back()->with('success', 'Application submitted successfully!');
+            return redirect()->route('job.apply.success')->with('success', 'Application submitted successfully!');
+            // return back()->with('success', 'Application submitted successfully!');
     
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage());
