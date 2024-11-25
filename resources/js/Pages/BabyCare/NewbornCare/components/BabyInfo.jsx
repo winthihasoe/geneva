@@ -1,4 +1,5 @@
 import Noodle from "@/Components/Fancy/Noodle";
+import ThreeLeaves from "@/Components/Fancy/ThreeLeaves";
 import { CarePlanContext } from "@/Context/CarePlanContext";
 import {
     Box,
@@ -329,22 +330,7 @@ function BabyInfo() {
                 </Box>
 
                 <Noodle bottom={0} left={-10} />
-                <Box
-                    sx={{
-                        display: { xs: "none", sm: "none", md: "flex" },
-                    }}
-                >
-                    <img
-                        src="/images/three_leaves.png"
-                        alt="leaves"
-                        style={{
-                            width: 120,
-                            position: "absolute",
-                            bottom: 90,
-                            left: -55,
-                        }}
-                    />
-                </Box>
+                <ThreeLeaves bottom={90} left={-55} />
             </Grid2>
             <Grid2
                 size={{ xs: 12, sm: 6 }}

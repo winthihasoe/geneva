@@ -11,6 +11,8 @@ import {
 import React from "react";
 
 function ServiceTable({ service }) {
+    console.log("service", service);
+
     // Filter packages by type
     const liveOutPackages = service.packages.filter(
         (pkg) => pkg.type === "Live-out"

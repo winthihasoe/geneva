@@ -7,18 +7,7 @@ import Preferences from "./Preferences";
 import ProgressBar from "@/Pages/CustomizedCare/components/ProgressBar";
 import OurRecommendations from "./OurRecommendations";
 import { CarePlanContext } from "@/Context/CarePlanContext";
-import TitleCenter from "@/Components/Typo/TitleCenter";
 import Corner from "@/Components/Fancy/Corner";
-
-// Dummy components for each step of the form
-const Step1 = () => <Typography>Step 1: Baby's Basic Info</Typography>;
-const Step2 = () => <Typography>Step 2: Care Schedule</Typography>;
-const Step3 = () => <Typography>Step 3: Services Needed</Typography>;
-const Step4 = () => <Typography>Step 4: Nanny Preferences</Typography>;
-const Step5 = () => <Typography>Step 5: Our Recommendations</Typography>;
-
-// List of components representing each step
-const stepsComponents = [Step1, Step2, Step3, Step4, Step5];
 
 const MultiStepForm = ({ service, basicSkills, advSkills }) => {
     const { carePlanData, updateCarePlan } = useContext(CarePlanContext);
@@ -26,16 +15,15 @@ const MultiStepForm = ({ service, basicSkills, advSkills }) => {
 
     // Go to the next step
     const handleNext = () => {
-        if (activeStep < stepsComponents.length - 1) {
-            setActiveStep((prev) => prev + 1);
-            window.scrollTo({ top: 0, behavior: "smooth" });
-            updateCarePlan("current_step", activeStep);
-        }
+        setActiveStep((prev) => prev + 1);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        updateCarePlan("current_step", activeStep);
     };
 
     // Go to the previous step
     const handleBack = () => {
         if (activeStep > 0) {
+            window.scrollTo({ top: 0, behavior: "smooth" });
             setActiveStep((prev) => prev - 1);
         }
     };
@@ -46,9 +34,6 @@ const MultiStepForm = ({ service, basicSkills, advSkills }) => {
             setActiveStep(step);
         }
     };
-
-    // Dynamically render the current step's component
-    const CurrentStepComponent = stepsComponents[activeStep];
 
     return (
         <Box sx={{ padding: 3, position: "relative" }}>
@@ -97,12 +82,12 @@ const MultiStepForm = ({ service, basicSkills, advSkills }) => {
                         Previous
                     </Typography>
                 </Button>
+
                 {activeStep !== 4 && (
                     <Button
                         variant="contained"
                         sx={{ borderRadius: 20 }}
                         onClick={handleNext}
-                        disabled={activeStep === stepsComponents.length - 1}
                     >
                         <Typography
                             fontFamily={"Kavoon"}

@@ -151,6 +151,9 @@ function CustomizedCare() {
                                 boxShadow: 2,
                             }}
                             variant="contained"
+                            onClick={() =>
+                                router.get(route("elder.options.choose"))
+                            }
                         >
                             <Typography
                                 sx={{

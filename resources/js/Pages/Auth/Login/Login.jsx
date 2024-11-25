@@ -90,7 +90,7 @@ function Login() {
                                     fontWeight={16}
                                     mb={2}
                                 >
-                                    Welcome Back
+                                    Welcome
                                 </Typography>
                                 <Typography
                                     sx={{

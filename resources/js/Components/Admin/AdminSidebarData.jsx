@@ -26,6 +26,11 @@ export const AdminSidebarData = [
         icon: <EventAvailableRoundedIcon />,
         link: "/admin/care-plans",
     },
+    {
+        title: "Job Apply",
+        icon: <WorkHistoryRoundedIcon />,
+        link: "/admin/job-applies",
+    },
     // {
     //     title: "Job offers",
     //     icon: <WorkHistoryRoundedIcon />,

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CarePlan;
 use App\Models\CV;
 use App\Models\Interview;
+use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -16,10 +17,96 @@ class InterviewController extends Controller
     {
         $cv = CV::with('certificates')->where('slug', $slug)->firstOrFail();
         $user_id = Auth::user()->id;
-        $existingCarePlan = CarePlan::where('user_id', $user_id)->first();
+ 
+        $existingCarePlan = CarePlan::where('user_id', $user_id)->latest()->first();
+
+       // Map the CarePlan's numeric duration to the string format in the Package duration
+        $durationMapping = [
+            3 => '3-month',
+            6 => '6-month',
+            1 => '1-year',
+        ];
+
+        // Get the corresponding string duration
+        $mappedDuration = $durationMapping[$existingCarePlan->duration] ?? null;
+
+        $service = Service::where('name', $existingCarePlan->service_type)
+        ->with(['packages.durations.salaries', 'packages.durations.serviceFees'])
+        ->firstOrFail();
+       
+
+        // Convert packages to a collection to use firstWhere
+        $packages = collect($service->packages);
+        
+        // Access package type from the schedule array
+        $packageType = $existingCarePlan->schedule['package'] ?? null;
+
+        // Initialize variables
+        $selectedSalary = null;
+        $serviceFees = null;
+
+        // Ensure packageType is not null before accessing
+        if ($packageType) {
+            // Get the specific package based on CarePlan's schedule package type
+            $selectedPackage = $packages->firstWhere('type', $packageType);
+            
+            // Get the specific duration based on the mapped duration string
+            $selectedDuration = $selectedPackage
+                ? collect($selectedPackage->durations)->firstWhere('duration', $mappedDuration)
+                : null;
+             
+            // Extract the relevant salaries and service fees based on the selected package and duration
+            $salaries = $selectedDuration ? collect($selectedDuration->salaries) : null;
+            $serviceFees = $selectedDuration ? collect($selectedDuration->serviceFees) : null;
+
+            if ($salaries) {
+                if ($existingCarePlan->service_type === 'Elder Care + Maid Service') {
+                    // For 'Elder Care + Maid Service', select the first available salary
+                    $selectedSalary = $salaries->first();
+                } else if ($existingCarePlan->service_type === 'Nanny Care + Maid Service') {
+                    // For 'Elder Care + Maid Service', select the first available salary
+                    $selectedSalary = $salaries->first();
+                } else if ($existingCarePlan->service_type === 'Elder Care') {
+                    // For other care types, select salary based on caregiver level
+                    $selectedSalary = $cv->level === 'Advanced Caregiver'
+                        ? $salaries->first(function ($salary) {
+                            return stripos($salary->role, 'Adv Caregiver') !== false;
+                        })
+                        : $salaries->first(function ($salary) {
+                            return stripos($salary->role, 'Caregiver') !== false;
+                        });
+                } else if ($existingCarePlan->service_type === 'Newborn Care') {
+                    // For other care types, select salary based on caregiver level
+                    $selectedSalary = $cv->level === 'Super Newborn Nanny'
+                        ? $salaries->first(function ($salary) {
+                            return stripos($salary->role, 'Super Nanny') !== false;
+                        })
+                        : $salaries->first(function ($salary) {
+                            return stripos($salary->role, 'Nanny') !== false;
+                        });
+                } else if ($existingCarePlan->service_type === 'Nanny Service') {
+                    // For other care types, select salary based on caregiver level
+                    $selectedSalary = $cv->level === 'Super Nanny'
+                        ? $salaries->first(function ($salary) {
+                            return stripos($salary->role, 'Super Nanny') !== false;
+                        })
+                        : $salaries->first(function ($salary) {
+                            return stripos($salary->role, 'Nanny') !== false;
+                        });
+                }
+            }
+            
+        } else {
+            $selectedPackage = null;
+            $selectedDuration = null;
+            $salaries = null;
+            $serviceFees = null;
+        }
         return Inertia::render('Interview/CreateInterview', [
             'cv' => $cv,
             'carePlan' => $existingCarePlan,
+            'selectedSalary' => $selectedSalary,
+            'serviceFees' => $serviceFees,
         ]);
     }
 

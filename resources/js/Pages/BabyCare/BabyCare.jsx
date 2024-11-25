@@ -15,7 +15,7 @@ function BabyCare({ carePlan }) {
         router.get(route("care.newborn.start"));
     };
     const handleNannyStart = () => {
-        router.get(route("startNanny"));
+        router.get(route("nanny.options.choose"));
     };
     return (
         <AppLayout>

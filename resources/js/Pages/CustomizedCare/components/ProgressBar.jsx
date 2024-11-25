@@ -1,14 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Box, Typography } from "@mui/material";
 import { styled } from "@mui/system";
-
-const steps = [
-    { label: "Baby's Basic Info" },
-    { label: "Care Schedule" },
-    { label: "Services Needed" },
-    { label: "Nanny Preferences" },
-    { label: "Our Recommendations" },
-];
+import { CarePlanContext } from "@/Context/CarePlanContext";
 
 const getColorForStep = (index, active) => {
     const colors = ["#ffa701", "#883835", "#662e50", "#342e4f", "#885b15"];
@@ -45,6 +38,19 @@ const StepBox = styled(Box, {
 }));
 
 const ProgressBar = ({ activeStep, onStepClick }) => {
+    const { carePlanData } = useContext(CarePlanContext);
+    const steps = [
+        {
+            label:
+                carePlanData.care_type == "Baby"
+                    ? "Baby's Basic Info"
+                    : "Elder's Info",
+        },
+        { label: "Care Schedule" },
+        { label: "Services Needed" },
+        { label: "Nanny Preferences" },
+        { label: "Our Recommendations" },
+    ];
     return (
         <Box
             display={{ xs: "none", sm: "none", md: "flex" }}

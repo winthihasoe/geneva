@@ -1,0 +1,14 @@
+#Services
+(services_table, and in care_plans_table these are service_type)
+Newborn Care, 
+Nanny Service, 
+Nanny Care + Maid Service, 
+Elder Care, 
+Elder Care + Maid Service
+
+ primary: {
+            main: "#21875C",
+        },
+        secondary: {
+            main: "#1a778e",
+        },

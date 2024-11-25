@@ -23,7 +23,6 @@ import {
 } from "@mui/icons-material";
 import logo from "../../../public/images/logo/logo.png"; // Adjust the path to your logo
 import { router, usePage } from "@inertiajs/react";
-import ReusableModal from "./util/ReusableModal";
 import YesOrNoModal from "./util/YesOrNoModal";
 
 const Pricing = [
@@ -50,6 +49,10 @@ const Pricing = [
 ];
 
 const JoinOurTeam = [
+    {
+        title: "Apply Job",
+        routeName: "job.apply",
+    },
     {
         title: "Fill CV",
         routeName: "cv.create",

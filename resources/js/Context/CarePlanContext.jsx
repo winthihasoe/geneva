@@ -12,7 +12,7 @@ export const CarePlanProvider = ({ children, carePlan }) => {
         start_date: carePlan?.start_date || "",
         duration: carePlan?.duration || "",
         preferred_language: carePlan?.preferred_language || "",
-        service_type: carePlan?.service_type || "",
+        service_type: carePlan?.service_type || "", // Newborn Care, Nanny Service, Nanny Care + Maid Service, Elder Care, Elder Care + Maid Service
         care_recipient_info: carePlan?.care_recipient_info || {
             name: "",
             date_of_birth: "",
@@ -43,16 +43,18 @@ export const CarePlanProvider = ({ children, carePlan }) => {
         },
         services: carePlan?.services || [],
         medical_conditions: carePlan?.medical_conditions || [],
+        other_medical_conditions: carePlan?.other_medical_conditions || "",
+        mobilities: carePlan?.mobilities || "",
+        memory: carePlan?.memory || "",
+        alertness: carePlan?.alertness || "",
         schedule: carePlan?.schedule || {
             package: "",
             duty_time: "",
         },
-        additional_note: carePlan?.additional_note || "",
+        additional_notes: carePlan?.additional_notes || "",
         current_step: carePlan?.current_step || 0,
         care_plan_id: carePlan?.care_plan_id || "",
     }));
-
-    console.log(carePlanData);
 
     // Save carePlanData to local storage whenever it changes
     // useEffect(() => {

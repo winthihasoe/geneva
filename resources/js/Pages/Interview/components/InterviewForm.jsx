@@ -8,10 +8,19 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
-function InterviewForm({ data, setData, cv }) {
-    const { carePlanData } = useContext(CarePlanContext);
+function InterviewForm({
+    data,
+    setData,
+    cv,
+    selectedSalary,
+    serviceFees,
+    carePlan,
+}) {
+    console.log("selectedSalary", selectedSalary);
+    console.log("serviceFees", serviceFees);
+
     const [Mode, setMode] = useState("");
 
     const handleChange = (e) => {
@@ -38,6 +47,8 @@ function InterviewForm({ data, setData, cv }) {
             mode: e.target.value,
         });
     };
+
+    const [cgSalary, setCgSalary] = useState("");
 
     return (
         <Box>
@@ -305,7 +316,7 @@ function InterviewForm({ data, setData, cv }) {
                             mb: { xs: 1, sm: 2, md: 3 },
                         }}
                     >
-                        Start Date : {carePlanData.start_date}
+                        Start Date : {carePlan.start_date}
                     </Typography>
                     <Typography
                         sx={{
@@ -316,9 +327,9 @@ function InterviewForm({ data, setData, cv }) {
                         }}
                     >
                         Care Timing :{" "}
-                        {carePlanData.schedule.package == "Live-in"
+                        {carePlan.schedule.package == "Live-in"
                             ? "24 hours (Live-in)"
-                            : carePlanData.schedule.duty_time}
+                            : carePlan.schedule.duty_time}
                     </Typography>
                     <Typography
                         sx={{
@@ -329,9 +340,9 @@ function InterviewForm({ data, setData, cv }) {
                         }}
                     >
                         Care Program Duration :{" "}
-                        {carePlanData.duration == 1
+                        {carePlan.duration == 1
                             ? "1 year"
-                            : `${carePlanData.duration} months`}
+                            : `${carePlan.duration} months`}
                     </Typography>
                     <Typography
                         sx={{
@@ -342,8 +353,16 @@ function InterviewForm({ data, setData, cv }) {
                         }}
                     >
                         Caregiver level :{" "}
-                        {carePlanData.service_type == "Newborn Care" &&
+                        {carePlan.service_type == "Newborn Care" &&
                             cv.newborn_care_level}
+                        {(carePlan.service_type == "Nanny Service" ||
+                            carePlan.service_type ==
+                                "Nanny Care + Maid Service") &&
+                            cv.newborn_care_level}
+                        {(carePlan.service_type == "Elder Care" ||
+                            carePlan.service_type ==
+                                "Elder Care + Maid Service") &&
+                            cv.level}
                     </Typography>
                     <Typography
                         sx={{
@@ -353,7 +372,10 @@ function InterviewForm({ data, setData, cv }) {
                             mb: { xs: 1, sm: 2, md: 3 },
                         }}
                     >
-                        Monthly Salary : 23000 THB (1 month advanced payment)
+                        Monthly Salary : {selectedSalary?.amount} THB{" "}
+                        <span style={{ color: "#b3b3b3" }}>
+                            (1 month advanced payment)
+                        </span>
                     </Typography>
                     <Typography
                         sx={{
@@ -363,7 +385,10 @@ function InterviewForm({ data, setData, cv }) {
                             mb: { xs: 1, sm: 2, md: 3 },
                         }}
                     >
-                        Hearty Aid Service Fees : 10000 THB (One time payment)
+                        Hearty Aid Service Fees : {serviceFees[0].fee} THB{" "}
+                        <span style={{ color: "#b3b3b3" }}>
+                            (One time payment)
+                        </span>
                     </Typography>
                 </Box>
             </Box>

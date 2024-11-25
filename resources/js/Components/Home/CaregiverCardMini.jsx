@@ -3,8 +3,6 @@ import React from "react";
 import AgeCalculator from "../util/AgeCalculator";
 
 function CaregiverCardMini({ cv }) {
-    console.log(cv);
-
     return (
         <Box pl={9}>
             <Box

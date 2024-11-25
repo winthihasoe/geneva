@@ -98,7 +98,7 @@ function AdminResumeTable({ resumes }) {
                             </TableCell>
                             <TableCell>
                                 <ShowActiveOrOffline
-                                    lastActiveAt={resume.user.last_active_at}
+                                    lastActiveAt={resume.user?.last_active_at}
                                 />
                             </TableCell>
                             <TableCell>

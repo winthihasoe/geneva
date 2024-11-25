@@ -106,6 +106,59 @@ class CarePlanController extends Controller
         ]);
     }
 
+    public function optionElder()
+    {
+        return Inertia::render('ElderCare/ChooseElderCare');
+    }
+    
+    public function caregiverOnly()
+    {
+        $service = Service::where('name', 'Elder Care')
+        ->with(['packages.durations.salaries', 'packages.durations.serviceFees'])
+        ->firstOrFail();
+       
+        
+        //Get caregivers who can care newborn
+        $caregivers = CV::whereJsonContains('services', 'Elder care')->get();
+
+        // Get the nursing skills
+       
+        $basicSkills = DB::table('elder_basic_care')->pluck('care_name')->toArray();
+        $advSkills = DB::table('elder_advanced_care')->pluck('care_name')->toArray();
+
+        return Inertia::render('ElderCare/CaregiverOnly/CaregiverOnly', [
+            'service' => $service,
+            'basicSkills' => $basicSkills,
+            'advSkills' => $advSkills,
+            'caregivers' => $caregivers ?? [],
+        ]);
+    }
+    
+    public function caregiverMaid()
+    {
+        $service = Service::where('name', 'Elder Care + Maid Service')
+        ->with(['packages.durations.salaries', 'packages.durations.serviceFees'])
+        ->firstOrFail();
+       
+        
+        //Get caregivers who can care newborn
+        $caregivers = CV::whereJsonContains('services', 'Elder + Maid')->get();
+
+        // Get the nursing skills
+       
+        $basicSkills = DB::table('elder_basic_care')->pluck('care_name')->toArray();
+        $advSkills = DB::table('elder_advanced_care')->pluck('care_name')->toArray();
+        $maidServices = DB::table('elder_maid_service')->pluck('service_name')->toArray();
+
+        return Inertia::render('ElderCare/CaregiverMaid/CaregiverMaid', [
+            'service' => $service,
+            'basicSkills' => $basicSkills,
+            'advSkills' => $advSkills,
+            'maidServices' => $maidServices,
+            'caregivers' => $caregivers ?? [],
+        ]);
+    }
+
     public function store(Request $request)
     {
         try {
@@ -125,6 +178,10 @@ class CarePlanController extends Controller
                 'preferences' => 'nullable|array',
                 'services' => 'nullable|array',
                 'medical_conditions' => 'nullable|array',
+                'other_medical_conditions' => 'nullable|string',
+                'mobilities' => 'nullable|string',
+                'memory' => 'nullable|string',
+                'alertness' => 'nullable|string',
                 'schedule' => 'nullable|array',
                 'additional_notes' => 'nullable|string',
                 'current_step' => 'required|integer',
@@ -152,6 +209,10 @@ class CarePlanController extends Controller
                 'preferences' => $validatedData['preferences'] ?? [],
                 'services' => $validatedData['services'] ?? [],
                 'medical_conditions' => $validatedData['medical_conditions'] ?? [],
+                'other_medical_conditions' => $validatedData['other_medical_conditions'] ?? null,
+                'mobilities' => $validatedData['mobilities'] ?? null,
+                'memory' => $validatedData['memory'] ?? null,
+                'alertness' => $validatedData['alertness'] ?? null,
                 'schedule' => $validatedData['schedule'] ?? [],
                 'additional_notes' => $validatedData['additional_notes'] ?? null,
                 'current_step' => $validatedData['current_step'],
@@ -165,47 +226,108 @@ class CarePlanController extends Controller
                 $formattedDuration = $validatedData["duration"] === 1 ? '1-year' : "{$validatedData['duration']}-month";
 
                 $mj = Mailjet::getClient();
+                
                 // Prepare email body using validated data
-                $body = [
-                    'FromEmail' => "service@heartyaid.com",
-                    'FromName' => "Hearty Aid",
-                    'Subject' => "Your customized care plan is updated.",
-                    'MJ-TemplateID' => 6461565,
-                    'MJ-TemplateLanguage' => true,
-                   'Vars' => [
-                        // Baby info
-                        "baby_name" => $validatedData['care_recipient_info']['name'] ?? '',
-                        "date_of_birth" => $validatedData['care_recipient_info']['date_of_birth'] ?? '',
-                        "gender" => $validatedData['care_recipient_info']['gender'] ?? '',
-                        "allergy" => $validatedData['care_recipient_info']['allergies'] ?? '',
-                        "medical_condition" => $validatedData['care_recipient_info']['baby_medical_condition'] ?? '',
-                        
-                        // Guardian info
-                        "parent_name" => $validatedData['contact_info']['name'] ?? '',
-                        "relation" => $validatedData['contact_info']['relationship'] ?? '',
-                        "phone" => $validatedData['contact_info']['phone_number'] ?? '',
-                        "line_id" => $validatedData['contact_info']['line_id'] ?? '',
-                        "home_address" => $validatedData['care_recipient_info']['home_address'] ?? '',
-                        
-                        // Care schedule
-                        "start_date" => $validatedData['start_date'] ?? '',
-                        "package" => $validatedData['schedule']['package'] ?? '',
-                        "duty_time" => $validatedData['schedule']['duty_time'] ?? '',
-                        "duration" => $formattedDuration ?? '',
-                        "services" => isset($validatedData['services']) && is_array($validatedData['services']) 
-                                    ? implode(', ', $validatedData['services']) 
-                                    : '',
-                        
-                        // Nanny preference
-                        "nanny_age" => $validatedData['preferences']['age'] ?? '',
-                        "additional_note" => $validatedData['additional_notes'] ?? '',
-                        "experience" => $validatedData['preferences']['experience'] ?? '',
-                        "nationality" => $validatedData['preferences']['nationality'] ?? '',
-                        "religion" => $validatedData['preferences']['religion'] ?? '',
-                        "language" => $validatedData['preferred_language'] ?? '',   
-                    ],
-                    'Recipients' => [['Email' => $user->email]]
-                ];
+                if($data['care_type'] == 'Baby')
+                {
+                    $body = [
+                        'FromEmail' => "service@heartyaid.com",
+                        'FromName' => "Hearty Aid",
+                        'Subject' => "Your customized care plan is updated.",
+                        'MJ-TemplateID' => 6461565,
+                        'MJ-TemplateLanguage' => true,
+                        'Vars' => [
+                            // Baby info
+                            "baby_name" => $validatedData['care_recipient_info']['name'] ?? '',
+                            "date_of_birth" => $validatedData['care_recipient_info']['date_of_birth'] ?? '',
+                            "gender" => $validatedData['care_recipient_info']['gender'] ?? '',
+                            "allergy" => $validatedData['care_recipient_info']['allergies'] ?? '',
+                            "medical_condition" => $validatedData['care_recipient_info']['baby_medical_condition'] ?? '',
+                            
+                            // Guardian info
+                            "parent_name" => $validatedData['contact_info']['name'] ?? '',
+                            "relation" => $validatedData['contact_info']['relationship'] ?? '',
+                            "phone" => $validatedData['contact_info']['phone_number'] ?? '',
+                            "line_id" => $validatedData['contact_info']['line_id'] ?? '',
+                            "home_address" => $validatedData['care_recipient_info']['home_address'] ?? '',
+                            
+                            // Care schedule
+                            "start_date" => $validatedData['start_date'] ?? '',
+                            "package" => $validatedData['schedule']['package'] ?? '',
+                            "duty_time" => $validatedData['schedule']['duty_time'] ?? '',
+                            "duration" => $formattedDuration ?? '',
+                            "services" => isset($validatedData['services']) && is_array($validatedData['services']) 
+                                        ? implode(', ', $validatedData['services']) 
+                                        : '',
+                            
+                            // Nanny preference
+                            "nanny_age" => $validatedData['preferences']['age'] ?? '',
+                            "additional_note" => $validatedData['additional_notes'] ?? '',
+                            "experience" => $validatedData['preferences']['experience'] ?? '',
+                            "nationality" => $validatedData['preferences']['nationality'] ?? '',
+                            "religion" => $validatedData['preferences']['religion'] ?? '',
+                            "language" => $validatedData['preferred_language'] ?? '',   
+                        ],
+                        'Recipients' => [['Email' => $user->email]]
+                    ];
+                } else if($data['care_type'] == 'Elder')
+                {
+                    // create $body and template for elder care plan
+                    $body = [
+                        'FromEmail' => "service@heartyaid.com",
+                        'FromName' => "Hearty Aid",
+                        'Subject' => "Your customized care plan is updated.",
+                        'MJ-TemplateID' => 6473181,
+                        'MJ-TemplateLanguage' => true,
+                        'Vars' => [
+                            // Baby info
+                            "elder_name" => $validatedData['care_recipient_info']['name'] ?? '',
+                            "date_of_birth" => $validatedData['care_recipient_info']['date_of_birth'] ?? '',
+                            "gender" => $validatedData['care_recipient_info']['gender'] ?? '',
+                            "home_address" => $validatedData['care_recipient_info']['home_address'] ?? '',
+                            
+                            // Medical conditions 
+                            "medical_conditions" => isset($validatedData['medical_conditions']) && is_array($validatedData['medical_conditions']) 
+                            ? implode(', ', $validatedData['medical_conditions']) 
+                            : '',
+                            "other_medical_conditions" => $validatedData['other_medical_conditions'] ?? '',
+                            "allergy" => $validatedData['care_recipient_info']['allergies'] ?? '',
+
+                            // Mobility Level
+                            "mobilities" => $validatedData['mobilities'] ?? '',
+                            
+                            // Memory & Awareness
+                            "memory" => $validatedData['memory'] ?? '',
+                            
+                            // Alertness & Orientation
+                            "alertness" => $validatedData['alertness'] ?? '',
+                            
+                            // Guardian info
+                            "contact_name" => $validatedData['contact_info']['name'] ?? '',
+                            "relation" => $validatedData['contact_info']['relationship'] ?? '',
+                            "phone" => $validatedData['contact_info']['phone_number'] ?? '',
+                            "line_id" => $validatedData['contact_info']['line_id'] ?? '',
+                            
+                            // Care schedule
+                            "start_date" => $validatedData['start_date'] ?? '',
+                            "package" => $validatedData['schedule']['package'] ?? '',
+                            "duty_time" => $validatedData['schedule']['duty_time'] ?? '',
+                            "duration" => $formattedDuration ?? '',
+                            "services" => isset($validatedData['services']) && is_array($validatedData['services']) 
+                                        ? implode(', ', $validatedData['services']) 
+                                        : '',
+                            
+                            // Nanny preference
+                            "nanny_age" => $validatedData['preferences']['age'] ?? '',
+                            "additional_note" => $validatedData['additional_notes'] ?? '',
+                            "experience" => $validatedData['preferences']['experience'] ?? '',
+                            "nationality" => $validatedData['preferences']['nationality'] ?? '',
+                            "religion" => $validatedData['preferences']['religion'] ?? '',
+                            "language" => $validatedData['preferred_language'] ?? '',   
+                        ],
+                        'Recipients' => [['Email' => $user->email]]
+                    ];
+                }
     
                 // Send email
                 $response = $mj->post(Resources::$Email, ['body' => $body]);
@@ -232,46 +354,106 @@ class CarePlanController extends Controller
 
                 $mj = Mailjet::getClient();
                 // Prepare email body using validated data
-                $body = [
-                    'FromEmail' => "service@heartyaid.com",
-                    'FromName' => "Hearty Aid",
-                    'Subject' => "Your customized care plan is created.",
-                    'MJ-TemplateID' => 6461565,
-                    'MJ-TemplateLanguage' => true,
-                    'Vars' => [
-                        // Baby info
-                        "baby_name" => $carePlan->care_recipient_info['name'] ?? '',
-                        "date_of_birth" => $carePlan->care_recipient_info['date_of_birth'] ?? '',
-                        "gender" => $carePlan->care_recipient_info['gender'] ?? '',
-                        "allergy" => $carePlan->care_recipient_info['allergies'] ?? '',
-                        "medical_condition" => $carePlan->care_recipient_info['baby_medical_condition'] ?? '',
+                if($data['care_type'] == 'Baby') 
+                {
+                    $body = [
+                        'FromEmail' => "service@heartyaid.com",
+                        'FromName' => "Hearty Aid",
+                        'Subject' => "Your customized care plan is created.",
+                        'MJ-TemplateID' => 6461565,
+                        'MJ-TemplateLanguage' => true,
+                        'Vars' => [
+                            // Baby info
+                            "baby_name" => $carePlan->care_recipient_info['name'] ?? '',
+                            "date_of_birth" => $carePlan->care_recipient_info['date_of_birth'] ?? '',
+                            "gender" => $carePlan->care_recipient_info['gender'] ?? '',
+                            "allergy" => $carePlan->care_recipient_info['allergies'] ?? '',
+                            "medical_condition" => $carePlan->care_recipient_info['baby_medical_condition'] ?? '',
+    
+                            // Guardian info
+                            "parent_name" => $carePlan->contact_info['name'] ?? '',
+                            "relation" => $carePlan->contact_info['relationship'] ?? '',
+                            "phone" => $carePlan->contact_info['phone_number'] ?? '',
+                            "line_id" => $carePlan->contact_info['line_id'] ?? '',
+                            "home_address" => $carePlan->care_recipient_info['home_address'] ?? '',
+    
+                            // Care schedule
+                            "start_date" => $carePlan->start_date ?? '',
+                            "package" => $carePlan->schedule['package'] ?? '',
+                            "duty_time" => $carePlan->schedule['duty_time'] ?? '',
+                            "duration" => $formattedDuration ?? '',
+                            "services" => isset($carePlan->services) && is_array($carePlan->services) 
+                                        ? implode(', ', $carePlan->services) 
+                                        : '',
+    
+                            // Nanny preference
+                            "nanny_age" => $carePlan->preferences['age'] ?? '',
+                            "additional_note" => $carePlan->additional_notes ?? '',
+                            "experience" => $carePlan->preferences['experience'] ?? '',
+                            "nationality" => $carePlan->preferences['nationality'] ?? '',
+                            "religion" => $carePlan->preferences['religion'] ?? '',
+                            "language" => $carePlan->preferred_language ?? '',   
+                        ],
+                        'Recipients' => [['Email' => $user->email]]
+                    ];
+                } else if($data['care_type'] == 'Elder')
+                {
+                    // Create $body and elder care template
+                    $body = [
+                        'FromEmail' => "service@heartyaid.com",
+                        'FromName' => "Hearty Aid",
+                        'Subject' => "Your customized care plan is created.",
+                        'MJ-TemplateID' => 6473181,
+                        'MJ-TemplateLanguage' => true,
+                        'Vars' => [
+                            // Baby info
+                            "elder_name" => $validatedData['care_recipient_info']['name'] ?? '',
+                            "date_of_birth" => $validatedData['care_recipient_info']['date_of_birth'] ?? '',
+                            "gender" => $validatedData['care_recipient_info']['gender'] ?? '',
+                            "home_address" => $validatedData['care_recipient_info']['home_address'] ?? '',
+                            
+                            // Medical conditions 
+                            "medical_conditions" => isset($validatedData['medical_conditions']) && is_array($validatedData['medical_conditions']) 
+                            ? implode(', ', $validatedData['medical_conditions']) 
+                            : '',
+                            "other_medical_conditions" => $validatedData['other_medical_conditions'] ?? '',
+                            "allergy" => $validatedData['care_recipient_info']['allergies'] ?? '',
 
-                        // Guardian info
-                        "parent_name" => $carePlan->contact_info['name'] ?? '',
-                        "relation" => $carePlan->contact_info['relationship'] ?? '',
-                        "phone" => $carePlan->contact_info['phone_number'] ?? '',
-                        "line_id" => $carePlan->contact_info['line_id'] ?? '',
-                        "home_address" => $carePlan->care_recipient_info['home_address'] ?? '',
-
-                        // Care schedule
-                        "start_date" => $carePlan->start_date ?? '',
-                        "package" => $carePlan->schedule['package'] ?? '',
-                        "duty_time" => $carePlan->schedule['duty_time'] ?? '',
-                        "duration" => $formattedDuration ?? '',
-                        "services" => isset($carePlan->services) && is_array($carePlan->services) 
-                                    ? implode(', ', $carePlan->services) 
-                                    : '',
-
-                        // Nanny preference
-                        "nanny_age" => $carePlan->preferences['age'] ?? '',
-                        "additional_note" => $carePlan->additional_notes ?? '',
-                        "experience" => $carePlan->preferences['experience'] ?? '',
-                        "nationality" => $carePlan->preferences['nationality'] ?? '',
-                        "religion" => $carePlan->preferences['religion'] ?? '',
-                        "language" => $carePlan->preferred_language ?? '',   
-                    ],
-                    'Recipients' => [['Email' => $user->email]]
-                ];
+                            // Mobility Level
+                            "mobilities" => $validatedData['mobilities'] ?? '',
+                            
+                            // Memory & Awareness
+                            "memory" => $validatedData['memory'] ?? '',
+                            
+                            // Alertness & Orientation
+                            "alertness" => $validatedData['alertness'] ?? '',
+                            
+                            // Guardian info
+                            "contact_name" => $validatedData['contact_info']['name'] ?? '',
+                            "relation" => $validatedData['contact_info']['relationship'] ?? '',
+                            "phone" => $validatedData['contact_info']['phone_number'] ?? '',
+                            "line_id" => $validatedData['contact_info']['line_id'] ?? '',
+                            
+                            // Care schedule
+                            "start_date" => $validatedData['start_date'] ?? '',
+                            "package" => $validatedData['schedule']['package'] ?? '',
+                            "duty_time" => $validatedData['schedule']['duty_time'] ?? '',
+                            "duration" => $formattedDuration ?? '',
+                            "services" => isset($validatedData['services']) && is_array($validatedData['services']) 
+                                        ? implode(', ', $validatedData['services']) 
+                                        : '',
+                            
+                            // Nanny preference
+                            "nanny_age" => $validatedData['preferences']['age'] ?? '',
+                            "additional_note" => $validatedData['additional_notes'] ?? '',
+                            "experience" => $validatedData['preferences']['experience'] ?? '',
+                            "nationality" => $validatedData['preferences']['nationality'] ?? '',
+                            "religion" => $validatedData['preferences']['religion'] ?? '',
+                            "language" => $validatedData['preferred_language'] ?? '',   
+                        ],
+                        'Recipients' => [['Email' => $user->email]]
+                    ];
+                }
     
                 // Send email
                 $response = $mj->post(Resources::$Email, ['body' => $body]);

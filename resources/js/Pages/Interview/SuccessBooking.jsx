@@ -1,6 +1,6 @@
 import AppLayout from "@/Layouts/AppLayout";
-import { Head } from "@inertiajs/react";
-import { Box, Container, Typography } from "@mui/material";
+import { Head, router } from "@inertiajs/react";
+import { Box, Button, Container, Typography } from "@mui/material";
 import React from "react";
 
 function SuccessBooking() {
@@ -48,10 +48,20 @@ function SuccessBooking() {
                             fontFamily={"Kufam"}
                             fontSize={{ xs: 11, sm: 13, md: 13 }}
                             textAlign={"center"}
+                            mb={2}
                         >
                             An admin will reach out within 24 hours for
                             confirmation and payment arrangements.
                         </Typography>
+                        <Button
+                            variant="contained"
+                            sx={{ borderRadius: 20, width: 100 }}
+                            onClick={() => router.get(route("home"))}
+                        >
+                            <Typography fontFamily={"Kufam"} fontSize={17}>
+                                Home
+                            </Typography>
+                        </Button>
                     </Box>
                 </Box>
             </Container>

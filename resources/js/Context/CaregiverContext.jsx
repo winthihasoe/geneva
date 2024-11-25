@@ -40,6 +40,9 @@ const checkExperience = (serviceType, caregiver, requiredExperience) => {
         case "Elder Care":
             caregiverExperience = caregiver.elder_experience_years;
             break;
+        case "Elder Care + Maid Service":
+            caregiverExperience = caregiver.elder_experience_years;
+            break;
         default:
             return false;
     }
@@ -111,7 +114,8 @@ export const CaregiverProvider = ({ children, initialCaregivers = [] }) => {
 
             // Select the caregiver if any of the conditions are true
             return (
-                (ageMatch && experienceMatch) ||
+                ageMatch ||
+                experienceMatch ||
                 packageMatch ||
                 durationMatch ||
                 nationalityMatch

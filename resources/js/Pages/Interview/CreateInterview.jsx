@@ -5,7 +5,7 @@ import React from "react";
 import CVDetail from "./components/CVDetail";
 import InterviewForm from "./components/InterviewForm";
 
-function CreateInterview({ cv, carePlan }) {
+function CreateInterview({ cv, carePlan, serviceFees, selectedSalary }) {
     const { data, setData, post, errors, setError, processing } = useForm({
         cv_id: cv.id,
         care_plan_id: carePlan.id,
@@ -44,6 +44,8 @@ function CreateInterview({ cv, carePlan }) {
                         setData={setData}
                         carePlan={carePlan}
                         cv={cv}
+                        serviceFees={serviceFees}
+                        selectedSalary={selectedSalary}
                     />
                 </Grid2>
             </Grid2>

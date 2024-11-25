@@ -7,8 +7,6 @@ import { Box, Container, Typography } from "@mui/material";
 import React from "react";
 
 function CVSearchResult({ searchTerm, searchResults }) {
-    console.log("search result", searchResults);
-
     return (
         <AdminLayout>
             <Head title="Search Result" />

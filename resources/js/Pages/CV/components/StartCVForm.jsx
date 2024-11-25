@@ -50,7 +50,7 @@ function StartCVForm() {
                         boxShadow: 1,
                         cursor: "pointer",
                     }}
-                    onClick={() => router.get(route("cv.create"))}
+                    onClick={() => router.get(route("job.apply"))}
                 >
                     Upload Your CV Form
                 </Typography>
