@@ -1,6 +1,7 @@
 import React from "react";
-import { Modal, Box, Typography, Button } from "@mui/material";
-import { styled } from "@mui/system";
+import { Modal, Box, Typography, Button, IconButton } from "@mui/material";
+import { maxHeight, styled } from "@mui/system";
+import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 
 const PREFIX = "ReusableModal";
 
@@ -19,6 +20,8 @@ const StyledModal = styled(Modal)(({ theme }) => ({
         left: "50%",
         transform: "translate(-50%, -50%)",
         width: 300,
+        maxHeight: "90vh",
+        overflowY: "auto",
         backgroundColor: theme.palette.background.paper,
         borderRadius: 10,
         boxShadow: theme.shadows[5],
@@ -40,6 +43,12 @@ const ReusableModal = ({ open, onClose, title, children, onConfirm }) => {
     return (
         <StyledModal open={open} onClose={onClose}>
             <Box className={classes.modalContent}>
+                <IconButton
+                    onClick={onClose}
+                    sx={{ position: "absolute", top: 0, right: 0 }}
+                >
+                    <HighlightOffRoundedIcon />
+                </IconButton>
                 <Box className={classes.modalHeader}>
                     <Typography variant="h6">{title}</Typography>
                 </Box>

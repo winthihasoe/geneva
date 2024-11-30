@@ -20,12 +20,14 @@ class CertificateController extends Controller
             'certificates' => $certificates
         ]);
     }
+    
     public function store(Request $request)
     {
         $cv = Auth::user()->cv;
         
         // Validate the form data
         $validatedData = $request->validate([
+            'qualification_type' => 'required|string|max:255',
             'training_center_name' => 'required|string|max:255',
             'course' => 'nullable|string|max:255',
             'start_date' => 'required|date|before_or_equal:today',
@@ -45,6 +47,29 @@ class CertificateController extends Controller
         // Redirect back with a success message
         return redirect()->back()->with('success', 'Certificate saved successfully!');
     }
+
+    // Update certificate by caregiver or admin
+    public function update(Request $request, $certId)
+    {
+        // Find the certificate by ID
+        $certificate = Certificate::findOrFail($certId);
+
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'qualification_type' => 'required|string|max:255',
+            'training_center_name' => 'required|string|max:255',
+            'course' => 'nullable|string|max:255',
+            'start_date' => 'required|date|before_or_equal:today',
+            'duration' => 'required|integer|min:1|max:50',
+        ]);
+
+        // Update the certificate with the validated data
+        $certificate->update($validatedData);
+
+        // Redirect back with a success message
+        return redirect()->back()->with('success', 'Certificate updated successfully!');
+    }
+
 
     public function delete($certId)
     {

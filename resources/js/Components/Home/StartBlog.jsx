@@ -4,17 +4,23 @@ import DataSaverOnOutlinedIcon from "@mui/icons-material/DataSaverOnOutlined";
 
 function StartBlog() {
     return (
-        <Grid2 container sx={{ my: 5, columnGap: 1 }}>
-            <Grid2 size={{ xs: 2, sm: 2, md: 3 }}>
+        <Grid2 container sx={{ my: 5 }}>
+            <Grid2
+                size={{ xs: 2, sm: 2, md: 2 }}
+                sx={{
+                    display: "flex",
+                    justifyContent: "flex-start",
+                }}
+            >
                 <Box
                     sx={{
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
-                        height: { xs: 250, sm: 300, md: 320 }, // Adjust the height based on your needs
-                        backgroundColor: "primary.main", // Your background color
-                        borderRadius: 3, // Rounded corners like your image
-                        width: "50px", // Make sure the width fits your design
+                        height: { xs: 250, sm: 300, md: 350 },
+                        backgroundColor: "primary.main",
+                        borderRadius: 5,
+                        width: { xs: 50, sm: 60, md: 80 },
                         margin: "auto",
                         border: "1px solid #fff",
                     }}
@@ -24,7 +30,7 @@ function StartBlog() {
                             transform: "rotate(-90deg)", // Rotate the text back to normal
                             color: "white",
                             whiteSpace: "nowrap", // Prevent text from breaking into multiple lines
-                            fontSize: { xs: 13, sm: 14, md: 16 }, // Adjust font size
+                            fontSize: { xs: 13, sm: 14, md: 18 }, // Adjust font size
                             fontFamily: "Abyssinica SIL",
                         }}
                     >
@@ -33,18 +39,19 @@ function StartBlog() {
                 </Box>
             </Grid2>
             <Grid2
-                size={{ xs: 4, sm: 4, md: 4 }}
+                size={{ xs: 4, sm: 4, md: 5 }}
                 sx={{
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
                     alignItems: "center",
+                    rowGap: 2,
                 }}
             >
                 <Box
                     sx={{
-                        height: { xs: 100, sm: 120, md: 150 },
-                        width: { xs: 100, sm: 120, md: 150 },
+                        height: { xs: "100%", sm: "70%", md: "80%" },
+                        width: { xs: "100%", sm: "70%", md: "80%" },
                         bgcolor: "#E39FB6",
                         display: "flex",
                         flexDirection: "column",
@@ -72,8 +79,8 @@ function StartBlog() {
                 </Box>
                 <Box
                     sx={{
-                        height: { xs: 100, sm: 120, md: 150 },
-                        width: { xs: 100, sm: 120, md: 150 },
+                        height: { xs: "100%", sm: "70%", md: "80%" },
+                        width: { xs: "100%", sm: "70%", md: "80%" },
                         bgcolor: "#F17255",
                         display: "flex",
                         flexDirection: "column",
@@ -101,18 +108,19 @@ function StartBlog() {
                 </Box>
             </Grid2>
             <Grid2
-                size={{ xs: 4, sm: 4, md: 4 }}
+                size={{ xs: 4, sm: 4, md: 5 }}
                 sx={{
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
                     alignItems: "center",
+                    rowGap: 2,
                 }}
             >
                 <Box
                     sx={{
-                        height: { xs: 100, sm: 120, md: 150 },
-                        width: { xs: 100, sm: 120, md: 150 },
+                        height: { xs: "100%", sm: "70%", md: "80%" },
+                        width: { xs: "100%", sm: "70%", md: "80%" },
                         bgcolor: "#FAD179",
                         display: "flex",
                         flexDirection: "column",
@@ -140,8 +148,8 @@ function StartBlog() {
                 </Box>
                 <Box
                     sx={{
-                        height: { xs: 100, sm: 120, md: 150 },
-                        width: { xs: 100, sm: 120, md: 150 },
+                        height: { xs: "100%", sm: "70%", md: "80%" },
+                        width: { xs: "100%", sm: "70%", md: "80%" },
                         bgcolor: "#9D614F",
                         display: "flex",
                         flexDirection: "column",

@@ -1,4 +1,6 @@
+import BackButton from "@/Components/BackButton";
 import Subtitle from "@/Components/Typo/Subtitle";
+import AgeCalculator from "@/Components/util/AgeCalculator";
 import ImageDialog from "@/Components/util/ImageDialog";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { Head } from "@inertiajs/react";
@@ -16,6 +18,7 @@ function SingleJobApply({ apply }) {
         <AdminLayout>
             <Container maxWidth="lg">
                 <Head title={apply.name} />
+                <BackButton />
                 <Box
                     sx={{
                         maxWidth: 450,
@@ -48,7 +51,10 @@ function SingleJobApply({ apply }) {
                     {/* Display Date of Birth */}
                     <Box sx={{ mb: 3 }}>
                         <Subtitle>Date of Birth</Subtitle>
-                        <Typography>{apply.date_of_birth || "N/A"}</Typography>
+                        <Typography>
+                            {apply.date_of_birth || "N/A"} (
+                            <AgeCalculator date={apply?.date_of_birth} /> yrs)
+                        </Typography>
                     </Box>
 
                     {/* Display Gender */}

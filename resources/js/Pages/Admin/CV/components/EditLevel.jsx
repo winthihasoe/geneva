@@ -28,7 +28,6 @@ function EditLevel({ cv }) {
             preserveScroll: true,
         });
     };
-    console.log("level", data);
 
     return (
         <Box sx={{ width: 280, margin: " auto" }}>

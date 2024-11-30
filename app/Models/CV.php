@@ -176,4 +176,9 @@ class CV extends Model
     {
         return $this->hasMany(Certificate::class, 'cv_id');
     }
+    
+    public function experiences()
+    {
+        return $this->hasMany(Experience::class, 'cv_id');
+    }
 }

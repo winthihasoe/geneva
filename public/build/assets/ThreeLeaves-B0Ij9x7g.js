@@ -1,0 +1,1 @@
+import{j as e}from"./app-BiAKKDm0.js";import{B as t}from"./Box-D_9raCmS.js";function a({top:s=null,bottom:l=null,left:n=null,right:o=null}){return e.jsx(t,{sx:{display:{xs:"none",sm:"none",md:"flex"},position:"absolute",top:s,bottom:l,left:n,right:o},children:e.jsx("img",{src:"/images/three_leaves.png",alt:"leaves",style:{width:120}})})}export{a as T};

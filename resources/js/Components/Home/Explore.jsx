@@ -10,6 +10,8 @@ function Explore() {
                 flexWrap: "wrap",
                 columnGap: 2,
                 rowGap: 10,
+                pt: 7,
+                pb: 3,
             }}
         >
             {/* Babysitter  */}

@@ -15,7 +15,7 @@ function Noodle({ top = null, bottom = null, left = null, right = null }) {
         >
             <img
                 src="/images/noodle.png"
-                alt="leaves"
+                alt="noodle"
                 style={{
                     width: 40,
                 }}

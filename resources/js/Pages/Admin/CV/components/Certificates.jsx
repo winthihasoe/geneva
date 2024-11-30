@@ -18,9 +18,9 @@ function Certificates({ certificates }) {
                 }}
             >
                 {certificates.map((cert) => (
-                    <Certificate certificate={cert} />
+                    <Certificate key={cert.id} certificate={cert} />
                 ))}
-            </Box>{" "}
+            </Box>
         </Box>
     );
 }

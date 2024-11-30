@@ -8,10 +8,12 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import Compressor from "compressorjs";
 import Certificate from "./components/Certificate";
 import NoData from "@/Components/util/NoData";
+import YesOrNoModal from "@/Components/util/YesOrNoModal";
 
 function MyCertificates({ certificates }) {
     const [isAdding, setIsAdding] = useState(false);
     const { data, setData, post, processing, errors, setError } = useForm({
+        qualification_type: "",
         training_center_name: "",
         course: "",
         start_date: "",
@@ -59,6 +61,11 @@ function MyCertificates({ certificates }) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        // Validate the qualification_type field
+        if (!data.qualification_type) {
+            setError("qualification_type", "Qualification type is required.");
+            return;
+        }
         const formData = new FormData();
 
         // Append form fields
@@ -77,7 +84,7 @@ function MyCertificates({ certificates }) {
         }
 
         // Submit using Inertia's post method
-        post(route("certificates.store"), {
+        post(route("certificate.store"), {
             data: formData,
             forceFormData: true, // Required by Inertia for FormData submissions
             onSuccess: () => {
@@ -105,7 +112,7 @@ function MyCertificates({ certificates }) {
         <AppLayout>
             <Head title="My Certificates" />
             <Container maxWidth="md" sx={{ py: 3 }}>
-                <Title>Certificates</Title>
+                <Title>My Qualificatoin</Title>
                 <Button
                     variant="contained"
                     startIcon={<AddCircleOutlineIcon />}
@@ -147,7 +154,10 @@ function MyCertificates({ certificates }) {
                     {certificates &&
                         certificates.length > 0 &&
                         certificates.map((certificate) => (
-                            <Certificate certificate={certificate} />
+                            <Certificate
+                                key={certificate.id}
+                                certificate={certificate}
+                            />
                         ))}
                 </Box>
             </Container>

@@ -27,7 +27,7 @@ function AdminJobApplyTable({ applications }) {
 
                         <TableCell>
                             <Typography fontWeight="bold" color={"#fff"}>
-                                Birthday
+                                Age
                             </Typography>
                         </TableCell>
                         <TableCell>

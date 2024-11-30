@@ -3,7 +3,9 @@
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\CarePlanController;
 use App\Http\Controllers\CertificateController;
+use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\CVController;
+use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\JobApplyController;
 use App\Http\Controllers\PageController;
@@ -20,6 +22,11 @@ Route::get('/services/{name}', [ServiceController::class, 'getServiceByName'])->
 Route::get('job-apply', [JobApplyController::class, 'jobApply'])->name('job.apply');
 Route::post('job-apply', [JobApplyController::class, 'store'])->name('job.apply.store');
 Route::get('job-apply-success', [JobApplyController::class, 'success'])->name('job.apply.success');
+
+// Contact message 
+Route::post('contact', [ContactMessageController::class, 'storeMessage'])->name('message.store');
+
+Route::get('contact-messages', [ContactMessageController::class, 'contactMessages'])->name('contact.messages');
 
 Route::middleware('auth', 'is.employer')->group(function () {
     Route::get('care/start', [CarePlanController::class, 'startCare'])->name('care.start');
@@ -63,10 +70,17 @@ Route::middleware(['auth', 'is.caregiver'])->group(function () {
     
     Route::get('cv', [CVController::class, 'myCV'])->name('cv.show');
     
-    Route::get('/certificates', [CertificateController::class, 'show'])->name('certificates.show');
-    Route::post('/certificates', [CertificateController::class, 'store'])->name('certificates.store');
-    Route::delete('/certificates/{certId}', [CertificateController::class, 'delete'])->name('certificates.delete');
+    // Certificates
+    Route::get('certificates', [CertificateController::class, 'show'])->name('certificates.show');
+    Route::post('certificates', [CertificateController::class, 'store'])->name('certificate.store');
+    Route::put('certificates,/{certId}', [CertificateController::class, 'update'])->name('certificate.update');
+    Route::delete('certificates/{certId}', [CertificateController::class, 'delete'])->name('certificate.delete');
     
+    // My Experiences
+    Route::get('experiences', [ExperienceController::class, 'show'])->name('experiences.show');
+    Route::post('experience', [ExperienceController::class, 'store'])->name('experience.store');
+    Route::delete('experience/{id}', [ExperienceController::class, 'destroy'])->name('experience.delete');
+
     Route::get('/seven-day-training', [PageController::class, 'sevenDaysTraining'])->name('training.sevenDays');
 });
 
@@ -85,6 +99,11 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     // Update CV level
     Route::post('/cv/{id}/update-level', [CVController::class, 'updateLevel'])->name('cv.update.level');
 
+    // Create CV experience
+    Route::post('cv/{id}/experience', [ExperienceController::class, 'adminStoreExperience'])->name('admin.experience.store');
+    Route::post('/admin/experience/reorder/{cv}', [ExperienceController::class, 'reorder'])->name('admin.experience.reorder');
+
+
     // Care plans
     Route::get('/care-plans', [CarePlanController::class, 'adminCarePlans'])->name('admin.care.plans');
     Route::get('/care-plans/{id}', [CarePlanController::class, 'adminSingleCarePlan'])->name('admin.care.plan.detail');
@@ -92,6 +111,19 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::get('job-applies', [JobApplyController::class, 'adminJobApplies'])->name('admin.job.apply');
     Route::get('job-applies/{id}', [JobApplyController::class, 'adminSingleJobApply'])->name('admin.job.apply.single');
     Route::get('job-search-result', [JobApplyController::class, 'adminSearchJobApply'])->name('admin.job.apply.search');
+
+    // ---- contact message ----
+    Route::get('contact-message', [ContactMessageController::class, 'contactMessage'])->name('admin.messages');
+    Route::get('contact-message/{id}', [ContactMessageController::class, 'adminSingleMessage'])->name('admin.single.message');
+      // Mark as Unread
+    Route::put('mark-as-unread/{id}', [ContactMessageController::class, 'markAsUnread'])->name('markAsUnread');
+    
+    // Delete message
+    Route::delete('contact-message/{id}', [ContactMessageController::class, 'adminDeleteMessage'])->name('admin.message.delete');
+    
+    // Store reply message
+    Route::post('reply-message/{id}', [ContactMessageController::class, 'storeReplyMessage'])->name('admin.message.reply');
+    Route::delete('reply-message/{id}', [ContactMessageController::class, 'adminDeleteReplyMessage'])->name('admin.message.reply.delete');
 });
 
 require __DIR__.'/auth.php';

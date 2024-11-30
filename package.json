@@ -34,7 +34,10 @@
         "date-fns": "^3.6.0",
         "dayjs": "^1.11.13",
         "framer-motion": "^11.11.10",
+        "html-react-parser": "^5.1.18",
         "lodash": "^4.17.21",
+        "quill": "^2.0.2",
+        "react-beautiful-dnd": "^13.1.1",
         "react-joyride": "^2.9.2",
         "react-phone-input-2": "^2.15.1"
     }

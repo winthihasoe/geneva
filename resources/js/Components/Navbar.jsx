@@ -62,12 +62,23 @@ const JoinOurTeam = [
         routeName: "cv.show",
     },
     {
-        title: "Certificate",
+        title: "My Qualifications",
         routeName: "certificates.show",
+    },
+    {
+        title: "My Experiences",
+        routeName: "experiences.show",
     },
     {
         title: "7 Days Training",
         routeName: "training.sevenDays",
+    },
+];
+
+const ContactUs = [
+    {
+        title: "Messages",
+        routeName: "contact.messages",
     },
 ];
 const Navbar = () => {
@@ -250,7 +261,7 @@ const Navbar = () => {
                                             backgroundColor: "primary.dark", // Optional: Darker shade on hover
                                         },
                                         borderBottom:
-                                            index !== Pricing.length - 1
+                                            index !== JoinOurTeam.length - 1
                                                 ? 2
                                                 : 0, // Apply borderBottom only if not the last item
                                         borderColor: "#fff",
@@ -272,21 +283,36 @@ const Navbar = () => {
                             anchorEl={anchorElContact}
                             open={Boolean(anchorElContact)}
                             onClose={() => handleMenuClose(setAnchorElContact)}
+                            sx={{
+                                "& .MuiPaper-root": {
+                                    backgroundColor: "primary.main", // Set the dropdown background to primary color
+                                    p: 1,
+                                },
+                            }}
                         >
-                            <MenuItem
-                                onClick={() =>
-                                    handleMenuClose(setAnchorElContact)
-                                }
-                            >
-                                Email
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() =>
-                                    handleMenuClose(setAnchorElContact)
-                                }
-                            >
-                                Phone
-                            </MenuItem>
+                            {ContactUs.map((item, index) => (
+                                <MenuItem
+                                    key={index}
+                                    onClick={() => {
+                                        handleMenuClose(setAnchorElPricing);
+                                        router.get(route(item.routeName));
+                                    }}
+                                    sx={{
+                                        color: "white", // Set text color to white
+                                        fontFamily: "Mina",
+                                        "&:hover": {
+                                            backgroundColor: "primary.dark", // Optional: Darker shade on hover
+                                        },
+                                        borderBottom:
+                                            index !== Pricing.length - 1
+                                                ? 2
+                                                : 0, // Apply borderBottom only if not the last item
+                                        borderColor: "#fff",
+                                    }}
+                                >
+                                    {item.title}
+                                </MenuItem>
+                            ))}
                         </Menu>
                     </Box>
 
@@ -423,6 +449,7 @@ const Navbar = () => {
                                             primaryTypographyProps={{
                                                 fontSize: 14, // Set your desired font size
                                                 fontFamily: "Mina", // Set your desired font family
+                                                cursor: "pointer",
                                             }}
                                             primary={item.title}
                                         />
@@ -474,7 +501,14 @@ const Navbar = () => {
                                             router.get(route(item.routeName));
                                         }}
                                     >
-                                        <ListItemText primary={item.title} />
+                                        <ListItemText
+                                            primaryTypographyProps={{
+                                                fontSize: 14, // Set your desired font size
+                                                fontFamily: "Mina", // Set your desired font family
+                                                cursor: "pointer",
+                                            }}
+                                            primary={item.title}
+                                        />
                                     </ListItem>
                                 ))}
                             </List>
@@ -492,12 +526,25 @@ const Navbar = () => {
                         </ListItem>
                         <Collapse in={openContact} timeout="auto" unmountOnExit>
                             <List component="div" disablePadding>
-                                <ListItem button sx={{ pl: 4 }}>
-                                    <ListItemText primary="Email" />
-                                </ListItem>
-                                <ListItem button sx={{ pl: 4 }}>
-                                    <ListItemText primary="Phone" />
-                                </ListItem>
+                                {ContactUs.map((item, index) => (
+                                    <ListItem
+                                        key={index}
+                                        button
+                                        sx={{ pl: 4, cursor: "pointer" }}
+                                        onClick={() => {
+                                            toggleDrawer(false);
+                                            router.get(route(item.routeName));
+                                        }}
+                                    >
+                                        <ListItemText
+                                            primaryTypographyProps={{
+                                                fontSize: 14, // Set your desired font size
+                                                fontFamily: "Mina", // Set your desired font family
+                                            }}
+                                            primary={item.title}
+                                        />
+                                    </ListItem>
+                                ))}
                             </List>
                         </Collapse>
                         <Divider />

@@ -6,7 +6,7 @@ export default function BodyText({ children }) {
         <Typography
             mt={2}
             fontSize={{ xs: 11, sm: 13, md: 14 }}
-            mb={{ xs: 1, sm: 2 }}
+            mb={{ xs: 1.5, sm: 2 }}
         >
             {children}
         </Typography>

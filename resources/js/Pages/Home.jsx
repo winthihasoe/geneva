@@ -12,6 +12,7 @@ import AppLayout from "@/Layouts/AppLayout";
 function Home({ caregivers }) {
     const CVs = Object.values(caregivers);
     const user = usePage().props.auth.user;
+
     return (
         <AppLayout>
             <Box position={"relative"}>
@@ -78,9 +79,12 @@ function Home({ caregivers }) {
                             color: "black", // Text color, customize as needed
                         }}
                     >
-                        <Grid2 container>
+                        <Grid2
+                            container
+                            sx={{ display: "flex", alignItems: "center" }}
+                        >
                             <Grid2 size={{ xs: 12, sm: 12, md: 6 }}>
-                                <Box sx={{ pt: 10 }}>
+                                <Box sx={{ pt: 2 }}>
                                     <Explore />
                                 </Box>
                             </Grid2>
@@ -117,6 +121,7 @@ function Home({ caregivers }) {
                                         justifyContent: "center",
                                         alignItems: "center",
                                         px: { xs: 1, sm: 0 },
+                                        width: "100%",
                                     }}
                                 >
                                     {CVs &&

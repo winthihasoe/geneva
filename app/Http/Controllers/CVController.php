@@ -354,7 +354,7 @@ class CVController extends Controller
    
     public function myCV ()
     {
-        $cv = CV::with('certificates')->where('user_id', Auth::user()->id)->first();
+        $cv = CV::with('certificates', 'experiences')->where('user_id', Auth::user()->id)->first();
         return Inertia::render('CV/MyCV', [
             'cv' => $cv,
             'certificates' => $cv ? $cv->certificates : collect(), // Return an empty collection if no CV exists
@@ -400,7 +400,7 @@ class CVController extends Controller
     // Admin Single CV
     public function adminSingleCV ($cvId)
     {
-        $cv = CV::with('user', 'certificates')->findOrFail($cvId);
+        $cv = CV::with('user', 'certificates', 'experiences')->findOrFail($cvId);
         return Inertia::render('Admin/CV/AdminSingleCV', [
             'cv' => $cv,
         ]);

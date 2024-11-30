@@ -1,5 +1,20 @@
 import React, { useState } from "react";
-import { Box, TextField, Typography, Button, MenuItem } from "@mui/material";
+import {
+    Box,
+    TextField,
+    Typography,
+    Button,
+    MenuItem,
+    FormControl,
+    RadioGroup,
+    FormControlLabel,
+    Radio,
+    Divider,
+} from "@mui/material";
+import Subtitle from "@/Components/Typo/Subtitle";
+import BodyText from "@/Components/Typo/BodyText";
+import TinyText from "@/Components/Typo/TinyText";
+import TitleCenter from "@/Components/Typo/TitleCenter";
 
 function CertificateForm({ data, handleChange, handleSubmit, errors }) {
     const [preview, setPreview] = useState(null);
@@ -20,16 +35,79 @@ function CertificateForm({ data, handleChange, handleSubmit, errors }) {
             style={{
                 marginBottom: "1rem",
                 padding: "1rem",
-                maxWidth: "250px",
+                maxWidth: "350px",
                 borderRadius: "5px",
                 position: "relative",
                 overflow: "hidden",
+                border: "2px dashed",
+                borderColor: "#ddd",
             }}
         >
+            <TitleCenter>Add New Qualification</TitleCenter>
+            <BodyText>
+                Please add qualification relevant to caregiver job.
+            </BodyText>
+            <Divider sx={{ my: 2 }} />
             <Box mb={3}>
+                <FormControl component="fieldset">
+                    <Subtitle>Qualification type</Subtitle>
+                    {/* Display error message */}
+                    {errors.qualification_type && (
+                        <Typography
+                            variant="body2"
+                            color="error"
+                            sx={{ mt: 1 }}
+                        >
+                            {errors.qualification_type}
+                        </Typography>
+                    )}
+                    <RadioGroup
+                        row
+                        value={data.qualification_type || ""}
+                        onChange={handleChange}
+                        name="qualification_type"
+                    >
+                        <FormControlLabel
+                            value="Certificate"
+                            control={<Radio />}
+                            label={<BodyText>Certificate</BodyText>}
+                        />
+                        <FormControlLabel
+                            value="Degree"
+                            control={<Radio />}
+                            label={<BodyText>Degree</BodyText>}
+                        />
+                        <FormControlLabel
+                            value="Diploma"
+                            control={<Radio />}
+                            label={<BodyText>Diploma</BodyText>}
+                        />
+                    </RadioGroup>
+                </FormControl>
+            </Box>
+
+            <Box mb={3}>
+                <Subtitle>Course Name</Subtitle>
                 <TextField
                     required
-                    label="Training Center Name"
+                    value={data.course}
+                    onChange={handleChange}
+                    name="course"
+                    fullWidth
+                    size="small"
+                />
+                <TinyText>Example: Nurse Aid</TinyText>
+                {errors.course && (
+                    <Typography fontSize={12} color="error">
+                        {errors.course}
+                    </Typography>
+                )}
+            </Box>
+
+            <Box mb={3}>
+                <Subtitle>Training School Name</Subtitle>
+                <TextField
+                    required
                     value={data.training_center_name}
                     onChange={handleChange}
                     name="training_center_name"
@@ -43,26 +121,11 @@ function CertificateForm({ data, handleChange, handleSubmit, errors }) {
                     </Typography>
                 )}
             </Box>
+
             <Box mb={3}>
+                <Subtitle>Course Start Date</Subtitle>
                 <TextField
                     required
-                    label="Course Name"
-                    value={data.course}
-                    onChange={handleChange}
-                    name="course"
-                    fullWidth
-                    size="small"
-                />
-                {errors.course && (
-                    <Typography fontSize={12} color="error">
-                        {errors.course}
-                    </Typography>
-                )}
-            </Box>
-            <Box mb={3}>
-                <TextField
-                    required
-                    label="Course Start Date"
                     type="date"
                     value={data.start_date || ""}
                     onChange={handleChange}
@@ -80,11 +143,12 @@ function CertificateForm({ data, handleChange, handleSubmit, errors }) {
                     </Typography>
                 )}
             </Box>
+
             <Box mb={3}>
+                <Subtitle>Course Duration (Months)</Subtitle>
                 <TextField
                     required
                     select
-                    label="Course Duration (Months)"
                     value={data.duration}
                     onChange={handleChange}
                     name="duration"
@@ -104,6 +168,7 @@ function CertificateForm({ data, handleChange, handleSubmit, errors }) {
                     </Typography>
                 )}
             </Box>
+
             <Box mb={3}>
                 {/* Image Preview */}
                 {preview && (
@@ -125,14 +190,15 @@ function CertificateForm({ data, handleChange, handleSubmit, errors }) {
                     </Typography>
                 )}
             </Box>
+
             <Box textAlign={"center"} my={2}>
                 <Button
-                    variant="contained"
+                    variant="outlined"
                     component="label"
                     sx={{ mb: 1, borderRadius: 20 }}
                     size="small"
                 >
-                    Select Certificate Image
+                    Upload Qualification Image
                     <input
                         name="certificate_photo"
                         type="file"
@@ -141,6 +207,8 @@ function CertificateForm({ data, handleChange, handleSubmit, errors }) {
                         onChange={handleImageChange} // Use the new handleImageChange function
                     />
                 </Button>
+            </Box>
+            <Box textAlign={"center"} my={2}>
                 <Button
                     variant="contained"
                     sx={{ mt: 1, borderRadius: 20 }}
