@@ -19,7 +19,7 @@ function PatientAndContactMessage({ totalPatients, totalContactMessages }) {
                 >
                     <CardMedia>
                         <img
-                            src="/images/dashboard/patient.JPG"
+                            src="/images/dashboard/patient.jpg"
                             alt="Total Caregiver"
                             style={{
                                 width: "100%",
