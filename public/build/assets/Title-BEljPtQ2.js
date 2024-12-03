@@ -1,0 +1,1 @@
+import{j as o}from"./app-CD4DcD3Z.js";import{T as t}from"./Typography-CIEEr8sp.js";function m({children:r}){return o.jsx(t,{variant:"h4",fontWeight:800,mb:1,fontFamily:"Livvic",color:"primary",children:r})}export{m as T};

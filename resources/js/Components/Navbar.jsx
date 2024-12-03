@@ -239,6 +239,7 @@ const Navbar = () => {
                         >
                             {AboutUs.map((item, index) => (
                                 <MenuItem
+                                    key={index}
                                     onClick={() => {
                                         handleMenuClose(setAnchorElAbout);
                                         router.get(route(item.routeName));
@@ -455,7 +456,10 @@ const Navbar = () => {
                             sx={{ cursor: "pointer" }}
                             onClick={() => handleToggle(setOpenPricing)}
                         >
-                            <ListItemText primary="Pricing" />
+                            <ListItemText
+                                sx={{ color: "primary.main" }}
+                                primary="Pricing"
+                            />
                             {openPricing ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
                         <Collapse in={openPricing} timeout="auto" unmountOnExit>
@@ -495,7 +499,10 @@ const Navbar = () => {
                             sx={{ cursor: "pointer" }}
                             onClick={() => handleToggle(setOpenAbout)}
                         >
-                            <ListItemText primary="About Us" />
+                            <ListItemText
+                                sx={{ color: "primary.main" }}
+                                primary="About Us"
+                            />
                             {openAbout ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
                         <Collapse in={openAbout} timeout="auto" unmountOnExit>
@@ -504,7 +511,7 @@ const Navbar = () => {
                                     <ListItem
                                         key={index}
                                         button
-                                        sx={{ pl: 4 }}
+                                        sx={{ pl: 4, cursor: "pointer" }}
                                         onClick={() => {
                                             toggleDrawer(false);
                                             router.get(route(item.routeName));
@@ -530,7 +537,10 @@ const Navbar = () => {
                             sx={{ cursor: "pointer" }}
                             onClick={() => handleToggle(setOpenJoin)}
                         >
-                            <ListItemText primary="Join Our Team" />
+                            <ListItemText
+                                sx={{ color: "primary.main" }}
+                                primary="Join Our Team"
+                            />
                             {openJoin ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
                         <Collapse in={openJoin} timeout="auto" unmountOnExit>
@@ -539,7 +549,7 @@ const Navbar = () => {
                                     <ListItem
                                         key={index}
                                         button
-                                        sx={{ pl: 4 }}
+                                        sx={{ pl: 4, cursor: "pointer" }}
                                         onClick={() => {
                                             toggleDrawer(false);
                                             router.get(route(item.routeName));
@@ -565,7 +575,10 @@ const Navbar = () => {
                             sx={{ cursor: "pointer" }}
                             onClick={() => handleToggle(setOpenContact)}
                         >
-                            <ListItemText primary="Contact Us" />
+                            <ListItemText
+                                sx={{ color: "primary.main" }}
+                                primary="Contact Us"
+                            />
                             {openContact ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
                         <Collapse in={openContact} timeout="auto" unmountOnExit>

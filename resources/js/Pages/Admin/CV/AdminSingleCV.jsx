@@ -27,8 +27,6 @@ import FamilyMemberRecord from "./components/FamilyMemberRecord";
 import FormText from "@/Components/Typo/FormText";
 
 const AdminSingleCV = ({ cv }) => {
-    console.log("cv", cv);
-
     const renderStars = (count) => {
         const stars = [];
         const starCount = Math.round(count / 2);

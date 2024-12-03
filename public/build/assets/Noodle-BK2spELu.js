@@ -1,0 +1,1 @@
+import{j as o}from"./app-CD4DcD3Z.js";import{B as t}from"./Box-CaVfkp0I.js";function m({top:l=null,bottom:n=null,left:s=null,right:e=null}){return o.jsx(t,{sx:{display:{xs:"none",sm:"none",md:"flex"},position:"absolute",top:l,bottom:n,left:s,right:e},children:o.jsx("img",{src:"/images/noodle.png",alt:"noodle",style:{width:40}})})}export{m as N};

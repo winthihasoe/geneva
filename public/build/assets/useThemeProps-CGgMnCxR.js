@@ -1,1 +1,0 @@
-import{g as s}from"./getThemeProps-LtO-vT19.js";import{t as p}from"./app-CZr76i8o.js";function i({props:o,name:t,defaultTheme:m,themeId:r}){let e=p(m);return r&&(e=e[r]||e),s({theme:e,name:t,props:o})}export{i as u};
