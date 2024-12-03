@@ -5,6 +5,7 @@ import ExperienceCard from "@/Pages/Experience/components/ExperienceCard";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useForm, usePage } from "@inertiajs/inertia-react";
 import { router } from "@inertiajs/react";
+import TinyText from "@/Components/Typo/TinyText";
 
 function Experiences({ experiences: initialExperiences, cvId }) {
     const [isAdding, setIsAdding] = useState(false);
@@ -161,15 +162,21 @@ function Experiences({ experiences: initialExperiences, cvId }) {
                 </DragDropContext>
             </Box>
             {experienceList?.length > 0 && (
-                <Box textAlign={"center"} mt={4}>
-                    <Button
-                        onClick={saveOrder}
-                        variant="contained"
-                        sx={{ borderRadius: 20 }}
-                    >
-                        Save Order
-                    </Button>
-                </Box>
+                <>
+                    <TinyText textAlign={"center"}>
+                        After ordering by <strong>drag and drop</strong>, click
+                        to save the order.
+                    </TinyText>
+                    <Box textAlign={"center"} mt={4}>
+                        <Button
+                            onClick={saveOrder}
+                            variant="contained"
+                            sx={{ borderRadius: 20 }}
+                        >
+                            Save Order
+                        </Button>
+                    </Box>
+                </>
             )}
         </Box>
     );

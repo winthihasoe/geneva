@@ -20,6 +20,7 @@ import {
 import React, { useState } from "react";
 import AdminJobApplyTable from "./components/AdminJobApplyTable";
 import NoData from "@/Components/util/NoData";
+import Title from "@/Components/Typo/Title";
 
 function JobApplies({ jobApplies, count }) {
     const handlePageChange = (event, value) => {
@@ -55,9 +56,10 @@ function JobApplies({ jobApplies, count }) {
                         sx={{
                             display: "flex",
                             alignItems: "center",
+                            gap: 2,
                         }}
                     >
-                        <Subtitle>Job Applies list</Subtitle>
+                        <Title>Job Applies</Title>
                         <Box
                             sx={{
                                 bgcolor: "red",

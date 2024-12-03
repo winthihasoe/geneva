@@ -4,7 +4,12 @@ import DataSaverOnOutlinedIcon from "@mui/icons-material/DataSaverOnOutlined";
 
 function StartBlog() {
     return (
-        <Grid2 container sx={{ my: 5 }}>
+        <Grid2
+            container
+            sx={{
+                my: 5,
+            }}
+        >
             <Grid2
                 size={{ xs: 2, sm: 2, md: 2 }}
                 sx={{
@@ -39,13 +44,14 @@ function StartBlog() {
                 </Box>
             </Grid2>
             <Grid2
-                size={{ xs: 4, sm: 4, md: 5 }}
+                size={{ xs: 5, sm: 4, md: 5 }}
                 sx={{
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
                     alignItems: "center",
                     rowGap: 2,
+                    p: 1,
                 }}
             >
                 <Box
@@ -108,13 +114,14 @@ function StartBlog() {
                 </Box>
             </Grid2>
             <Grid2
-                size={{ xs: 4, sm: 4, md: 5 }}
+                size={{ xs: 5, sm: 4, md: 5 }}
                 sx={{
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
                     alignItems: "center",
                     rowGap: 2,
+                    p: 1,
                 }}
             >
                 <Box

@@ -25,4 +25,21 @@ class PageController extends Controller
    {
       return back()->with('success', 'Coming Soon ...');
    }
+  
+   public function mission()
+   {
+      return Inertia::render('AboutUs/Mission');
+   }
+   
+   public function team()
+   {
+      return Inertia::render('AboutUs/Team');
+   }
+   
+   public function philosophy()
+   {
+      return Inertia::render('AboutUs/Philosophy');
+   }
+
+
 }

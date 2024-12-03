@@ -15,7 +15,7 @@ function AdminCarePlans({ carePlans }) {
                 {carePlans && carePlans.length > 0 ? (
                     <>
                         <Title>Care Plans</Title>
-                        {carePlans.map((plan) => (
+                        {/* {carePlans.map((plan) => (
                             <Box
                                 key={plan.id}
                                 sx={{
@@ -47,7 +47,7 @@ function AdminCarePlans({ carePlans }) {
                                     {plan.start_date}
                                 </Typography>
                             </Box>
-                        ))}
+                        ))} */}
                     </>
                 ) : (
                     <NoData />

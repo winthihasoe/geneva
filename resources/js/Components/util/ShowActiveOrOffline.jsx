@@ -25,8 +25,6 @@ const ShowActiveOrOffline = ({ lastActiveAt }) => {
                 marginRight: 1, // Space between the dot and other elements
             }}
         >
-            {/* CSS for ripple effect */}
-            {/* CSS for ripple effect */}
             <style>
                 {`
         @keyframes ripple {

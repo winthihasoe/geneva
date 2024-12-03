@@ -84,7 +84,8 @@ function Certificate({ certificate }) {
                         alt="Certificate"
                         sx={{
                             width: "100%",
-                            height: "auto",
+                            height: "180px",
+                            objectFit: "cover",
                             mb: 2,
                             borderRadius: 2,
                         }}

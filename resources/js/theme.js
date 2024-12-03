@@ -118,10 +118,10 @@ const darkTheme = createTheme({
     palette: {
         mode: "dark",
         primary: {
-            main: "#1c90a9",
+            main: "#21875C",
         },
         secondary: {
-            main: "#fec000",
+            main: "#1a778e",
         },
         background: {
             default: "#303030", // Lighter background color for the entire app

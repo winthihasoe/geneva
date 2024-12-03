@@ -86,6 +86,7 @@ export default function AdminCVs({
                                 alignItems: "center",
                                 borderRadius: "50%",
                                 display: "flex",
+                                mb: 1,
                             }}
                         >
                             <Typography fontSize={11} color={"#fff"}>
@@ -157,6 +158,7 @@ export default function AdminCVs({
                             alignItems: "center",
                             borderRadius: "50%",
                             display: "flex",
+                            mb: 1,
                         }}
                     >
                         <Typography fontSize={11} color={"#fff"}>

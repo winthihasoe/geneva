@@ -1,4 +1,5 @@
 import {
+    Box,
     Button,
     Paper,
     Table,
@@ -15,8 +16,6 @@ import AgeCalculator from "@/Components/util/AgeCalculator";
 import ShowActiveOrOffline from "@/Components/util/ShowActiveOrOffline";
 
 function AdminResumeTable({ resumes }) {
-    console.log(resumes);
-
     return (
         <TableContainer component={Paper}>
             <Table aria-label="CV table">
@@ -24,7 +23,7 @@ function AdminResumeTable({ resumes }) {
                     <TableRow>
                         <TableCell>
                             <Typography fontWeight="bold" color={"#fff"}>
-                                Full Name (MDW)
+                                Name
                             </Typography>
                         </TableCell>
 
@@ -54,22 +53,34 @@ function AdminResumeTable({ resumes }) {
                             </Typography>
                         </TableCell>
                         <TableCell>
-                            <Typography fontWeight="bold" color={"#fff"}>
-                                Status
+                            <Typography
+                                textAlign={"center"}
+                                fontWeight="bold"
+                                color={"#fff"}
+                            >
+                                Contact
                             </Typography>
                         </TableCell>
                         <TableCell>
                             <Typography fontWeight="bold" color={"#fff"}>
-                                Operate
+                                Status
                             </Typography>
                         </TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {resumes.map((resume, index) => (
-                        <TableRow key={index}>
+                        <TableRow
+                            key={index}
+                            onClick={() =>
+                                router.get(route("admin.cv.single", resume.id))
+                            }
+                            sx={{ cursor: "pointer" }}
+                        >
                             <TableCell>
-                                <strong>{resume.full_name || "N/A"}</strong>
+                                <Typography fontSize={13} fontWeight={"bold"}>
+                                    {resume.full_name || "N/A"}
+                                </Typography>
                             </TableCell>
                             <TableCell>
                                 <AgeCalculator date={resume.date_of_birth} />
@@ -97,22 +108,22 @@ function AdminResumeTable({ resumes }) {
                                 </Typography>
                             </TableCell>
                             <TableCell>
-                                <ShowActiveOrOffline
-                                    lastActiveAt={resume.user?.last_active_at}
-                                />
+                                <Typography
+                                    fontSize={13}
+                                    color={"primary"}
+                                    textAlign={"center"}
+                                >
+                                    {resume.emergency_contact || "N/A"}
+                                </Typography>
                             </TableCell>
                             <TableCell>
-                                <Button
-                                    variant="outlined"
-                                    size="small"
-                                    onClick={() =>
-                                        router.get(
-                                            route("admin.cv.single", resume.id)
-                                        )
-                                    }
-                                >
-                                    Detail
-                                </Button>
+                                <Box display={"flex"} justifyContent={"center"}>
+                                    <ShowActiveOrOffline
+                                        lastActiveAt={
+                                            resume.user?.last_active_at
+                                        }
+                                    />
+                                </Box>
                             </TableCell>
                         </TableRow>
                     ))}

@@ -45,12 +45,19 @@ function AdminJobApplyTable({ applications }) {
                                 Weight
                             </Typography>
                         </TableCell>
-                        <TableCell />
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {applications.map((apply, index) => (
-                        <TableRow key={index}>
+                        <TableRow
+                            key={index}
+                            onClick={() =>
+                                router.get(
+                                    route("admin.job.apply.single", apply.id)
+                                )
+                            }
+                            sx={{ cursor: "pointer" }}
+                        >
                             <TableCell>
                                 <strong>{apply.name || "N/A"}</strong>
                             </TableCell>
@@ -58,38 +65,25 @@ function AdminJobApplyTable({ applications }) {
                                 <AgeCalculator date={apply.date_of_birth} />
                             </TableCell>
                             <TableCell>
-                                <Typography fontSize={13} color={"grey.600"}>
+                                <Typography variant="body2" color={"grey.600"}>
                                     {apply.gender || "N/A"}
                                 </Typography>
                             </TableCell>
                             <TableCell>
-                                {apply.height
-                                    ? parseFloat(apply.height).toFixed(1)
-                                    : "N/A"}
-                                cm
+                                <Typography variant="body2">
+                                    {apply.height
+                                        ? parseFloat(apply.height).toFixed(1)
+                                        : "N/A"}
+                                    cm
+                                </Typography>
                             </TableCell>
                             <TableCell>
-                                {apply.weight
-                                    ? parseFloat(apply.weight).toFixed(1)
-                                    : "N/A"}
-                                kg
-                            </TableCell>
-
-                            <TableCell>
-                                <Button
-                                    variant="outlined"
-                                    size="small"
-                                    onClick={() =>
-                                        router.get(
-                                            route(
-                                                "admin.job.apply.single",
-                                                apply.id
-                                            )
-                                        )
-                                    }
-                                >
-                                    Detail
-                                </Button>
+                                <Typography variant="body2">
+                                    {apply.weight
+                                        ? parseFloat(apply.weight).toFixed(1)
+                                        : "N/A"}
+                                    kg
+                                </Typography>
                             </TableCell>
                         </TableRow>
                     ))}

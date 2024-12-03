@@ -87,7 +87,7 @@ const AppBar = styled(MuiAppBar, {
 const MainContent = styled(Box)(({ theme, open, isMobile }) => ({
     minHeight: "92vh",
     flexGrow: 1,
-    padding: theme.spacing(3),
+    padding: theme.spacing(2),
     marginTop: appBarHeight, // Add margin to account for the AppBar height
     marginLeft: isMobile
         ? 0
@@ -153,7 +153,7 @@ export default function AdminLayout({ children }) {
                     >
                         <ListItemButton
                             sx={{
-                                minHeight: 48,
+                                height: 60,
                                 justifyContent: open ? "initial" : "center",
                                 px: 2.5,
                             }}
@@ -162,7 +162,7 @@ export default function AdminLayout({ children }) {
                             <ListItemIcon
                                 sx={{
                                     minWidth: 0,
-                                    mr: open ? 3 : "auto",
+                                    mr: open ? 2 : "auto",
                                     justifyContent: "center",
                                 }}
                             >
@@ -170,7 +170,7 @@ export default function AdminLayout({ children }) {
                             </ListItemIcon>
                             <ListItemText
                                 primary={menuItem.title}
-                                sx={{ opacity: open ? 1 : 0 }}
+                                sx={{ opacity: open ? 0.8 : 0 }}
                             />
                         </ListItemButton>
                     </ListItem>
@@ -208,13 +208,13 @@ export default function AdminLayout({ children }) {
                     >
                         Hearty Aid
                     </Typography>
-                    <Typography fontSize={12}>Light</Typography>
+                    <Typography variant="body2">Light</Typography>
                     <Switch
                         checked={darkMode}
                         onChange={toggleDarkMode}
                         color="default"
                     />
-                    <Typography fontSize={12}>Dark</Typography>
+                    <Typography variant="body2">Dark</Typography>
                 </Toolbar>
             </AppBar>
             <Box sx={{ display: "flex" }}>

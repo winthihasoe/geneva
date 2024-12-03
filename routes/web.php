@@ -9,6 +9,7 @@ use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\JobApplyController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PhoneVerificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceController;
@@ -22,6 +23,11 @@ Route::get('/services/{name}', [ServiceController::class, 'getServiceByName'])->
 Route::get('job-apply', [JobApplyController::class, 'jobApply'])->name('job.apply');
 Route::post('job-apply', [JobApplyController::class, 'store'])->name('job.apply.store');
 Route::get('job-apply-success', [JobApplyController::class, 'success'])->name('job.apply.success');
+
+// About Us
+Route::get('mission-statement', [PageController::class, 'mission'])->name('mission');
+Route::get('care-philosophy', [PageController::class, 'philosophy'])->name('philosophy');
+Route::get('team-introduction', [PageController::class, 'team'])->name('team');
 
 // Contact message 
 Route::post('contact', [ContactMessageController::class, 'storeMessage'])->name('message.store');
@@ -103,6 +109,12 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::post('cv/{id}/experience', [ExperienceController::class, 'adminStoreExperience'])->name('admin.experience.store');
     Route::post('/admin/experience/reorder/{cv}', [ExperienceController::class, 'reorder'])->name('admin.experience.reorder');
 
+    // Patients
+    Route::get('patients', [PatientController::class, 'index'])->name('admin.patients');
+    Route::get('patients/create', [PatientController::class, 'createPatient'])->name('admin.patient.create');
+    Route::post('patients/create', [PatientController::class, 'store'])->name('admin.patient.store');
+    Route::get('patients/search-result', [PatientController::class, 'adminSearchPatient'])->name('admin.patient.search');
+    Route::get('patients/{id}', [PatientController::class, 'adminSinglePatient'])->name('admin.patient');
 
     // Care plans
     Route::get('/care-plans', [CarePlanController::class, 'adminCarePlans'])->name('admin.care.plans');

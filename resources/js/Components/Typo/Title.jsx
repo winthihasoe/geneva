@@ -4,10 +4,10 @@ import React from "react";
 export default function Title({ children }) {
     return (
         <Typography
-            variant="h5"
-            fontSize={{ xs: 18, sm: 22, md: 33 }}
+            variant="h4"
+            // fontSize={{ xs: 20, sm: 22, md: 33 }}
             fontWeight={800}
-            mb={3}
+            mb={1}
             fontFamily={"Livvic"}
             color="primary"
         >

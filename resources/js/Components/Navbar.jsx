@@ -81,6 +81,22 @@ const ContactUs = [
         routeName: "contact.messages",
     },
 ];
+
+const AboutUs = [
+    {
+        title: "Mission Statement",
+        routeName: "mission",
+    },
+    {
+        title: "Care philosophy",
+        routeName: "philosophy",
+    },
+    {
+        title: "Team Introduction",
+        routeName: "team",
+    },
+];
+
 const Navbar = () => {
     const user = usePage().props.auth.user;
     const [anchorElPricing, setAnchorElPricing] = useState(null);
@@ -214,21 +230,35 @@ const Navbar = () => {
                             anchorEl={anchorElAbout}
                             open={Boolean(anchorElAbout)}
                             onClose={() => handleMenuClose(setAnchorElAbout)}
+                            sx={{
+                                "& .MuiPaper-root": {
+                                    backgroundColor: "primary.main", // Set the dropdown background to primary color
+                                    p: 1,
+                                },
+                            }}
                         >
-                            <MenuItem
-                                onClick={() =>
-                                    handleMenuClose(setAnchorElAbout)
-                                }
-                            >
-                                Our Story
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() =>
-                                    handleMenuClose(setAnchorElAbout)
-                                }
-                            >
-                                Mission
-                            </MenuItem>
+                            {AboutUs.map((item, index) => (
+                                <MenuItem
+                                    onClick={() => {
+                                        handleMenuClose(setAnchorElAbout);
+                                        router.get(route(item.routeName));
+                                    }}
+                                    sx={{
+                                        color: "white", // Set text color to white
+                                        fontFamily: "Mina",
+                                        "&:hover": {
+                                            backgroundColor: "primary.dark", // Optional: Darker shade on hover
+                                        },
+                                        borderBottom:
+                                            index !== JoinOurTeam.length - 1
+                                                ? 2
+                                                : 0, // Apply borderBottom only if not the last item
+                                        borderColor: "#fff",
+                                    }}
+                                >
+                                    {item.title}
+                                </MenuItem>
+                            ))}
                         </Menu>
                         <Button
                             onClick={(e) => handleMenuOpen(e, setAnchorElJoin)}
@@ -470,12 +500,26 @@ const Navbar = () => {
                         </ListItem>
                         <Collapse in={openAbout} timeout="auto" unmountOnExit>
                             <List component="div" disablePadding>
-                                <ListItem button sx={{ pl: 4 }}>
-                                    <ListItemText primary="Our Story" />
-                                </ListItem>
-                                <ListItem button sx={{ pl: 4 }}>
-                                    <ListItemText primary="Mission" />
-                                </ListItem>
+                                {AboutUs.map((item, index) => (
+                                    <ListItem
+                                        key={index}
+                                        button
+                                        sx={{ pl: 4 }}
+                                        onClick={() => {
+                                            toggleDrawer(false);
+                                            router.get(route(item.routeName));
+                                        }}
+                                    >
+                                        <ListItemText
+                                            primaryTypographyProps={{
+                                                fontSize: 14, // Set your desired font size
+                                                fontFamily: "Mina", // Set your desired font family
+                                                cursor: "pointer",
+                                            }}
+                                            primary={item.title}
+                                        />
+                                    </ListItem>
+                                ))}
                             </List>
                         </Collapse>
                         <Divider />

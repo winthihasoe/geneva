@@ -9,6 +9,7 @@ import StorefrontRoundedIcon from "@mui/icons-material/StorefrontRounded";
 import NewspaperRoundedIcon from "@mui/icons-material/NewspaperRounded";
 import PaymentsRoundedIcon from "@mui/icons-material/PaymentsRounded";
 import MessageRoundedIcon from "@mui/icons-material/MessageRounded";
+import AccessibleIcon from "@mui/icons-material/Accessible";
 
 export const AdminSidebarData = [
     {
@@ -31,22 +32,22 @@ export const AdminSidebarData = [
         icon: <WorkHistoryRoundedIcon />,
         link: "/admin/job-applies",
     },
-    // {
-    //     title: "Job offers",
-    //     icon: <WorkHistoryRoundedIcon />,
-    //     link: "/admin/job-offers",
-    // },
+    {
+        title: "Patient",
+        icon: <AccessibleIcon />,
+        link: "/admin/patients",
+    },
 
     // {
     //     title: "Shop management",
     //     icon: <StorefrontRoundedIcon />,
     //     link: "/admin/admin-shops",
     // },
-    {
-        title: "User management",
-        icon: <PeopleRoundedIcon />,
-        link: "/admin/users",
-    },
+    // {
+    //     title: "User management",
+    //     icon: <PeopleRoundedIcon />,
+    //     link: "/admin/users",
+    // },
     // {
     //     title: "Blog management",
     //     icon: <NewspaperRoundedIcon />,
