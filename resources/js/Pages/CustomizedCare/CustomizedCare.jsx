@@ -10,7 +10,7 @@ import Title from "@/Components/Typo/Title";
 import MyCarePlans from "./components/MyCarePlans";
 
 function CustomizedCare() {
-    const carePlans = usePage().props.carePlans;
+    // const carePlans = usePage().props.carePlans;
     return (
         <AppLayout>
             <Head title="Customize care" />
@@ -170,9 +170,6 @@ function CustomizedCare() {
                         <Noodle top={0} right={-100} />
                     </Grid2>
                 </Grid2>
-                {carePlans && carePlans.length > 0 && (
-                    <MyCarePlans carePlans={carePlans} />
-                )}
             </Container>
         </AppLayout>
     );

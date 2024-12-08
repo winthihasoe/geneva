@@ -25,6 +25,11 @@ class PageController extends Controller
    {
       return back()->with('success', 'Coming Soon ...');
    }
+   
+   public function medicalCheckup()
+   {
+      return back()->with('success', 'Coming Soon ...');
+   }
   
    public function mission()
    {

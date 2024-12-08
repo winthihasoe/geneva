@@ -2,8 +2,9 @@ import AppLayout from "@/Layouts/AppLayout";
 import { Head, useForm } from "@inertiajs/react";
 import { Box, Button, Grid2, Typography } from "@mui/material";
 import React from "react";
-import CVDetail from "./components/CVDetail";
 import InterviewForm from "./components/InterviewForm";
+import CVdetail from "../Admin/CV/components/CVdetail";
+import CVSmall from "./components/CVSmall";
 
 function CreateInterview({ cv, carePlan, serviceFees, selectedSalary }) {
     const { data, setData, post, errors, setError, processing } = useForm({
@@ -33,7 +34,8 @@ function CreateInterview({ cv, carePlan, serviceFees, selectedSalary }) {
                     size={{ xs: 12, sm: 6, md: 6 }}
                     sx={{ px: { xs: 1, sm: 3 }, py: 2 }}
                 >
-                    <CVDetail cv={cv} />
+                    {/* <CVDetail cv={cv} /> */}
+                    <CVSmall cv={cv} />
                 </Grid2>
                 <Grid2
                     size={{ xs: 12, sm: 6, md: 6 }}

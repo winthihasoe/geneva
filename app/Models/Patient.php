@@ -69,16 +69,11 @@ class Patient extends Model
         return $newSerial . $suffix;
     }
 
-    /**
-     * Relationship: A patient has many care logs.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    // public function careLogs()
-    // {
-    //     return $this->hasMany(CareLog::class);
-    // }
-
+    public function newbornBabyCareLogs()
+    {
+        return $this->hasMany(NewbornBabyCareLog::class);
+    }
+    
     /**
      * Relationship: A patient has many care plans.
      *
@@ -87,5 +82,10 @@ class Patient extends Model
     public function carePlans()
     {
         return $this->hasMany(CarePlan::class);
+    }
+
+    public function carePlanPhotos()
+    {
+        return $this->hasMany(CarePlanPhoto::class);
     }
 }

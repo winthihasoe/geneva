@@ -17,7 +17,7 @@ const ResumeItalic = ({ children }) => (
     <Typography
         fontWeight={300}
         fontStyle="italic"
-        mb={{ xs: 1.5, sm: 2, md: 3 }}
+        mb={1}
         fontSize={{ xs: 8, sm: 12, md: 15 }}
     >
         {children}
@@ -25,6 +25,8 @@ const ResumeItalic = ({ children }) => (
 );
 
 function CVdetail({ cv }) {
+    const hasElderSkills = cv?.nursing_skills_for_elder?.length > 0;
+    const hasChildSkills = cv?.nursing_skills_for_child?.length > 0;
     return (
         <Box
             sx={{
@@ -331,49 +333,56 @@ function CVdetail({ cv }) {
                     ))}
                 </Box>
 
-                <Grid2
-                    container
+                <Box
                     sx={{
                         bgcolor: "#bdf5dc",
                         m: { xs: 1, sm: 2, md: 3 },
                         p: { xs: 1, sm: 2, md: 3 },
                         borderRadius: { xs: 3, sm: 5, md: 10 },
-                        columnGap: { xs: 0, sm: 1, md: 2 },
                         display: "flex",
+                        flexDirection: { xs: "column", md: "row" },
+                        gap: { xs: 1, sm: 2 },
                         justifyContent: "center",
                     }}
                 >
-                    <Grid2 size={6}>
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                            <Typography
-                                sx={{
-                                    color: "primary.main",
-                                    fontWeight: "bold",
-                                    mr: 0.5,
-                                    fontSize: { xs: 8, sm: 14, md: 16 },
-                                }}
-                            >
-                                ADVANCED CAREGIVER
-                            </Typography>{" "}
-                            <Box
-                                sx={{
-                                    display: {
-                                        xs: "none",
-                                        sm: "flex",
-                                        md: "flex",
-                                    },
-                                    width: "7%",
-                                }}
-                            >
-                                <img
-                                    src="/images/heart.png"
-                                    alt="Hearty Aid Logo"
-                                    style={{ width: "100%" }}
-                                />
+                    {hasElderSkills && (
+                        <Box
+                            sx={{
+                                flex: hasChildSkills ? "1" : "0 0 100%", // Full width if no child skills
+                                display: "flex",
+                                flexDirection: "column",
+                            }}
+                        >
+                            <Box sx={{ display: "flex", alignItems: "center" }}>
+                                <Typography
+                                    sx={{
+                                        color: "primary.main",
+                                        fontWeight: "bold",
+                                        mr: 0.5,
+                                        fontSize: { xs: 11, sm: 14, md: 16 },
+                                    }}
+                                >
+                                    ADVANCED CAREGIVER
+                                </Typography>
+                                <Box
+                                    sx={{
+                                        display: {
+                                            xs: "none",
+                                            sm: "flex",
+                                            md: "flex",
+                                        },
+                                        width: 25,
+                                        ml: 1,
+                                    }}
+                                >
+                                    <img
+                                        src="/images/heart.png"
+                                        alt="Hearty Aid Logo"
+                                        style={{ width: "100%" }}
+                                    />
+                                </Box>
                             </Box>
-                        </Box>
-                        <ResumeText>SKILLS</ResumeText>
-                        {cv?.nursing_skills_for_elder?.length > 0 && (
+                            <ResumeText>SKILLS</ResumeText>
                             <Box sx={{ ml: 1 }}>
                                 {cv?.nursing_skills_for_elder.map(
                                     (skill, index) => (
@@ -385,46 +394,54 @@ function CVdetail({ cv }) {
                                                     height: 8,
                                                     marginRight: "3px",
                                                 }}
-                                                alt="Line"
+                                                alt="Dot"
                                             />{" "}
                                             {skill}
                                         </ResumeItalic>
                                     )
                                 )}
                             </Box>
-                        )}
-                    </Grid2>
-                    <Grid2 size={5}>
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                            <Typography
-                                sx={{
-                                    color: "primary.main",
-                                    fontWeight: "bold",
-                                    mr: 1,
-                                    fontSize: { xs: 8, sm: 14, md: 16 },
-                                }}
-                            >
-                                NEWBORN NANNY
-                            </Typography>{" "}
-                            <Box
-                                sx={{
-                                    display: {
-                                        xs: "none",
-                                        sm: "flex",
-                                        md: "flex",
-                                    },
-                                    width: "7%",
-                                }}
-                            >
-                                <img
-                                    src="/images/heart.png"
-                                    alt="Hearty Aid Logo"
-                                    style={{ width: "100%" }}
-                                />
-                            </Box>
                         </Box>
-                        <ResumeText>SKILLS</ResumeText>
-                        {cv?.nursing_skills_for_child?.length > 0 && (
+                    )}
+
+                    {hasChildSkills && (
+                        <Box
+                            sx={{
+                                flex: hasElderSkills ? "1" : "0 0 100%", // Full width if no elder skills
+                                display: "flex",
+                                flexDirection: "column",
+                            }}
+                        >
+                            <Box sx={{ display: "flex", alignItems: "center" }}>
+                                <Typography
+                                    sx={{
+                                        color: "primary.main",
+                                        fontWeight: "bold",
+                                        mr: 1,
+                                        fontSize: { xs: 11, sm: 14, md: 16 },
+                                    }}
+                                >
+                                    NEWBORN NANNY
+                                </Typography>
+                                <Box
+                                    sx={{
+                                        display: {
+                                            xs: "none",
+                                            sm: "flex",
+                                            md: "flex",
+                                        },
+                                        width: 25,
+                                        ml: 1,
+                                    }}
+                                >
+                                    <img
+                                        src="/images/heart.png"
+                                        alt="Hearty Aid Logo"
+                                        style={{ width: "100%" }}
+                                    />
+                                </Box>
+                            </Box>
+                            <ResumeText>SKILLS</ResumeText>
                             <Box sx={{ ml: 1 }}>
                                 {cv?.nursing_skills_for_child.map(
                                     (skill, index) => (
@@ -443,10 +460,9 @@ function CVdetail({ cv }) {
                                     )
                                 )}
                             </Box>
-                        )}
-                    </Grid2>
-                </Grid2>
-
+                        </Box>
+                    )}
+                </Box>
                 <Box
                     sx={{
                         top: 5,

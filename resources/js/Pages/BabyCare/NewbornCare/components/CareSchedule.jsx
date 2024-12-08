@@ -29,42 +29,47 @@ function CareSchedule({ service }) {
     };
     return (
         <>
-            <Box textAlign="center">
-                <Box
-                    display={"inline-block"}
-                    position={"relative"}
-                    my={{ xs: 0, sm: 0, md: 2 }}
-                >
-                    <MainTitle>Care Schedule</MainTitle>
-                    <Box
-                        sx={{
-                            display: {
-                                xs: "none",
-                                sm: "flex",
-                                md: "flex",
-                                position: "absolute",
-                                top: -45,
-                                left: -50,
-                            },
-                        }}
-                    >
-                        <img
-                            src="/images/three_leaves.png"
-                            alt="leaves"
-                            style={{
-                                width: 90,
-                            }}
-                        />
-                    </Box>
-                </Box>
-            </Box>
-            <Grid2 container p={{ xs: 1, sm: 2, md: 3 }} rowGap={3}>
+            <Grid2
+                container
+                position={"relative"}
+                p={{ xs: 1, sm: 2, md: 3 }}
+                rowGap={5}
+            >
                 <Grid2
-                    size={{ xs: 12, sm: 12 }}
+                    size={{ xs: 12, sm: 12, md: 6 }}
                     sx={{
                         position: "relative",
                     }}
                 >
+                    <Box textAlign="center">
+                        <Box
+                            display={"inline-block"}
+                            position={"relative"}
+                            my={{ xs: 0, sm: 0, md: 2 }}
+                        >
+                            <MainTitle>Care Schedule</MainTitle>
+                            <Box
+                                sx={{
+                                    display: {
+                                        xs: "none",
+                                        sm: "flex",
+                                        md: "flex",
+                                        position: "absolute",
+                                        top: -45,
+                                        left: -50,
+                                    },
+                                }}
+                            >
+                                <img
+                                    src="/images/three_leaves.png"
+                                    alt="leaves"
+                                    style={{
+                                        width: 90,
+                                    }}
+                                />
+                            </Box>
+                        </Box>
+                    </Box>
                     <Box
                         sx={{
                             display: "flex",
@@ -108,15 +113,16 @@ function CareSchedule({ service }) {
                                 />
                             </Box>
 
-                            <Box my={2}>
+                            <Box my={4}>
                                 <Typography
                                     sx={{
                                         fontFamily: "Karma",
-
-                                        fontSize: 20,
+                                        fontSize: { xs: 20, sm: 25 },
+                                        fontWeight: "bold",
+                                        color: "primary.main",
                                     }}
                                 >
-                                    Choose package
+                                    Choose Care timing
                                 </Typography>
                                 <RadioGroup
                                     row
@@ -130,8 +136,10 @@ function CareSchedule({ service }) {
                                             <Typography
                                                 sx={{
                                                     fontFamily: "Karma",
-
-                                                    fontSize: 15,
+                                                    fontSize: {
+                                                        xs: 15,
+                                                        sm: 20,
+                                                    },
                                                 }}
                                             >
                                                 Daytime Care (Live-out)
@@ -146,7 +154,10 @@ function CareSchedule({ service }) {
                                                 sx={{
                                                     fontFamily: "Karma",
 
-                                                    fontSize: 15,
+                                                    fontSize: {
+                                                        xs: 15,
+                                                        sm: 20,
+                                                    },
                                                 }}
                                             >
                                                 24-Hour Care (Live-in)
@@ -157,15 +168,6 @@ function CareSchedule({ service }) {
 
                                 {showDutyTime && (
                                     <Box sx={{ pl: 3 }}>
-                                        <Typography
-                                            sx={{
-                                                fontFamily: "Karma",
-
-                                                fontSize: 15,
-                                            }}
-                                        >
-                                            Select duty time
-                                        </Typography>
                                         <RadioGroup
                                             row
                                             value={
@@ -217,8 +219,9 @@ function CareSchedule({ service }) {
                                 <Typography
                                     sx={{
                                         fontFamily: "Karma",
-
-                                        fontSize: 20,
+                                        fontSize: { xs: 20, sm: 25 },
+                                        fontWeight: "bold",
+                                        color: "primary.main",
                                     }}
                                 >
                                     Choose care program duration
@@ -282,28 +285,14 @@ function CareSchedule({ service }) {
                             </Box>
                         </Box>
                     </Box>
-                    <Noodle bottom={0} right={0} />
-
-                    <Box
-                        sx={{
-                            display: { xs: "none", sm: "none", md: "flex" },
-                            position: "absolute",
-                            top: 0,
-                            left: -30,
-                        }}
-                    >
-                        <img
-                            src="/images/babyCare/baby_box.png"
-                            alt="leaves"
-                            style={{
-                                width: 300,
-                            }}
-                        />
+                </Grid2>
+                <Grid2 size={{ xs: 12, sm: 12, md: 6 }}>
+                    <MainTitle>Pricing Detail</MainTitle>
+                    <Box sx={{ mt: -3 }}>
+                        <ServiceTable service={service} />
                     </Box>
                 </Grid2>
-                <Grid2 size={{ xs: 12, sm: 12 }}>
-                    <ServiceTable service={service} />
-                </Grid2>
+                <Noodle bottom={0} left={0} />
             </Grid2>
         </>
     );

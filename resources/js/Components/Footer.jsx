@@ -10,7 +10,7 @@ function Footer() {
                 bgcolor: "white",
                 p: { xs: 2, sm: 3, md: 4 },
                 rowGap: 3,
-                border: "1px solid",
+                borderTop: "1px solid",
                 borderColor: "primary.main",
             }}
         >

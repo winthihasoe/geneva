@@ -349,6 +349,22 @@ const Navbar = () => {
 
                     {/* Log In and Sign Up buttons */}
                     <Box sx={{ display: "flex", gap: 2 }}>
+                        {/* Get into the Caregiver site */}
+                        {user && user.is_caregiver && (
+                            <Button
+                                variant="outlined"
+                                sx={{ borderRadius: 20, px: 2 }}
+                                size="small"
+                                onClick={() =>
+                                    router.get(route("cg.dashboard"))
+                                }
+                            >
+                                <Typography fontSize={13}>
+                                    Caregiver Dashboard
+                                </Typography>
+                            </Button>
+                        )}
+
                         {/* Get into the Admin site */}
                         {user && user.is_admin && (
                             <Button

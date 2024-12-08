@@ -329,8 +329,8 @@ function BabyInfo() {
                     </Box>
                 </Box>
 
-                <Noodle bottom={0} left={-10} />
-                <ThreeLeaves bottom={90} left={-55} />
+                <Noodle bottom={0} left={0} />
+                <ThreeLeaves bottom={90} left={-45} />
             </Grid2>
             <Grid2
                 size={{ xs: 12, sm: 6 }}
@@ -448,24 +448,6 @@ function BabyInfo() {
                                         e.target.value
                                     )
                                 }
-                            />
-                        </Box>
-                        <Box>
-                            <Typography
-                                sx={{
-                                    fontFamily: "Karma",
-                                    color: "#fff",
-                                    fontSize: 13,
-                                }}
-                            >
-                                OTP
-                            </Typography>
-                            <TextField
-                                sx={{
-                                    bgcolor: "#f5f5f5",
-                                    borderRadius: 20,
-                                    px: 1,
-                                }}
                             />
                         </Box>
                     </Box>

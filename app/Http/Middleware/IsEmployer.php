@@ -22,6 +22,6 @@ class IsEmployer
         }
 
         // If the user is not a caregiver, redirect back with a message
-        return redirect()->back()->with('error', 'Sorry! This is employer only.');
+        return redirect()->back()->with('error', 'Sorry! This is for employer only.');
     }
 }

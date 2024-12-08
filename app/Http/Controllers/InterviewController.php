@@ -15,7 +15,7 @@ class InterviewController extends Controller
 {
     public function showCV ($slug)
     {
-        $cv = CV::with('certificates')->where('slug', $slug)->firstOrFail();
+        $cv = CV::with('certificates', 'experiences')->where('slug', $slug)->firstOrFail();
         $user_id = Auth::user()->id;
  
         $existingCarePlan = CarePlan::where('user_id', $user_id)->latest()->first();

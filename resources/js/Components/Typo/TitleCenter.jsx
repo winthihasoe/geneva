@@ -7,7 +7,7 @@ export default function TitleCenter({ children }) {
             fontSize={{ xs: 18, sm: 20, md: 22 }}
             textAlign="center"
             fontWeight={600}
-            mb={3}
+            mb={2}
             color="grey.700"
             fontFamily={"Livvic"}
         >

@@ -2,12 +2,15 @@
 
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\CarePlanController;
+use App\Http\Controllers\CarePlanPhotoController;
 use App\Http\Controllers\CertificateController;
+use App\Http\Controllers\CgDashboardController;
 use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\CVController;
 use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\JobApplyController;
+use App\Http\Controllers\NewbornBabyCareLogController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PhoneVerificationController;
@@ -69,6 +72,9 @@ Route::middleware('auth', 'is.employer')->group(function () {
 
 
 Route::middleware(['auth', 'is.caregiver'])->group(function () {
+    // Caregiver dashboard
+    Route::get('dashboard', [CgDashboardController::class, 'dashboard'])->name('cg.dashboard');
+    
     // Join our team -> create CV
     Route::get('cv/create', [CVController::class, 'createCV'])->name('cv.create');
     Route::post('cv/create', [CVController::class, 'store'])->name('cv.store');
@@ -88,6 +94,10 @@ Route::middleware(['auth', 'is.caregiver'])->group(function () {
     Route::delete('experience/{id}', [ExperienceController::class, 'destroy'])->name('experience.delete');
 
     Route::get('/seven-day-training', [PageController::class, 'sevenDaysTraining'])->name('training.sevenDays');
+    Route::get('/medical-checkup', [PageController::class, 'medicalCheckup'])->name('medical.chekup');
+
+    // Fill Newborn care log
+    Route::get('newborn-care-log/fill', [NewbornBabyCareLogController::class, 'fillForm'])->name('newborn.careLog.create');
 });
 
 Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
@@ -115,6 +125,7 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::post('patients/create', [PatientController::class, 'store'])->name('admin.patient.store');
     Route::get('patients/search-result', [PatientController::class, 'adminSearchPatient'])->name('admin.patient.search');
     Route::get('patients/{id}', [PatientController::class, 'adminSinglePatient'])->name('admin.patient');
+    Route::post('patients/{patientId}', [CarePlanPhotoController::class, 'uploadPhotos'])->name('admin.carePlan.photo.upload');
 
     // Care plans
     Route::get('/care-plans', [CarePlanController::class, 'adminCarePlans'])->name('admin.care.plans');

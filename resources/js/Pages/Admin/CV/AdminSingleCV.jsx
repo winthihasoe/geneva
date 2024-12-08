@@ -307,24 +307,6 @@ const AdminSingleCV = ({ cv }) => {
 
                 <Card sx={{ width: 250 }}>
                     <CardContent>
-                        <Subtitle>Food handling:</Subtitle>
-                        <FormText>
-                            {cv?.food_handling && cv?.food_handling.length > 0
-                                ? cv?.food_handling.join(", ")
-                                : "N/A"}
-                        </FormText>
-                        <Subtitle>Dietary Restriction:</Subtitle>
-                        <FormText>
-                            {cv?.dietary_restrictions &&
-                            cv?.dietary_restrictions.length > 0
-                                ? cv?.dietary_restrictions.join(", ")
-                                : "N/A"}
-                        </FormText>
-                    </CardContent>
-                </Card>
-
-                <Card sx={{ width: 250 }}>
-                    <CardContent>
                         <Subtitle>
                             Wear glasses: {cv?.wears_glasses || "N/A"}
                         </Subtitle>

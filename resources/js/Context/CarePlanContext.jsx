@@ -22,7 +22,6 @@ export const CarePlanProvider = ({ children, carePlan }) => {
             gender: "",
             home_address: "",
             phone_number: "",
-            otp: "",
             baby_medical_condition: "",
             allergies: "",
         },
@@ -55,11 +54,6 @@ export const CarePlanProvider = ({ children, carePlan }) => {
         current_step: carePlan?.current_step || 0,
         care_plan_id: carePlan?.care_plan_id || "",
     }));
-
-    // Save carePlanData to local storage whenever it changes
-    // useEffect(() => {
-    //     localStorage.setItem("carePlanData", JSON.stringify(carePlanData));
-    // }, [carePlanData]);
 
     // Function to update care plan fields
     const updateCarePlan = (field, value) => {

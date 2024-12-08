@@ -18,9 +18,6 @@ function InterviewForm({
     serviceFees,
     carePlan,
 }) {
-    console.log("selectedSalary", selectedSalary);
-    console.log("serviceFees", serviceFees);
-
     const [Mode, setMode] = useState("");
 
     const handleChange = (e) => {
@@ -47,8 +44,6 @@ function InterviewForm({
             mode: e.target.value,
         });
     };
-
-    const [cgSalary, setCgSalary] = useState("");
 
     return (
         <Box>

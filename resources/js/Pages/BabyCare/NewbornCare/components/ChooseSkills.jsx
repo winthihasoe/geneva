@@ -76,7 +76,7 @@ function ChooseSkills({ advSkills, basicSkills }) {
                         flexDirection: "column",
                     }}
                 >
-                    <Box sx={{ maxWidth: 400 }}>
+                    <Box sx={{ maxWidth: 400, position: "relative" }}>
                         <Subtitle>
                             Essential Daily needs &{" "}
                             <span
@@ -120,16 +120,21 @@ function ChooseSkills({ advSkills, basicSkills }) {
                                             sx={{
                                                 fontSize: {
                                                     xs: 13,
-                                                    sm: 15,
+                                                    sm: 16,
                                                     md: 18,
                                                 },
                                                 fontFamily: "Karma",
+                                                mt: 1,
                                             }}
                                         >
                                             {skill}
                                         </Typography>
                                     }
-                                    sx={{ width: 280 }}
+                                    sx={{
+                                        width: 280,
+                                        display: "flex",
+                                        alignItems: "flex-start",
+                                    }}
                                 />
                             ))}
                         </FormGroup>
@@ -138,11 +143,11 @@ function ChooseSkills({ advSkills, basicSkills }) {
                     <Noodle bottom={300} left={-30} />
                     <img
                         src="/images/babyCare/baby_growth.png"
-                        alt="leaves"
+                        alt="baby growth"
                         style={{
                             minWidth: 280,
                             maxWidth: 500,
-                            height: 200,
+                            height: 100,
                             objectFit: "cover",
                         }}
                     />
@@ -199,22 +204,43 @@ function ChooseSkills({ advSkills, basicSkills }) {
                                             sx={{
                                                 fontSize: {
                                                     xs: 13,
-                                                    sm: 15,
+                                                    sm: 16,
                                                     md: 18,
                                                 },
                                                 fontFamily: "Karma",
+                                                mt: 1,
                                             }}
                                         >
                                             {skill}
                                         </Typography>
                                     }
-                                    sx={{ width: 280 }}
+                                    sx={{
+                                        width: 280,
+                                        display: "flex",
+                                        alignItems: "flex-start",
+                                    }}
                                 />
                             ))}
                         </FormGroup>
                     </Box>
                 </Grid2>
             </Grid2>
+            <Box
+                sx={{
+                    display: { xs: "none", sm: "none", md: "flex" },
+                    position: "absolute",
+                    bottom: 0,
+                    right: 100,
+                }}
+            >
+                <img
+                    src="/images/babyCare/baby_box.png"
+                    alt="box"
+                    style={{
+                        width: 300,
+                    }}
+                />
+            </Box>
         </>
     );
 }

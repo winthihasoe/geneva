@@ -11,8 +11,6 @@ import {
 import React from "react";
 
 function ServiceTable({ service }) {
-    console.log("service", service);
-
     // Filter packages by type
     const liveOutPackages = service.packages.filter(
         (pkg) => pkg.type === "Live-out"
@@ -27,7 +25,7 @@ function ServiceTable({ service }) {
                 p: 1,
                 pt: { xs: 1, sm: 3, md: 4 },
                 position: "relative",
-                mt: 4,
+                mt: 2,
             }}
         >
             <Box sx={{ display: { xs: "none", sm: "none", md: "flex" } }}>
@@ -61,10 +59,10 @@ function ServiceTable({ service }) {
                             src="/images/pricing/bump_up.png"
                             alt="Bump up"
                             style={{
-                                width: 65,
+                                width: 60,
                                 position: "absolute",
-                                top: -32,
-                                right: -37,
+                                top: -40,
+                                right: -45,
                             }}
                         />
                     </Box>

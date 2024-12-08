@@ -1,15 +1,7 @@
 import ElderCareWalking from "@/Components/Fancy/ElderCareWalking";
 import PhoneVerification from "@/Components/util/PhoneVerification";
 import { CarePlanContext } from "@/Context/CarePlanContext";
-import {
-    Box,
-    FormControlLabel,
-    Grid2,
-    Radio,
-    RadioGroup,
-    TextField,
-    Typography,
-} from "@mui/material";
+import { Box, TextField, Typography } from "@mui/material";
 import React, { useContext } from "react";
 
 const Label = ({ children }) => {
@@ -102,6 +94,7 @@ function ContactInfo() {
                     />
                 </Box>
             </Box>
+
             <Box sx={{ my: 3, maxWidth: 500 }}>
                 <Box
                     sx={{
@@ -132,7 +125,7 @@ function ContactInfo() {
                     />
                 </Box>
             </Box>
-            <PhoneVerification />
+
             <Box sx={{ my: 3, maxWidth: 500 }}>
                 <Box
                     sx={{

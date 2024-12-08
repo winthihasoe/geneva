@@ -1,1 +1,0 @@
-import{g as t}from"./getThemeProps-CLy2a1V-.js";import{v as p}from"./app-CRCmFi1E.js";function i({props:o,name:m,defaultTheme:s,themeId:r}){let e=p(s);return r&&(e=e[r]||e),t({theme:e,name:m,props:o})}export{i as u};

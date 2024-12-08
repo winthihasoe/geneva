@@ -23,7 +23,13 @@ class CertificateController extends Controller
     
     public function store(Request $request)
     {
+        
         $cv = Auth::user()->cv;
+
+        if(is_null($cv))
+        {
+            return back()->with('error', 'Please create CV first.');
+        }
         
         // Validate the form data
         $validatedData = $request->validate([
@@ -34,18 +40,23 @@ class CertificateController extends Controller
             'duration' => 'required|integer|min:1|max:50',
             'certificate_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10048', // Image validation
         ]);
-        $validatedData['cv_id'] = $cv->id;
-        // Handle the certificate image upload
-        if ($request->hasFile('certificateImage')) {
-            $imagePath = $request->file('certificateImage')->store('photos/certificates', 'public');
-            $validatedData['certificate_photo'] = $imagePath;
+
+        if($cv) {
+            $validatedData['cv_id'] = $cv->id;
+            // Handle the certificate image upload
+            if ($request->hasFile('certificateImage')) {
+                $imagePath = $request->file('certificateImage')->store('photos/certificates', 'public');
+                $validatedData['certificate_photo'] = $imagePath;
+            }
+    
+            // Save the certificate data
+            Certificate::create($validatedData);
+    
+            // Redirect back with a success message
+            return redirect()->back()->with('success', 'Certificate saved successfully!');
         }
 
-        // Save the certificate data
-        Certificate::create($validatedData);
-
-        // Redirect back with a success message
-        return redirect()->back()->with('success', 'Certificate saved successfully!');
+        return back()->with('error', 'Something went wrong.');
     }
 
     // Update certificate by caregiver or admin

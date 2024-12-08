@@ -7,7 +7,7 @@ export default function MainTitle({ children }) {
             variant="h5"
             fontSize={{ xs: 30, sm: 33, md: 45 }}
             fontWeight={400}
-            mb={3}
+            mb={2}
             fontFamily={"Karma"}
             color="primary"
             textAlign={"center"}
