@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 
 import { CarePlanContext } from "@/Context/CarePlanContext";
@@ -12,10 +12,8 @@ import Corner from "@/Components/Fancy/Corner";
 import Preferences from "./Preferences";
 
 const MultiStepForm = ({ service, basicSkills, advSkills }) => {
-    const { carePlanData, updateCarePlan, handleSubmit } =
-        useContext(CarePlanContext);
-    const step = useState(1);
-    const [activeStep, setActiveStep] = useState(carePlanData.current_step);
+    const { carePlanData, updateCarePlan } = useContext(CarePlanContext);
+    const [activeStep, setActiveStep] = useState(0);
 
     // Go to the next step
     const handleNext = () => {
@@ -36,6 +34,31 @@ const MultiStepForm = ({ service, basicSkills, advSkills }) => {
     const handleStepClick = (step) => {
         if (step <= activeStep) {
             setActiveStep(step);
+        }
+    };
+
+    const validateStep = () => {
+        switch (activeStep) {
+            case 1:
+                return (
+                    carePlanData.start_date &&
+                    carePlanData.schedule.package &&
+                    carePlanData.duration &&
+                    (carePlanData.schedule.package !== "Live-out" ||
+                        carePlanData.schedule.duty_time)
+                );
+            case 2:
+                return carePlanData.services.length > 0;
+            case 3:
+                return (
+                    carePlanData.preferences.age &&
+                    carePlanData.preferences.nationality
+                );
+            case 4:
+                return carePlanData.residential_address;
+
+            default:
+                return true;
         }
     };
 
@@ -90,6 +113,7 @@ const MultiStepForm = ({ service, basicSkills, advSkills }) => {
                         variant="contained"
                         sx={{ borderRadius: 20 }}
                         onClick={handleNext}
+                        disabled={!validateStep()}
                     >
                         <Typography
                             fontFamily={"Kavoon"}

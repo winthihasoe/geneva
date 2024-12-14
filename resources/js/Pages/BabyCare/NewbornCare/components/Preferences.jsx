@@ -103,7 +103,7 @@ function Preferences() {
                         fontSize: { xs: 20, sm: 25, md: 30 },
                     }}
                 >
-                    Age Preference
+                    Age Preference*
                 </Typography>
                 <RadioGroup
                     row
@@ -192,7 +192,7 @@ function Preferences() {
                         fontSize: { xs: 20, sm: 25, md: 30 },
                     }}
                 >
-                    Nationality
+                    Nationality*
                 </Typography>
                 <RadioGroup
                     row

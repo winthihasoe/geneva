@@ -18,7 +18,6 @@ class CarePlanPhotoController extends Controller
         // Validate that each file in 'photos' is an image
         $request->validate([
             'photos' => 'required|array',
-            'photos.*' => 'image|max:10048', // Validate each file as an image, max size 10MB
         ]);
 
         $patient = Patient::findOrFail($patientId);
@@ -29,24 +28,24 @@ class CarePlanPhotoController extends Controller
 
             // Move the uploaded photo to 'storage/app/public/photos/carePlans'
             $relativePath = 'photos/carePlans/' . $filename;
-            $absolutePath = $photo->storeAs('public/photos/carePlans', $filename);
+            $photo->storeAs('photos/carePlans', $filename, 'public');
 
             // Get the full path of the stored photo
-            $absolutePath = Storage::path($relativePath);
+            $filePath = storage_path('app/public/' . $relativePath);
 
             // Resize the image to a width of 600px while maintaining aspect ratio
-            Image::load($absolutePath)
+            Image::load($filePath)
                 ->width(600)
                 ->save();
 
             // Optimize the resized photo to reduce file size
             $optimizerChain = OptimizerChainFactory::create();
-            $optimizerChain->optimize($absolutePath);
+            $optimizerChain->optimize($filePath);
 
             // Save the photo record in the database
             CarePlanPhoto::create([
                 'patient_id' => $patient->id,
-                'photo_path' => $relativePath, // Store relative path
+                'photo_path' => $relativePath, 
                 'uploaded_by' => auth()->user()->name ?? 'Admin',
             ]);
         }
@@ -65,9 +64,9 @@ class CarePlanPhotoController extends Controller
         return response()->json($photos);
     }
 
-    public function deletePhoto($photoId)
+    public function deleteCarePlanPhoto($id)
     {
-        $photo = CarePlanPhoto::findOrFail($photoId);
+        $photo = CarePlanPhoto::findOrFail($id);
 
         // Delete file from storage
         Storage::disk('public')->delete($photo->photo_path);
@@ -75,7 +74,7 @@ class CarePlanPhotoController extends Controller
         // Delete from database
         $photo->delete();
 
-        return response()->json(['message' => 'Care plan photo deleted successfully.']);
+        return back()->with('success', 'Care Plan Photo deleted');
     }
 
 

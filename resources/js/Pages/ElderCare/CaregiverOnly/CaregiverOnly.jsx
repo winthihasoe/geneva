@@ -7,11 +7,15 @@ import { Container } from "@mui/material";
 import { CarePlanContext } from "@/Context/CarePlanContext";
 
 function CaregiverOnly({ service, caregivers, basicSkills, advSkills }) {
-    const { updateCarePlan, updateNestedField } = useContext(CarePlanContext);
+    const { carePlanData, resetCarePlan, updateCarePlan, updateNestedField } =
+        useContext(CarePlanContext);
     const email = usePage().props.auth.user.email;
     useEffect(() => {
-        updateCarePlan("care_type", "Elder");
-        updateCarePlan("service_type", "Elder Care");
+        if (carePlanData.service_type !== "Elder Care") {
+            resetCarePlan();
+            updateCarePlan("care_type", "Elder");
+            updateCarePlan("service_type", "Elder Care");
+        }
         updateNestedField("contact_info", "email", email);
     }, []);
     return (

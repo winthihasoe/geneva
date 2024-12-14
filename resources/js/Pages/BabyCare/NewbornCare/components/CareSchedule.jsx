@@ -93,7 +93,7 @@ function CareSchedule({ service }) {
                                         fontSize: 18,
                                     }}
                                 >
-                                    Start Date
+                                    Start Date*
                                 </Typography>
                                 <TextField
                                     sx={{
@@ -122,7 +122,7 @@ function CareSchedule({ service }) {
                                         color: "primary.main",
                                     }}
                                 >
-                                    Choose Care timing
+                                    Choose Care timing*
                                 </Typography>
                                 <RadioGroup
                                     row
@@ -168,6 +168,15 @@ function CareSchedule({ service }) {
 
                                 {showDutyTime && (
                                     <Box sx={{ pl: 3 }}>
+                                        <Typography
+                                            sx={{
+                                                fontFamily: "Karma",
+
+                                                fontSize: 16,
+                                            }}
+                                        >
+                                            Choose duty*
+                                        </Typography>
                                         <RadioGroup
                                             row
                                             value={
@@ -224,7 +233,7 @@ function CareSchedule({ service }) {
                                         color: "primary.main",
                                     }}
                                 >
-                                    Choose care program duration
+                                    Choose care program duration*
                                 </Typography>
                                 <RadioGroup
                                     row

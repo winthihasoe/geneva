@@ -13,11 +13,15 @@ function CaregiverMaid({
     advSkills,
     maidServices,
 }) {
-    const { updateCarePlan, updateNestedField } = useContext(CarePlanContext);
+    const { carePlanData, resetCarePlan, updateCarePlan, updateNestedField } =
+        useContext(CarePlanContext);
     const email = usePage().props.auth.user.email;
     useEffect(() => {
-        updateCarePlan("care_type", "Elder");
-        updateCarePlan("service_type", "Elder Care + Maid Service");
+        if (carePlanData.service_type !== "Elder Care + Maid Service") {
+            resetCarePlan();
+            updateCarePlan("care_type", "Elder");
+            updateCarePlan("service_type", "Elder Care + Maid Service");
+        }
         updateNestedField("contact_info", "email", email);
     }, []);
     return (

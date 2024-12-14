@@ -126,6 +126,7 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::get('patients/search-result', [PatientController::class, 'adminSearchPatient'])->name('admin.patient.search');
     Route::get('patients/{id}', [PatientController::class, 'adminSinglePatient'])->name('admin.patient');
     Route::post('patients/{patientId}', [CarePlanPhotoController::class, 'uploadPhotos'])->name('admin.carePlan.photo.upload');
+    Route::delete('care-plans-photos/{id}', [CarePlanPhotoController::class, 'deleteCarePlanPhoto'])->name('care.plan.delete');
 
     // Care plans
     Route::get('/care-plans', [CarePlanController::class, 'adminCarePlans'])->name('admin.care.plans');
@@ -134,6 +135,12 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::get('job-applies', [JobApplyController::class, 'adminJobApplies'])->name('admin.job.apply');
     Route::get('job-applies/{id}', [JobApplyController::class, 'adminSingleJobApply'])->name('admin.job.apply.single');
     Route::get('job-search-result', [JobApplyController::class, 'adminSearchJobApply'])->name('admin.job.apply.search');
+
+    // Interview when employer make appointment
+    Route::get('interviews', [InterviewController::class, 'index'])->name('admin.interviews');
+    Route::get('interviews/search-result', [InterviewController::class, 'adminSearchInterview'])->name('admin.interview.search');
+    Route::get('interviews/{id}', [InterviewController::class, 'adminSingleInterview'])->name('admin.interview.single');
+    Route::put('interviews/{id}', [InterviewController::class, 'updateInterviewStatus'])->name('admin.interview.status.update');
 
     // ---- contact message ----
     Route::get('contact-message', [ContactMessageController::class, 'contactMessage'])->name('admin.messages');

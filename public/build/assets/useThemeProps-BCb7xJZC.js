@@ -1,1 +1,0 @@
-import{g as t}from"./getThemeProps-CV09zexj.js";import{v as p}from"./app-Byv2c297.js";function i({props:o,name:m,defaultTheme:s,themeId:r}){let e=p(s);return r&&(e=e[r]||e),t({theme:e,name:m,props:o})}export{i as u};

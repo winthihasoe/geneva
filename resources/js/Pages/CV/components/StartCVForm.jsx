@@ -32,16 +32,16 @@ function StartCVForm() {
                 />
                 <Typography
                     fontFamily={"Abel"}
-                    fontSize={{ xs: 14, sm: 16, md: 25 }}
+                    fontSize={{ sm: 16, md: 25 }}
                     fontWeight={400}
                     color="#fff"
-                    mb={3}
+                    mb={1}
                 >
                     Join Our Team ?
                 </Typography>
                 <Button
                     variant="contained"
-                    sx={{ bgcolor: "#fff", borderRadius: 20, px: 5 }}
+                    sx={{ bgcolor: "#fff", borderRadius: 20, px: 5, m: 1 }}
                 >
                     <Typography
                         sx={{

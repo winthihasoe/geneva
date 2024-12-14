@@ -7,11 +7,15 @@ import MultiStepForm from "./components/MultiStepForm";
 import { CarePlanContext } from "@/Context/CarePlanContext";
 
 function NannyCare({ service, caregivers, basicSkills, advSkills }) {
-    const { updateCarePlan, updateNestedField } = useContext(CarePlanContext);
+    const { carePlanData, updateCarePlan, resetCarePlan, updateNestedField } =
+        useContext(CarePlanContext);
     const email = usePage().props.auth.user.email;
     useEffect(() => {
-        updateCarePlan("care_type", "Baby");
-        updateCarePlan("service_type", "Nanny Service");
+        if (carePlanData.service_type !== "Nanny Service") {
+            resetCarePlan();
+            updateCarePlan("care_type", "Baby");
+            updateCarePlan("service_type", "Nanny Service");
+        }
         updateNestedField("contact_info", "email", email);
     }, []);
     return (

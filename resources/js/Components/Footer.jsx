@@ -28,13 +28,16 @@ function Footer() {
                         fontSize={{ xs: 14, sm: 15, md: 16 }}
                         fontFamily={"Livvic"}
                         color="primary"
+                        gutterBottom
                     >
-                        Address: Roma IX Rd, Huai Khwang, Bangkok 10310
+                        Address: 41 Homeplace office building, Thong Lo 13
+                        Alley, Klongtan Nua, Watthana, Bangkok 10110
                     </Typography>
                     <Typography
                         fontSize={{ xs: 14, sm: 15, md: 16 }}
                         fontFamily={"Livvic"}
                         color="primary"
+                        gutterBottom
                     >
                         Phone : +66 06 20 90 8578
                     </Typography>

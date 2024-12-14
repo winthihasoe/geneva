@@ -124,12 +124,17 @@ function ChooseSkills({ advSkills, basicSkills }) {
                                                     md: 18,
                                                 },
                                                 fontFamily: "Karma",
+                                                mt: 1,
                                             }}
                                         >
                                             {skill}
                                         </Typography>
                                     }
-                                    sx={{ width: 280 }}
+                                    sx={{
+                                        width: 280,
+                                        display: "flex",
+                                        alignItems: "flex-start",
+                                    }}
                                 />
                             ))}
                         </FormGroup>
@@ -193,12 +198,17 @@ function ChooseSkills({ advSkills, basicSkills }) {
                                                     md: 18,
                                                 },
                                                 fontFamily: "Karma",
+                                                mt: 1,
                                             }}
                                         >
                                             {skill}
                                         </Typography>
                                     }
-                                    sx={{ width: 280 }}
+                                    sx={{
+                                        width: 280,
+                                        display: "flex",
+                                        alignItems: "flex-start",
+                                    }}
                                 />
                             ))}
                         </FormGroup>

@@ -1,4 +1,5 @@
 import CVmini from "@/Components/CV/CVmini";
+import Subtitle from "@/Components/Typo/Subtitle";
 import NoData from "@/Components/util/NoData";
 import { CaregiverContext } from "@/Context/CaregiverContext";
 import MainTitle from "@/Pages/CustomizedCare/components/MainTitle";
@@ -28,6 +29,7 @@ function OurRecommendations() {
                                 </strong>{" "}
                                 who perfectly match your needs.
                             </MainTitle>
+
                             <Box
                                 sx={{
                                     display: {
@@ -44,11 +46,14 @@ function OurRecommendations() {
                                         width: 70,
                                         position: "absolute",
                                         top: -33,
-                                        left: -20,
+                                        left: -40,
                                     }}
                                 />
                             </Box>
                         </Box>
+                        <Subtitle>
+                            You can choose one of these CV to continue
+                        </Subtitle>
                     </Box>
                     <Box
                         sx={{
@@ -57,6 +62,7 @@ function OurRecommendations() {
                             columnGap: 3,
                             rowGap: 4,
                             flexWrap: "wrap",
+                            mt: 4,
                         }}
                     >
                         {filteredCaregivers.map((cv) => (

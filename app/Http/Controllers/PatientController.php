@@ -13,7 +13,7 @@ class PatientController extends Controller
     public function index()
     {
         return Inertia::render('Admin/Patient/AdminPatients', [
-            'patients' => Patient::orderBy('id', 'desc')->paginate(5),
+            'patients' => Patient::orderBy('id', 'desc')->paginate(15),
             'count' => Patient::count(),
         ]);
     }
@@ -59,7 +59,7 @@ class PatientController extends Controller
     // Show single patient to admin 
     public function adminSinglePatient($id)
     {
-        $patient = Patient::findOrFail($id);
+        $patient = Patient::with('carePlanPhotos')->findOrFail($id);
         return Inertia::render('Admin/Patient/AdminSinglePatient', compact('patient'));
     }
 

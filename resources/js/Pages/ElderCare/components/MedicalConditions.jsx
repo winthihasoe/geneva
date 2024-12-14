@@ -92,7 +92,7 @@ function MedicalConditions() {
                             fontSize: { xs: 20, sm: 25 },
                         }}
                     >
-                        Medical Conditions
+                        Medical Conditions*
                     </Typography>
                     <Typography
                         sx={{
@@ -185,7 +185,7 @@ function MedicalConditions() {
                                 mb: 2,
                             }}
                         >
-                            Mobility level
+                            Mobility level*
                         </Typography>
 
                         <Box
@@ -226,7 +226,7 @@ function MedicalConditions() {
                                 mb: 2,
                             }}
                         >
-                            Memory & awareness
+                            Memory & awareness*
                         </Typography>
 
                         <Box
@@ -267,7 +267,7 @@ function MedicalConditions() {
                                 mb: 2,
                             }}
                         >
-                            Alertness & orientation
+                            Alertness & orientation*
                         </Typography>
 
                         <Box

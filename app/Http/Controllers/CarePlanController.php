@@ -38,7 +38,7 @@ class CarePlanController extends Controller
         ->firstOrFail();
         
         //Get caregivers who can care newborn
-        $caregivers = CV::whereJsonContains('services', 'Newborn care')->get();
+        $caregivers = CV::where('is_approved', true)->whereJsonContains('services', 'Newborn care')->get();
 
         // Get the nursing skills
        
@@ -66,7 +66,7 @@ class CarePlanController extends Controller
        
         
         //Get caregivers who can care newborn
-        $caregivers = CV::whereJsonContains('services', 'Nanny service')->get();
+        $caregivers = CV::where('is_approved', true)->whereJsonContains('services', 'Nanny service')->get();
 
         // Get the nursing skills
        
@@ -89,7 +89,7 @@ class CarePlanController extends Controller
        
         
         //Get caregivers who can care newborn
-        $caregivers = CV::whereJsonContains('services', 'Nanny + Maid')->get();
+        $caregivers = CV::where('is_approved', true)->whereJsonContains('services', 'Nanny + Maid')->get();
 
         // Get the nursing skills
        
@@ -119,7 +119,7 @@ class CarePlanController extends Controller
        
         
         //Get caregivers who can care newborn
-        $caregivers = CV::whereJsonContains('services', 'Elder care')->get();
+        $caregivers = CV::where('is_approved', true)->whereJsonContains('services', 'Elder care')->get();
 
         // Get the nursing skills
        
@@ -142,7 +142,7 @@ class CarePlanController extends Controller
        
         
         //Get caregivers who can care newborn
-        $caregivers = CV::whereJsonContains('services', 'Elder + Maid')->get();
+        $caregivers = CV::where('is_approved', true)->whereJsonContains('services', 'Elder + Maid')->get();
 
         // Get the nursing skills
        

@@ -90,7 +90,7 @@ function ChooseSkills({ advSkills, basicSkills }) {
                             >
                                 B
                             </span>
-                            asic Care
+                            asic Care*
                         </Subtitle>
                         <FormGroup
                             row

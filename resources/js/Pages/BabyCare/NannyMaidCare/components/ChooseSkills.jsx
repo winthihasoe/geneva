@@ -4,9 +4,6 @@ import {
     FormControlLabel,
     FormGroup,
     Grid2,
-    Radio,
-    RadioGroup,
-    TextField,
     Typography,
 } from "@mui/material";
 import React, { useContext, useState } from "react";
@@ -123,12 +120,17 @@ function ChooseSkills({ advSkills, basicSkills, maidServices }) {
                                                     md: 18,
                                                 },
                                                 fontFamily: "Karma",
+                                                mt: 1,
                                             }}
                                         >
                                             {skill}
                                         </Typography>
                                     }
-                                    sx={{ width: 280 }}
+                                    sx={{
+                                        width: 280,
+                                        display: "flex",
+                                        alignItems: "flex-start",
+                                    }}
                                 />
                             ))}
                         </FormGroup>
@@ -191,12 +193,17 @@ function ChooseSkills({ advSkills, basicSkills, maidServices }) {
                                                     md: 18,
                                                 },
                                                 fontFamily: "Karma",
+                                                mt: 1,
                                             }}
                                         >
                                             {skill}
                                         </Typography>
                                     }
-                                    sx={{ width: 280 }}
+                                    sx={{
+                                        width: 280,
+                                        display: "flex",
+                                        alignItems: "flex-start",
+                                    }}
                                 />
                             ))}
                         </FormGroup>

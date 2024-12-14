@@ -14,7 +14,8 @@ import Title from "@/Components/Typo/Title";
 import BackButton from "@/Components/BackButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Subtitle from "@/Components/Typo/Subtitle";
-import Compressor from "compressorjs";
+import CarePlanPhoto from "./components/CarePlanPhoto";
+import NoData from "@/Components/util/NoData";
 
 function AdminSinglePatient({ patient }) {
     const [previews, setPreviews] = useState([]); // Separate state for preview URLs
@@ -27,24 +28,10 @@ function AdminSinglePatient({ patient }) {
         const files = Array.from(e.target.files);
 
         files.forEach((file) => {
-            // Compress each file
-            new Compressor(file, {
-                quality: 0.6, // Compression quality (0.1 to 1)
-                maxWidth: 600, // Maximum width
-                success: (compressedFile) => {
-                    // Add the compressed file to the photos array
-                    setData("photos", [...data.photos, compressedFile]);
+            setData("photos", [...data.photos, file]);
 
-                    // Generate preview URL and add to the previews array
-                    setPreviews((prev) => [
-                        ...prev,
-                        URL.createObjectURL(compressedFile),
-                    ]);
-                },
-                error: (err) => {
-                    console.error("Error compressing file:", err);
-                },
-            });
+            // Generate preview URL and add to the previews array
+            setPreviews((prev) => [...prev, URL.createObjectURL(file)]);
         });
     };
 
@@ -102,79 +89,11 @@ function AdminSinglePatient({ patient }) {
         );
     }
 
+    console.log("patient", patient);
+
     return (
         <AdminLayout>
             <Head title="Patient Detail" />
-            <Box textAlign={"right"} mb={1}>
-                <Button
-                    size="small"
-                    sx={{ borderRadius: 20 }}
-                    variant="outlined"
-                    component="label"
-                >
-                    Add Photos
-                    <input
-                        type="file"
-                        hidden
-                        accept="image/*"
-                        multiple
-                        onChange={handleFileChange}
-                    />
-                </Button>
-            </Box>
-
-            {/* Preview Photos */}
-            {previews.length > 0 && (
-                <Box mb={1}>
-                    <Subtitle>Selected Photos</Subtitle>
-                    <Box
-                        sx={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                            gap: 1,
-                            mb: 1,
-                        }}
-                    >
-                        {previews.map((preview, index) => (
-                            <Card
-                                key={index}
-                                sx={{ width: 90, position: "relative" }}
-                            >
-                                <CardMedia
-                                    component="img"
-                                    image={preview}
-                                    alt={`Selected photo ${index + 1}`}
-                                    sx={{ height: 90, objectFit: "cover" }}
-                                />
-                                <CardActions
-                                    sx={{
-                                        position: "absolute",
-                                        top: 0,
-                                        right: 0,
-                                    }}
-                                >
-                                    <IconButton
-                                        size="small"
-                                        color="error"
-                                        sx={{ bgcolor: "#fff" }}
-                                        onClick={() => handleRemovePhoto(index)}
-                                    >
-                                        <CloseIcon fontSize="small" />
-                                    </IconButton>
-                                </CardActions>
-                            </Card>
-                        ))}
-                    </Box>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleUpload}
-                        disabled={processing}
-                    >
-                        {processing ? "Uploading..." : "Upload Photos"}
-                    </Button>
-                </Box>
-            )}
 
             <Box
                 sx={{
@@ -182,7 +101,7 @@ function AdminSinglePatient({ patient }) {
                     margin: "auto",
                     padding: 2,
                     border: "1px solid",
-                    borderColor: "divider",
+                    borderColor: "primary.main",
                     borderRadius: 4,
                     mb: 3,
                 }}
@@ -195,7 +114,12 @@ function AdminSinglePatient({ patient }) {
                 {/* Patient Data */}
                 <Box>
                     {Object.entries(patient)
-                        .filter(([key]) => !["id", "slug"].includes(key))
+                        .filter(
+                            ([key]) =>
+                                !["id", "slug", "care_plan_photos"].includes(
+                                    key
+                                )
+                        )
                         .map(([key, value]) => (
                             <Box
                                 key={key}
@@ -230,6 +154,124 @@ function AdminSinglePatient({ patient }) {
                                 </Typography>
                             </Box>
                         ))}
+                </Box>
+            </Box>
+            <Box
+                sx={{
+                    maxWidth: 600,
+                    margin: "auto",
+                    mb: 3,
+                }}
+            >
+                <Box textAlign={"left"}>
+                    <Button
+                        size="small"
+                        sx={{ borderRadius: 20 }}
+                        variant="outlined"
+                        component="label"
+                    >
+                        <Typography
+                            variant="h6"
+                            fontSize={{ xs: 13, sm: 14, md: 15 }}
+                            fontWeight={600}
+                            color="grey.800"
+                            fontFamily={"Mina"}
+                        >
+                            Upload Photos
+                        </Typography>
+                        <input
+                            type="file"
+                            hidden
+                            accept="image/*,.heic,.heif"
+                            multiple
+                            onChange={handleFileChange}
+                        />
+                    </Button>
+                </Box>
+
+                {/* Preview Photos */}
+                {previews.length > 0 && (
+                    <Box my={2}>
+                        <Subtitle>Selected Photos</Subtitle>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                flexWrap: "wrap",
+                                gap: 1,
+                                mb: 1,
+                            }}
+                        >
+                            {previews.map((preview, index) => (
+                                <Card
+                                    key={index}
+                                    sx={{ width: 90, position: "relative" }}
+                                >
+                                    <CardMedia
+                                        component="img"
+                                        image={preview}
+                                        alt={`Selected photo ${index + 1}`}
+                                        sx={{ height: 90, objectFit: "cover" }}
+                                    />
+                                    <CardActions
+                                        sx={{
+                                            position: "absolute",
+                                            top: 0,
+                                            right: 0,
+                                        }}
+                                    >
+                                        <IconButton
+                                            size="small"
+                                            color="error"
+                                            sx={{ bgcolor: "#fff" }}
+                                            onClick={() =>
+                                                handleRemovePhoto(index)
+                                            }
+                                        >
+                                            <CloseIcon fontSize="small" />
+                                        </IconButton>
+                                    </CardActions>
+                                </Card>
+                            ))}
+                        </Box>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleUpload}
+                            disabled={processing}
+                            sx={{ borderRadius: 20 }}
+                        >
+                            {processing ? "Uploading..." : "Save Photos"}
+                        </Button>
+                    </Box>
+                )}
+            </Box>
+            <Box
+                sx={{
+                    maxWidth: 600,
+                    margin: "auto",
+                    padding: 2,
+                    border: "1px solid",
+                    borderColor: "primary.main",
+                    borderRadius: 4,
+                    mb: 3,
+                }}
+            >
+                <Title>Uploaded Care Plans</Title>
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        justifyContent: "center",
+                        gap: 1,
+                    }}
+                >
+                    {patient?.care_plan_photos.lenght > 0 ? (
+                        patient.care_plan_photos.map((item, index) => (
+                            <CarePlanPhoto photo={item} />
+                        ))
+                    ) : (
+                        <NoData />
+                    )}
                 </Box>
             </Box>
         </AdminLayout>

@@ -6,6 +6,7 @@ use App\Models\CarePlan;
 use App\Models\CV;
 use App\Models\Interview;
 use App\Models\Service;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -168,5 +169,63 @@ class InterviewController extends Controller
     public function bookSuccess()
     {
         return Inertia::render('Interview/SuccessBooking');
+    }
+
+    // Show interviews to admin
+    public function index()
+    {
+        return Inertia::render('Admin/Interview/AdminInterviews', [
+            'interviews' => Interview::with('carePlan', 'cv')->orderBy('id', 'desc')->paginate(10),
+            'count' => Interview::count(),
+        ]);
+    }
+   
+    // Show single interview to admin
+    public function adminSingleInterview($id)
+    {
+        return Inertia::render('Admin/Interview/AdminSingleInterview', [
+            'interview' => Interview::with('carePlan', 'cv')->findOrFail($id),
+        ]);
+    }
+
+    // update to confirm interview
+    public function updateInterviewStatus($interviewId, Request $request)
+    {
+        $updateInterview = Interview::findOrFail($interviewId);
+        $updateInterview->status = $request->status;
+        if($request->status == 'pending' || $request->status == 'declined')
+        {
+            $updateInterview->is_approved = false;
+            $updateInterview->approved_by = null;
+            $updateInterview->approved_at = null;
+        } else 
+        {
+            $updateInterview->is_approved = true;
+            $updateInterview->approved_by = Auth::user()->name;
+            $updateInterview->approved_at = Carbon::now();
+        }
+        $updateInterview->update();
+
+        return back()->with('success', 'Interview status changed.');
+    }
+
+    public function adminSearchInterview(Request $request)
+    {
+        $search = strtolower($request->input('search'));
+        // Perform the search
+        // Perform the search
+        $searchResults = Interview::with('cv', 'carePlan')
+            ->whereHas('cv', function ($query) use ($search) {
+                $query->where('full_name', 'like', "%{$search}%");
+            })
+            ->orWhereHas('carePlan', function ($query) use ($search) {
+                $query->whereRaw("LOWER(JSON_EXTRACT(care_recipient_info, '$.name')) LIKE ?", ["%{$search}%"]);
+            })
+            ->get();
+
+        return Inertia::render('Admin/Interview/InterviewSearchResult', [
+            'searchTerm' => $search,
+            'searchResults' => $searchResults,
+        ]);
     }
 }

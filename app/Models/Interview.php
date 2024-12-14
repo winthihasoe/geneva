@@ -36,4 +36,9 @@ class Interview extends Model
         return $this->belongsTo(CV::class);
     }
     
+    public function carePlan()
+    {
+        return $this->belongsTo(CarePlan::class);
+    }
+    
 }

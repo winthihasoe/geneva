@@ -10,6 +10,7 @@ import NewspaperRoundedIcon from "@mui/icons-material/NewspaperRounded";
 import PaymentsRoundedIcon from "@mui/icons-material/PaymentsRounded";
 import MessageRoundedIcon from "@mui/icons-material/MessageRounded";
 import AccessibleIcon from "@mui/icons-material/Accessible";
+import CoPresentIcon from "@mui/icons-material/CoPresent";
 
 export const AdminSidebarData = [
     {
@@ -31,6 +32,11 @@ export const AdminSidebarData = [
         title: "Job Apply",
         icon: <WorkHistoryRoundedIcon />,
         link: "/admin/job-applies",
+    },
+    {
+        title: "Interview",
+        icon: <CoPresentIcon />,
+        link: "/admin/interviews",
     },
     {
         title: "Patient",

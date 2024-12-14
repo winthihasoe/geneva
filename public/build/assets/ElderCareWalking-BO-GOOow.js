@@ -1,0 +1,1 @@
+import{j as l}from"./app-DvWzobxJ.js";import{B as r}from"./Box-ryDHmXfO.js";function t({top:n=null,bottom:s=null,left:e=null,right:i=null}){return l.jsx(r,{sx:{display:{xs:"none",sm:"none",md:"flex"},position:"absolute",top:n,bottom:s,left:e,right:i},children:l.jsx("img",{src:"/images/elderCare/walking.png",alt:"walking",style:{width:200}})})}export{t as E};

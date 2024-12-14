@@ -6,14 +6,13 @@ export const CarePlanContext = createContext();
 
 // Provider component
 export const CarePlanProvider = ({ children, carePlan }) => {
-    // const storedCarePlanData = JSON.parse(localStorage.getItem("carePlanData"));
-    const [carePlanData, setCarePlanData] = useState(() => ({
-        care_type: carePlan?.care_type || "",
-        start_date: carePlan?.start_date || "",
-        duration: carePlan?.duration || "",
-        preferred_language: carePlan?.preferred_language || "",
-        service_type: carePlan?.service_type || "", // Newborn Care, Nanny Service, Nanny Care + Maid Service, Elder Care, Elder Care + Maid Service
-        care_recipient_info: carePlan?.care_recipient_info || {
+    const initialCarePlanData = {
+        care_type: "",
+        start_date: "",
+        duration: "",
+        preferred_language: "",
+        service_type: "", // Newborn Care, Nanny Service, Nanny Care + Maid Service, Elder Care, Elder Care + Maid Service
+        care_recipient_info: {
             name: "",
             date_of_birth: "",
             age: "",
@@ -25,14 +24,14 @@ export const CarePlanProvider = ({ children, carePlan }) => {
             baby_medical_condition: "",
             allergies: "",
         },
-        contact_info: carePlan?.contact_info || {
+        contact_info: {
             name: "",
             relationship: "",
             phone_number: "",
             email: "",
             line_id: "",
         },
-        preferences: carePlan?.preferences || {
+        preferences: {
             age: "",
             religion: "",
             nationality: "",
@@ -40,20 +39,27 @@ export const CarePlanProvider = ({ children, carePlan }) => {
             experience: "",
             communication: "",
         },
-        services: carePlan?.services || [],
-        medical_conditions: carePlan?.medical_conditions || [],
-        other_medical_conditions: carePlan?.other_medical_conditions || "",
-        mobilities: carePlan?.mobilities || "",
-        memory: carePlan?.memory || "",
-        alertness: carePlan?.alertness || "",
-        schedule: carePlan?.schedule || {
+        services: [],
+        medical_conditions: [],
+        other_medical_conditions: "",
+        mobilities: "",
+        memory: "",
+        alertness: "",
+        schedule: {
             package: "",
             duty_time: "",
         },
-        additional_notes: carePlan?.additional_notes || "",
-        current_step: carePlan?.current_step || 0,
-        care_plan_id: carePlan?.care_plan_id || "",
-    }));
+        additional_notes: "",
+        current_step: 0,
+        care_plan_id: "",
+    };
+    // const storedCarePlanData = JSON.parse(localStorage.getItem("carePlanData"));
+    const [carePlanData, setCarePlanData] = useState(initialCarePlanData);
+
+    // Function to reset the care plan data
+    const resetCarePlan = () => {
+        setCarePlanData(initialCarePlanData);
+    };
 
     // Function to update care plan fields
     const updateCarePlan = (field, value) => {
@@ -100,6 +106,7 @@ export const CarePlanProvider = ({ children, carePlan }) => {
                 updateCarePlan,
                 updateNestedField,
                 handleSubmit,
+                resetCarePlan,
             }}
         >
             {children}

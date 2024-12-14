@@ -32,8 +32,6 @@ export default function AdminPatients({ patients, count }) {
 
     const handleSearchSubmit = (e) => {
         e.preventDefault();
-        console.log("search", search);
-
         router.get(route("admin.patient.search"), { search: search.trim() });
     };
 

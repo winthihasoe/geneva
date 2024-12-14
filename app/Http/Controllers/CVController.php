@@ -35,7 +35,6 @@ class CVController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->profile_photo);
         try {
             $currentStep = $request->input('current_step');
             $userId = Auth()->user()->id;
