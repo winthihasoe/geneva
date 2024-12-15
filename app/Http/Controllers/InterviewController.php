@@ -113,22 +113,32 @@ class InterviewController extends Controller
 
     public function store(Request $request)
     {
-        try{
+        try {
             $user_id = Auth::user()->id;
-             // Check if an interview record already exists with the same user_id, care_plan_id, and cv_id
-            $existingInterview = Interview::where('user_id', $user_id)
-                ->where('care_plan_id', $request['care_plan_id'])
-                ->where('cv_id', $request['cv_id'])
+    
+            // Get the latest care plan ID for the authenticated user
+            $latestCarePlan = CarePlan::where('user_id', $user_id)
+                ->latest('created_at') // Fetch the most recent care plan
                 ->first();
-
+    
+            if (!$latestCarePlan) {
+                return back()->with('error', 'No care plan found for the user.');
+            }
+    
+            $care_plan_id = $latestCarePlan->id;
+    
+            // Check if an interview record already exists with the same user_id, care_plan_id, and cv_id
+            $existingInterview = Interview::where('user_id', $user_id)
+                ->where('care_plan_id', $care_plan_id)
+                ->first();
+    
             if ($existingInterview) {
                 return redirect(route('interview.book.success'))->with(['success' => 'Interview already booked.']);
             }
-
+    
             // Validate the request data
             $validatedData = $request->validate([
                 'cv_id' => 'required|exists:c_v_s,id',
-                'care_plan_id' => 'required|exists:care_plans,id',
                 'date' => 'required|date',
                 'time' => 'required|date_format:H:i',
                 'alt_date' => 'nullable|date',
@@ -137,14 +147,12 @@ class InterviewController extends Controller
                 'location' => 'nullable|string',
                 'online' => 'nullable|string',
             ]);
-
-            
     
             // Create a new interview record
             $interview = Interview::create([
                 'user_id' => $user_id,
                 'cv_id' => $validatedData['cv_id'],
-                'care_plan_id' => $validatedData['care_plan_id'],
+                'care_plan_id' => $care_plan_id,
                 'date' => $validatedData['date'] ?? null,
                 'time' => $validatedData['time'] ?? null,
                 'alt_date' => $validatedData['alt_date'] ?? null,
@@ -161,11 +169,11 @@ class InterviewController extends Controller
         } catch (\Exception $e) {
             // Log the error for debugging
             Log::error('Error creating interview: ' . $e->getMessage());
-
-            return back()->with('error',  $e->getMessage());
+    
+            return back()->with('error', $e->getMessage());
         }
     }
-
+    
     public function bookSuccess()
     {
         return Inertia::render('Interview/SuccessBooking');

@@ -9,7 +9,7 @@ export const CarePlanProvider = ({ children, carePlan }) => {
     const initialCarePlanData = {
         care_type: "",
         start_date: "",
-        duration: "",
+        duration: 3,
         preferred_language: "",
         service_type: "", // Newborn Care, Nanny Service, Nanny Care + Maid Service, Elder Care, Elder Care + Maid Service
         care_recipient_info: {

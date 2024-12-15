@@ -64,7 +64,6 @@ export const CaregiverProvider = ({ children, initialCaregivers = [] }) => {
     const [caregivers, setCaregivers] = useState(initialCaregivers);
     const [filteredCaregivers, setFilteredCaregivers] =
         useState(initialCaregivers);
-    console.log("filtered caregiver", filteredCaregivers);
 
     // Use CarePlanContext to access the carePlanData for filtering
     const { carePlanData } = useContext(CarePlanContext);
@@ -128,9 +127,6 @@ export const CaregiverProvider = ({ children, initialCaregivers = [] }) => {
     // Effect to re-filter caregivers when carePlanData or caregivers list changes
     useEffect(() => {
         filterCaregivers();
-        if (filteredCaregivers.length == 0) {
-            console.log("No caregivers in filter", caregivers);
-        }
     }, [carePlanData, caregivers]); // Run when carePlanData or caregivers change
 
     return (

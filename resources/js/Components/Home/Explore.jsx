@@ -47,7 +47,7 @@ function Explore() {
                 <Typography
                     fontSize={24}
                     fontFamily={"Livvic"}
-                    color={{ xs: "primary.main", sm: "white" }}
+                    sx={{ color: { xs: "primary.main", sm: "white" } }}
                     textAlign={"center"}
                 >
                     Babysitter
@@ -108,10 +108,12 @@ function Explore() {
                 <Typography
                     fontSize={20}
                     fontFamily={"Livvic"}
-                    color={{
-                        xs: "primary.main",
-                        sm: "primary.main",
-                        md: "white",
+                    sx={{
+                        color: {
+                            xs: "primary.main",
+                            sm: "primary.main",
+                            md: "white",
+                        },
                     }}
                     textAlign={"center"}
                 >

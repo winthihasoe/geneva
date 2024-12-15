@@ -19,7 +19,6 @@ function InterviewForm({
     carePlan,
 }) {
     const [Mode, setMode] = useState("");
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         if (name === "alt_time" || name == "time") {
@@ -64,7 +63,15 @@ function InterviewForm({
             >
                 Preferred interview date & time
             </Typography>
-            <Box sx={{ display: "flex", gap: 3, my: 1, alignItems: "center" }}>
+            <Box
+                sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: 3,
+                    my: 1,
+                    alignItems: "center",
+                }}
+            >
                 <Typography
                     sx={{
                         fontFamily: "Karma",
@@ -78,9 +85,23 @@ function InterviewForm({
                     value={data.date}
                     onChange={handleChange}
                     name="date"
+                    sx={{
+                        bgcolor: "#f5f5f5",
+                        borderRadius: 20,
+                        px: 1,
+                        width: 200,
+                    }}
                 />
             </Box>
-            <Box sx={{ display: "flex", gap: 3, my: 2, alignItems: "center" }}>
+            <Box
+                sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: 3,
+                    my: 2,
+                    alignItems: "center",
+                }}
+            >
                 <Typography
                     sx={{
                         fontFamily: "Karma",
@@ -97,6 +118,12 @@ function InterviewForm({
                     inputProps={{
                         min: "08:00",
                         max: "17:00",
+                    }}
+                    sx={{
+                        bgcolor: "#f5f5f5",
+                        borderRadius: 20,
+                        px: 1,
+                        width: 200,
                     }}
                 />
             </Box>
@@ -115,7 +142,15 @@ function InterviewForm({
                     (if preferred date is unavailable)
                 </span>
             </Typography>
-            <Box sx={{ display: "flex", gap: 3, my: 1, alignItems: "center" }}>
+            <Box
+                sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                    gap: 3,
+                    my: 1,
+                }}
+            >
                 <Typography
                     sx={{
                         fontFamily: "Karma",
@@ -125,13 +160,27 @@ function InterviewForm({
                     Date
                 </Typography>
                 <TextField
+                    sx={{
+                        bgcolor: "#f5f5f5",
+                        borderRadius: 20,
+                        px: 1,
+                        width: 200,
+                    }}
                     type="date"
                     value={data.alt_date}
                     onChange={handleChange}
                     name="alt_date"
                 />
             </Box>
-            <Box sx={{ display: "flex", gap: 3, my: 2, alignItems: "center" }}>
+            <Box
+                sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: 3,
+                    my: 2,
+                    alignItems: "center",
+                }}
+            >
                 <Typography
                     sx={{
                         fontFamily: "Karma",
@@ -148,6 +197,12 @@ function InterviewForm({
                     inputProps={{
                         min: "08:00",
                         max: "17:00",
+                    }}
+                    sx={{
+                        bgcolor: "#f5f5f5",
+                        borderRadius: 20,
+                        px: 1,
+                        width: 200,
                     }}
                 />
             </Box>

@@ -165,6 +165,19 @@ function AdminSingleInterview({ interview }) {
                         Start Date:{" "}
                         <DateFormatter date={interview.care_plan.start_date} />
                     </Subtitle>
+                    {interview?.care_plan?.additional_notes && (
+                        <Subtitle>
+                            Notes:{" "}
+                            <span
+                                style={{
+                                    fontStyle: "italic",
+                                    fontWeight: 500,
+                                }}
+                            >
+                                {interview?.care_plan?.additional_notes}
+                            </span>
+                        </Subtitle>
+                    )}
                 </Box>
             </Box>
             <Box

@@ -180,10 +180,13 @@ function ContactForm() {
                                 lineHeight: "40px", // Line height matching the background size
                             }}
                             onChange={(e) => setData("message", e.target.value)}
-                            error={!!errors.message}
-                            helperText={errors.message}
                             required
                         />
+                        {errors.message && (
+                            <p style={{ color: "red", marginTop: "5px" }}>
+                                {errors.message}
+                            </p>
+                        )}
                     </Box>
                     <Box textAlign={"center"} mt={5}>
                         <Button

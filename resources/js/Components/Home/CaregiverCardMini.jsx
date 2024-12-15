@@ -85,8 +85,9 @@ function CaregiverCardMini({ cv }) {
                                 return a.order - b.order; // Primary sort by `order`
                             })
                             .slice(0, 1)
-                            .map((exp) => (
+                            .map((exp, index) => (
                                 <Typography
+                                    key={index}
                                     fontFamily={"Actor"}
                                     fontSize={10}
                                     color="primary"
