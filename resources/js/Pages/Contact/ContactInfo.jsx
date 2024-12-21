@@ -234,7 +234,7 @@ export default function ContactInfo() {
                             Line ID
                         </Typography>
                         <a
-                            href="line://ti/p/heartyaid" // Use your Line ID here
+                            href="http://line.me/ti/p/~heartyaid"
                             style={{ textDecoration: "none", color: "inherit" }}
                             target="_blank"
                             rel="noopener noreferrer"
