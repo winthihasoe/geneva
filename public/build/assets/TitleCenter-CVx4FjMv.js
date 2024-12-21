@@ -1,0 +1,1 @@
+import{j as o}from"./app-Czay0V6c.js";import{T as r}from"./Typography-CoyGH3yp.js";function n({children:t}){return o.jsx(r,{fontSize:{xs:18,sm:20,md:22},textAlign:"center",fontWeight:600,mb:2,color:"grey.700",fontFamily:"Livvic",children:t})}export{n as T};

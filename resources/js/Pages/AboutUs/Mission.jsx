@@ -19,7 +19,7 @@ function Mission() {
                             flexDirection: "column",
                             justifyContent: "center",
                             alignItems: "center",
-                            gap: 15,
+                            gap: { xs: 5, sm: 8 },
                             py: { xs: 3, sm: 4, md: 10 },
                         }}
                     >
@@ -78,7 +78,7 @@ function Mission() {
                             </Box>
                         </Box>
 
-                        <Box position={"relative"}>
+                        <Box position={"relative"} mt={10}>
                             {/* Background Image Positioned Behind */}
                             <Box
                                 component="img"

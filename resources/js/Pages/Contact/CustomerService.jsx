@@ -86,6 +86,9 @@ export default function CustomerService() {
                                 py: { xs: 2, sm: 3 },
                                 px: { xs: 2, sm: 4 },
                             }}
+                            onClick={() => {
+                                window.open(`tel:${"+66829021957"}`, "_self");
+                            }}
                         >
                             <Typography
                                 fontFamily={"Lilita One"}

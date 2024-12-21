@@ -2,7 +2,7 @@ import Shape from "@/Components/Fancy/Shape";
 import ThreeArrows from "@/Components/Fancy/ThreeArrows";
 import AppLayout from "@/Layouts/AppLayout";
 import { Head } from "@inertiajs/react";
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Button, Container, Typography } from "@mui/material";
 import React from "react";
 
 export default function ContactInfo() {
@@ -112,7 +112,7 @@ export default function ContactInfo() {
                             width: { xs: "70%", sm: 150 },
                         }}
                     />
-                    <Box>
+                    <Box textAlign={"center"}>
                         <Typography
                             fontFamily={"Lilita One"}
                             fontSize={{ xs: 35, sm: 40, md: 45 }}
@@ -127,15 +127,35 @@ export default function ContactInfo() {
                         >
                             Phone Number
                         </Typography>
-                        <Typography
-                            fontFamily={"Livvic"}
-                            fontSize={{ xs: 20, sm: 30 }}
-                            textAlign={{ xs: "center", sm: "left" }}
+                        <Button
+                            onClick={() => {
+                                window.open(`tel:${"+66620908578"}`, "_self");
+                            }}
                         >
-                            06 20 90 85 78
-                            <br />
-                            08 29 02 19 57
-                        </Typography>
+                            <Typography
+                                fontFamily={"Livvic"}
+                                color="#000"
+                                fontSize={{ xs: 20, sm: 30 }}
+                                textAlign={{ xs: "center", sm: "left" }}
+                            >
+                                06 20 90 85 78
+                            </Typography>
+                        </Button>
+                        <br />
+                        <Button
+                            onClick={() => {
+                                window.open(`tel:${"+66829021957"}`, "_self");
+                            }}
+                        >
+                            <Typography
+                                fontFamily={"Livvic"}
+                                fontSize={{ xs: 20, sm: 30 }}
+                                color="#000"
+                                textAlign={{ xs: "center", sm: "left" }}
+                            >
+                                08 29 02 19 57
+                            </Typography>
+                        </Button>
                     </Box>
                 </Box>
 
@@ -213,13 +233,21 @@ export default function ContactInfo() {
                         >
                             Line ID
                         </Typography>
-                        <Typography
-                            fontFamily={"Livvic"}
-                            fontSize={{ xs: 20, sm: 30 }}
-                            textAlign={{ xs: "center", sm: "left" }}
+                        <a
+                            href="line://ti/p/heartyaid" // Use your Line ID here
+                            style={{ textDecoration: "none", color: "inherit" }}
+                            target="_blank"
+                            rel="noopener noreferrer"
                         >
-                            heartyaid
-                        </Typography>
+                            <Typography
+                                fontFamily={"Livvic"}
+                                fontSize={{ xs: 20, sm: 30 }}
+                                textAlign={{ xs: "center", sm: "left" }}
+                                sx={{ cursor: "pointer" }}
+                            >
+                                heartyaid
+                            </Typography>
+                        </a>
                     </Box>
                 </Box>
                 <Shape bottom={"20%"} right={20} />

@@ -26,7 +26,7 @@ function ContactForm() {
     return (
         <Box
             sx={{
-                margin: 5,
+                margin: { xs: 0, sm: 3, md: 5 },
                 border: "1px solid",
                 borderColor: "primary.main",
                 borderRadius: 5,
@@ -34,7 +34,7 @@ function ContactForm() {
                 bgcolor: "white",
                 boxShadow: 2,
                 pb: 10,
-                mx: { xs: 2, sm: 10 },
+                mx: { xs: 0, sm: 8 },
             }}
         >
             <Box textAlign={"center"}>
@@ -51,7 +51,7 @@ function ContactForm() {
                         bgcolor: "primary.main",
                         px: 3,
                         mx: { xs: 2, sm: 4, md: 9 },
-                        mb: 3,
+                        mb: { xs: 1, sm: 3 },
                         borderRadius: 5,
                         fontFamily: "Abhaya Libre",
                         color: "white",
@@ -63,11 +63,11 @@ function ContactForm() {
                 </Typography>
             </Box>
             <form onSubmit={handleSubmit}>
-                <Box sx={{ px: 4, mt: 5 }}>
+                <Box sx={{ px: { xs: 1, sm: 3 }, mt: { xs: 2, sm: 4 } }}>
                     <Box
                         sx={{
                             display: "flex",
-                            gap: 3,
+                            gap: { xs: 0, sm: 3 },
                             alignItems: "center",
                             justifyContent: "center",
                         }}
@@ -75,7 +75,7 @@ function ContactForm() {
                         <Typography
                             fontSize={20}
                             fontFamily={"Afacad"}
-                            width={"60%"}
+                            width={"40%"}
                         >
                             Name
                         </Typography>
@@ -95,7 +95,7 @@ function ContactForm() {
                     <Box
                         sx={{
                             display: "flex",
-                            gap: 3,
+                            gap: { xs: 0, sm: 3 },
                             alignItems: "center",
                             justifyContent: "center",
                         }}
@@ -103,7 +103,7 @@ function ContactForm() {
                         <Typography
                             fontSize={20}
                             fontFamily={"Afacad"}
-                            width={"60%"}
+                            width={"40%"}
                         >
                             Email
                         </Typography>
@@ -123,7 +123,7 @@ function ContactForm() {
                     <Box
                         sx={{
                             display: "flex",
-                            gap: 3,
+                            gap: { xs: 0, sm: 3 },
                             alignItems: "center",
                             justifyContent: "center",
                         }}
@@ -131,7 +131,7 @@ function ContactForm() {
                         <Typography
                             fontSize={20}
                             fontFamily={"Afacad"}
-                            width={"60%"}
+                            width={"40%"}
                         >
                             Phone Number
                         </Typography>
@@ -152,7 +152,7 @@ function ContactForm() {
                     <Box
                         sx={{
                             display: "flex",
-                            gap: 3,
+                            gap: { xs: 0, sm: 3 },
                             alignItems: "flex-start",
                             justifyContent: "center",
                             mt: 2,
@@ -161,7 +161,7 @@ function ContactForm() {
                         <Typography
                             fontSize={20}
                             fontFamily={"Afacad"}
-                            width={"60%"}
+                            width={"40%"}
                         >
                             Message.
                         </Typography>

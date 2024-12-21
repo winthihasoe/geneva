@@ -20,7 +20,7 @@ function Philosophy() {
                             flexDirection: "column",
                             justifyContent: "center",
                             alignItems: "center",
-                            gap: 15,
+                            gap: { xs: 5, sm: 15 },
                             py: { xs: 3, sm: 4, md: 10 },
                         }}
                     >
@@ -53,7 +53,7 @@ function Philosophy() {
                                 component="img"
                                 src="/images/philosophy/signs.gif"
                                 alt="Signs"
-                                sx={{ minWidth: 300, maxWidth: 450 }}
+                                sx={{ width: { xs: 300, sm: 300, md: 450 } }}
                             />
                             <ThreeStars bottom={0} left={-80} />
                         </Box>
@@ -61,7 +61,7 @@ function Philosophy() {
                             component="img"
                             src="/images/philosophy/care_hand.png"
                             alt="Care Hands"
-                            sx={{ width: 200 }}
+                            sx={{ width: 200, mb: { xs: 4, sm: 0 } }}
                         />
                         <Box
                             sx={{
@@ -72,6 +72,7 @@ function Philosophy() {
                                 px: { xs: 2, sm: 5 },
                                 py: { xs: 3, sm: 4 },
                                 mt: -8,
+                                mb: { xs: 0, sm: 5 },
                             }}
                         >
                             <Typography
