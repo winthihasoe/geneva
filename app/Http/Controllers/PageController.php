@@ -45,6 +45,16 @@ class PageController extends Controller
    {
       return Inertia::render('AboutUs/Philosophy');
    }
+   
+   public function contactInfo()
+   {
+      return Inertia::render('Contact/ContactInfo');
+   }
+  
+   public function customerService()
+   {
+      return Inertia::render('Contact/CustomerService');
+   }
 
 
 }

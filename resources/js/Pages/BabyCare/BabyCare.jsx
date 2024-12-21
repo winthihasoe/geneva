@@ -9,6 +9,7 @@ import arrowUp from "../../../../public/images/right-up.svg"; // Adjust this pat
 import { CarePlanProvider } from "@/Context/CarePlanContext";
 import MainTitle from "../CustomizedCare/components/MainTitle";
 import Noodle from "@/Components/Fancy/Noodle";
+import ThreeLeaves from "@/Components/Fancy/ThreeLeaves";
 
 function BabyCare({ carePlan }) {
     const handleNewbornStart = (service) => {
@@ -31,26 +32,7 @@ function BabyCare({ carePlan }) {
                     >
                         <Box display={"inline-block"} position={"relative"}>
                             <MainTitle>Pick the care options!</MainTitle>
-                            <Box
-                                sx={{
-                                    display: {
-                                        xs: "none",
-                                        sm: "flex",
-                                        md: "flex",
-                                    },
-                                }}
-                            >
-                                <img
-                                    src="/images/three_leaves.png"
-                                    alt="leaves"
-                                    style={{
-                                        width: 70,
-                                        position: "absolute",
-                                        top: -33,
-                                        left: -35,
-                                    }}
-                                />
-                            </Box>
+                            <ThreeLeaves top={-55} left={-80} rotate={-35} />
                         </Box>
                     </Box>
 

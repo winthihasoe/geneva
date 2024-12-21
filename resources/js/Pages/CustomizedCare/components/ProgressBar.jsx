@@ -54,7 +54,7 @@ const ProgressBar = ({ activeStep, onStepClick }) => {
     return (
         <Box
             display={{ xs: "none", sm: "none", md: "flex" }}
-            width={"80%"}
+            maxWidth="70%"
             margin={"10px auto"}
         >
             {steps.map((step, index) => (

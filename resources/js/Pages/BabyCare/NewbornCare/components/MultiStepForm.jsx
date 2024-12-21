@@ -72,7 +72,12 @@ const MultiStepForm = ({ service, basicSkills, advSkills }) => {
     };
 
     return (
-        <Box sx={{ padding: { xs: 1, sm: 2 }, position: "relative" }}>
+        <Box
+            sx={{
+                padding: { xs: 1, sm: 2 },
+                position: "relative",
+            }}
+        >
             {/* Step Progress Bar */}
             <ProgressBar
                 activeStep={activeStep}

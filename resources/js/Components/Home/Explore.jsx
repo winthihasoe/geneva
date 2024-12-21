@@ -1,3 +1,4 @@
+import { router } from "@inertiajs/react";
 import { Box, Button, Typography } from "@mui/material";
 import React from "react";
 
@@ -62,6 +63,7 @@ function Explore() {
                         left: 75,
                         bgcolor: "white",
                     }}
+                    onClick={() => router.get(route("care.baby.start"))}
                 >
                     <Typography
                         fontFamily={"Lilita One"}
@@ -129,6 +131,7 @@ function Explore() {
                         left: 80,
                         bgcolor: "white",
                     }}
+                    onClick={() => router.get(route("elder.options.choose"))}
                 >
                     <Typography
                         fontFamily={"Lilita One"}

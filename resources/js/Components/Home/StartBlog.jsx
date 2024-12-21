@@ -59,25 +59,31 @@ function StartBlog() {
                         height: { xs: "100%", sm: "70%", md: "80%" },
                         width: { xs: "100%", sm: "70%", md: "80%" },
                         bgcolor: "#E39FB6",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
+
                         borderRadius: 5,
                         position: "relative",
+                        overflow: "hidden",
                     }}
                 >
                     <IconButton sx={{ position: "absolute", top: 0, right: 0 }}>
-                        <DataSaverOnOutlinedIcon />
+                        <DataSaverOnOutlinedIcon fontSize="large" />
                     </IconButton>
-                    <img
-                        src="/images/blogs/elder_health.png"
-                        alt="Elder health"
-                        style={{ height: 80 }}
+                    <Box
+                        sx={{
+                            backgroundImage:
+                                "url(/images/blogs/elder_health.png)",
+                            backgroundSize: "cover",
+                            backgroundRepeat: "no-repeat",
+                            height: "80%",
+                            width: "80%",
+                            margin: "auto",
+                        }}
                     />
+
                     <Typography
                         fontFamily={"ADLaM Display"}
                         color="white"
+                        textAlign={"center"}
                         fontSize={{ xs: 12, sm: 14, md: 16 }}
                     >
                         Elder Health
@@ -88,26 +94,29 @@ function StartBlog() {
                         height: { xs: "100%", sm: "70%", md: "80%" },
                         width: { xs: "100%", sm: "70%", md: "80%" },
                         bgcolor: "#F17255",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
                         borderRadius: 5,
                         position: "relative",
                     }}
                 >
                     <IconButton sx={{ position: "absolute", top: 0, right: 0 }}>
-                        <DataSaverOnOutlinedIcon />
+                        <DataSaverOnOutlinedIcon fontSize="large" />
                     </IconButton>
-                    <img
-                        src="/images/blogs/maternity.png"
-                        alt="Elder health"
-                        style={{ height: 80 }}
+                    <Box
+                        sx={{
+                            backgroundImage: "url(/images/blogs/maternity.png)",
+                            backgroundSize: "cover",
+                            backgroundRepeat: "no-repeat",
+                            height: "80%",
+                            width: "80%",
+                            margin: "auto",
+                        }}
                     />
+
                     <Typography
                         fontFamily={"ADLaM Display"}
                         color="white"
                         fontSize={{ xs: 12, sm: 14, md: 16 }}
+                        textAlign={"center"}
                     >
                         Maternity
                     </Typography>
@@ -129,26 +138,32 @@ function StartBlog() {
                         height: { xs: "100%", sm: "70%", md: "80%" },
                         width: { xs: "100%", sm: "70%", md: "80%" },
                         bgcolor: "#FAD179",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
+
                         borderRadius: 5,
                         position: "relative",
                     }}
                 >
                     <IconButton sx={{ position: "absolute", top: 0, right: 0 }}>
-                        <DataSaverOnOutlinedIcon />
+                        <DataSaverOnOutlinedIcon fontSize="large" />
                     </IconButton>
-                    <img
-                        src="/images/blogs/baby_health.png"
-                        alt="Elder health"
-                        style={{ height: 80 }}
+
+                    <Box
+                        sx={{
+                            backgroundImage:
+                                "url(/images/blogs/baby_health.png)",
+                            backgroundSize: "cover",
+                            backgroundRepeat: "no-repeat",
+                            height: "80%",
+                            width: "80%",
+                            margin: "auto",
+                        }}
                     />
+
                     <Typography
                         fontFamily={"ADLaM Display"}
                         color="white"
                         fontSize={{ xs: 12, sm: 14, md: 16 }}
+                        textAlign={"center"}
                     >
                         Baby Health
                     </Typography>
@@ -167,17 +182,24 @@ function StartBlog() {
                     }}
                 >
                     <IconButton sx={{ position: "absolute", top: 0, right: 0 }}>
-                        <DataSaverOnOutlinedIcon />
+                        <DataSaverOnOutlinedIcon fontSize="large" />
                     </IconButton>
-                    <img
-                        src="/images/blogs/first_aid.png"
-                        alt="Elder health"
-                        style={{ height: 80 }}
+                    <Box
+                        sx={{
+                            backgroundImage: "url(/images/blogs/first_aid.png)",
+                            backgroundSize: "cover",
+                            backgroundRepeat: "no-repeat",
+                            height: "80%",
+                            width: "80%",
+                            margin: "auto",
+                        }}
                     />
+
                     <Typography
                         fontFamily={"ADLaM Display"}
                         color="white"
                         fontSize={{ xs: 12, sm: 14, md: 16 }}
+                        textAlign={"center"}
                     >
                         First Aid
                     </Typography>

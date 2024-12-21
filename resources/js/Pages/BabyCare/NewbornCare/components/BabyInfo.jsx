@@ -45,18 +45,28 @@ const calculateAge = (dateOfBirth) => {
 
 function BabyInfo() {
     const { carePlanData, updateNestedField } = useContext(CarePlanContext);
-    const [medicalCondition, setMedicalCondition] = useState(false);
+    const [medicalCondition, setMedicalCondition] = useState("No");
     const handleMedicalCondition = (event) => {
-        const value = event.target.value === "true"; // Convert to boolean
-        setMedicalCondition(value);
+        const value = event.target.value; // Convert to boolean
+        setMedicalCondition(event.target.value);
 
         // Clear the details text field if 'No' is selected
-        if (!value) {
+        if (value == "No") {
             updateNestedField(
                 "care_recipient_info",
                 "baby_medical_condition",
                 ""
             );
+        }
+    };
+
+    const handleAllergy = (event) => {
+        const value = event.target.value; // Convert to boolean
+        setIsAllergy(event.target.value);
+
+        // Clear the details text field if 'No' is selected
+        if (value == "No") {
+            updateNestedField("care_recipient_info", "allergies", "");
         }
     };
 
@@ -67,6 +77,8 @@ function BabyInfo() {
             updateNestedField("care_recipient_info", "age", age);
         }
     }, [carePlanData.care_recipient_info.date_of_birth]);
+
+    const [isAllergy, setIsAllergy] = useState("No");
 
     return (
         <Grid2
@@ -86,12 +98,13 @@ function BabyInfo() {
                 <Box
                     sx={{
                         minWidth: 300,
-                        maxWidth: 400,
-                        borderRadius: 10,
-                        backgroundColor: "#2c7a57", // Adjust the color as needed
+                        maxWidth: 500,
                         position: "relative",
                         padding: 3,
-                        boxShadow: 10,
+                        backgroundImage: "url(/images/babyCare/bg_child.png)",
+                        backgroundRepeat: "no-repeat",
+                        backgroundSize: "100% 100%",
+                        p: 5,
                     }}
                 >
                     <Typography
@@ -117,7 +130,7 @@ function BabyInfo() {
                             bgcolor: "#f5f5f5",
                             borderRadius: 20,
                             px: 1,
-                            width: 250,
+                            width: 220,
                         }}
                         value={carePlanData.care_recipient_info.name}
                         onChange={(e) =>
@@ -127,6 +140,7 @@ function BabyInfo() {
                                 e.target.value
                             )
                         }
+                        size="small"
                     />
                     <Box sx={{ display: "flex", gap: 3, my: 1 }}>
                         <Box>
@@ -165,6 +179,7 @@ function BabyInfo() {
                                             .split("T")[0], // Today's date in YYYY-MM-DD format
                                     },
                                 }}
+                                size="small"
                             />
                         </Box>
                         <Box>
@@ -211,7 +226,17 @@ function BabyInfo() {
                     >
                         <FormControlLabel
                             value="Male"
-                            control={<Radio size="small" />}
+                            control={
+                                <Radio
+                                    size="small"
+                                    sx={{
+                                        color: "#fff",
+                                        "&.Mui-checked": {
+                                            color: "#fff",
+                                        },
+                                    }}
+                                />
+                            }
                             label={
                                 <Typography
                                     sx={{
@@ -226,7 +251,17 @@ function BabyInfo() {
                         />
                         <FormControlLabel
                             value="Female"
-                            control={<Radio size="small" />}
+                            control={
+                                <Radio
+                                    size="small"
+                                    sx={{
+                                        color: "#fff",
+                                        "&.Mui-checked": {
+                                            color: "#fff",
+                                        },
+                                    }}
+                                />
+                            }
                             label={
                                 <Typography
                                     sx={{
@@ -250,34 +285,24 @@ function BabyInfo() {
                         >
                             Known Allergies
                         </Typography>
-                        <TextField
-                            multiline
-                            value={
-                                carePlanData.care_recipient_info.allergies || ""
-                            }
-                            onChange={(e) =>
-                                updateNestedField(
-                                    "care_recipient_info",
-                                    "allergies",
-                                    e.target.value
-                                )
-                            }
-                        />
-                    </Box>
-                    <Box mt={2}>
-                        <Typography
-                            sx={{
-                                fontFamily: "Karma",
-                                color: "#fff",
-                                fontSize: 13,
-                            }}
+                        <RadioGroup
+                            row
+                            value={isAllergy}
+                            onChange={handleAllergy}
                         >
-                            Medical Conditions
-                        </Typography>
-                        <RadioGroup row onChange={handleMedicalCondition}>
                             <FormControlLabel
-                                value={false}
-                                control={<Radio size="small" />}
+                                value="No"
+                                control={
+                                    <Radio
+                                        size="small"
+                                        sx={{
+                                            color: "#fff",
+                                            "&.Mui-checked": {
+                                                color: "#fff",
+                                            },
+                                        }}
+                                    />
+                                }
                                 label={
                                     <Typography
                                         sx={{
@@ -291,8 +316,100 @@ function BabyInfo() {
                                 }
                             />
                             <FormControlLabel
-                                value={true}
-                                control={<Radio size="small" />}
+                                value="Yes"
+                                control={
+                                    <Radio
+                                        size="small"
+                                        sx={{
+                                            color: "#fff", // Unselected color
+                                            "&.Mui-checked": {
+                                                color: "#FFD700", // Selected color (gold)
+                                            },
+                                        }}
+                                    />
+                                }
+                                label={
+                                    <Typography
+                                        sx={{
+                                            fontFamily: "Karma",
+                                            color: "#fff",
+                                            fontSize: 13,
+                                        }}
+                                    >
+                                        Yes
+                                    </Typography>
+                                }
+                            />
+                        </RadioGroup>
+                        {isAllergy == "Yes" && (
+                            <TextField
+                                value={
+                                    carePlanData.care_recipient_info
+                                        .allergies || ""
+                                }
+                                onChange={(e) =>
+                                    updateNestedField(
+                                        "care_recipient_info",
+                                        "allergies",
+                                        e.target.value
+                                    )
+                                }
+                            />
+                        )}
+                    </Box>
+                    <Box mt={2}>
+                        <Typography
+                            sx={{
+                                fontFamily: "Karma",
+                                color: "#fff",
+                                fontSize: 13,
+                            }}
+                        >
+                            Medical Conditions
+                        </Typography>
+                        <RadioGroup
+                            row
+                            value={medicalCondition}
+                            onChange={handleMedicalCondition}
+                        >
+                            <FormControlLabel
+                                value="No"
+                                control={
+                                    <Radio
+                                        size="small"
+                                        sx={{
+                                            color: "#fff", // Unselected color
+                                            "&.Mui-checked": {
+                                                color: "#FFF", // Selected color (gold)
+                                            },
+                                        }}
+                                    />
+                                }
+                                label={
+                                    <Typography
+                                        sx={{
+                                            fontFamily: "Karma",
+                                            color: "#fff",
+                                            fontSize: 13,
+                                        }}
+                                    >
+                                        No
+                                    </Typography>
+                                }
+                            />
+                            <FormControlLabel
+                                value="Yes"
+                                control={
+                                    <Radio
+                                        size="small"
+                                        sx={{
+                                            color: "#fff", // Unselected color
+                                            "&.Mui-checked": {
+                                                color: "#FFD700", // Selected color (gold)
+                                            },
+                                        }}
+                                    />
+                                }
                                 label={
                                     <Typography
                                         sx={{
@@ -307,7 +424,7 @@ function BabyInfo() {
                             />
                         </RadioGroup>
                         {/* Conditionally render the details text field if medicalCondition is true */}
-                        {medicalCondition && (
+                        {medicalCondition == "Yes" && (
                             <TextField
                                 label="Please describe the condition"
                                 multiline
@@ -343,12 +460,13 @@ function BabyInfo() {
                 <Box
                     sx={{
                         minWidth: 300,
-                        maxWidth: 400,
-                        borderRadius: 10,
-                        backgroundColor: "#2c7a57", // Adjust the color as needed
+                        maxWidth: 500,
                         position: "relative",
                         padding: 3,
-                        boxShadow: 10,
+                        backgroundImage: "url(/images/babyCare/bg_parent.png)",
+                        backgroundRepeat: "no-repeat",
+                        backgroundSize: "100% 100%",
+                        p: 5,
                     }}
                 >
                     <Typography

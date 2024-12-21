@@ -33,6 +33,8 @@ Route::get('care-philosophy', [PageController::class, 'philosophy'])->name('phil
 Route::get('team-introduction', [PageController::class, 'team'])->name('team');
 
 // Contact message 
+Route::get('contact-information', [PageController::class, 'contactInfo'])->name('contact.info');
+Route::get('customer-service', [PageController::class, 'customerService'])->name('customer.service');
 Route::post('contact', [ContactMessageController::class, 'storeMessage'])->name('message.store');
 
 Route::get('contact-messages', [ContactMessageController::class, 'contactMessages'])->name('contact.messages');

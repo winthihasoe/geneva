@@ -77,8 +77,16 @@ const JoinOurTeam = [
 
 const ContactUs = [
     {
-        title: "Messages",
+        title: "Contact Information",
+        routeName: "contact.info",
+    },
+    {
+        title: "Send Inquiry",
         routeName: "contact.messages",
+    },
+    {
+        title: "Customer Service",
+        routeName: "customer.service",
     },
 ];
 

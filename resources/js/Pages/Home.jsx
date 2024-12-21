@@ -20,7 +20,6 @@ function Home({ caregivers }) {
                 <Box
                     sx={{
                         position: "relative", // Position relative to allow content positioning
-
                         width: "100%", // Full width for background
                     }}
                 >

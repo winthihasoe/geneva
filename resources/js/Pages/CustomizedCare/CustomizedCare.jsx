@@ -8,9 +8,9 @@ import MainTitle from "./components/MainTitle";
 import Noodle from "@/Components/Fancy/Noodle";
 import Title from "@/Components/Typo/Title";
 import MyCarePlans from "./components/MyCarePlans";
+import ThreeLeaves from "@/Components/Fancy/ThreeLeaves";
 
 function CustomizedCare() {
-    // const carePlans = usePage().props.carePlans;
     return (
         <AppLayout>
             <Head title="Customize care" />
@@ -24,26 +24,7 @@ function CustomizedCare() {
                 >
                     <Box display={"inline-block"} position={"relative"}>
                         <MainTitle>Pick the care options!</MainTitle>
-                        <Box
-                            sx={{
-                                display: {
-                                    xs: "none",
-                                    sm: "flex",
-                                    md: "flex",
-                                },
-                            }}
-                        >
-                            <img
-                                src="/images/three_leaves.png"
-                                alt="leaves"
-                                style={{
-                                    width: 70,
-                                    position: "absolute",
-                                    top: -33,
-                                    left: -35,
-                                }}
-                            />
-                        </Box>
+                        <ThreeLeaves top={-55} left={-80} rotate={-35} />
                     </Box>
                 </Box>
 
