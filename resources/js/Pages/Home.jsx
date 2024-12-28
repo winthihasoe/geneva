@@ -136,7 +136,10 @@ function Home({ caregivers }) {
                         </Grid2>
 
                         <Grid2 container>
-                            <Grid2 size={{ xs: 12, sm: 12, md: 6 }}>
+                            <Grid2
+                                size={{ xs: 12, sm: 12, md: 6 }}
+                                sx={{ p: 1 }}
+                            >
                                 <ContactForm />
                             </Grid2>
                             <Grid2 size={{ xs: 12, sm: 12, md: 6 }}>

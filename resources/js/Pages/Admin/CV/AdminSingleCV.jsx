@@ -1,6 +1,6 @@
 import NoData from "@/Components/util/NoData";
 import { Head } from "@inertiajs/react";
-import React from "react";
+import React, { useState } from "react";
 import {
     Box,
     Typography,
@@ -9,6 +9,7 @@ import {
     Button,
     Card,
     CardContent,
+    IconButton,
 } from "@mui/material";
 import LongText from "@/Components/Typo/LongText";
 import Subtitle from "@/Components/Typo/Subtitle";
@@ -25,6 +26,8 @@ import PassportDisplay from "./components/PassportDisplay";
 import CitenzenshipID from "./components/CitenzenshipID";
 import FamilyMemberRecord from "./components/FamilyMemberRecord";
 import FormText from "@/Components/Typo/FormText";
+import OldCV from "./components/OldCV";
+import ChangeCircleRoundedIcon from "@mui/icons-material/ChangeCircleRounded";
 
 const AdminSingleCV = ({ cv }) => {
     const renderStars = (count) => {
@@ -36,10 +39,27 @@ const AdminSingleCV = ({ cv }) => {
         return stars;
     };
 
+    const [newCV, setNewCV] = useState(true);
+
     return (
         <AdminLayout>
             <Head title="Single CV" />
-            <BackButton />
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <BackButton />
+                <Button sx={{ gap: 1 }} onClick={() => setNewCV(!newCV)}>
+                    <Typography
+                        fontSize={{
+                            xs: 12,
+                            sm: 13,
+                            md: 15,
+                        }}
+                        fontWeight={600}
+                    >
+                        Change layout{" "}
+                    </Typography>
+                    <ChangeCircleRoundedIcon />
+                </Button>
+            </Box>
             <Box position={"relative"}>
                 {cv == null && (
                     <Box
@@ -53,7 +73,9 @@ const AdminSingleCV = ({ cv }) => {
                         <NoData />
                     </Box>
                 )}
-                {cv !== null && <CVdetail cv={cv} />}
+
+                {cv !== null && newCV === false && <OldCV cv={cv} />}
+                {cv !== null && newCV === true && <CVdetail cv={cv} />}
             </Box>
             <Divider sx={{ my: 3 }} />
 

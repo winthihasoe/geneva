@@ -83,15 +83,19 @@ function BabyInfo() {
     return (
         <Grid2
             container
-            py={{ xs: 1, sm: 2, md: 3 }}
-            rowGap={3}
-            alignItems={"flex-start"}
+            sx={{
+                display: "flex",
+                py: { xs: 1, sm: 2, md: 3 },
+                justifyContent: "center",
+                gap: 3,
+                alignItems: "flex-start",
+            }}
         >
             <Grid2
-                size={{ xs: 12, sm: 6 }}
+                size={{ xs: 12, sm: 5 }}
                 sx={{
                     display: "flex",
-                    justifyContent: "center",
+                    justifyContent: { xs: "center", sm: "flex-end" },
                     position: "relative",
                 }}
             >
@@ -107,6 +111,19 @@ function BabyInfo() {
                         p: 5,
                     }}
                 >
+                    <Box
+                        sx={{
+                            width: 24,
+                            height: 24,
+                            position: "absolute",
+                            padding: 3,
+                            backgroundImage: "url(/images/babyCare/foot.png)",
+                            backgroundRepeat: "no-repeat",
+                            backgroundSize: "contain",
+                            top: { xs: 10, sm: 15 },
+                            right: { xs: 50, sm: 60 },
+                        }}
+                    />
                     <Typography
                         sx={{
                             fontFamily: "Karma",
@@ -450,7 +467,7 @@ function BabyInfo() {
                 <ThreeLeaves bottom={90} left={-45} />
             </Grid2>
             <Grid2
-                size={{ xs: 12, sm: 6 }}
+                size={{ xs: 12, sm: 5 }}
                 sx={{
                     display: "flex",
                     justifyContent: "center",
@@ -469,6 +486,19 @@ function BabyInfo() {
                         p: 5,
                     }}
                 >
+                    <Box
+                        sx={{
+                            width: 24,
+                            height: 24,
+                            position: "absolute",
+                            padding: 3,
+                            backgroundImage: "url(/images/babyCare/parent.png)",
+                            backgroundRepeat: "no-repeat",
+                            backgroundSize: "contain",
+                            top: { xs: 10, sm: 15 },
+                            right: { xs: 45, sm: 60 },
+                        }}
+                    />
                     <Typography
                         sx={{
                             fontFamily: "Karma",

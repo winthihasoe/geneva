@@ -15,11 +15,12 @@ function CaregiverCardMini({ cv }) {
                 sx={{
                     width: "90%",
                     maxWidth: 230,
-                    bgcolor: "white",
+                    bgcolor: "#fff",
                     borderRadius: 5,
                     position: "relative",
                     m: "10px auto",
                     p: 1,
+                    boxShadow: 1,
                 }}
             >
                 <Box

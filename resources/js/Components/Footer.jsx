@@ -39,7 +39,7 @@ function Footer() {
                         color="primary"
                         gutterBottom
                     >
-                        Phone : +66 06 20 90 8578
+                        Phone : +66620908578
                     </Typography>
                     <Typography
                         fontSize={{ xs: 14, sm: 15, md: 16 }}

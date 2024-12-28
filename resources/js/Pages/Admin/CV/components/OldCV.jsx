@@ -3,7 +3,15 @@ import { Box, Typography, Divider, Grid2, Button } from "@mui/material";
 import LongText from "@/Components/Typo/LongText";
 import Subtitle from "@/Components/Typo/Subtitle";
 import logo from "../../../../../../public/images/logo/logo.png";
-function OldCV() {
+function OldCV({ cv }) {
+    const renderStars = (count) => {
+        const stars = [];
+        const starCount = Math.round(count / 2);
+        for (let i = 0; i < starCount; i++) {
+            stars.push(" * ");
+        }
+        return stars;
+    };
     return (
         <Grid2
             container
@@ -201,31 +209,30 @@ function OldCV() {
                                         RELEVANT COURSES
                                     </Typography>
                                     <Divider sx={{ my: 1 }} />
-                                    {cv.certificates.map((cert) => (
-                                        <Box key={cert.id}>
-                                            <Typography
-                                                fontFamily={"Karma"}
-                                                fontSize={{
-                                                    xs: 12,
-                                                    sm: 13,
-                                                    md: 18,
-                                                }}
-                                                fontWeight={"bold"}
-                                            >
-                                                {cert.course}
-                                            </Typography>
-                                            <Typography
-                                                fontSize={{
-                                                    xs: 12,
-                                                    sm: 13,
-                                                    md: 15,
-                                                }}
-                                                mb={2}
-                                            >
-                                                Duration: {cert.duration} months
-                                            </Typography>
-                                        </Box>
-                                    ))}
+                                    <Box>
+                                        {cv?.certificates &&
+                                            cv?.certificates.length > 0 &&
+                                            cv.certificates.map((cert) => (
+                                                <Typography
+                                                    fontSize={{
+                                                        xs: 8,
+                                                        sm: 12,
+                                                        md: 15,
+                                                    }}
+                                                    key={cert.id}
+                                                >
+                                                    {cert.qualification_type
+                                                        ? `${cert.qualification_type} in `
+                                                        : ""}
+                                                    {cert.course} /{" "}
+                                                    {cert.training_center_name}{" "}
+                                                    /{" "}
+                                                    {new Date(
+                                                        cert.start_date
+                                                    ).getFullYear()}
+                                                </Typography>
+                                            ))}
+                                    </Box>
                                 </>
                             ) : (
                                 <Box>
@@ -444,6 +451,29 @@ function OldCV() {
                             {cv?.elder_experience_years}
                         </Typography>
                     )}
+                    {cv?.experiences &&
+                        cv?.experiences.length > 0 &&
+                        cv.experiences
+                            .sort((a, b) => {
+                                if (a.order === b.order) {
+                                    // Secondary sort by `id` if `order` is the same
+                                    return a.id - b.id;
+                                }
+                                return a.order - b.order; // Primary sort by `order`
+                            })
+                            .map((exp) => (
+                                <Typography
+                                    fontSize={{
+                                        xs: 13,
+                                        sm: 16,
+                                        md: 18,
+                                    }}
+                                    fontFamily={"Mali"}
+                                    key={exp.id}
+                                >
+                                    {exp.experience}
+                                </Typography>
+                            ))}
                     {cv?.detail_experience && (
                         <Box sx={{ my: 2 }}>
                             <LongText
