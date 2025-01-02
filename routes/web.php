@@ -115,7 +115,8 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::get('cv-search-result', [CVController::class, 'adminSearchCV'])->name('admin.cv.search');
 
     // Update CV level
-    Route::post('/cv/{id}/update-level', [CVController::class, 'updateLevel'])->name('cv.update.level');
+    Route::post('cv/{id}/update-level', [CVController::class, 'updateLevel'])->name('cv.update.level');
+    Route::post('cv/{id}/update-status', [CVController::class, 'updateStatus'])->name('cv.update.status');
 
     // Create CV experience
     Route::post('cv/{id}/experience', [ExperienceController::class, 'adminStoreExperience'])->name('admin.experience.store');

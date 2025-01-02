@@ -28,6 +28,7 @@ import FamilyMemberRecord from "./components/FamilyMemberRecord";
 import FormText from "@/Components/Typo/FormText";
 import OldCV from "./components/OldCV";
 import ChangeCircleRoundedIcon from "@mui/icons-material/ChangeCircleRounded";
+import EditCVstatus from "./components/EditCVstatus";
 
 const AdminSingleCV = ({ cv }) => {
     const renderStars = (count) => {
@@ -351,6 +352,7 @@ const AdminSingleCV = ({ cv }) => {
                 </Grid2>
                 <Grid2 size={{ xs: 12, sm: 6 }}>
                     <EditApprove cv={cv} />
+                    <EditCVstatus cv={cv} />
                 </Grid2>
             </Grid2>
             <BackButton />

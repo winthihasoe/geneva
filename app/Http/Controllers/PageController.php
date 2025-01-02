@@ -13,7 +13,7 @@ class PageController extends Controller
       $caregivers = CV::with('experiences')->where('is_approved', true)
       ->inRandomOrder()
       ->take(6)
-      ->select('id','nickname', 'newborn_care_level','nanny_care_level', 'level', 'date_of_birth', 'nationality', 'ha_id', 'profile_photo')
+      ->select('id','nickname', 'newborn_care_level','nanny_care_level', 'level', 'date_of_birth', 'nationality', 'ha_id', 'profile_photo', 'status')
       ->get();
 
       return Inertia::render('Home', [

@@ -1,1 +1,0 @@
-import{g as t}from"./getThemeProps-7N3q41zI.js";import{e as p}from"./app-CTPEuw1m.js";function i({props:o,name:m,defaultTheme:s,themeId:r}){let e=p(s);return r&&(e=e[r]||e),t({theme:e,name:m,props:o})}export{i as u};

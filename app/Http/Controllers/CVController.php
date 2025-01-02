@@ -434,5 +434,13 @@ class CVController extends Controller
         return back()->with('success', 'Levels updated successfully.');
     }
 
+    public function updateStatus(Request $request, $id)
+    {
+        $cv = CV::findOrFail($id);
+        $cv->status = $request->status;
+        $cv->save();
+        return back()->with('success', 'Status updated successfully.');
+    }
+
   
 }

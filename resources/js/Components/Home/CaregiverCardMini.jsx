@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Chip, Typography } from "@mui/material";
 import React from "react";
 import AgeCalculator from "../util/AgeCalculator";
 
@@ -23,6 +23,22 @@ function CaregiverCardMini({ cv }) {
                     boxShadow: 1,
                 }}
             >
+                {cv?.status == "Blacklisted" && (
+                    <Box
+                        sx={{
+                            backgroundImage: "url(/images/blacklisted.png)",
+                            backgroundSize: "contain",
+                            height: "40%",
+                            width: "40%",
+                            backgroundRepeat: "no-repeat",
+                            position: "absolute",
+                            left: -20,
+                            top: 60,
+                            transform: `rotate(-20deg)`,
+                            zIndex: 1000,
+                        }}
+                    />
+                )}
                 <Box
                     sx={{
                         width: { xs: 130, sm: 130, md: 100, lg: 130 },
@@ -44,7 +60,37 @@ function CaregiverCardMini({ cv }) {
                         }}
                     />
                 </Box>
-                <Box pl={{ xs: 6, sm: 6, md: 2, lg: 6 }}>
+                <Box pl={{ xs: 6, sm: 6, md: 2, lg: 6 }} position={"relative"}>
+                    {cv?.status == "Available" && (
+                        <Chip
+                            variant="containe"
+                            color="success"
+                            label={
+                                <Typography fontSize={10}>Available</Typography>
+                            }
+                            size="small"
+                            sx={{
+                                position: "absolute",
+                                top: 0,
+                                right: 0,
+                            }}
+                        />
+                    )}
+                    {cv?.status == "Occupied" && (
+                        <Chip
+                            variant="containe"
+                            color="error"
+                            label={
+                                <Typography fontSize={10}>Occupied</Typography>
+                            }
+                            size="small"
+                            sx={{
+                                position: "absolute",
+                                top: 0,
+                                right: 0,
+                            }}
+                        />
+                    )}
                     <Typography fontSize={16} fontFamily={"ADLaM Display"}>
                         {cv.nickname}
                     </Typography>
