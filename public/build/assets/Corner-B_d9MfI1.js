@@ -1,1 +1,0 @@
-import{j as n}from"./app-Drm2PPIg.js";import{B as e}from"./Box-BYMvClcj.js";function m({top:o=null,bottom:r=null,left:s=null,right:l=null}){return n.jsx(e,{sx:{display:{xs:"none",sm:"none",md:"flex"},position:"absolute",top:o,bottom:r,left:s,right:l},children:n.jsx("img",{src:"/images/corner.png",alt:"corner",style:{width:130}})})}export{m as C};

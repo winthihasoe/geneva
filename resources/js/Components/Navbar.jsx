@@ -27,24 +27,29 @@ import YesOrNoModal from "./util/YesOrNoModal";
 
 const Pricing = [
     {
-        title: "Nanny Service",
-        service: "Nanny Service",
+        title: "Nanny Basic Care",
+        service: "Nanny Basic Service",
     },
     {
-        title: "Newborn Care",
-        service: "Newborn Care",
+        title: "Nanny Advanced Care",
+        service: "Nanny Advanced Service",
+    },
+
+    {
+        title: "Elderly Basic Care",
+        service: "Elder Basic Care",
     },
     {
-        title: "Elderly Care",
-        service: "Elder Care",
+        title: "Elderly Advanced Care",
+        service: "Elder Advanced Care",
     },
     {
-        title: "Nanny & Maid",
-        service: "Nanny Care + Maid Service",
+        title: "Nanny Basic & Maid",
+        service: "Nanny Basic Care + Maid Service",
     },
     {
-        title: "Elderly & Maid",
-        service: "Elder Care + Maid Service",
+        title: "Elderly Basic & Maid",
+        service: "Elder Basic Care + Maid Service",
     },
 ];
 

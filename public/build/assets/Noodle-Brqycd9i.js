@@ -1,1 +1,0 @@
-import{j as o}from"./app-Drm2PPIg.js";import{B as t}from"./Box-BYMvClcj.js";function m({top:l=null,bottom:n=null,left:s=null,right:e=null}){return o.jsx(t,{sx:{display:{xs:"none",sm:"none",md:"flex"},position:"absolute",top:l,bottom:n,left:s,right:e},children:o.jsx("img",{src:"/images/noodle.png",alt:"noodle",style:{width:40}})})}export{m as N};

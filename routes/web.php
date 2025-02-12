@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CarePlanController;
 use App\Http\Controllers\CarePlanPhotoController;
 use App\Http\Controllers\CertificateController;
@@ -38,6 +39,36 @@ Route::get('customer-service', [PageController::class, 'customerService'])->name
 Route::post('contact', [ContactMessageController::class, 'storeMessage'])->name('message.store');
 
 Route::get('contact-messages', [ContactMessageController::class, 'contactMessages'])->name('contact.messages');
+
+// Blog sections
+// Route::get('elder-health', [BlogController::class, 'elderHealth'])->name('blog.elder');
+// Route::get('elder-health/caregiving-skills', [BlogController::class, 'elderCaregivingSkills'])->name('blog.elder.caregiving.skills');
+// Route::get('elder-health/elder-health-blogs', [BlogController::class, 'elderHealthBlogs'])->name('blog.elder.health');
+// Route::get('elder-health/elder-caregiving-knowledge', [BlogController::class, 'elderCaregivingKnowledge'])->name('blog.elder.caregiving.knlowledge');
+
+// Showing each blog
+// Route::get('elder-health/elder-health-blogs/heart-health', [BlogController::class, 'heartHealth'])->name('blog.elder.health.heart');
+// Route::get('elder-health/elder-health-blogs/liver-health', [BlogController::class, 'liverHealth'])->name('blog.elder.health.liver');
+// Route::get('elder-health/elder-health-blogs/kidney-health', [BlogController::class, 'kidneyHealth'])->name('blog.elder.health.kidney');
+// Route::get('elder-health/elder-health-blogs/lungs-health', [BlogController::class, 'lungsHealth'])->name('blog.elder.health.lungs');
+// Route::get('elder-health/elder-health-blogs/bone-health', [BlogController::class, 'boneHealth'])->name('blog.elder.health.bone');
+// Route::get('elder-health/elder-health-blogs/digestive-health', [BlogController::class, 'digestive'])->name('blog.elder.health.digestive');
+// Route::get('elder-health/elder-health-blogs/brain-health', [BlogController::class, 'brain'])->name('blog.elder.health.brain');
+// Route::get('elder-health/elder-health-blogs/eye-health', [BlogController::class, 'eyeHealth'])->name('blog.elder.health.eye');
+// Route::get('elder-health/elder-health-blogs/diabetes', [BlogController::class, 'diabetes'])->name('blog.elder.health.diabetes');
+// Route::get('elder-health/elder-health-blogs/hypertension', [BlogController::class, 'hypertension'])->name('blog.elder.health.hypertension');
+// Route::get('elder-health/elder-health-blogs/hearing-health', [BlogController::class, 'hearing'])->name('blog.elder.health.hearing');
+// Route::get('elder-health/elder-health-blogs/cancer', [BlogController::class, 'cancer'])->name('blog.elder.health.cancer');
+// Route::get('elder-health/elder-health-blogs/physical-exercise', [BlogController::class, 'physicalExercise'])->name('blog.elder.health.physical');
+// Route::get('elder-health/elder-health-blogs/nutrition', [BlogController::class, 'nutrition'])->name('blog.elder.health.nutrition');
+// Route::get('elder-health/elder-health-blogs/dental-health', [BlogController::class, 'dentalHealth'])->name('blog.elder.health.dental');
+// Route::get('elder-health/elder-health-blogs/drug-medication', [BlogController::class, 'drug'])->name('blog.elder.health.drug');
+
+// Show Single Blog
+// Route::get('blog/single-blog', [BlogController::class, 'showSingleBlog'])->name('blog.single');
+
+// Privacy policy
+Route::get('privacy-policy', [PageController::class, 'privacyPolicy'])->name('privacyPolicy');
 
 Route::middleware('auth', 'is.employer')->group(function () {
     Route::get('care/start', [CarePlanController::class, 'startCare'])->name('care.start');

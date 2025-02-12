@@ -1,6 +1,7 @@
 import { Box, Grid2, IconButton, Typography } from "@mui/material";
 import React from "react";
 import DataSaverOnOutlinedIcon from "@mui/icons-material/DataSaverOnOutlined";
+import { router } from "@inertiajs/react";
 
 function StartBlog() {
     return (
@@ -65,7 +66,10 @@ function StartBlog() {
                         overflow: "hidden",
                     }}
                 >
-                    <IconButton sx={{ position: "absolute", top: 0, right: 0 }}>
+                    <IconButton
+                        onClick={() => router.get(route("blog.elder"))}
+                        sx={{ position: "absolute", top: 0, right: 0 }}
+                    >
                         <DataSaverOnOutlinedIcon fontSize="large" />
                     </IconButton>
                     <Box

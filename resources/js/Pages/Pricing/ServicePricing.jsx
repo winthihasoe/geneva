@@ -1,13 +1,11 @@
 import AppLayout from "@/Layouts/AppLayout";
 import { Head } from "@inertiajs/react";
-import { Box, Container } from "@mui/material";
+import { Container } from "@mui/material";
 import React from "react";
 import ServiceTable from "./components/ServiceTable";
 import SuperNanny from "./components/SuperNanny";
 import Nanny from "./components/Nanny";
 import HeartyAidServices from "./components/HeartyAidServices";
-import SuperNewborn from "./components/SuperNewborn";
-import Newborn from "./components/Newborn";
 import AdvancedElderCare from "./components/AdvancedElderCare";
 import ElderCare from "./components/ElderCare";
 import NannyAndMaid from "./components/NannyAndMaid";
@@ -22,19 +20,28 @@ function ServicePricing({ service }) {
 
                 <ServiceTable service={service} />
 
-                {service.name == "Nanny Service" && (
+                {service.name == "Nanny Basic Service" && (
                     <>
                         <SuperNanny />
                         <Nanny />
                     </>
                 )}
-                {service.name == "Newborn Care" && (
+
+                {service.name == "Nanny Advanced Service" && (
                     <>
-                        <SuperNewborn />
-                        <Newborn />
+                        <SuperNanny />
+                        <Nanny />
                     </>
                 )}
-                {service.name == "Elder Care" && (
+
+                {service.name == "Elder Basic Care" && (
+                    <>
+                        <AdvancedElderCare />
+                        <ElderCare />
+                    </>
+                )}
+
+                {service.name == "Elder Advanced Care" && (
                     <>
                         <AdvancedElderCare />
                         <ElderCare />

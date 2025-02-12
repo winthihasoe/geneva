@@ -55,6 +55,11 @@ class PageController extends Controller
    {
       return Inertia::render('Contact/CustomerService');
    }
+  
+   public function privacyPolicy()
+   {
+      return Inertia::render('PrivacyPolicy');
+   }
 
 
 }

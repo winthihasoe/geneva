@@ -73,7 +73,7 @@ function ServiceTable({ service }) {
                     fontSize={{ xs: 30, sm: 40, md: 48 }}
                     fontFamily={"Livvic"}
                 >
-                    Monthly Packages ({type})
+                    Packages ({type})
                 </Typography>
             </Box>
 
@@ -156,14 +156,7 @@ function ServiceTable({ service }) {
                                                     borderBottomLeftRadius: 20,
                                                 }}
                                             >
-                                                {salary.role} <br />
-                                                <span
-                                                    style={{
-                                                        fontSize: "0.85rem",
-                                                    }}
-                                                >
-                                                    (Monthly)
-                                                </span>
+                                                {salary.role}
                                             </TableCell>
                                             {pkg.durations.map(
                                                 (duration, durationIndex) => (
@@ -184,7 +177,9 @@ function ServiceTable({ service }) {
                                                                 s.role ===
                                                                 salary.role
                                                         )?.amount || "N/A"}{" "}
-                                                        THB/ <br /> Month
+                                                        THB <br />
+                                                        {durationIndex !== 0 &&
+                                                            "/ Month"}
                                                     </TableCell>
                                                 )
                                             )}
