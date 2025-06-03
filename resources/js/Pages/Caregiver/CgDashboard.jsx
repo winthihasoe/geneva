@@ -14,10 +14,6 @@ import React from "react";
 
 const Menus = [
     {
-        title: "Fill CV",
-        routeName: "cv.create",
-    },
-    {
         title: "My CV",
         routeName: "cv.show",
     },
@@ -50,7 +46,7 @@ const MyCares = [
     },
 ];
 
-function CgDashboard() {
+function CgDashboard({ hasCv, approvedCV }) {
     return (
         <AppLayout>
             <Container maxWidth="md" sx={{ minHeight: "80vh", py: 5 }}>
@@ -72,6 +68,29 @@ function CgDashboard() {
                                 flexWrap: "wrap",
                             }}
                         >
+                            <Button
+                                sx={{
+                                    width: 120,
+                                    height: 80,
+                                    m: 1,
+                                    borderRadius: 10,
+                                }}
+                                disabled={approvedCV}
+                                variant="contained"
+                                onClick={() =>
+                                    router.get(
+                                        route(hasCv ? "cv.edit" : "cv.create")
+                                    )
+                                }
+                            >
+                                <Typography
+                                    variant="h6"
+                                    fontSize={{ xs: 14, sm: 15 }}
+                                    fontFamily={"Abyssinica SIL"}
+                                >
+                                    {hasCv ? "Edit CV" : "Create CV"}
+                                </Typography>
+                            </Button>
                             {Menus.map((item, index) => (
                                 <Button
                                     key={index}
@@ -137,6 +156,24 @@ function CgDashboard() {
                         </Box>
                     </Box> */}
                 </Box>
+                <Typography
+                    variant="h6"
+                    fontFamily={"Lilita One"}
+                    textAlign="center"
+                    sx={{ mt: 5, mb: 2 }}
+                >
+                    If you want to edit your CV, please{" "}
+                    <span
+                        style={{
+                            textDecoration: "underline",
+                            cursor: "pointer",
+                        }}
+                        onClick={() => router.visit(route("contact.messages"))}
+                    >
+                        contact to admin
+                    </span>
+                    .
+                </Typography>
             </Container>
         </AppLayout>
     );

@@ -1,0 +1,1 @@
+import{j as e}from"./app-BoZnLPYA.js";import{c as t}from"./createSvgIcon-BwYdnlGc.js";const o=t(e.jsx("path",{d:"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m5 11h-4v4h-2v-4H7v-2h4V7h2v4h4z"}),"AddCircle"),s=t(e.jsx("path",{d:"M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z"}),"Delete");export{o as A,s as D};

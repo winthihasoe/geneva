@@ -350,6 +350,21 @@ class CVController extends Controller
     {
         return redirect(route('cv.show'))->with('success', 'CV created successful');   
     }
+
+    public function editCV()
+    {
+        $cv = Auth::user()->cv;
+        return Inertia::render('CV/EditCV' , [
+            'cvData' => $cv ? $cv->toArray() : null,
+            'newbornBasicCare' => DB::table('newborn_basic_care')->get(),
+            'newbornAdvancedCare' => DB::table('newborn_advanced_care')->get(),
+            'nannyBasicCare' => DB::table('nanny_basic_care')->get(),
+            'nannyAdvancedCare' => DB::table('nanny_advanced_care')->get(),
+            'elderBasicCare' => DB::table('elder_basic_care')->get(),
+            'elderAdvancedCare' => DB::table('elder_advanced_care')->get(),
+            
+        ]);
+    }
    
     public function myCV ()
     {

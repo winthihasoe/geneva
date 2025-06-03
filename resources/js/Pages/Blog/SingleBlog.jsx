@@ -11,12 +11,14 @@ import {
     CardContent,
     Grid2,
 } from "@mui/material";
+import BackButton from "@/Components/BackButton";
 
 function SingleBlog() {
     return (
         <AppLayout>
             <Head title="Single Blog" />
-            <Container maxWidth="md" sx={{ py: 4 }}>
+            <Container maxWidth="lg">
+                <BackButton />
                 {/* Blog Title */}
                 <Typography
                     variant="h3"

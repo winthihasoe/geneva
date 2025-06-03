@@ -113,6 +113,7 @@ Route::middleware(['auth', 'is.caregiver'])->group(function () {
     Route::post('cv/create', [CVController::class, 'store'])->name('cv.store');
     Route::get('cv/finish', [CVController::class, 'finishCV'])->name('cv.finish');
     
+    Route::get('cv/edit', [CVController::class, 'editCV'])->name('cv.edit');
     Route::get('cv', [CVController::class, 'myCV'])->name('cv.show');
     
     // Certificates

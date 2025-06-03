@@ -1,0 +1,1 @@
+import{j as r}from"./app-BoZnLPYA.js";import{T as t}from"./Typography-Basylv_H.js";function a({children:o}){return r.jsx(t,{variant:"h4",fontSize:{xs:20,sm:22,md:33},fontWeight:800,mb:1,fontFamily:"Livvic",color:"primary",children:o})}export{a as T};

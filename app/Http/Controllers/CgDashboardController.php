@@ -9,6 +9,12 @@ class CgDashboardController extends Controller
 {
     public function dashboard()
     {
-        return Inertia::render('Caregiver/CgDashboard');
+        $caregiver = auth()->user();
+        $hasCv = $caregiver->cv()->exists(); // Check if CV exists
+        $approvedCV = $caregiver->cv()->where('is_approved', true)->exists(); // Check if CV is approved
+        return Inertia::render('Caregiver/CgDashboard' ,[
+            'hasCv' => $hasCv,
+            'approvedCV' => $approvedCV,
+        ]);
     }
 }
