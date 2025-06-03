@@ -1,0 +1,1 @@
+import"./app-DnHI5Zz_.js";import{P as m}from"./index-Df8mI2Z9.js";const n=({dateTime:t})=>(e=>{const r={year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:!0},i=new Intl.DateTimeFormat("en-GB",r).format(new Date(e)),[o,a]=i.split(", ");return`${a} - ${o}`})(t);n.propTypes={dateTime:m.string.isRequired};export{n as D};

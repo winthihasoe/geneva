@@ -160,7 +160,11 @@ function CgDashboard({ hasCv, approvedCV }) {
                     variant="h6"
                     fontFamily={"Lilita One"}
                     textAlign="center"
-                    sx={{ mt: 5, mb: 2 }}
+                    sx={{
+                        mt: 5,
+                        mb: 2,
+                        display: approvedCV ? "block" : "none",
+                    }}
                 >
                     If you want to edit your CV, please{" "}
                     <span
