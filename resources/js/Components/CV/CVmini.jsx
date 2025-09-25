@@ -1,19 +1,12 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Box, Typography, Divider, Grid2 } from "@mui/material";
-import { router } from "@inertiajs/react";
-import { CarePlanContext } from "@/Context/CarePlanContext";
 
-const CVmini = ({ cv }) => {
-    const { handleSubmit } = useContext(CarePlanContext);
-    const handleSelect = () => {
-        handleSubmit();
-        router.get(route("care.cv.shows", cv.slug));
-    };
+const CVmini = ({ cv, handleSelect }) => {
     return (
         <Box
             position={"relative"}
             sx={{ width: 250, cursor: "pointer" }}
-            onClick={handleSelect}
+            onClick={() => handleSelect(cv.slug)}
         >
             <Box
                 sx={{
@@ -30,12 +23,7 @@ const CVmini = ({ cv }) => {
                     zIndex: 1000,
                 }}
             >
-                <Typography
-                    textAlign={"center"}
-                    fontSize={13}
-                    fontFamily={"Kavoon"}
-                    color="#fff"
-                >
+                <Typography textAlign={"center"} fontSize={13} color="#fff">
                     ID <br />
                     {cv.ha_id}
                 </Typography>
@@ -44,7 +32,7 @@ const CVmini = ({ cv }) => {
                 <Grid2
                     container
                     sx={{
-                        minHeight: 280,
+                        minHeight: 250,
                         margin: "auto",
                         borderRadius: 5,
                         overflow: "hidden",
@@ -119,88 +107,50 @@ const CVmini = ({ cv }) => {
                                     </Typography>
 
                                     <Box mt={1}>
-                                        <Typography fontSize={5} mb={0.5}>
+                                        <Typography fontSize={7} mb={0.5}>
                                             <strong>Date of Birth:</strong>{" "}
                                             {cv.date_of_birth}
                                         </Typography>
-                                        <Typography fontSize={5} mb={0.5}>
+                                        <Typography fontSize={7} mb={0.5}>
                                             <strong>Nationality:</strong>{" "}
                                             {cv.nationality}
                                         </Typography>
-                                        <Typography fontSize={5} mb={0.5}>
-                                            <strong>Marital Status:</strong>{" "}
-                                            {cv.marital_status}
-                                        </Typography>
 
-                                        <Typography fontSize={5} mb={0.5}>
+                                        <Typography fontSize={7} mb={0.5}>
                                             <strong>Religion:</strong>{" "}
                                             {cv.religion}
                                         </Typography>
-                                        <Typography fontSize={5}>
+                                        <Typography fontSize={7}>
                                             <strong>Weight & Height:</strong>{" "}
                                             <br />
                                             {cv.weight} kg | {cv.height} cm
                                         </Typography>
                                     </Box>
                                 </Box>
-                                <Box
-                                    sx={{
-                                        width: {
-                                            xs: "100%",
-                                            sm: "90%",
-                                            md: "80%",
-                                        },
-                                        p: { xs: 1, sm: 1 },
-                                    }}
-                                >
-                                    <Typography fontSize={7} fontWeight={600}>
-                                        EDUCATION
-                                    </Typography>
-
-                                    <Typography fontSize={5} mb={1}>
-                                        {cv.education_level}
-                                    </Typography>
-                                    <Typography fontSize={5}>
-                                        {cv.caregiver_qualification}
-                                    </Typography>
-                                </Box>
                             </Box>
                         </Box>
                     </Grid2>
 
-                    <Grid2 size={7} sx={{ p: { xs: 1, sm: 3, md: 4 } }}>
+                    <Grid2 size={7} sx={{ p: { xs: 1, sm: 1, md: 2 } }}>
                         <Typography
-                            variant="h3"
-                            fontSize={14}
-                            fontWeight="bold"
+                            fontSize={16}
+                            fontWeight={800}
                             color="primary"
                         >
                             {cv.nickname.toUpperCase()}
                         </Typography>
                         <Box mb={1}>
                             {/* Showing Newborn care Level  */}
-                            <Typography
-                                fontSize={7}
-                                variant="h6"
-                                color="text.secondary"
-                            >
+                            <Typography fontSize={7} color="text.secondary">
                                 {cv?.newborn_care_level?.toUpperCase()}
                             </Typography>
 
                             {/* Showing Nanny care Level  */}
-                            <Typography
-                                fontSize={7}
-                                variant="h6"
-                                color="text.secondary"
-                            >
+                            <Typography fontSize={7} color="text.secondary">
                                 {cv?.nanny_care_level?.toUpperCase()}
                             </Typography>
                             {/* Showing Elder care level  */}
-                            <Typography
-                                fontSize={7}
-                                variant="h6"
-                                color="text.secondary"
-                            >
+                            <Typography fontSize={7} color="text.secondary">
                                 {cv?.level?.toUpperCase()}
                             </Typography>
                         </Box>
@@ -221,8 +171,8 @@ const CVmini = ({ cv }) => {
                                 flexDirection="column"
                                 gap={0.5}
                             >
-                                <Typography fontSize={6}>
-                                    📞 +66 620 90 8578
+                                <Typography fontSize={9}>
+                                    +66 620 90 8578
                                 </Typography>
                             </Box>
                         </Box>
@@ -231,18 +181,9 @@ const CVmini = ({ cv }) => {
                             sx={{
                                 borderBottom: "2px solid",
                                 borderColor: "primary.main",
+                                py: 1,
                             }}
                         >
-                            <Typography
-                                variant="h6"
-                                fontWeight="bold"
-                                bgcolor={"#85e1ba"}
-                                display={"inline-block"}
-                                p={1}
-                                fontSize={7}
-                            >
-                                SKILLS
-                            </Typography>
                             <Box
                                 sx={{
                                     display: "flex",
@@ -258,7 +199,7 @@ const CVmini = ({ cv }) => {
                                             Baby care
                                         </Typography>
                                         {cv?.nursing_skills_for_child
-                                            ?.slice(0, 4)
+                                            ?.slice(0, 3)
                                             .map((skill, index) => (
                                                 <Typography
                                                     key={index}
@@ -279,7 +220,7 @@ const CVmini = ({ cv }) => {
                                             Elder care
                                         </Typography>
                                         {cv?.nursing_skills_for_elder
-                                            ?.slice(0, 4)
+                                            ?.slice(0, 3)
                                             .map((skill, index) => (
                                                 <Typography
                                                     key={index}

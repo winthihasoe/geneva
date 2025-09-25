@@ -21,6 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone',
+        'address', 
+        'profile_photo',
         'uid',
         'is_employer',
         'is_caregiver',
@@ -52,5 +55,11 @@ class User extends Authenticatable
     public function cv()
     {
         return $this->hasOne(CV::class);
+    }
+
+    // User has many interviews
+    public function interviews()
+    {
+        return $this->hasMany(Interview::class);
     }
 }

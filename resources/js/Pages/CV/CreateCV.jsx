@@ -25,7 +25,7 @@ function CreateCV({
             elderAdvancedCare={elderAdvancedCare}
         >
             <AppLayout>
-                <Head title="Fill CV form" />
+                <Head title="Create CV Form" />
                 <StartCreateCV />
             </AppLayout>
         </CvProvider>

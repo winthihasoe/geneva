@@ -33,19 +33,20 @@ function SuccessBooking() {
                             justifyContent: "center",
                             alignItems: "center",
                             flexDirection: "column",
+                            maxWidth: 600,
+                            mx: "auto",
                         }}
                     >
                         <Typography
-                            fontFamily={"Londrina Solid"}
                             fontSize={{ xs: 26, sm: 32, md: 35 }}
                             color="primary"
                             textAlign={"center"}
+                            fontWeight={700}
                             mb={1}
                         >
                             "Your interview request is successful!”
                         </Typography>
                         <Typography
-                            fontFamily={"Kufam"}
                             fontSize={{ xs: 11, sm: 13, md: 13 }}
                             textAlign={"center"}
                             mb={2}
@@ -55,12 +56,10 @@ function SuccessBooking() {
                         </Typography>
                         <Button
                             variant="contained"
-                            sx={{ borderRadius: 20, width: 100 }}
+                            size="small"
                             onClick={() => router.get(route("home"))}
                         >
-                            <Typography fontFamily={"Kufam"} fontSize={17}>
-                                Home
-                            </Typography>
+                            <Typography fontSize={17}>Home</Typography>
                         </Button>
                     </Box>
                 </Box>

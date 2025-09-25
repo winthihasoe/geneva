@@ -14,12 +14,26 @@ use Inertia\Inertia;
 
 class InterviewController extends Controller
 {
-    public function showCV ($slug)
+    public function createInterview ($slug, $care_plan = null, Request $request)
     {
         $cv = CV::with('certificates', 'experiences')->where('slug', $slug)->firstOrFail();
         $user_id = Auth::user()->id;
- 
-        $existingCarePlan = CarePlan::where('user_id', $user_id)->latest()->first();
+
+        // Get specific care plan if UUID is provided, otherwise get latest
+        $carePlanUuid = $care_plan ?? $request->query('care_plan');
+        
+        if ($carePlanUuid) {
+            $existingCarePlan = CarePlan::where('uuid', $carePlanUuid)
+                                    ->firstOrFail();
+        } else {
+            // Fallback to latest care plan
+            $existingCarePlan = CarePlan::where('user_id', $user_id)->latest()->first();
+            
+            if (!$existingCarePlan) {
+                return redirect()->route('care.start')
+                            ->withErrors(['message' => 'Please create a care plan first.']);
+            }
+        }
 
        // Map the CarePlan's numeric duration to the string format in the Package duration
         $durationMapping = [
@@ -31,83 +45,83 @@ class InterviewController extends Controller
         // Get the corresponding string duration
         $mappedDuration = $durationMapping[$existingCarePlan->duration] ?? null;
 
-        $service = Service::where('name', $existingCarePlan->service_type)
-        ->with(['packages.durations.salaries', 'packages.durations.serviceFees'])
-        ->firstOrFail();
+        // $service = Service::where('name', $existingCarePlan->service_type)
+        // ->with(['packages.durations.salaries', 'packages.durations.serviceFees'])
+        // ->firstOrFail();
        
 
         // Convert packages to a collection to use firstWhere
-        $packages = collect($service->packages);
+        // $packages = collect($service->packages);
         
         // Access package type from the schedule array
-        $packageType = $existingCarePlan->schedule['package'] ?? null;
+        // $packageType = $existingCarePlan->schedule['package'] ?? null;
 
         // Initialize variables
-        $selectedSalary = null;
-        $serviceFees = null;
+        // $selectedSalary = null;
+        // $serviceFees = null;
 
         // Ensure packageType is not null before accessing
-        if ($packageType) {
-            // Get the specific package based on CarePlan's schedule package type
-            $selectedPackage = $packages->firstWhere('type', $packageType);
+        // if ($packageType) {
+        //     // Get the specific package based on CarePlan's schedule package type
+        //     $selectedPackage = $packages->firstWhere('type', $packageType);
             
-            // Get the specific duration based on the mapped duration string
-            $selectedDuration = $selectedPackage
-                ? collect($selectedPackage->durations)->firstWhere('duration', $mappedDuration)
-                : null;
+        //     // Get the specific duration based on the mapped duration string
+        //     $selectedDuration = $selectedPackage
+        //         ? collect($selectedPackage->durations)->firstWhere('duration', $mappedDuration)
+        //         : null;
              
-            // Extract the relevant salaries and service fees based on the selected package and duration
-            $salaries = $selectedDuration ? collect($selectedDuration->salaries) : null;
-            $serviceFees = $selectedDuration ? collect($selectedDuration->serviceFees) : null;
+        //     // Extract the relevant salaries and service fees based on the selected package and duration
+        //     $salaries = $selectedDuration ? collect($selectedDuration->salaries) : null;
+        //     $serviceFees = $selectedDuration ? collect($selectedDuration->serviceFees) : null;
 
-            if ($salaries) {
-                if ($existingCarePlan->service_type === 'Elder Care + Maid Service') {
-                    // For 'Elder Care + Maid Service', select the first available salary
-                    $selectedSalary = $salaries->first();
-                } else if ($existingCarePlan->service_type === 'Nanny Care + Maid Service') {
-                    // For 'Elder Care + Maid Service', select the first available salary
-                    $selectedSalary = $salaries->first();
-                } else if ($existingCarePlan->service_type === 'Elder Care') {
-                    // For other care types, select salary based on caregiver level
-                    $selectedSalary = $cv->level === 'Advanced Caregiver'
-                        ? $salaries->first(function ($salary) {
-                            return stripos($salary->role, 'Adv Caregiver') !== false;
-                        })
-                        : $salaries->first(function ($salary) {
-                            return stripos($salary->role, 'Caregiver') !== false;
-                        });
-                } else if ($existingCarePlan->service_type === 'Newborn Care') {
-                    // For other care types, select salary based on caregiver level
-                    $selectedSalary = $cv->level === 'Super Newborn Nanny'
-                        ? $salaries->first(function ($salary) {
-                            return stripos($salary->role, 'Super Nanny') !== false;
-                        })
-                        : $salaries->first(function ($salary) {
-                            return stripos($salary->role, 'Nanny') !== false;
-                        });
-                } else if ($existingCarePlan->service_type === 'Nanny Service') {
-                    // For other care types, select salary based on caregiver level
-                    $selectedSalary = $cv->level === 'Super Nanny'
-                        ? $salaries->first(function ($salary) {
-                            return stripos($salary->role, 'Super Nanny') !== false;
-                        })
-                        : $salaries->first(function ($salary) {
-                            return stripos($salary->role, 'Nanny') !== false;
-                        });
-                }
-            }
+        //     if ($salaries) {
+        //         if ($existingCarePlan->service_type === 'Elder Care + Maid Service') {
+        //             // For 'Elder Care + Maid Service', select the first available salary
+        //             $selectedSalary = $salaries->first();
+        //         } else if ($existingCarePlan->service_type === 'Nanny Care + Maid Service') {
+        //             // For 'Elder Care + Maid Service', select the first available salary
+        //             $selectedSalary = $salaries->first();
+        //         } else if ($existingCarePlan->service_type === 'Elder Care') {
+        //             // For other care types, select salary based on caregiver level
+        //             $selectedSalary = $cv->level === 'Advanced Caregiver'
+        //                 ? $salaries->first(function ($salary) {
+        //                     return stripos($salary->role, 'Adv Caregiver') !== false;
+        //                 })
+        //                 : $salaries->first(function ($salary) {
+        //                     return stripos($salary->role, 'Caregiver') !== false;
+        //                 });
+        //         } else if ($existingCarePlan->service_type === 'Newborn Care') {
+        //             // For other care types, select salary based on caregiver level
+        //             $selectedSalary = $cv->level === 'Super Newborn Nanny'
+        //                 ? $salaries->first(function ($salary) {
+        //                     return stripos($salary->role, 'Super Nanny') !== false;
+        //                 })
+        //                 : $salaries->first(function ($salary) {
+        //                     return stripos($salary->role, 'Nanny') !== false;
+        //                 });
+        //         } else if ($existingCarePlan->service_type === 'Nanny Service') {
+        //             // For other care types, select salary based on caregiver level
+        //             $selectedSalary = $cv->level === 'Super Nanny'
+        //                 ? $salaries->first(function ($salary) {
+        //                     return stripos($salary->role, 'Super Nanny') !== false;
+        //                 })
+        //                 : $salaries->first(function ($salary) {
+        //                     return stripos($salary->role, 'Nanny') !== false;
+        //                 });
+        //         }
+        //     }
             
-        } else {
-            $selectedPackage = null;
-            $selectedDuration = null;
-            $salaries = null;
-            $serviceFees = null;
-        }
+        // } else {
+        //     $selectedPackage = null;
+        //     $selectedDuration = null;
+        //     $salaries = null;
+        //     $serviceFees = null;
+        // }
         return Inertia::render('Interview/CreateInterview', [
             'cv' => $cv,
             'carePlan' => $existingCarePlan,
-            'selectedSalary' => $selectedSalary,
-            'serviceFees' => $serviceFees,
+            // 'selectedSalary' => $selectedSalary,
+            // 'serviceFees' => $serviceFees,
         ]);
     }
 
@@ -127,15 +141,6 @@ class InterviewController extends Controller
     
             $care_plan_id = $latestCarePlan->id;
     
-            // Check if an interview record already exists with the same user_id, care_plan_id, and cv_id
-            $existingInterview = Interview::where('user_id', $user_id)
-                ->where('care_plan_id', $care_plan_id)
-                ->first();
-    
-            if ($existingInterview) {
-                return redirect(route('interview.book.success'))->with(['success' => 'Interview already booked.']);
-            }
-    
             // Validate the request data
             $validatedData = $request->validate([
                 'cv_id' => 'required|exists:c_v_s,id',
@@ -147,25 +152,73 @@ class InterviewController extends Controller
                 'location' => 'nullable|string',
                 'online' => 'nullable|string',
             ]);
-    
-            // Create a new interview record
-            $interview = Interview::create([
-                'user_id' => $user_id,
-                'cv_id' => $validatedData['cv_id'],
-                'care_plan_id' => $care_plan_id,
-                'date' => $validatedData['date'] ?? null,
-                'time' => $validatedData['time'] ?? null,
-                'alt_date' => $validatedData['alt_date'] ?? null,
-                'alt_time' => $validatedData['alt_time'] ?? null,
-                'mode' => $validatedData['mode'] ?? null,
-                'location' => $validatedData['location'] ?? null,
-                'online' => $validatedData['online'] ?? null,
-                'status' => 'pending',  // Default status
-                'is_approved' => false,  // Default approval status
-            ]);
-    
-            // Return a response on success
-            return redirect()->route('interview.book.success')->with('success', 'Interview created successfully.');
+
+            // Get all existing interviews for this care plan
+            $existingInterviews = Interview::where('care_plan_id', $care_plan_id)->get();
+
+
+            if ($existingInterviews->isNotEmpty()) {
+                // Check if any of the existing interviews has the same CV ID
+                $matchingInterview = $existingInterviews->where('cv_id', $validatedData['cv_id'])->first();
+                
+                if ($matchingInterview) {
+                    // Update the existing interview with the same CV ID
+                    $matchingInterview->update([
+                        'date' => $validatedData['date'],
+                        'time' => $validatedData['time'],
+                        'alt_date' => $validatedData['alt_date'] ?? null,
+                        'alt_time' => $validatedData['alt_time'] ?? null,
+                        'mode' => $validatedData['mode'],
+                        'location' => $validatedData['location'] ?? null,
+                        'online' => $validatedData['online'] ?? null,
+                        'status' => 'pending',  // Reset status to pending
+                        'is_approved' => false,  // Reset approval status
+                        'approved_by' => null,
+                        'approved_at' => null,
+                    ]);
+
+                    return redirect()->route('interview.book.success')
+                        ->with('success', 'Interview updated successfully.');
+                } else {
+                    // No matching CV ID found, create a new interview
+                    Interview::create([
+                        'user_id' => $user_id,
+                        'cv_id' => $validatedData['cv_id'],
+                        'care_plan_id' => $care_plan_id,
+                        'date' => $validatedData['date'],
+                        'time' => $validatedData['time'],
+                        'alt_date' => $validatedData['alt_date'] ?? null,
+                        'alt_time' => $validatedData['alt_time'] ?? null,
+                        'mode' => $validatedData['mode'],
+                        'location' => $validatedData['location'] ?? null,
+                        'online' => $validatedData['online'] ?? null,
+                        'status' => 'pending',  // Default status
+                        'is_approved' => false,  // Default approval status
+                    ]);
+
+                    return redirect()->route('interview.book.success')
+                        ->with('success', 'New interview created successfully.');
+                }
+            } else {
+                // No existing interviews for this care plan, create a new one
+                Interview::create([
+                    'user_id' => $user_id,
+                    'cv_id' => $validatedData['cv_id'],
+                    'care_plan_id' => $care_plan_id,
+                    'date' => $validatedData['date'],
+                    'time' => $validatedData['time'],
+                    'alt_date' => $validatedData['alt_date'] ?? null,
+                    'alt_time' => $validatedData['alt_time'] ?? null,
+                    'mode' => $validatedData['mode'],
+                    'location' => $validatedData['location'] ?? null,
+                    'online' => $validatedData['online'] ?? null,
+                    'status' => 'pending',  // Default status
+                    'is_approved' => false,  // Default approval status
+                ]);
+
+                return redirect()->route('interview.book.success')
+                    ->with('success', 'Interview created successfully.');
+            }
         } catch (\Exception $e) {
             // Log the error for debugging
             Log::error('Error creating interview: ' . $e->getMessage());

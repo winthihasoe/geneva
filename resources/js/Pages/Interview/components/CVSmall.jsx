@@ -23,6 +23,7 @@ const ResumeItalic = ({ children }) => (
 function CVSmall({ cv }) {
     const hasElderSkills = cv?.nursing_skills_for_elder?.length > 0;
     const hasChildSkills = cv?.nursing_skills_for_child?.length > 0;
+
     return (
         <Box
             sx={{
@@ -48,8 +49,10 @@ function CVSmall({ cv }) {
                                 sx={{
                                     height: { xs: 150, sm: 230 },
                                     backgroundColor: "primary.main",
-                                    border: "4px solid #000",
-                                    borderRadius: "25px",
+                                    borderWidth: 3,
+                                    borderStyle: "solid",
+                                    borderColor: "primary.main",
+                                    borderRadius: "20px",
                                     overflow: "hidden",
                                     backgroundImage: `url(/storage/${cv.profile_photo})`,
                                     backgroundPosition: "center",
@@ -227,20 +230,30 @@ function CVSmall({ cv }) {
                             </Box>
                         </Box>
                         <Box>
-                            {cv?.certificates &&
-                                cv?.certificates.length > 0 &&
-                                cv.certificates.map((cert) => (
-                                    <ResumeItalic key={cert.id}>
-                                        {cert.qualification_type
-                                            ? `${cert.qualification_type} in `
-                                            : ""}
-                                        {cert.course} /{" "}
-                                        {cert.training_center_name} /{" "}
-                                        {new Date(
-                                            cert.start_date
-                                        ).getFullYear()}
+                            {cv.certificates && cv.certificates?.length > 0 ? (
+                                <Box>
+                                    {cv?.certificates &&
+                                        cv?.certificates.length > 0 &&
+                                        cv.certificates.map((cert) => (
+                                            <ResumeItalic key={cert.id}>
+                                                {cert.qualification_type
+                                                    ? `${cert.qualification_type} in `
+                                                    : ""}
+                                                {cert.course} /{" "}
+                                                {cert.training_center_name} /{" "}
+                                                {new Date(
+                                                    cert.start_date
+                                                ).getFullYear()}
+                                            </ResumeItalic>
+                                        ))}
+                                </Box>
+                            ) : (
+                                <Box>
+                                    <ResumeItalic>
+                                        {cv.caregiver_qualification}
                                     </ResumeItalic>
-                                ))}
+                                </Box>
+                            )}
                         </Box>
                     </Grid2>
                     <Grid2 size={{ xs: 6, sm: 6, md: 7 }}>

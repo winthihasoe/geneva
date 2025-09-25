@@ -7,30 +7,28 @@ const PhotoUploadField = ({ oldPhoto }) => {
     const { data, setData } = useContext(CvContext);
 
     // Display either the current photo or a previously saved photo URL
-    // Determine the initial preview URL: use string URL if available, otherwise null
     const initialPhotoURL =
-        typeof data.profile_photo === "string"
+        typeof data.profile_photo === "string" && data.profile_photo !== ""
             ? `/storage/${data.profile_photo}`
             : oldPhoto || null;
     const [photoURL, setPhotoURL] = useState(initialPhotoURL);
-    const [uploading, setUploading] = useState(false); // For tracking compression status
+    const [uploading, setUploading] = useState(false);
 
     const handlePhotoChange = (e) => {
         const file = e.target.files[0];
 
         if (file) {
-            // Show the progress bar when compression starts
             setUploading(true);
 
             // Compress the image using Compressor.js
             new Compressor(file, {
-                quality: 0.6, // Adjust the quality as needed (0 to 1)
-                maxWidth: 600, // Resize to a maximum width of 600px
+                quality: 0.6,
+                maxWidth: 600,
                 success(compressedFile) {
                     if (compressedFile instanceof Blob) {
                         // Create a URL for the compressed image
                         setPhotoURL(URL.createObjectURL(compressedFile));
-                        // Set the compressed image to the form data
+                        // Set the compressed image to the form data (don't upload immediately)
                         setData((prevData) => ({
                             ...prevData,
                             profile_photo: compressedFile,
@@ -38,35 +36,13 @@ const PhotoUploadField = ({ oldPhoto }) => {
                     } else {
                         console.error("Compressed file is not a valid Blob");
                     }
-
-                    // Hide the progress bar after compression
                     setUploading(false);
-                    uploadPhoto(compressedFile);
                 },
                 error(err) {
                     console.error("Compression error:", err.message);
-                    setUploading(false); // Hide the progress bar on error
+                    setUploading(false);
                 },
             });
-        }
-    };
-
-    const [uploadMessage, setUploadMessage] = useState("");
-    // Function to handle the photo upload
-    const uploadPhoto = async (photoFile) => {
-        const formData = new FormData();
-        formData.append("profile_photo", photoFile, photoFile.name);
-
-        try {
-            const response = await axios.post(route("cv.store"), formData, {
-                headers: { "Content-Type": "multipart/form-data" },
-            });
-            setUploadMessage(response.data.message);
-            setTimeout(() => setUploadMessage(""), 2000); // Clear message after 2 seconds
-        } catch (error) {
-            console.error("Error uploading photo:", error);
-            setUploadMessage("Failed to upload photo.");
-            setTimeout(() => setUploadMessage(""), 2000); // Clear message after 2 seconds
         }
     };
 
@@ -82,6 +58,12 @@ const PhotoUploadField = ({ oldPhoto }) => {
         }
     }, [data.profile_photo]);
 
+    // Check if we have a valid photo to display
+    const hasPhoto =
+        (data.profile_photo && data.profile_photo !== "") ||
+        photoURL ||
+        oldPhoto;
+
     return (
         <Box
             sx={{
@@ -90,9 +72,9 @@ const PhotoUploadField = ({ oldPhoto }) => {
                 alignItems: "center",
             }}
         >
-            {data.profile_photo !== null || oldPhoto ? (
+            {hasPhoto ? (
                 <img
-                    src={photoURL ? photoURL : oldPhoto}
+                    src={photoURL || oldPhoto}
                     alt="Profile Photo"
                     style={{
                         width: "200px",
@@ -111,8 +93,17 @@ const PhotoUploadField = ({ oldPhoto }) => {
                         height: "280px",
                         border: "2px dashed gray",
                         borderRadius: "8px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        backgroundColor: "grey.50",
+                        marginBottom: "1rem",
                     }}
-                />
+                >
+                    <Typography variant="body2" color="text.secondary">
+                        No photo selected
+                    </Typography>
+                </Box>
             )}
 
             {/* Status Bar for Compression */}
@@ -127,8 +118,8 @@ const PhotoUploadField = ({ oldPhoto }) => {
                 </>
             )}
 
-            {!data.profile_photo && !uploading && (
-                <Button variant="text" component="label">
+            {!hasPhoto && !uploading && (
+                <Button variant="outlined" component="label">
                     Add your photo
                     <input
                         type="file"
@@ -139,17 +130,6 @@ const PhotoUploadField = ({ oldPhoto }) => {
                 </Button>
             )}
 
-            {uploadMessage && (
-                <Typography
-                    fontSize={{ xs: 11, sm: 12, md: 13 }}
-                    fontWeight={600}
-                    fontFamily={"Mina"}
-                    mb={2}
-                >
-                    {uploadMessage}
-                </Typography>
-            )}
-
             <Box
                 sx={{
                     display: "flex",
@@ -158,7 +138,7 @@ const PhotoUploadField = ({ oldPhoto }) => {
                     alignItems: "center",
                 }}
             >
-                {(data.profile_photo || photoURL) && !uploading && (
+                {hasPhoto && !uploading && (
                     <Button variant="outlined" component="label" size="small">
                         Change Photo
                         <input

@@ -11,9 +11,7 @@ import {
     CardContent,
     IconButton,
 } from "@mui/material";
-import LongText from "@/Components/Typo/LongText";
 import Subtitle from "@/Components/Typo/Subtitle";
-import logo from "../../../../../public/images/logo/logo.png"; // Adjust the path to your logo
 import AdminLayout from "@/Layouts/AdminLayout";
 import EditLevel from "./components/EditLevel";
 import EditApprove from "./components/EditApprove";

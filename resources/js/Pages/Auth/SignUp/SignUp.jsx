@@ -20,7 +20,7 @@ function SignUp() {
         password: "",
         password_confirmation: "",
         is_caregiver: false,
-        is_employer: false,
+        is_employer: true,
         agree_terms: false,
     });
 
@@ -44,303 +44,493 @@ function SignUp() {
     return (
         <AppLayout>
             <Head title="Sign Up" />
-            <Container maxWidth="md">
-                <Grid2
-                    container
+            <Container maxWidth="lg">
+                <Typography
+                    variant="h4"
                     sx={{
-                        pt: 3,
-                        display: "flex",
-                        justifyContent: "center",
-                        gap: 2,
+                        my: 3,
+                        fontWeight: 500,
+                        textAlign: "center",
+                        fontFamily: "Righteous",
                     }}
                 >
-                    <Grid2
-                        size={{ xs: 0, sm: 0, md: 5 }}
-                        sx={{ display: "flex", alignItems: "center" }}
-                    >
-                        <img
-                            src="/images/pricing/super_nanny.png"
-                            alt="Caregiver Photo"
-                            style={{
-                                width: "100%",
-                                height: "70%",
-                                objectFit: "cover",
-                            }}
-                        />
-                    </Grid2>
-                    <Grid2
+                    Sign Up for Free
+                </Typography>
+
+                {/* Select your account type to get started */}
+                <Box
+                    sx={{
+                        mb: 1,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: 6,
+                        p: 2,
+                        maxWidth: 600,
+                        mx: "auto",
+                    }}
+                >
+                    <Box
                         sx={{
                             display: "flex",
-                            justifyContent: "center",
+                            flexDirection: "column",
                             alignItems: "center",
+                            width: "100%",
                         }}
-                        size={{ xs: 12, sm: 6, md: 6 }}
                     >
                         <Box
-                            component="form"
-                            onSubmit={handleSubmit}
                             sx={{
-                                border: {
-                                    xs: "none",
-                                    sm: "2px solid #21875C",
-                                    md: "2px solid #21875C",
-                                },
-                                borderRadius: 5,
-                                bgcolor: "white",
-                                py: 3,
+                                p: 1,
+                                borderRadius: 3,
+                                border: "3px solid",
+                                borderColor: "grey.300",
+                                width: "100%",
+                                bgcolor:
+                                    data.is_employer === true
+                                        ? "primary.main"
+                                        : "white",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                flexDirection: "column",
+                                cursor: "pointer",
+                            }}
+                            onClick={() => {
+                                setData({
+                                    ...data,
+                                    is_caregiver: false,
+                                    is_employer: true,
+                                });
                             }}
                         >
-                            <Box textAlign={"center"}>
-                                <Typography fontFamily={"Abel"} fontWeight={16}>
-                                    Get Started for free
-                                </Typography>
-                                <Typography
-                                    sx={{
-                                        bgcolor: "primary.main",
-                                        px: 3,
-                                        mx: { xs: 2, sm: 4, md: 6 },
-                                        borderRadius: 5,
-                                        fontFamily: "Abhaya Libre",
-                                        color: "white",
-                                        fontWeight: "bold",
-                                        fontSize: 30,
-                                    }}
-                                >
-                                    Sign Up
-                                </Typography>
-                            </Box>
-
-                            <Box sx={{ px: 4, mt: 2 }}>
-                                {[
-                                    { label: "Name", key: "name" },
-                                    { label: "Email", key: "email" },
-                                    {
-                                        label: "Password",
-                                        key: "password",
-                                        type: "password",
-                                    },
-                                    {
-                                        label: "Confirm Password",
-                                        key: "password_confirmation",
-                                        type: "password",
-                                    },
-                                ].map((item) => (
-                                    <Box key={item.key}>
-                                        <Box
-                                            sx={{
-                                                display: "flex",
-                                                gap: 1,
-                                                alignItems: "center",
-                                                justifyContent: "center",
-                                            }}
-                                        >
-                                            <Typography
-                                                fontSize={20}
-                                                fontFamily={"Afacad"}
-                                                width={"60%"}
-                                            >
-                                                {item.label}
-                                            </Typography>
-                                            <TextField
-                                                fullWidth
-                                                type={item.type || "text"}
-                                                value={data[item.key]}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        item.key,
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
-                                        </Box>
-                                        <Typography
-                                            textAlign={"right"}
-                                            fontSize={12}
-                                            color="error"
-                                        >
-                                            {errors[item.key]}
-                                        </Typography>
-                                    </Box>
-                                ))}
-                            </Box>
-
-                            {/* Choose Account Type: Caregiver or Employer */}
                             <Typography
-                                sx={{
-                                    fontFamily: "Abel",
-                                    color: "primary.main",
-                                    fontWeight: 800,
-                                    fontSize: 16,
-                                    px: 2,
-                                    mt: 2,
-                                }}
+                                textAlign={"center"}
+                                fontFamily={"Righteous"}
+                                fontWeight={500}
+                                color={
+                                    data.is_employer === true
+                                        ? "white"
+                                        : "black"
+                                }
                             >
-                                Please select one for your{" "}
-                                <span style={{ color: "#000" }}>
-                                    Account type.
-                                </span>
+                                Find a Caregiver
                             </Typography>
+                        </Box>
+                        {/* Dot indicator */}
+                        <Box
+                            sx={{
+                                width: 10,
+                                height: 10,
+                                borderRadius: "50%",
+                                bgcolor:
+                                    data.is_employer === true
+                                        ? "grey.600"
+                                        : "transparent",
+                                mt: 1,
+                            }}
+                        />
+                    </Box>
+
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            width: "100%",
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                p: 1,
+                                borderRadius: 3,
+                                border: "3px solid",
+                                borderColor: "grey.300",
+                                width: "100%",
+                                bgcolor:
+                                    data.is_caregiver === true
+                                        ? "primary.main"
+                                        : "white",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                flexDirection: "column",
+                                cursor: "pointer",
+                            }}
+                            onClick={() => {
+                                setData({
+                                    ...data,
+                                    is_caregiver: true,
+                                    is_employer: false,
+                                });
+                            }}
+                        >
+                            <Typography
+                                textAlign={"center"}
+                                fontFamily={"Righteous"}
+                                fontWeight={500}
+                                color={
+                                    data.is_caregiver === true
+                                        ? "white"
+                                        : "black"
+                                }
+                            >
+                                To be a Caregiver
+                            </Typography>
+                        </Box>
+                        {/* Dot indicator */}
+                        <Box
+                            sx={{
+                                width: 10,
+                                height: 10,
+                                borderRadius: "50%",
+                                bgcolor:
+                                    data.is_caregiver === true
+                                        ? "grey.600"
+                                        : "transparent",
+                                mt: 1,
+                            }}
+                        />
+                    </Box>
+                </Box>
+
+                {data.is_employer ? (
+                    <Grid2
+                        container
+                        sx={{
+                            pt: 3,
+                            display: "flex",
+                            flexWrap: "wrap",
+                            justifyContent: "center",
+                            gap: 5,
+                            mb: 4,
+                        }}
+                    >
+                        <Grid2 size={{ xs: 12, sm: 6, md: 5 }}>
                             <Box
+                                component="form"
+                                onSubmit={handleSubmit}
                                 sx={{
-                                    mb: 1,
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    gap: 2,
-                                    p: 2,
+                                    border: {
+                                        xs: "none",
+                                        sm: "2px solid #21875C",
+                                        md: "2px solid #21875C",
+                                    },
+                                    borderRadius: 4,
+                                    bgcolor: "white",
+                                    py: 3,
+                                    boxShadow: 1,
                                 }}
                             >
-                                <Box
-                                    sx={{
-                                        p: 3,
-                                        height: 80,
-                                        borderRadius: 3,
-                                        boxShadow: 2,
-                                        width: "100%",
-                                        bgcolor: "primary.main",
-                                        border:
-                                            data.is_employer === true
-                                                ? "4px solid orange"
-                                                : "none",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        flexDirection: "column",
-                                        cursor: "pointer",
-                                    }}
-                                    onClick={() => {
-                                        setData({
-                                            ...data,
-                                            is_caregiver: false,
-                                            is_employer: true,
-                                        });
-                                    }}
+                                <Typography
+                                    variant="h6"
+                                    textAlign={"center"}
+                                    mb={4}
                                 >
-                                    <Typography
-                                        textAlign={"center"}
-                                        fontFamily={"Mali"}
-                                        fontSize={15}
-                                        fontWeight={600}
-                                        color={"#fff"}
-                                    >
-                                        Find a Caregiver
-                                    </Typography>
-                                    <Typography
-                                        textAlign={"center"}
-                                        fontFamily={"Abel"}
-                                        fontSize={15}
-                                        fontWeight={600}
-                                        color={"#ddd"}
-                                    >
-                                        (For employer)
-                                    </Typography>
-                                </Box>
-                                <Box
-                                    sx={{
-                                        p: 3,
-                                        height: 80,
-                                        borderRadius: 10,
-                                        boxShadow: 2,
-                                        width: "100%",
-                                        border:
-                                            data.is_caregiver === true
-                                                ? "4px solid orange"
-                                                : "none",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        cursor: "pointer",
-                                        overflow: "hidden",
-                                    }}
-                                    onClick={() => {
-                                        setData({
-                                            ...data,
-                                            is_caregiver: true,
-                                            is_employer: false,
-                                        });
-                                    }}
-                                >
-                                    <Typography
-                                        textAlign={"center"}
-                                        fontFamily={"Mali"}
-                                        fontSize={17}
-                                        fontWeight={600}
-                                        color={"grey.700"}
-                                    >
-                                        Get a Job
-                                    </Typography>
-                                </Box>
-                            </Box>
-                            <Box textAlign={"center"}>
-                                <Typography fontSize={13} fontFamily={"Mina"}>
                                     {data.is_employer && "I'm an employer."}
                                     {data.is_caregiver && "I'm a caregiver."}
                                 </Typography>
-                            </Box>
 
-                            {/* Agree to Terms and Conditions */}
-                            <Box sx={{ px: 4, mt: 2 }}>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={data.agree_terms}
-                                            onChange={(e) =>
-                                                setData(
-                                                    "agree_terms",
-                                                    e.target.checked
-                                                )
-                                            }
-                                        />
-                                    }
-                                    label={
-                                        <Typography
-                                            fontSize={12}
-                                            fontFamily={"Mina"}
-                                        >
-                                            I agree to the Terms and Conditions
+                                <Box sx={{ px: 4, mt: 2 }}>
+                                    {[
+                                        {
+                                            label: "Name",
+                                            key: "name",
+                                            placeholder: "Enter your name",
+                                        },
+                                        {
+                                            label: "Email",
+                                            key: "email",
+                                            placeholder: "Enter your email",
+                                        },
+                                        {
+                                            label: "Password",
+                                            key: "password",
+                                            type: "password",
+                                            placeholder: "Enter your password",
+                                        },
+                                        {
+                                            label: "Confirm Password",
+                                            key: "password_confirmation",
+                                            type: "password",
+                                            placeholder:
+                                                "Confirm your password",
+                                        },
+                                    ].map((item) => (
+                                        <Box sx={{ mb: 2 }} key={item.key}>
+                                            <Box>
+                                                <Typography variant="body1">
+                                                    {item.label}
+                                                </Typography>
+                                                <TextField
+                                                    fullWidth
+                                                    type={item.type || "text"}
+                                                    value={data[item.key]}
+                                                    onChange={(e) =>
+                                                        setData(
+                                                            item.key,
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    placeholder={
+                                                        item.placeholder
+                                                    }
+                                                />
+                                            </Box>
+                                            <Typography
+                                                fontSize={12}
+                                                color="error"
+                                            >
+                                                {errors[item.key]}
+                                            </Typography>
+                                        </Box>
+                                    ))}
+                                </Box>
+
+                                {/* Agree to Terms and Conditions */}
+                                <Box sx={{ px: 4, mt: 2 }}>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={data.agree_terms}
+                                                onChange={(e) =>
+                                                    setData(
+                                                        "agree_terms",
+                                                        e.target.checked
+                                                    )
+                                                }
+                                            />
+                                        }
+                                        label={
+                                            <Typography fontSize={12}>
+                                                I agree to the Terms and
+                                                Conditions
+                                            </Typography>
+                                        }
+                                    />
+                                    {errors.agree_terms && (
+                                        <Typography color="error" fontSize={12}>
+                                            {errors.agree_terms}
                                         </Typography>
-                                    }
-                                />
-                                {errors.agree_terms && (
-                                    <Typography color="error" fontSize={12}>
-                                        {errors.agree_terms}
-                                    </Typography>
-                                )}
-                            </Box>
+                                    )}
+                                </Box>
 
-                            <Link href={route("login")}>
-                                <Typography
-                                    sx={{
-                                        fontSize: 13,
-                                        fontFamily: "ADLaM Display",
-                                        textAlign: "center",
-                                        my: 2,
-                                    }}
-                                >
-                                    Already have an account?
-                                </Typography>
-                            </Link>
-                            {/* Submit Button */}
-                            <Box textAlign={"center"} mt={2}>
-                                <Button
-                                    variant="contained"
-                                    size="small"
-                                    type="submit"
-                                    sx={{ borderRadius: 20 }}
-                                    disabled={!isFormValid}
-                                >
+                                <Link href={route("login")}>
                                     <Typography
-                                        fontFamily={"Lilita One"}
-                                        fontWeight={500}
-                                        fontSize={20}
+                                        sx={{
+                                            fontSize: 13,
+                                            color: "info.main",
+                                            textAlign: "center",
+                                            my: 2,
+                                        }}
                                     >
-                                        SUBMIT
+                                        Already have an account?
                                     </Typography>
-                                </Button>
+                                </Link>
+                                {/* Submit Button */}
+                                <Box textAlign={"center"} mt={2}>
+                                    <Button
+                                        variant="contained"
+                                        size="small"
+                                        type="submit"
+                                        sx={{ borderRadius: 20 }}
+                                        disabled={!isFormValid}
+                                    >
+                                        <Typography
+                                            variant="h6"
+                                            fontFamily={"Righteous"}
+                                            fontWeight={500}
+                                            fontSize={20}
+                                        >
+                                            SUBMIT
+                                        </Typography>
+                                    </Button>
+                                </Box>
                             </Box>
-                        </Box>
+                        </Grid2>
+                        <Grid2
+                            size={{ xs: 0, sm: 0, md: 5 }}
+                            sx={{ display: "flex", alignItems: "center" }}
+                        >
+                            <img
+                                src="/images/courses/ads.png"
+                                alt="Caregiver Photo"
+                                style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover",
+                                }}
+                            />
+                        </Grid2>
                     </Grid2>
-                </Grid2>
+                ) : (
+                    <Grid2
+                        container
+                        sx={{
+                            pt: 3,
+                            display: "flex",
+                            justifyContent: "center",
+                            gap: 2,
+                            mb: 4,
+                        }}
+                    >
+                        <Grid2
+                            size={{ xs: 0, sm: 0, md: 5 }}
+                            sx={{ display: "flex", alignItems: "center" }}
+                        >
+                            <img
+                                src="/images/pricing/super_nanny.png"
+                                alt="Caregiver Photo"
+                                style={{
+                                    width: "100%",
+                                    height: "70%",
+                                    objectFit: "cover",
+                                }}
+                            />
+                        </Grid2>
+                        <Grid2 size={{ xs: 12, sm: 6, md: 5 }}>
+                            <Box
+                                component="form"
+                                onSubmit={handleSubmit}
+                                sx={{
+                                    border: {
+                                        xs: "none",
+                                        sm: "2px solid #21875C",
+                                        md: "2px solid #21875C",
+                                    },
+                                    borderRadius: 4,
+                                    bgcolor: "white",
+                                    py: 3,
+                                    boxShadow: 1,
+                                }}
+                            >
+                                <Typography
+                                    variant="h6"
+                                    textAlign={"center"}
+                                    mb={4}
+                                >
+                                    {data.is_employer && "I'm an employer."}
+                                    {data.is_caregiver && "I'm a caregiver."}
+                                </Typography>
+
+                                <Box sx={{ px: 4, mt: 2 }}>
+                                    {[
+                                        {
+                                            label: "Name",
+                                            key: "name",
+                                            placeholder: "Enter your name",
+                                        },
+                                        {
+                                            label: "Email",
+                                            key: "email",
+                                            placeholder: "Enter your email",
+                                        },
+                                        {
+                                            label: "Password",
+                                            key: "password",
+                                            type: "password",
+                                            placeholder: "Enter your password",
+                                        },
+                                        {
+                                            label: "Confirm Password",
+                                            key: "password_confirmation",
+                                            type: "password",
+                                            placeholder:
+                                                "Confirm your password",
+                                        },
+                                    ].map((item) => (
+                                        <Box sx={{ mb: 2 }} key={item.key}>
+                                            <Box>
+                                                <Typography variant="body1">
+                                                    {item.label}
+                                                </Typography>
+                                                <TextField
+                                                    fullWidth
+                                                    type={item.type || "text"}
+                                                    value={data[item.key]}
+                                                    onChange={(e) =>
+                                                        setData(
+                                                            item.key,
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    placeholder={
+                                                        item.placeholder
+                                                    }
+                                                />
+                                            </Box>
+                                            <Typography
+                                                fontSize={12}
+                                                color="error"
+                                            >
+                                                {errors[item.key]}
+                                            </Typography>
+                                        </Box>
+                                    ))}
+                                </Box>
+
+                                {/* Agree to Terms and Conditions */}
+                                <Box sx={{ px: 4, mt: 2 }}>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={data.agree_terms}
+                                                onChange={(e) =>
+                                                    setData(
+                                                        "agree_terms",
+                                                        e.target.checked
+                                                    )
+                                                }
+                                            />
+                                        }
+                                        label={
+                                            <Typography fontSize={12}>
+                                                I agree to the Terms and
+                                                Conditions
+                                            </Typography>
+                                        }
+                                    />
+                                    {errors.agree_terms && (
+                                        <Typography color="error" fontSize={12}>
+                                            {errors.agree_terms}
+                                        </Typography>
+                                    )}
+                                </Box>
+
+                                <Link href={route("login")}>
+                                    <Typography
+                                        sx={{
+                                            fontSize: 13,
+                                            color: "info.main",
+                                            textAlign: "center",
+                                            my: 2,
+                                        }}
+                                    >
+                                        Already have an account?
+                                    </Typography>
+                                </Link>
+                                {/* Submit Button */}
+                                <Box textAlign={"center"} mt={2}>
+                                    <Button
+                                        variant="contained"
+                                        size="small"
+                                        type="submit"
+                                        sx={{ borderRadius: 20 }}
+                                        disabled={!isFormValid}
+                                    >
+                                        <Typography
+                                            variant="h6"
+                                            fontFamily={"Righteous"}
+                                            fontWeight={500}
+                                            fontSize={20}
+                                        >
+                                            SUBMIT
+                                        </Typography>
+                                    </Button>
+                                </Box>
+                            </Box>
+                        </Grid2>
+                    </Grid2>
+                )}
             </Container>
         </AppLayout>
     );

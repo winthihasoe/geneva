@@ -52,19 +52,30 @@ function CVdetail({ cv }) {
                                 sx={{
                                     height: { xs: 160, sm: 250, md: 280 },
                                     backgroundColor: "primary.main",
-                                    border: "4px solid #000",
-                                    borderRadius: "25px",
+                                    borderColor: "primary.main",
+                                    borderWidth: 5,
+                                    borderStyle: "solid",
+                                    borderRadius: 6,
                                     overflow: "hidden",
-                                    backgroundImage: `url(/storage/${cv.profile_photo})`,
-                                    backgroundPosition: "center",
-                                    backgroundSize: "cover",
-                                    backgroundRepeat: "no-repeat",
                                 }}
-                            />
+                            >
+                                <img
+                                    src={`/storage/${cv.profile_photo}`}
+                                    alt="Profile"
+                                    style={{
+                                        height: "100%",
+                                        width: "100%",
+                                        objectFit: "cover",
+                                        backgroundRepeat: "no-repeat",
+                                        backgroundPosition: "center",
+                                        backgroundColor: "orange",
+                                    }}
+                                />
+                            </Box>
                             <Typography
-                                fontFamily={"Kavoon"}
                                 textAlign={"center"}
                                 fontSize={{ xs: 10, sm: 14, md: 16 }}
+                                fontWeight={600}
                             >
                                 ID <span>{cv.ha_id}</span>
                             </Typography>
@@ -79,11 +90,10 @@ function CVdetail({ cv }) {
                             }}
                         >
                             <Typography
-                                variant="h2"
-                                fontSize={{ xs: 22, sm: 35, md: 50 }}
+                                fontSize={{ xs: 25, sm: 35, md: 50 }}
                                 fontWeight="bold"
-                                fontFamily={"ADLaM Display"}
                                 mb={{ xs: 1, sm: 2, mb: 3 }}
+                                noWrap
                             >
                                 {cv.nickname.toUpperCase()}
                             </Typography>
@@ -230,20 +240,45 @@ function CVdetail({ cv }) {
                             </Box>
                         </Box>
                         <Box>
-                            {cv?.certificates &&
-                                cv?.certificates.length > 0 &&
-                                cv.certificates.map((cert) => (
-                                    <ResumeItalic key={cert.id}>
-                                        {cert.qualification_type
-                                            ? `${cert.qualification_type} in `
-                                            : ""}
-                                        {cert.course} /{" "}
-                                        {cert.training_center_name} /{" "}
-                                        {new Date(
-                                            cert.start_date
-                                        ).getFullYear()}
-                                    </ResumeItalic>
-                                ))}
+                            {/* Relevant course  */}
+                            {cv.certificates && cv.certificates?.length > 0 ? (
+                                <Box>
+                                    {cv?.certificates &&
+                                        cv?.certificates.length > 0 &&
+                                        cv.certificates.map((cert) => (
+                                            <Typography
+                                                fontSize={{
+                                                    xs: 8,
+                                                    sm: 12,
+                                                    md: 15,
+                                                }}
+                                                key={cert.id}
+                                            >
+                                                {cert.qualification_type
+                                                    ? `${cert.qualification_type} in `
+                                                    : ""}
+                                                {cert.course} /{" "}
+                                                {cert.training_center_name} /{" "}
+                                                {new Date(
+                                                    cert.start_date
+                                                ).getFullYear()}
+                                            </Typography>
+                                        ))}
+                                </Box>
+                            ) : (
+                                <Box>
+                                    <Typography
+                                        fontSize={{
+                                            xs: 12,
+                                            sm: 13,
+                                            md: 15,
+                                        }}
+                                        mb={1}
+                                    >
+                                        {cv.caregiver_qualification}
+                                    </Typography>
+                                </Box>
+                            )}
                         </Box>
                     </Grid2>
                     <Grid2 size={{ xs: 6, sm: 6, md: 7 }}>

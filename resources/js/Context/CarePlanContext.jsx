@@ -1,4 +1,5 @@
 import axios from "axios";
+import { max } from "lodash";
 import React, { createContext, useState } from "react";
 
 // Create the context
@@ -7,22 +8,21 @@ export const CarePlanContext = createContext();
 // Provider component
 export const CarePlanProvider = ({ children, carePlan }) => {
     const initialCarePlanData = {
-        care_type: "",
+        care_type: "", // Baby, Elder, Maternal
         start_date: "",
-        duration: 3,
+        duration: 30,
         preferred_language: "",
-        service_type: "", // Newborn Care, Nanny Service, Nanny Care + Maid Service, Elder Care, Elder Care + Maid Service
+        service_type: "", // Basic Care, Basic + Medical Care
         care_recipient_info: {
             name: "",
-            date_of_birth: "",
             age: "",
             weight: "",
             height: "",
             gender: "",
-            home_address: "",
             phone_number: "",
-            baby_medical_condition: "",
-            allergies: "",
+            email: "",
+            line_id: "",
+            home_address: "",
         },
         contact_info: {
             name: "",
@@ -33,28 +33,86 @@ export const CarePlanProvider = ({ children, carePlan }) => {
         },
         preferences: {
             age: "",
-            religion: "",
-            nationality: "",
-            language: "",
-            experience: "",
-            communication: "",
+            minimum_age: "",
+            maximum_age: "",
+            religion: [], // Array for multiple selections
+            nationality: [], // Array for multiple selections
+            minimum_weight: "",
+            maximum_weight: "",
+            minimum_height: "",
+            maximum_height: "",
+            qualification: [], // Array for multiple selections
+            experience: [], // Array for multiple selections
+            personality: [], // Array for multiple selections
         },
         services: [],
         medical_conditions: [],
-        other_medical_conditions: "",
-        mobilities: "",
-        memory: "",
-        alertness: "",
         schedule: {
             package: "",
-            duty_time: "",
+            duty: "",
         },
-        additional_notes: "",
-        current_step: 0,
         care_plan_id: "",
     };
+
+    const initialCarePlanDataOld = {
+        care_type: "", // Baby, Elder, Maternal
+        start_date: "",
+        duration: 1,
+        preferred_language: "",
+        service_type: "", // Newborn Care, Nanny Service, Nanny Care + Maid Service, Elder Care, Elder Care + Maid Service
+        care_recipient_info: {
+            name: "",
+            // date_of_birth: "",
+            age: "",
+            weight: "",
+            height: "",
+            gender: "",
+            home_address: "",
+            // phone_number: "",
+            // baby_medical_condition: "",
+            // allergies: "",
+        },
+        contact_info: {
+            name: "",
+            relationship: "",
+            phone_number: "",
+            // email: "",
+            // line_id: "",
+        },
+        preferences: {
+            age: "",
+            minimum_age: "",
+            maximum_age: "",
+            religion: "",
+            nationality: "",
+            minimum_weight: "",
+            maximum_weight: "",
+            minimum_height: "",
+            maximum_height: "",
+            // language: "",
+            qualification: "",
+            experience: "",
+            // communication: "",
+            personality: "",
+        },
+        services: [], // Needed nursing skills
+        medical_conditions: [],
+        // other_medical_conditions: "",
+        // mobilities: "",
+        // memory: "",
+        // alertness: "",
+        schedule: {
+            package: "",
+            duty: "",
+        },
+        // additional_notes: "",
+        // current_step: 1,
+        care_plan_id: "",
+    };
+
     // const storedCarePlanData = JSON.parse(localStorage.getItem("carePlanData"));
     const [carePlanData, setCarePlanData] = useState(initialCarePlanData);
+    const [responseMessage, setResponseMessage] = useState("");
 
     // Function to reset the care plan data
     const resetCarePlan = () => {
@@ -107,6 +165,7 @@ export const CarePlanProvider = ({ children, carePlan }) => {
                 updateNestedField,
                 handleSubmit,
                 resetCarePlan,
+                responseMessage,
             }}
         >
             {children}

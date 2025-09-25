@@ -16,9 +16,9 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->enum('care_type', ['Baby', 'Elder']);
             $table->date('start_date');
-            $table->integer('duration'); // 3-month or 6-month or 1-year
+            $table->integer('duration'); // record in days
             $table->string('preferred_language')->nullable();
-            $table->string('service_type')->nullable(); // Nanny care + Maid or something like that.
+            $table->string('service_type')->nullable(); // Basic Care, Basic + Medical Care
             $table->json('care_recipient_info')->nullable(); // Baby or Patient info
             $table->json('contact_info')->nullable(); // Gurdian info
             $table->json('preferences')->nullable(); 

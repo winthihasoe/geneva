@@ -1,12 +1,11 @@
 import AppLayout from "@/Layouts/AppLayout";
 import { Head, useForm } from "@inertiajs/react";
-import { Box, Button, Grid2, Typography } from "@mui/material";
+import { Box, Button, Container, Grid2, Typography } from "@mui/material";
 import React from "react";
 import InterviewForm from "./components/InterviewForm";
-import CVdetail from "../Admin/CV/components/CVdetail";
 import CVSmall from "./components/CVSmall";
 
-function CreateInterview({ cv, carePlan, serviceFees, selectedSalary }) {
+function CreateInterview({ cv, carePlan }) {
     const { data, setData, post, errors, setError, processing } = useForm({
         cv_id: cv.id,
         care_plan_id: carePlan.id,
@@ -28,60 +27,35 @@ function CreateInterview({ cv, carePlan, serviceFees, selectedSalary }) {
     return (
         <AppLayout>
             <Head title="Create Interview" />
-
-            <Grid2 container>
+            <Container maxWidth="lg" sx={{ pt: 1, pb: 3 }}>
                 <Grid2
-                    size={{ xs: 12, sm: 6, md: 6 }}
-                    sx={{ px: { xs: 1, sm: 3 }, py: 2 }}
+                    container
+                    sx={{ display: "flex", flexWrap: "wrap-reverse", gap: 2 }}
                 >
-                    {/* <CVDetail cv={cv} /> */}
-                    <CVSmall cv={cv} />
-                </Grid2>
-                <Grid2
-                    size={{ xs: 12, sm: 6, md: 6 }}
-                    sx={{ p: { xs: 1, sm: 2, md: 3 }, py: 2 }}
-                >
-                    <InterviewForm
-                        data={data}
-                        setData={setData}
-                        carePlan={carePlan}
-                        cv={cv}
-                        serviceFees={serviceFees}
-                        selectedSalary={selectedSalary}
-                    />
-                </Grid2>
-            </Grid2>
-            <Box textAlign={"center"} my={2}>
-                <Button
-                    variant="contained"
-                    sx={{ borderRadius: 20 }}
-                    onClick={handleSubmit}
-                    disabled={processing}
-                >
-                    <Typography
-                        fontSize={{ xs: 18, sm: 20, md: 25 }}
-                        fontFamily={"Kavoon"}
+                    <Grid2
+                        size={{ xs: 12, sm: 6, md: 6 }}
+                        sx={{ px: { xs: 1, sm: 3 }, py: 2 }}
                     >
-                        Confirm to book an interview
-                    </Typography>
-                </Button>
-                <Typography
-                    fontFamily={"Kavivanar"}
-                    fontSize={{ xs: 12, sm: 17, md: 17 }}
-                    mt={2}
-                    color="primary"
-                >
-                    "Interview fees will be collected prior to the start of the
-                    interview session."
-                </Typography>
-                <Typography
-                    fontFamily={"Kavivanar"}
-                    fontSize={{ xs: 12, sm: 17, md: 17 }}
-                    color="primary"
-                >
-                    It will be deducted upon confirmation of the job hire.
-                </Typography>
-            </Box>
+                        {/* <CVDetail cv={cv} /> */}
+                        <CVSmall cv={cv} />
+                    </Grid2>
+                    <Grid2
+                        size={{ xs: 12, sm: 6, md: 5 }}
+                        sx={{ p: { xs: 1, sm: 2, md: 3 }, py: 2 }}
+                    >
+                        <InterviewForm
+                            data={data}
+                            setData={setData}
+                            carePlan={carePlan}
+                            cv={cv}
+                            processing={processing}
+                            handleSubmit={handleSubmit}
+                            // serviceFees={serviceFees}
+                            // selectedSalary={selectedSalary}
+                        />
+                    </Grid2>
+                </Grid2>
+            </Container>
         </AppLayout>
     );
 }

@@ -1,4 +1,3 @@
-import Subtitle from "@/Components/Typo/Subtitle";
 import TinyText from "@/Components/Typo/TinyText";
 import {
     Box,
@@ -12,7 +11,17 @@ import {
 } from "@mui/material";
 import Compressor from "compressorjs";
 import React, { useState } from "react";
-
+const Label = ({ children }) => (
+    <Typography
+        variant="h6"
+        fontSize={{ xs: 13, sm: 14, md: 15 }}
+        fontWeight={600}
+        mb={1}
+        mr={1}
+    >
+        {children}
+    </Typography>
+);
 function ApplyForm({ data, setData, handleSubmit, errors }) {
     const [previews, setPreviews] = useState({
         passport: null,
@@ -116,23 +125,20 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
     return (
         <Box
             sx={{
-                maxWidth: 450,
+                maxWidth: 500,
                 border: "4px solid",
                 borderColor: "primary.main",
                 p: { xs: 2, sm: 3, md: 4 },
                 borderRadius: 10,
+                mb: 5,
             }}
         >
             <form onSubmit={handleSubmit}>
                 <Typography
-                    sx={{
-                        textAlign: "center",
-                        fontFamily: "Abhaya Libre",
-                        fontSize: { xs: 25, sm: 20, md: 25 },
-                        fontWeight: "bold",
-                        color: "primary.main",
-                        mb: 2,
-                    }}
+                    variant="h5"
+                    textAlign="center"
+                    color="primary.main"
+                    mb={3}
                 >
                     Submit your CV to Hearty Aid
                 </Typography>
@@ -142,7 +148,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Subtitle>Name as per Passport</Subtitle>
+                    <Label>Name as in Passport</Label>
                     <TextField
                         size="small"
                         value={data.name}
@@ -165,7 +171,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Subtitle>Date of birth</Subtitle>
+                    <Label>Date of birth</Label>
                     <TextField
                         size="small"
                         value={data.date_of_birth}
@@ -189,7 +195,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                     }}
                     required
                 >
-                    <Subtitle>Gender</Subtitle>
+                    <Label>Gender</Label>
 
                     <RadioGroup
                         row
@@ -223,7 +229,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                             gap: 2,
                         }}
                     >
-                        <Subtitle>Height</Subtitle>
+                        <Label>Height</Label>
                         <TextField
                             size="small"
                             type="number"
@@ -235,6 +241,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                             }}
                             name="height"
                             required
+                            placeholder="160"
                         />
                         {errors.height && (
                             <Typography color="error" variant="caption">
@@ -252,7 +259,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                             mb: 1,
                         }}
                     >
-                        <Subtitle>Weight</Subtitle>
+                        <Label>Weight</Label>
                         <TextField
                             size="small"
                             type="number"
@@ -264,6 +271,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                                 endAdornment: <Typography>kg</Typography>,
                             }}
                             required
+                            placeholder="70"
                         />
                         {errors.weight && (
                             <Typography color="error" variant="caption">
@@ -278,7 +286,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Subtitle>Nationality</Subtitle>
+                    <Label>Nationality</Label>
                     <TextField
                         size="small"
                         value={data.nationality}
@@ -287,6 +295,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         sx={{ flexGrow: 1 }}
                         fullWidth
                         required
+                        placeholder="Enter nationality"
                     />
                     {errors.nationality && (
                         <Typography color="error" variant="caption">
@@ -300,7 +309,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Subtitle>Religion</Subtitle>
+                    <Label>Religion</Label>
                     <TextField
                         size="small"
                         value={data.religion}
@@ -309,6 +318,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         sx={{ flexGrow: 1 }}
                         fullWidth
                         required
+                        placeholder="Enter your religion"
                     />
                     {errors.religion && (
                         <Typography color="error" variant="caption">
@@ -322,7 +332,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Subtitle>Phone number</Subtitle>
+                    <Label>Phone number</Label>
                     <TextField
                         size="small"
                         value={data.phone}
@@ -331,6 +341,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         sx={{ flexGrow: 1 }}
                         fullWidth
                         required
+                        placeholder="Enter your phone number"
                     />
                     {errors.phone && (
                         <Typography color="error" variant="caption">
@@ -344,7 +355,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Subtitle>Email</Subtitle>
+                    <Label>Email</Label>
                     <TextField
                         type="email"
                         size="small"
@@ -353,6 +364,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         name="email"
                         sx={{ flexGrow: 1 }}
                         fullWidth
+                        placeholder="Enter your email"
                     />
                     {errors.email && (
                         <Typography color="error" variant="caption">
@@ -366,7 +378,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Subtitle>Line ID</Subtitle>
+                    <Label>Line ID</Label>
                     <TextField
                         size="small"
                         value={data.line}
@@ -374,6 +386,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         name="line"
                         sx={{ flexGrow: 1 }}
                         fullWidth
+                        placeholder="Enter your Line ID"
                     />
                     {errors.line && (
                         <Typography color="error" variant="caption">
@@ -387,7 +400,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Subtitle>Current address</Subtitle>
+                    <Label>Current address</Label>
                     <TextField
                         size="small"
                         value={data.current_address}
@@ -397,6 +410,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         fullWidth
                         multiline
                         required
+                        placeholder="Enter your current address"
                     />
                     {errors.current_address && (
                         <Typography color="error" variant="caption">
@@ -410,7 +424,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Subtitle>Describe your experience</Subtitle>
+                    <Label>Describe your experience</Label>
                     <TextField
                         size="small"
                         value={data.experience}
@@ -420,6 +434,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         fullWidth
                         multiline
                         required
+                        placeholder="Describe your experience"
                     />
                     {errors.experience && (
                         <Typography color="error" variant="caption">
@@ -434,7 +449,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Subtitle>Passport</Subtitle>
+                    <Label>Passport</Label>
                     <TextField
                         type="file"
                         inputProps={{ accept: "image/*" }}
@@ -461,7 +476,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Subtitle>Visa stamp</Subtitle>
+                    <Label>Visa stamp</Label>
                     <TextField
                         type="file"
                         inputProps={{ accept: "image/*" }}
@@ -488,7 +503,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Subtitle>Certificate</Subtitle>
+                    <Label>Certificate</Label>
                     <TextField
                         type="file"
                         inputProps={{ accept: "image/*", multiple: true }}
@@ -532,7 +547,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Subtitle>What languages can you speak?</Subtitle>
+                    <Label>What languages can you speak?</Label>
                     <TextField
                         size="small"
                         value={data.language}
@@ -542,6 +557,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         fullWidth
                         multiline
                         required
+                        placeholder="e.g. English, Burmese, Thai, etc."
                     />
                     <TinyText>
                         You can describe languages separating with comma.
@@ -558,9 +574,9 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Subtitle>
+                    <Label>
                         Certificate/Diploma/Degree award date and school name
-                    </Subtitle>
+                    </Label>
                     <TextField
                         size="small"
                         value={data.certificate_details}
@@ -570,6 +586,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         fullWidth
                         multiline
                         required
+                        placeholder="Enter your qualification"
                     />
                     {errors.certificate_details && (
                         <Typography color="error" variant="caption">
@@ -588,9 +605,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         type="submit"
                         sx={{ borderRadius: 20, width: 150 }}
                     >
-                        <Typography sx={{ fontSize: 18, fontFamily: "Livvic" }}>
-                            Submit
-                        </Typography>
+                        <Typography sx={{ fontSize: 18 }}>Submit</Typography>
                     </Button>
                 </Box>
             </form>

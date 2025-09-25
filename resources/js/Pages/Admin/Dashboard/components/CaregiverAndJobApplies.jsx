@@ -23,9 +23,9 @@ function CaregiverAndJobApplies({ totalCaregivers, totalJobApplies }) {
                             alt="Total Caregiver"
                             style={{
                                 width: "100%",
+                                height: "100%",
                                 backgroundColor: "#eee",
                                 borderRadius: "5px",
-                                height: "140px",
                                 objectFit: "cover",
                             }}
                         />
@@ -62,7 +62,6 @@ function CaregiverAndJobApplies({ totalCaregivers, totalJobApplies }) {
                                 width: "100%",
                                 backgroundColor: "#4CC9FE",
                                 borderRadius: "5px",
-                                height: "140px",
                                 objectFit: "cover",
                             }}
                         />

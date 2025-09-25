@@ -1,183 +1,428 @@
-import TitleCenter from "@/Components/Typo/TitleCenter";
 import AppLayout from "@/Layouts/AppLayout";
 import { Head, router } from "@inertiajs/react";
 import {
     Box,
     Button,
+    Container,
+    Typography,
     Card,
     CardContent,
-    Container,
-    Divider,
-    Typography,
+    Grid2,
+    Avatar,
+    Paper,
+    Chip,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
+import PersonIcon from "@mui/icons-material/Person";
+import SchoolIcon from "@mui/icons-material/School";
+import WorkIcon from "@mui/icons-material/Work";
+import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import ContactMailIcon from "@mui/icons-material/ContactMail";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const Menus = [
     {
         title: "My CV",
         routeName: "cv.show",
+        icon: <PersonIcon sx={{ fontSize: 30 }} />,
+        color: "#4CAF50",
+        bgColor: "#E8F5E8",
     },
     {
         title: "Qualification",
         routeName: "certificates.show",
+        icon: <SchoolIcon sx={{ fontSize: 30 }} />,
+        color: "#2196F3",
+        bgColor: "#E3F2FD",
     },
     {
         title: "Experience",
         routeName: "experiences.show",
+        icon: <WorkIcon sx={{ fontSize: 30 }} />,
+        color: "#FF9800",
+        bgColor: "#FFF3E0",
     },
     {
         title: "Medical Checkup",
-        routeName: "medical.chekup",
+        routeName: "coming.soon",
+        icon: <LocalHospitalIcon sx={{ fontSize: 30 }} />,
+        color: "#f44336",
+        bgColor: "#FFEBEE",
     },
 ];
 
 const MyCares = [
     {
-        title: "My patient / baby",
-        routeName: "experiences.show",
+        title: "My Patient / Baby",
+        routeName: "coming.soon",
+        icon: <PersonIcon sx={{ fontSize: 30 }} />,
+        color: "#9C27B0",
+        bgColor: "#F3E5F5",
     },
     {
         title: "Care Plan",
-        routeName: "experiences.show",
+        routeName: "coming.soon",
+        icon: <WorkIcon sx={{ fontSize: 30 }} />,
+        color: "#00BCD4",
+        bgColor: "#E0F2F1",
     },
     {
         title: "Care Logs",
-        routeName: "experiences.show",
+        routeName: "coming.soon",
+        icon: <LocalHospitalIcon sx={{ fontSize: 30 }} />,
+        color: "#607D8B",
+        bgColor: "#ECEFF1",
     },
 ];
 
 function CgDashboard({ hasCv, approvedCV }) {
+    const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+
+    const handleLogout = () => {
+        router.post(route("logout"));
+    };
+
+    const handleLogoutClick = () => {
+        setLogoutDialogOpen(true);
+    };
+
+    const handleLogoutCancel = () => {
+        setLogoutDialogOpen(false);
+    };
+
+    const handleLogoutConfirm = () => {
+        setLogoutDialogOpen(false);
+        handleLogout();
+    };
+
     return (
         <AppLayout>
-            <Container maxWidth="md" sx={{ minHeight: "80vh", py: 5 }}>
-                <Head title="Caregiver dashboard" />
-                <Box
+            <Head title="Caregiver Dashboard" />
+            <Container maxWidth="lg" sx={{ py: 4 }}>
+                {/* Header with Logout Button */}
+                <Paper
                     sx={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        alignItems: "flex-start",
-                        rowGap: 3,
+                        p: 3,
+                        mb: 4,
+                        borderRadius: 3,
+                        background:
+                            "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                        color: "white",
+                        position: "relative",
                     }}
                 >
-                    <Box sx={{ maxWidth: 400, margin: "auto" }}>
-                        <TitleCenter>My Information</TitleCenter>
-                        <Box
+                    {/* Logout Button - Responsive positioning */}
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            top: { xs: 8, sm: 16 },
+                            right: { xs: 8, sm: 16 },
+                            zIndex: 1,
+                        }}
+                    >
+                        <Button
+                            variant="outlined"
+                            color="inherit"
+                            startIcon={<LogoutIcon />}
+                            onClick={handleLogoutClick}
+                            size="small"
                             sx={{
-                                display: "flex",
-                                justifyContent: "center",
-                                flexWrap: "wrap",
+                                color: "white",
+                                borderColor: "white",
+                                fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                                minWidth: { xs: "auto", sm: "64px" },
+                                px: { xs: 1, sm: 2 },
+                                "&:hover": {
+                                    borderColor: "rgba(255,255,255,0.8)",
+                                    bgcolor: "rgba(255,255,255,0.1)",
+                                },
+                                // Hide text on very small screens, show only icon
+                                "& .MuiButton-startIcon": {
+                                    marginRight: { xs: 0, sm: 1 },
+                                },
+                                "& .MuiButton-text": {
+                                    display: { xs: "none", sm: "inline" },
+                                },
                             }}
                         >
-                            <Button
-                                sx={{
-                                    width: 120,
-                                    height: 80,
-                                    m: 1,
-                                    borderRadius: 10,
-                                }}
-                                disabled={approvedCV}
-                                variant="contained"
-                                onClick={() =>
-                                    router.get(
-                                        route(hasCv ? "cv.edit" : "cv.create")
-                                    )
-                                }
+                            <Box
+                                component="span"
+                                sx={{ display: { xs: "none", sm: "inline" } }}
                             >
+                                Logout
+                            </Box>
+                        </Button>
+                    </Box>
+
+                    {/* Welcome text with proper spacing */}
+                    <Box>
+                        <Typography
+                            variant="h4"
+                            fontWeight="bold"
+                            textAlign="center"
+                            sx={{
+                                fontSize: { xs: "1.5rem", sm: "2.125rem" },
+                                mb: { xs: 0.5, sm: 1 },
+                            }}
+                        >
+                            Welcome to Your Dashboard
+                        </Typography>
+                        <Typography
+                            variant="subtitle1"
+                            textAlign="center"
+                            sx={{
+                                fontSize: { xs: "0.875rem", sm: "1rem" },
+                            }}
+                        >
+                            Manage your profile and care services
+                        </Typography>
+                    </Box>
+                </Paper>
+
+                {/* CV Status */}
+                <Box sx={{ mb: 4, textAlign: "center" }}>
+                    {approvedCV ? (
+                        <Chip
+                            label="CV Approved ✓"
+                            color="success"
+                            size="large"
+                            sx={{ fontSize: "1rem", px: 2, py: 1 }}
+                        />
+                    ) : (
+                        <Chip
+                            label={hasCv ? "CV Under Review" : "CV Not Created"}
+                            color={hasCv ? "warning" : "error"}
+                            size="large"
+                            sx={{ fontSize: "1rem", px: 2, py: 1 }}
+                        />
+                    )}
+                </Box>
+
+                {/* Profile Management Section */}
+                <Typography
+                    variant="h5"
+                    fontWeight="bold"
+                    mb={3}
+                    color="primary"
+                >
+                    Profile Management
+                </Typography>
+
+                <Grid2 container spacing={3} mb={5}>
+                    {/* Create/Edit CV Card */}
+                    <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
+                        <Card
+                            sx={{
+                                cursor: "pointer",
+                                height: "100%",
+                                borderRadius: 3,
+                                boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+                                transition: "all 0.3s ease",
+                                "&:hover": {
+                                    transform: "translateY(-5px)",
+                                    boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
+                                },
+                                opacity: approvedCV ? 0.6 : 1,
+                            }}
+                            onClick={() =>
+                                !approvedCV && router.get(route("cv.create"))
+                            }
+                        >
+                            <CardContent sx={{ p: 3, textAlign: "center" }}>
+                                <Avatar
+                                    sx={{
+                                        bgcolor: "#E8F5E8",
+                                        color: "#4CAF50",
+                                        width: 60,
+                                        height: 60,
+                                        mx: "auto",
+                                        mb: 2,
+                                    }}
+                                >
+                                    <PersonIcon sx={{ fontSize: 30 }} />
+                                </Avatar>
                                 <Typography
                                     variant="h6"
-                                    fontSize={{ xs: 14, sm: 15 }}
-                                    fontFamily={"Abyssinica SIL"}
+                                    fontWeight="bold"
+                                    mb={1}
                                 >
                                     {hasCv ? "Edit CV" : "Create CV"}
                                 </Typography>
-                            </Button>
-                            {Menus.map((item, index) => (
-                                <Button
-                                    key={index}
-                                    sx={{
-                                        width: 120,
-                                        height: 80,
-                                        m: 1,
-                                        borderRadius: 10,
-                                    }}
-                                    variant="contained"
-                                    onClick={() =>
-                                        router.get(route(item.routeName))
-                                    }
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
                                 >
-                                    <Typography
-                                        variant="h6"
-                                        fontSize={{ xs: 14, sm: 15 }}
-                                        fontFamily={"Abyssinica SIL"}
-                                    >
-                                        {item.title}
-                                    </Typography>
-                                </Button>
-                            ))}
-                        </Box>
-                    </Box>
+                                    {approvedCV
+                                        ? "Contact admin to edit"
+                                        : "Manage your profile"}
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                    </Grid2>
 
-                    {/* <Box sx={{ maxWidth: 400, margin: "0 auto" }}>
-                        <TitleCenter>My Care</TitleCenter>
-                        <Box
-                            sx={{
-                                display: "flex",
-                                justifyContent: "center",
-                                flexWrap: "wrap",
-                                maxWidth: 400,
-                                mb: 2,
-                            }}
-                        >
-                            {MyCares.map((item, index) => (
-                                <Button
-                                    key={index}
-                                    sx={{
-                                        width: 120,
-                                        height: 90,
-                                        m: 1,
-                                        borderRadius: 10,
-                                        bgcolor: "#6CE4CF",
-                                    }}
-                                    variant="contained"
-                                    onClick={() =>
-                                        router.get(route(item.routeName))
-                                    }
-                                >
-                                    <Typography
-                                        color="black"
-                                        variant="h6"
-                                        fontSize={{ xs: 14, sm: 15 }}
-                                        fontFamily={"Abyssinica SIL"}
+                    {/* Other Menu Items */}
+                    {Menus.map((item, index) => (
+                        <Grid2 key={index} size={{ xs: 12, sm: 6, md: 3 }}>
+                            <Card
+                                sx={{
+                                    cursor: "pointer",
+                                    height: "100%",
+                                    borderRadius: 3,
+                                    boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+                                    transition: "all 0.3s ease",
+                                    "&:hover": {
+                                        transform: "translateY(-5px)",
+                                        boxShadow:
+                                            "0 8px 30px rgba(0,0,0,0.12)",
+                                    },
+                                }}
+                                onClick={() =>
+                                    router.get(route(item.routeName))
+                                }
+                            >
+                                <CardContent sx={{ p: 3, textAlign: "center" }}>
+                                    <Avatar
+                                        sx={{
+                                            bgcolor: item.bgColor,
+                                            color: item.color,
+                                            width: 60,
+                                            height: 60,
+                                            mx: "auto",
+                                            mb: 2,
+                                        }}
                                     >
+                                        {item.icon}
+                                    </Avatar>
+                                    <Typography variant="h6" fontWeight="bold">
                                         {item.title}
                                     </Typography>
-                                </Button>
-                            ))}
-                        </Box>
-                    </Box> */}
-                </Box>
+                                </CardContent>
+                            </Card>
+                        </Grid2>
+                    ))}
+                </Grid2>
+
+                {/* My Care Section - Uncommented and Redesigned */}
                 <Typography
-                    variant="h6"
-                    fontFamily={"Lilita One"}
-                    textAlign="center"
-                    sx={{
-                        mt: 5,
-                        mb: 2,
-                        display: approvedCV ? "block" : "none",
-                    }}
+                    variant="h5"
+                    fontWeight="bold"
+                    mb={3}
+                    color="primary"
                 >
-                    If you want to edit your CV, please{" "}
-                    <span
-                        style={{
-                            textDecoration: "underline",
-                            cursor: "pointer",
-                        }}
-                        onClick={() => router.visit(route("contact.messages"))}
-                    >
-                        contact to admin
-                    </span>
-                    .
+                    My Care Services
                 </Typography>
+
+                <Grid2 container spacing={3} mb={4}>
+                    {MyCares.map((item, index) => (
+                        <Grid2 key={index} size={{ xs: 12, sm: 6, md: 4 }}>
+                            <Card
+                                sx={{
+                                    cursor: "pointer",
+                                    height: "100%",
+                                    borderRadius: 3,
+                                    boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+                                    transition: "all 0.3s ease",
+                                    "&:hover": {
+                                        transform: "translateY(-5px)",
+                                        boxShadow:
+                                            "0 8px 30px rgba(0,0,0,0.12)",
+                                    },
+                                }}
+                                onClick={() =>
+                                    router.get(route(item.routeName))
+                                }
+                            >
+                                <CardContent sx={{ p: 3, textAlign: "center" }}>
+                                    <Avatar
+                                        sx={{
+                                            bgcolor: item.bgColor,
+                                            color: item.color,
+                                            width: 60,
+                                            height: 60,
+                                            mx: "auto",
+                                            mb: 2,
+                                        }}
+                                    >
+                                        {item.icon}
+                                    </Avatar>
+                                    <Typography variant="h6" fontWeight="bold">
+                                        {item.title}
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid2>
+                    ))}
+                </Grid2>
+
+                {/* Contact Admin Notice */}
+                {approvedCV && (
+                    <Paper
+                        sx={{
+                            p: 3,
+                            textAlign: "center",
+                            borderRadius: 3,
+                            bgcolor: "#FFF3E0",
+                            border: "1px solid #FFB74D",
+                        }}
+                    >
+                        <ContactMailIcon
+                            sx={{ fontSize: 40, color: "#FF9800", mb: 1 }}
+                        />
+                        <Typography variant="h6" mb={1}>
+                            Need to Update Your CV?
+                        </Typography>
+                        <Typography variant="body1" mb={2}>
+                            Your CV is approved. To make changes, please contact
+                            our admin team.
+                        </Typography>
+                        <Button
+                            variant="contained"
+                            color="warning"
+                            onClick={() =>
+                                router.visit(route("contact.messages"))
+                            }
+                            sx={{ borderRadius: 2 }}
+                        >
+                            Contact Admin
+                        </Button>
+                    </Paper>
+                )}
+
+                {/* Logout Confirmation Dialog */}
+                <Dialog
+                    open={logoutDialogOpen}
+                    onClose={handleLogoutCancel}
+                    aria-labelledby="logout-dialog-title"
+                    aria-describedby="logout-dialog-description"
+                >
+                    <DialogTitle id="logout-dialog-title">
+                        Confirm Logout
+                    </DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="logout-dialog-description">
+                            Are you sure you want to logout? You will need to
+                            login again to access your dashboard.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleLogoutCancel} color="primary">
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={handleLogoutConfirm}
+                            color="error"
+                            variant="contained"
+                            startIcon={<LogoutIcon />}
+                        >
+                            Logout
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </Container>
         </AppLayout>
     );

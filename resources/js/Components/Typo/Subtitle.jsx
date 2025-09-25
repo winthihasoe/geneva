@@ -9,7 +9,6 @@ export default function Subtitle({ children }) {
             fontWeight={600}
             mb={1}
             mr={1}
-            fontFamily={"Mina"}
         >
             {children}
         </Typography>

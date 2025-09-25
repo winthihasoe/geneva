@@ -2,8 +2,15 @@ import Subtitle from "@/Components/Typo/Subtitle";
 import TitleCenter from "@/Components/Typo/TitleCenter";
 import { useEmail } from "@/Context/EmailContext";
 import AppLayout from "@/Layouts/AppLayout";
-import { Head, useForm } from "@inertiajs/react";
-import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import { Head, Link, useForm } from "@inertiajs/react";
+import {
+    Box,
+    Button,
+    Container,
+    Grid2,
+    TextField,
+    Typography,
+} from "@mui/material";
 import React, { useEffect } from "react";
 
 function VerifyOTP() {
@@ -29,16 +36,122 @@ function VerifyOTP() {
     return (
         <AppLayout>
             <Head title="Verify Account" />
-            <Container
-                maxWidth="md"
-                sx={{
-                    height: "70vh",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}
-            >
-                <Box
+            <Container maxWidth="lg">
+                <Typography
+                    sx={{
+                        textAlign: "center",
+                        fontFamily: "Righteous",
+                        fontWeight: 500,
+                        mt: 5,
+                    }}
+                    variant="h3"
+                    color="primary.main"
+                >
+                    Almost There!
+                </Typography>
+                <Grid2
+                    container
+                    sx={{
+                        pt: 3,
+                        display: "flex",
+                        justifyContent: "center",
+                        gap: 2,
+                        mb: 5,
+                        alignItems: "center",
+                    }}
+                >
+                    <Grid2
+                        size={{ xs: 0, sm: 0, md: 5 }}
+                        sx={{ display: "flex", alignItems: "center" }}
+                    >
+                        <img
+                            src="/images/pricing/super_nanny.png"
+                            alt="Caregiver Photo"
+                            style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
+                            }}
+                        />
+                    </Grid2>
+                    <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+                        <Box
+                            component="form"
+                            onSubmit={handleOtpVerification}
+                            sx={{
+                                border: {
+                                    xs: "none",
+                                    sm: "2px solid #21875C",
+                                    md: "2px solid #21875C",
+                                },
+                                borderRadius: 5,
+                                bgcolor: "white",
+                                py: 3,
+                                boxShadow: 1,
+                            }}
+                        >
+                            <Box sx={{ mb: 2 }}>
+                                <Box sx={{ px: 4, mt: 2 }}>
+                                    <Typography variant="body1">
+                                        Enter 6-digit Code
+                                    </Typography>
+                                    <TextField
+                                        fullWidth
+                                        type="number"
+                                        required
+                                        disabled={processing}
+                                        onChange={(e) =>
+                                            setData("OTP", e.target.value)
+                                        }
+                                        value={data.OTP}
+                                        placeholder="Enter code form your email inbox"
+                                    />
+                                </Box>
+                                {errors && (
+                                    <Typography
+                                        fontSize={12}
+                                        color="error"
+                                        mt={1}
+                                    >
+                                        {errors.OTP}
+                                    </Typography>
+                                )}
+                            </Box>
+
+                            <Link href={route("login")}>
+                                <Typography
+                                    sx={{
+                                        fontSize: 13,
+                                        color: "info.main",
+                                        textAlign: "center",
+                                        my: 2,
+                                    }}
+                                >
+                                    Already have an account?
+                                </Typography>
+                            </Link>
+                            {/* Submit Button */}
+                            <Box textAlign={"center"} mt={2}>
+                                <Button
+                                    variant="contained"
+                                    sx={{ borderRadius: 10 }}
+                                    type="submit"
+                                    disabled={processing || !data.OTP}
+                                >
+                                    <Typography
+                                        variant="h6"
+                                        fontFamily={"Righteous"}
+                                        fontWeight={500}
+                                        fontSize={20}
+                                    >
+                                        SUBMIT
+                                    </Typography>
+                                </Button>
+                            </Box>
+                        </Box>
+                    </Grid2>
+                </Grid2>
+                {/* <Box
                     sx={{
                         maxWidth: 350,
                         border: { xs: "none", sm: "2px solid #21875C" },
@@ -85,7 +198,7 @@ function VerifyOTP() {
                             </Button>
                         </Box>
                     </form>
-                </Box>
+                </Box> */}
             </Container>
         </AppLayout>
     );

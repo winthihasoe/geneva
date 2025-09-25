@@ -2,6 +2,7 @@ import DateFormatter from "@/Components/util/DateFormatter";
 import { CarePlanContext } from "@/Context/CarePlanContext";
 import {
     Box,
+    Button,
     FormControlLabel,
     Radio,
     RadioGroup,
@@ -14,8 +15,10 @@ function InterviewForm({
     data,
     setData,
     cv,
-    selectedSalary,
-    serviceFees,
+    processing,
+    handleSubmit,
+    // selectedSalary,
+    // serviceFees,
     carePlan,
 }) {
     const [Mode, setMode] = useState("");
@@ -46,20 +49,15 @@ function InterviewForm({
 
     return (
         <Box>
-            <Typography
-                fontSize={{ xs: 17, sm: 23, md: 30 }}
-                fontFamily={"Kavoon"}
-            >
+            <Typography variant="h3" mb={2}>
                 Interview Details
             </Typography>
             <Typography
-                variant="h6"
-                fontSize={{ xs: 15, sm: 17, md: 17 }}
+                variant="h5"
                 fontWeight={600}
                 mb={1}
                 mr={1}
                 color="primary"
-                fontFamily={"Karma"}
             >
                 Preferred interview date & time
             </Typography>
@@ -72,14 +70,7 @@ function InterviewForm({
                     alignItems: "center",
                 }}
             >
-                <Typography
-                    sx={{
-                        fontFamily: "Karma",
-                        fontSize: { xs: 15, sm: 17, md: 22 },
-                    }}
-                >
-                    Date
-                </Typography>
+                <Typography variant="h6">Date</Typography>
                 <TextField
                     type="date"
                     value={data.date}
@@ -98,18 +89,11 @@ function InterviewForm({
                     display: "flex",
                     flexWrap: "wrap",
                     gap: 3,
-                    my: 2,
+                    my: 1,
                     alignItems: "center",
                 }}
             >
-                <Typography
-                    sx={{
-                        fontFamily: "Karma",
-                        fontSize: { xs: 15, sm: 17, md: 22 },
-                    }}
-                >
-                    Time
-                </Typography>
+                <Typography variant="h6">Time</Typography>
                 <TextField
                     type="time"
                     value={data.time}
@@ -128,19 +112,11 @@ function InterviewForm({
                 />
             </Box>
 
-            <Typography
-                variant="h6"
-                fontSize={{ xs: 15, sm: 17, md: 17 }}
-                fontWeight={600}
-                mb={1}
-                mr={1}
-                color="primary"
-                fontFamily={"Karma"}
-            >
-                Alternate Date and Time{" "}
-                <span style={{ color: "#aaa" }}>
-                    (if preferred date is unavailable)
-                </span>
+            <Typography variant="h5" fontWeight={600} mt={4} color="primary">
+                Alternate Date and Time
+            </Typography>
+            <Typography variant="body2" color="text.secondary" mb={1}>
+                (if preferred date is unavailable)
             </Typography>
             <Box
                 sx={{
@@ -151,12 +127,7 @@ function InterviewForm({
                     my: 1,
                 }}
             >
-                <Typography
-                    sx={{
-                        fontFamily: "Karma",
-                        fontSize: { xs: 15, sm: 17, md: 22 },
-                    }}
-                >
+                <Typography variant="h6" color="text.secondary">
                     Date
                 </Typography>
                 <TextField
@@ -177,16 +148,11 @@ function InterviewForm({
                     display: "flex",
                     flexWrap: "wrap",
                     gap: 3,
-                    my: 2,
+                    my: 1,
                     alignItems: "center",
                 }}
             >
-                <Typography
-                    sx={{
-                        fontFamily: "Karma",
-                        fontSize: { xs: 15, sm: 17, md: 22 },
-                    }}
-                >
+                <Typography variant="h6" color="text.secondary">
                     Time
                 </Typography>
                 <TextField
@@ -208,13 +174,11 @@ function InterviewForm({
             </Box>
 
             <Typography
-                variant="h6"
-                fontSize={{ xs: 15, sm: 17, md: 17 }}
+                variant="h5"
                 fontWeight={600}
                 mb={1}
-                mr={1}
+                mt={4}
                 color="primary"
-                fontFamily={"Karma"}
             >
                 Interview Mode
             </Typography>
@@ -222,29 +186,13 @@ function InterviewForm({
                 <FormControlLabel
                     value="In Person"
                     control={<Radio size="small" />}
-                    label={
-                        <Typography
-                            sx={{
-                                fontFamily: "Karma",
-
-                                fontSize: 13,
-                            }}
-                        >
-                            In Person
-                        </Typography>
-                    }
+                    label={<Typography variant="body2">In Person</Typography>}
                 />
                 <FormControlLabel
                     value="Virtual"
                     control={<Radio size="small" />}
                     label={
-                        <Typography
-                            sx={{
-                                fontFamily: "Karma",
-
-                                fontSize: 13,
-                            }}
-                        >
+                        <Typography variant="body2">
                             Virtual{" "}
                             <span style={{ color: "#aaa" }}>(online)</span>
                         </Typography>
@@ -253,19 +201,14 @@ function InterviewForm({
             </RadioGroup>
             {Mode == "In Person" && (
                 <Box p={2}>
-                    <Typography
-                        sx={{
-                            fontFamily: "Karma",
-                            fontSize: { xs: 15, sm: 17, md: 22 },
-                        }}
-                    >
-                        Location
-                    </Typography>
+                    <Typography variant="body2">Location</Typography>
                     <TextField
                         fullWidth
                         value={data.location || ""}
                         onChange={handleChange}
                         name="location"
+                        multiline
+                        variant="filled"
                     />
                     <Typography
                         variant="h6"
@@ -274,7 +217,6 @@ function InterviewForm({
                         my={1}
                         mr={1}
                         color="primary"
-                        fontFamily={"Karma"}
                         textAlign={"center"}
                     >
                         "In-person interview fee: 500 THB."
@@ -293,28 +235,14 @@ function InterviewForm({
                             value="Zoom"
                             control={<Radio size="small" />}
                             label={
-                                <Typography
-                                    sx={{
-                                        fontFamily: "Karma",
-
-                                        fontSize: 13,
-                                    }}
-                                >
-                                    Zoom
-                                </Typography>
+                                <Typography variant="body2">Zoom</Typography>
                             }
                         />
                         <FormControlLabel
                             value="Google Meet"
                             control={<Radio size="small" />}
                             label={
-                                <Typography
-                                    sx={{
-                                        fontFamily: "Karma",
-
-                                        fontSize: 13,
-                                    }}
-                                >
+                                <Typography variant="body2">
                                     Google Meet
                                 </Typography>
                             }
@@ -323,13 +251,7 @@ function InterviewForm({
                             value="Microsoft Teams"
                             control={<Radio size="small" />}
                             label={
-                                <Typography
-                                    sx={{
-                                        fontFamily: "Karma",
-
-                                        fontSize: 13,
-                                    }}
-                                >
+                                <Typography variant="body2">
                                     Microsoft Teams
                                 </Typography>
                             }
@@ -341,10 +263,9 @@ function InterviewForm({
                         fontWeight={600}
                         my={1}
                         color="primary"
-                        fontFamily={"Karma"}
                         textAlign={"center"}
                     >
-                        "Virtual interview fee: 200 THB."
+                        " Virtual interview fee: 300 THB."
                     </Typography>
                 </Box>
             )}
@@ -352,56 +273,32 @@ function InterviewForm({
             {/* Show Care Plan detail  */}
             <Box my={3}>
                 <Typography
-                    fontSize={{ xs: 17, sm: 23, md: 30 }}
-                    fontFamily={"Kavoon"}
+                    variant="h5"
+                    fontWeight={600}
+                    mb={1}
+                    color="primary"
                 >
-                    Job Details
+                    Assign Duty:
                 </Typography>
                 <Box width={"100%"} my={2} p={1}>
-                    <Typography
-                        sx={{
-                            fontFamily: "Karma",
-                            fontSize: { xs: 13, sm: 18, md: 22 },
-                            fontWeight: 600,
-                            mb: { xs: 1, sm: 2, md: 3 },
-                        }}
-                    >
+                    <Typography variant="body1" fontWeight={600} mb={1}>
                         Start Date : {carePlan.start_date}
                     </Typography>
-                    <Typography
-                        sx={{
-                            fontFamily: "Karma",
-                            fontSize: { xs: 13, sm: 18, md: 22 },
-                            fontWeight: 600,
-                            mb: { xs: 1, sm: 2, md: 3 },
-                        }}
-                    >
+                    <Typography variant="body1" fontWeight={600} mb={1}>
                         Care Timing :{" "}
-                        {carePlan.schedule.package == "Live-in"
-                            ? "24 hours (Live-in)"
-                            : carePlan.schedule.duty_time}
+                        {carePlan.schedule.package == "Live in (24-hour)"
+                            ? "Live in (24-hour)"
+                            : `${carePlan.schedule.duty} duty`}
                     </Typography>
-                    <Typography
-                        sx={{
-                            fontFamily: "Karma",
-                            fontSize: { xs: 13, sm: 18, md: 22 },
-                            fontWeight: 600,
-                            mb: { xs: 1, sm: 2, md: 3 },
-                        }}
-                    >
+                    <Typography variant="body1" fontWeight={600} mb={1}>
                         Care Program Duration :{" "}
-                        {carePlan.duration == 1
+                        {carePlan.duration == 12
                             ? "1 year"
+                            : carePlan.duration == 1
+                            ? `${carePlan.duration} month`
                             : `${carePlan.duration} months`}
                     </Typography>
-                    <Typography
-                        sx={{
-                            fontFamily: "Karma",
-                            fontSize: { xs: 13, sm: 18, md: 22 },
-                            fontWeight: 600,
-                            mb: { xs: 1, sm: 2, md: 3 },
-                        }}
-                    >
+                    {/* <Typography variant="body1" fontWeight={600} mb={1}>
                         Caregiver level :{" "}
                         {carePlan.service_type == "Newborn Care" &&
                             cv.newborn_care_level}
@@ -413,8 +310,8 @@ function InterviewForm({
                             carePlan.service_type ==
                                 "Elder Care + Maid Service") &&
                             cv.level}
-                    </Typography>
-                    <Typography
+                    </Typography> */}
+                    {/* <Typography
                         sx={{
                             fontFamily: "Karma",
                             fontSize: { xs: 13, sm: 18, md: 22 },
@@ -426,8 +323,8 @@ function InterviewForm({
                         <span style={{ color: "#b3b3b3" }}>
                             (1 month advanced payment)
                         </span>
-                    </Typography>
-                    <Typography
+                    </Typography> */}
+                    {/* <Typography
                         sx={{
                             fontFamily: "Karma",
                             fontSize: { xs: 13, sm: 18, md: 22 },
@@ -439,8 +336,36 @@ function InterviewForm({
                         <span style={{ color: "#b3b3b3" }}>
                             (One time payment)
                         </span>
-                    </Typography>
+                    </Typography> */}
                 </Box>
+            </Box>
+
+            <Box textAlign={"center"} mt={4}>
+                <Button
+                    variant="contained"
+                    sx={{ borderRadius: 20 }}
+                    onClick={handleSubmit}
+                    disabled={processing}
+                    fullWidth
+                >
+                    <Typography fontSize={{ xs: 18, sm: 20, md: 25 }}>
+                        Confirm
+                    </Typography>
+                </Button>
+                <Typography
+                    fontSize={{ xs: 12, sm: 17, md: 17 }}
+                    mt={2}
+                    color="primary"
+                >
+                    "Interview fees will be collected prior to the start of the
+                    interview session."
+                </Typography>
+                <Typography
+                    fontSize={{ xs: 12, sm: 17, md: 17 }}
+                    color="primary"
+                >
+                    It will be deducted upon confirmation of the job hire.
+                </Typography>
             </Box>
         </Box>
     );

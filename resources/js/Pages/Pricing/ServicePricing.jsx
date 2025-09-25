@@ -15,7 +15,7 @@ function ServicePricing({ service }) {
     return (
         <AppLayout>
             <Head title={service.name} />
-            <Container maxWidth="xl">
+            <Container maxWidth="lg">
                 {/* Show service, package, package duration, salary and service fee  */}
 
                 <ServiceTable service={service} />

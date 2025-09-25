@@ -38,12 +38,13 @@ export const CvProvider = ({
         has_tattoo: initialData.has_tattoo || "",
         habits: initialData.habits || [],
         other_habits: initialData.other_habits || "",
+        personality: initialData.personality || "", // Newly added
 
         // Contact Information
         email: initialData.email || "",
-        emergency_contact: initialData.emergency_contact || "",
         line: initialData.line || "",
         phone: initialData.phone || "",
+        emergency_contact: initialData.emergency_contact || "",
         phone_verify_at: initialData.phone_verify_at || "",
         current_address: initialData.current_address || "",
         residential_address: initialData.residential_address || "",
@@ -73,8 +74,10 @@ export const CvProvider = ({
         // Required Documents
         profile_photo: initialData.profile_photo || "",
         passport: initialData.passport || "",
+        visa_stamp: initialData.visa_stamp || "",
         passport_number: initialData.passport_number || "",
         passport_type: initialData.passport_type || "",
+        passport_expiry_date: initialData.passport_expiry_date || "", //Newly added
         visa_type: initialData.visa_type || "",
         citizenship_certificate: initialData.citizenship_certificate || "",
         family_member_record: initialData.family_member_record || "",
@@ -99,11 +102,14 @@ export const CvProvider = ({
         // Care Information
         services: initialData.services || [],
         package: initialData.package || [],
+        duty: initialData.duty || [],
+        maid_service: initialData.maid_service || false,
         package_duration: initialData.package_duration || [],
         service_area: initialData.service_area || "",
 
-        current_step: initialData.current_step || 0,
+        current_step: initialData.current_step || 1,
         agree_to_terms: initialData.agree_to_terms ?? false,
+        training_or_assessment: initialData.training_or_assessment ?? "",
     });
 
     const [completedSteps, setCompletedSteps] = useState({});
@@ -111,7 +117,6 @@ export const CvProvider = ({
     const [error, setError] = useState(null);
 
     const handleStep = (step) => () => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
         setData((prevData) => ({ ...prevData, current_step: step }));
     };
 
@@ -152,28 +157,28 @@ export const CvProvider = ({
         });
     };
 
-    const handleNext = async () => {
-        try {
-            setData((prevData) => ({
-                ...prevData,
-                current_step: prevData.current_step + 1,
-            }));
+    // const handleNext = async () => {
+    //     try {
+    //         setData((prevData) => ({
+    //             ...prevData,
+    //             current_step: prevData.current_step + 1,
+    //         }));
 
-            // Mark the step as completed
-            markStepAsCompleted(data.current_step);
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        } catch (error) {
-            console.error("Save failed. Please try again.");
-        }
-    };
+    //         // Mark the step as completed
+    //         markStepAsCompleted(data.current_step);
+    //         window.scrollTo({ top: 0, behavior: "smooth" });
+    //     } catch (error) {
+    //         console.error("Save failed. Please try again.");
+    //     }
+    // };
 
-    const handleBack = () => {
-        setData((prevData) => ({
-            ...prevData,
-            current_step: prevData.current_step - 1,
-        }));
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    };
+    // const handleBack = () => {
+    //     setData((prevData) => ({
+    //         ...prevData,
+    //         current_step: prevData.current_step - 1,
+    //     }));
+    //     window.scrollTo({ top: 0, behavior: "smooth" });
+    // };
 
     const savePhoto = async () => {
         try {
@@ -193,7 +198,6 @@ export const CvProvider = ({
                         payload.append(key, data[key], data[key].name);
                     }
                 }
-                console.log("Sending FormData:", Array.from(payload.entries()));
             }
             // Send the request using Axios
             const response = await axios.post(route("cv.store"), payload, {
@@ -210,21 +214,154 @@ export const CvProvider = ({
             setTimeout(() => setResponseMessage(""), 2000); // Clear the message after 2 seconds
         }
     };
-    const saveData = async () => {
+
+    // Old save function
+    const saveDataVeryOld = async () => {
         try {
             // Send the request using Axios
+
             const response = await axios.post(route("cv.store"), data);
 
             setResponseMessage(response.data.message);
             setError(null);
             setTimeout(() => setResponseMessage(""), 2000); // Clear the message after 2 seconds
+            return response.data.status; // Return success status
         } catch (error) {
             console.error("Error saving data:", error);
             setResponseMessage(
                 error.response?.data?.message || "Failed to save data."
             );
             setError(error.response.data.error);
+            setTimeout(() => setResponseMessage(""), 4000); // Clear the message after 4 seconds
+        }
+    };
+
+    // Old save function
+    const saveData = async () => {
+        try {
+            let payload;
+            let headers = {};
+
+            // Check if any data field is a Blob (indicating a file upload)
+            const containsFile = Object.values(data).some(
+                (value) => value instanceof Blob || value instanceof File
+            );
+
+            if (containsFile) {
+                // Use FormData if there's at least one file in `data`
+                payload = new FormData();
+
+                for (const key in data) {
+                    if (
+                        data[key] instanceof Blob ||
+                        data[key] instanceof File
+                    ) {
+                        // Append Blob/File with its original filename
+                        payload.append(
+                            key,
+                            data[key],
+                            data[key].name || "file"
+                        );
+                    } else if (data[key] !== null && data[key] !== undefined) {
+                        // Append other data as strings
+                        if (Array.isArray(data[key])) {
+                            payload.append(key, JSON.stringify(data[key]));
+                        } else {
+                            payload.append(key, data[key]);
+                        }
+                    }
+                }
+                headers["Content-Type"] = "multipart/form-data";
+            } else {
+                // Use regular JSON payload if no files
+                payload = data;
+                headers["Content-Type"] = "application/json";
+            }
+
+            const response = await axios.post(route("cv.store"), payload, {
+                headers,
+            });
+
+            setResponseMessage(response.data.message);
+            setError(null);
             setTimeout(() => setResponseMessage(""), 2000); // Clear the message after 2 seconds
+            return response.data.status; // Return success status
+        } catch (error) {
+            console.error("Error saving data:", error);
+            setResponseMessage(
+                error.response?.data?.message || "Failed to save data."
+            );
+            setError(error.response?.data?.error);
+            setTimeout(() => setResponseMessage(""), 4000); // Clear the message after 4 seconds
+        }
+    };
+
+    const saveDataOld = async (currentStep = 1) => {
+        try {
+            let payload;
+            let headers = {};
+
+            // Check if any data field is a Blob (indicating a file upload)
+            const containsFile = Object.values(data).some(
+                (value) => value instanceof Blob || value instanceof File
+            );
+
+            if (containsFile) {
+                // Use FormData if there's at least one file in `data`
+                payload = new FormData();
+
+                // Add current step
+                payload.append("current_step", currentStep);
+
+                for (const key in data) {
+                    if (
+                        data[key] instanceof Blob ||
+                        data[key] instanceof File
+                    ) {
+                        // Append Blob/File with its original filename
+                        payload.append(
+                            key,
+                            data[key],
+                            data[key].name || "file"
+                        );
+                    } else if (data[key] !== null && data[key] !== undefined) {
+                        // Append other data as strings
+                        if (Array.isArray(data[key])) {
+                            payload.append(key, JSON.stringify(data[key]));
+                        } else {
+                            payload.append(key, data[key]);
+                        }
+                    }
+                }
+                headers["Content-Type"] = "multipart/form-data";
+            } else {
+                // Use regular JSON payload if no files
+                payload = {
+                    ...data,
+                    current_step: currentStep,
+                };
+                headers["Content-Type"] = "application/json";
+            }
+
+            // Send the request using Axios
+            const response = await axios.post(route("cv.store"), payload, {
+                headers,
+            });
+
+            setResponseMessage(response.data.message);
+            setError(null);
+            setTimeout(() => setResponseMessage(""), 3000);
+
+            return true; // Return success
+        } catch (error) {
+            console.error("Error saving data:", error);
+            setResponseMessage(
+                error.response?.data?.message || "Failed to save data."
+            );
+            setError(error.response?.data?.error);
+            setTimeout(() => setResponseMessage(""), 5000);
+
+            return false; // Return failure
         }
     };
 
@@ -241,8 +378,6 @@ export const CvProvider = ({
                 savePhoto,
                 handleSliderChange,
                 handleStep,
-                handleNext,
-                handleBack,
                 responseMessage,
                 newbornBasicCare,
                 newbornAdvancedCare,

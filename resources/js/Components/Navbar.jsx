@@ -14,6 +14,7 @@ import {
     ListItemText,
     Collapse,
     Divider,
+    Container,
 } from "@mui/material";
 import {
     ExpandMore,
@@ -27,28 +28,28 @@ import YesOrNoModal from "./util/YesOrNoModal";
 
 const Pricing = [
     {
-        title: "Nanny Basic Care",
+        title: "Nanny (Basic Care)",
         service: "Nanny Basic Service",
     },
     {
-        title: "Nanny Advanced Care",
+        title: "Nanny (Advanced Care)",
         service: "Nanny Advanced Service",
     },
 
     {
-        title: "Elderly Basic Care",
+        title: "Caregiver (Basic Care Service)",
         service: "Elder Basic Care",
     },
     {
-        title: "Elderly Advanced Care",
+        title: "Caregiver (Advanced Care Service)",
         service: "Elder Advanced Care",
     },
     {
-        title: "Nanny Basic & Maid",
+        title: "Nanny (Basic & Maid)",
         service: "Nanny Basic Care + Maid Service",
     },
     {
-        title: "Elderly Basic & Maid",
+        title: "Caregiver (Basic & Maid)",
         service: "Elder Basic Care + Maid Service",
     },
 ];
@@ -159,296 +160,346 @@ const Navbar = () => {
                 elevation={0}
                 sx={{ borderBottom: "1px solid #4CAF50", bgcolor: "white" }}
             >
-                <Toolbar
-                    sx={{ display: "flex", justifyContent: "space-between" }}
-                >
-                    {/* Logo */}
-                    <Box
+                <Container maxWidth="xl" sx={{ padding: 0 }}>
+                    <Toolbar
                         sx={{
                             display: "flex",
-                            alignItems: "center",
-                            cursor: "pointer",
-                        }}
-                        onClick={() => router.get("/")}
-                    >
-                        <img
-                            src={logo}
-                            alt="Hearty Aid Logo"
-                            style={{ width: 50, height: 50 }}
-                        />
-                    </Box>
-
-                    {/* For md and larger screens */}
-                    <Box
-                        sx={{
-                            display: { xs: "none", md: "flex" },
-                            gap: 2,
+                            justifyContent: "space-between",
                         }}
                     >
-                        <Button
-                            onClick={(e) =>
-                                handleMenuOpen(e, setAnchorElPricing)
-                            }
-                            endIcon={<ExpandMore />}
-                        >
-                            Pricing
-                        </Button>
-                        <Menu
-                            anchorEl={anchorElPricing}
-                            open={Boolean(anchorElPricing)}
-                            onClose={() => handleMenuClose(setAnchorElPricing)}
+                        {/* Left side - Logo and Auth buttons */}
+                        <Box
                             sx={{
-                                "& .MuiPaper-root": {
-                                    backgroundColor: "primary.main", // Set the dropdown background to primary color
-                                    p: 1,
-                                },
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 2,
                             }}
                         >
-                            {Pricing.map((item, index) => (
-                                <MenuItem
-                                    key={index}
-                                    onClick={() => {
-                                        handleMenuClose(setAnchorElPricing);
-                                        router.get(
-                                            route(
-                                                "service.pricing",
-                                                item.service
-                                            )
-                                        );
-                                    }}
-                                    sx={{
-                                        color: "white", // Set text color to white
-                                        fontFamily: "Mina",
-                                        "&:hover": {
-                                            backgroundColor: "primary.dark", // Optional: Darker shade on hover
-                                        },
-                                        borderBottom:
-                                            index !== Pricing.length - 1
-                                                ? 2
-                                                : 0, // Apply borderBottom only if not the last item
-                                        borderColor: "#fff",
-                                    }}
-                                >
-                                    {item.title}
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                        <Button
-                            onClick={(e) => handleMenuOpen(e, setAnchorElAbout)}
-                            endIcon={<ExpandMore />}
-                        >
-                            About Us
-                        </Button>
-                        <Menu
-                            anchorEl={anchorElAbout}
-                            open={Boolean(anchorElAbout)}
-                            onClose={() => handleMenuClose(setAnchorElAbout)}
-                            sx={{
-                                "& .MuiPaper-root": {
-                                    backgroundColor: "primary.main", // Set the dropdown background to primary color
-                                    p: 1,
-                                },
-                            }}
-                        >
-                            {AboutUs.map((item, index) => (
-                                <MenuItem
-                                    key={index}
-                                    onClick={() => {
-                                        handleMenuClose(setAnchorElAbout);
-                                        router.get(route(item.routeName));
-                                    }}
-                                    sx={{
-                                        color: "white", // Set text color to white
-                                        fontFamily: "Mina",
-                                        "&:hover": {
-                                            backgroundColor: "primary.dark", // Optional: Darker shade on hover
-                                        },
-                                        borderBottom:
-                                            index !== JoinOurTeam.length - 1
-                                                ? 2
-                                                : 0, // Apply borderBottom only if not the last item
-                                        borderColor: "#fff",
-                                    }}
-                                >
-                                    {item.title}
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                        <Button
-                            onClick={(e) => handleMenuOpen(e, setAnchorElJoin)}
-                            endIcon={<ExpandMore />}
-                        >
-                            Join Our Team
-                        </Button>
-                        <Menu
-                            anchorEl={anchorElJoin}
-                            open={Boolean(anchorElJoin)}
-                            onClose={() => handleMenuClose(setAnchorElJoin)}
-                            sx={{
-                                "& .MuiPaper-root": {
-                                    backgroundColor: "primary.main", // Set the dropdown background to primary color
-                                    p: 1,
-                                },
-                            }}
-                        >
-                            {JoinOurTeam.map((item, index) => (
-                                <MenuItem
-                                    key={index}
-                                    onClick={() => {
-                                        handleMenuClose(setAnchorElPricing);
-                                        router.get(route(item.routeName));
-                                    }}
-                                    sx={{
-                                        color: "white", // Set text color to white
-                                        fontFamily: "Mina",
-                                        "&:hover": {
-                                            backgroundColor: "primary.dark", // Optional: Darker shade on hover
-                                        },
-                                        borderBottom:
-                                            index !== JoinOurTeam.length - 1
-                                                ? 2
-                                                : 0, // Apply borderBottom only if not the last item
-                                        borderColor: "#fff",
-                                    }}
-                                >
-                                    {item.title}
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                        <Button
-                            onClick={(e) =>
-                                handleMenuOpen(e, setAnchorElContact)
-                            }
-                            endIcon={<ExpandMore />}
-                        >
-                            Contact Us
-                        </Button>
-                        <Menu
-                            anchorEl={anchorElContact}
-                            open={Boolean(anchorElContact)}
-                            onClose={() => handleMenuClose(setAnchorElContact)}
-                            sx={{
-                                "& .MuiPaper-root": {
-                                    backgroundColor: "primary.main", // Set the dropdown background to primary color
-                                    p: 1,
-                                },
-                            }}
-                        >
-                            {ContactUs.map((item, index) => (
-                                <MenuItem
-                                    key={index}
-                                    onClick={() => {
-                                        handleMenuClose(setAnchorElPricing);
-                                        router.get(route(item.routeName));
-                                    }}
-                                    sx={{
-                                        color: "white", // Set text color to white
-                                        fontFamily: "Mina",
-                                        "&:hover": {
-                                            backgroundColor: "primary.dark", // Optional: Darker shade on hover
-                                        },
-                                        borderBottom:
-                                            index !== Pricing.length - 1
-                                                ? 2
-                                                : 0, // Apply borderBottom only if not the last item
-                                        borderColor: "#fff",
-                                    }}
-                                >
-                                    {item.title}
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                    </Box>
-
-                    {/* Log In and Sign Up buttons */}
-                    <Box sx={{ display: "flex", gap: 2 }}>
-                        {/* Get into the Caregiver site */}
-                        {user && user.is_caregiver && (
-                            <Button
-                                variant="outlined"
-                                sx={{ borderRadius: 20, px: 2 }}
-                                size="small"
-                                onClick={() =>
-                                    router.get(route("cg.dashboard"))
-                                }
-                            >
-                                <Typography fontSize={13}>
-                                    Caregiver Dashboard
-                                </Typography>
-                            </Button>
-                        )}
-
-                        {/* Get into the Admin site */}
-                        {user && user.is_admin && (
-                            <Button
-                                variant="contained"
-                                sx={{ borderRadius: 20, px: 2 }}
-                                size="small"
-                                onClick={() =>
-                                    router.get(route("admin.dashboard"))
-                                }
-                            >
-                                <Typography fontSize={13}>Admin</Typography>
-                            </Button>
-                        )}
-                        {!user ? (
+                            {/* Logo */}
                             <Box
                                 sx={{
-                                    display: { xs: "none", md: "flex" },
-                                    gap: 1,
+                                    display: "flex",
                                     alignItems: "center",
+                                    cursor: "pointer",
+                                }}
+                                onClick={() => router.get("/")}
+                            >
+                                <img
+                                    src={logo}
+                                    alt="Hearty Aid Logo"
+                                    style={{ width: 60, height: 60 }}
+                                />
+                            </Box>
+
+                            {/* Auth buttons and admin/caregiver buttons */}
+                            {/* Get into the Caregiver site */}
+                            {user && user.is_caregiver && (
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    sx={{
+                                        borderRadius: 20,
+                                        px: 2,
+                                        display: { xs: "none", md: "flex" },
+                                    }}
+                                    size="small"
+                                    onClick={() =>
+                                        router.get(route("cg.dashboard"))
+                                    }
+                                >
+                                    <Typography fontSize={13}>
+                                        Account
+                                    </Typography>
+                                </Button>
+                            )}
+                            {user && user.is_employer && (
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    sx={{
+                                        borderRadius: 20,
+                                        px: 2,
+                                        display: { xs: "none", md: "flex" },
+                                    }}
+                                    size="small"
+                                    onClick={() =>
+                                        router.get(route("employer.dashboard"))
+                                    }
+                                >
+                                    <Typography fontSize={13}>
+                                        Account
+                                    </Typography>
+                                </Button>
+                            )}
+
+                            {/* Get into the Admin site */}
+                            {user && user.is_admin && (
+                                <Button
+                                    variant="contained"
+                                    sx={{
+                                        borderRadius: 20,
+                                        px: 2,
+                                        display: { xs: "none", md: "flex" },
+                                    }}
+                                    size="small"
+                                    onClick={() =>
+                                        router.get(route("admin.dashboard"))
+                                    }
+                                >
+                                    <Typography fontSize={13}>Admin</Typography>
+                                </Button>
+                            )}
+
+                            {!user ? (
+                                <Box
+                                    sx={{
+                                        display: { xs: "none", md: "flex" },
+                                        gap: 1,
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <Button
+                                        variant="contained"
+                                        sx={{ borderRadius: 20, px: 2 }}
+                                        size="small"
+                                        onClick={() =>
+                                            router.get(route("login"))
+                                        }
+                                    >
+                                        <Typography fontSize={13}>
+                                            Log in
+                                        </Typography>
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        sx={{ borderRadius: 20, px: 2 }}
+                                        size="small"
+                                        onClick={() =>
+                                            router.get(route("signup"))
+                                        }
+                                    >
+                                        <Typography fontSize={13}>
+                                            Sign up
+                                        </Typography>
+                                    </Button>
+                                </Box>
+                            ) : (
+                                // <Box
+                                //     sx={{ display: { xs: "none", md: "flex" } }}
+                                // >
+                                //     <Button
+                                //         size="small"
+                                //         color="error"
+                                //         onClick={() => setOpenLogout(true)}
+                                //     >
+                                //         <Typography fontSize={13}>
+                                //             Logout
+                                //         </Typography>
+                                //     </Button>
+                                // </Box>
+                                ""
+                            )}
+                        </Box>
+
+                        {/* Right side - Menu items for md and larger screens */}
+                        <Box
+                            sx={{
+                                display: { xs: "none", md: "flex" },
+                                gap: 2,
+                            }}
+                        >
+                            <Button
+                                onClick={(e) =>
+                                    handleMenuOpen(e, setAnchorElPricing)
+                                }
+                                endIcon={<ExpandMore />}
+                            >
+                                <Typography
+                                    variant="h6"
+                                    fontSize={18}
+                                    fontWeight={500}
+                                    fontFamily={"Righteous"}
+                                >
+                                    Pricing
+                                </Typography>
+                            </Button>
+                            <Menu
+                                anchorEl={anchorElPricing}
+                                open={Boolean(anchorElPricing)}
+                                onClose={() =>
+                                    handleMenuClose(setAnchorElPricing)
+                                }
+                                sx={{
+                                    "& .MuiPaper-root": {
+                                        backgroundColor: "primary.main", // Set the dropdown background to primary color
+                                        p: 1,
+                                    },
                                 }}
                             >
-                                <Button
-                                    variant="contained"
-                                    sx={{ borderRadius: 20, px: 2 }}
-                                    size="small"
-                                    onClick={() => router.get(route("login"))}
+                                {Pricing.map((item, index) => (
+                                    <MenuItem
+                                        key={index}
+                                        onClick={() => {
+                                            handleMenuClose(setAnchorElPricing);
+                                            router.get(
+                                                route(
+                                                    "service.pricing",
+                                                    item.service
+                                                )
+                                            );
+                                        }}
+                                        sx={{
+                                            fontSize: 14,
+                                            mb: 1,
+                                            color: "white", // Set text color to white
+                                            "&:hover": {
+                                                backgroundColor: "primary.dark", // Optional: Darker shade on hover
+                                            },
+                                            borderBottom:
+                                                index !== Pricing.length - 1
+                                                    ? 2
+                                                    : 0, // Apply borderBottom only if not the last item
+                                            borderColor: "#fff",
+                                        }}
+                                    >
+                                        {item.title}
+                                    </MenuItem>
+                                ))}
+                            </Menu>
+                            <Button
+                                onClick={(e) =>
+                                    handleMenuOpen(e, setAnchorElAbout)
+                                }
+                                endIcon={<ExpandMore />}
+                            >
+                                <Typography
+                                    variant="h6"
+                                    fontSize={18}
+                                    fontWeight={500}
+                                    fontFamily={"Righteous"}
                                 >
-                                    <Typography fontSize={13}>
-                                        Log in
-                                    </Typography>
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    sx={{ borderRadius: 20, px: 2 }}
-                                    size="small"
-                                    onClick={() => router.get(route("signup"))}
-                                >
-                                    <Typography fontSize={13}>
-                                        Sign up
-                                    </Typography>
-                                </Button>
-                            </Box>
-                        ) : (
-                            <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                                <Button
-                                    size="small"
-                                    color="error"
-                                    onClick={() => setOpenLogout(true)}
-                                >
-                                    <Typography fontSize={13}>
-                                        Logout
-                                    </Typography>
-                                </Button>
-                            </Box>
-                        )}
-                    </Box>
+                                    About Us
+                                </Typography>
+                            </Button>
+                            <Menu
+                                anchorEl={anchorElAbout}
+                                open={Boolean(anchorElAbout)}
+                                onClose={() =>
+                                    handleMenuClose(setAnchorElAbout)
+                                }
+                                sx={{
+                                    "& .MuiPaper-root": {
+                                        backgroundColor: "primary.main", // Set the dropdown background to primary color
+                                        p: 1,
+                                    },
+                                }}
+                            >
+                                {AboutUs.map((item, index) => (
+                                    <MenuItem
+                                        key={index}
+                                        onClick={() => {
+                                            handleMenuClose(setAnchorElAbout);
+                                            router.get(route(item.routeName));
+                                        }}
+                                        sx={{
+                                            color: "white", // Set text color to white
+                                            fontFamily: "Mina",
+                                            "&:hover": {
+                                                backgroundColor: "primary.dark", // Optional: Darker shade on hover
+                                            },
+                                            borderBottom:
+                                                index !== JoinOurTeam.length - 1
+                                                    ? 2
+                                                    : 0, // Apply borderBottom only if not the last item
+                                            borderColor: "#fff",
+                                        }}
+                                    >
+                                        {item.title}
+                                    </MenuItem>
+                                ))}
+                            </Menu>
 
-                    {/* Hamburger Menu Icon for sm screens */}
-                    <IconButton
-                        edge="end"
-                        color="inherit"
-                        aria-label="menu"
-                        onClick={toggleDrawer(true)}
-                        sx={{
-                            display: { xs: "block", md: "none" },
-                            color: "primary.main",
-                        }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                </Toolbar>
+                            <Button
+                                onClick={(e) =>
+                                    handleMenuOpen(e, setAnchorElContact)
+                                }
+                                endIcon={<ExpandMore />}
+                            >
+                                <Typography
+                                    variant="h6"
+                                    fontSize={18}
+                                    fontWeight={500}
+                                    fontFamily={"Righteous"}
+                                >
+                                    Contact Us
+                                </Typography>
+                            </Button>
+                            <Menu
+                                anchorEl={anchorElContact}
+                                open={Boolean(anchorElContact)}
+                                onClose={() =>
+                                    handleMenuClose(setAnchorElContact)
+                                }
+                                sx={{
+                                    "& .MuiPaper-root": {
+                                        backgroundColor: "primary.main", // Set the dropdown background to primary color
+                                        p: 1,
+                                    },
+                                }}
+                            >
+                                {ContactUs.map((item, index) => (
+                                    <MenuItem
+                                        key={index}
+                                        onClick={() => {
+                                            handleMenuClose(setAnchorElPricing);
+                                            router.get(route(item.routeName));
+                                        }}
+                                        sx={{
+                                            color: "white", // Set text color to white
+                                            fontFamily: "Mina",
+                                            "&:hover": {
+                                                backgroundColor: "primary.dark", // Optional: Darker shade on hover
+                                            },
+                                            borderBottom:
+                                                index !== Pricing.length - 1
+                                                    ? 2
+                                                    : 0, // Apply borderBottom only if not the last item
+                                            borderColor: "#fff",
+                                        }}
+                                    >
+                                        {item.title}
+                                    </MenuItem>
+                                ))}
+                            </Menu>
+                            <Button
+                                onClick={() => router.get(route("job.apply"))}
+                            >
+                                <Typography
+                                    variant="h6"
+                                    fontSize={18}
+                                    fontWeight={500}
+                                    fontFamily={"Righteous"}
+                                >
+                                    Join Our Team
+                                </Typography>
+                            </Button>
+                        </Box>
+
+                        {/* Hamburger Menu Icon for sm screens */}
+                        <IconButton
+                            edge="end"
+                            color="inherit"
+                            aria-label="menu"
+                            onClick={toggleDrawer(true)}
+                            sx={{
+                                display: { xs: "block", md: "none" },
+                                color: "primary.main",
+                            }}
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                    </Toolbar>
+                </Container>
             </AppBar>
 
             {/* Drawer for small screens */}
@@ -486,7 +537,9 @@ const Navbar = () => {
                             onClick={() => handleToggle(setOpenPricing)}
                         >
                             <ListItemText
-                                sx={{ color: "primary.main" }}
+                                sx={{
+                                    color: "primary.main",
+                                }}
                                 primary="Pricing"
                             />
                             {openPricing ? <ExpandLess /> : <ExpandMore />}
@@ -497,7 +550,11 @@ const Navbar = () => {
                                     <ListItem
                                         key={index}
                                         button
-                                        sx={{ pl: 4, cursor: "pointer" }}
+                                        sx={{
+                                            pl: 2,
+                                            cursor: "pointer",
+                                            borderBottom: "1px solid #eee",
+                                        }}
                                         onClick={() => {
                                             toggleDrawer(false);
                                             router.get(
@@ -510,8 +567,7 @@ const Navbar = () => {
                                     >
                                         <ListItemText
                                             primaryTypographyProps={{
-                                                fontSize: 14, // Set your desired font size
-                                                fontFamily: "Mina", // Set your desired font family
+                                                fontSize: 13,
                                                 cursor: "pointer",
                                             }}
                                             primary={item.title}
@@ -548,8 +604,7 @@ const Navbar = () => {
                                     >
                                         <ListItemText
                                             primaryTypographyProps={{
-                                                fontSize: 14, // Set your desired font size
-                                                fontFamily: "Mina", // Set your desired font family
+                                                fontSize: 13, // Set your desired font size
                                                 cursor: "pointer",
                                             }}
                                             primary={item.title}
@@ -586,8 +641,7 @@ const Navbar = () => {
                                     >
                                         <ListItemText
                                             primaryTypographyProps={{
-                                                fontSize: 14, // Set your desired font size
-                                                fontFamily: "Mina", // Set your desired font family
+                                                fontSize: 13, // Set your desired font size
                                                 cursor: "pointer",
                                             }}
                                             primary={item.title}
@@ -624,8 +678,8 @@ const Navbar = () => {
                                     >
                                         <ListItemText
                                             primaryTypographyProps={{
-                                                fontSize: 14, // Set your desired font size
-                                                fontFamily: "Mina", // Set your desired font family
+                                                fontSize: 13, // Set your desired font size
+                                                cursor: "pointer",
                                             }}
                                             primary={item.title}
                                         />
@@ -636,58 +690,133 @@ const Navbar = () => {
                         <Divider />
                         {/* Contact Us Section */}
                         {!user ? (
-                            <ListItem
-                                sx={{
-                                    display: "flex",
-                                    gap: 2,
-                                    mt: 2,
-                                }}
-                            >
-                                {/* <ListItemText primary="Contact Us" /> */}
-                                <Button
-                                    variant="contained"
-                                    sx={{ borderRadius: 10 }}
-                                    size="small"
-                                    onClick={() => router.get(route("login"))}
-                                >
-                                    <Typography fontSize={13}>
-                                        Log in
-                                    </Typography>
-                                </Button>
-                                <Button
-                                    variant="outlined"
-                                    sx={{ borderRadius: 10 }}
-                                    size="small"
-                                    onClick={() => router.get(route("signup"))}
-                                >
-                                    <Typography fontSize={13}>
-                                        Sign up
-                                    </Typography>
-                                </Button>
-                            </ListItem>
+                            <>
+                                <ListItem sx={{ mt: 2 }}>
+                                    <Button
+                                        variant="contained"
+                                        sx={{ borderRadius: 10 }}
+                                        size="small"
+                                        onClick={() =>
+                                            router.get(route("login"))
+                                        }
+                                        fullWidth
+                                    >
+                                        <Typography fontSize={13}>
+                                            Log in
+                                        </Typography>
+                                    </Button>
+                                </ListItem>
+                                <ListItem>
+                                    {/* <ListItemText primary="Contact Us" /> */}
+
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        sx={{ borderRadius: 10 }}
+                                        size="small"
+                                        onClick={() =>
+                                            router.get(route("signup"))
+                                        }
+                                        fullWidth
+                                    >
+                                        <Typography fontSize={13}>
+                                            Sign up
+                                        </Typography>
+                                    </Button>
+                                </ListItem>
+                            </>
                         ) : (
-                            <ListItem
-                                sx={{
-                                    mt: 2,
-                                }}
-                            >
-                                {/* <ListItemText primary="Contact Us" /> */}
-                                <Button
-                                    variant="outlined"
-                                    sx={{ borderRadius: 10 }}
-                                    size="small"
-                                    fullWidth
-                                    color="error"
-                                    onClick={() => {
-                                        setOpenLogout(true);
-                                        setDrawerOpen(false);
-                                    }}
-                                >
-                                    <Typography fontSize={13}>
-                                        Logout
-                                    </Typography>
-                                </Button>
-                            </ListItem>
+                            <>
+                                {user && user.is_admin && (
+                                    <ListItem
+                                        sx={{
+                                            mt: 2,
+                                        }}
+                                    >
+                                        <Button
+                                            variant="contained"
+                                            sx={{
+                                                borderRadius: 20,
+                                                px: 2,
+                                            }}
+                                            fullWidth
+                                            size="small"
+                                            onClick={() =>
+                                                router.get(
+                                                    route("admin.dashboard")
+                                                )
+                                            }
+                                        >
+                                            <Typography fontSize={13}>
+                                                Admin
+                                            </Typography>
+                                        </Button>
+                                    </ListItem>
+                                )}
+                                {user && user.is_caregiver ? (
+                                    <ListItem>
+                                        <Button
+                                            variant="contained"
+                                            color="secondary"
+                                            sx={{ borderRadius: 20, px: 2 }}
+                                            size="small"
+                                            onClick={() =>
+                                                router.get(
+                                                    route("cg.dashboard")
+                                                )
+                                            }
+                                            fullWidth
+                                        >
+                                            <Typography fontSize={13}>
+                                                Account
+                                            </Typography>
+                                        </Button>
+                                    </ListItem>
+                                ) : (
+                                    ""
+                                )}
+                                {user && user.is_employer ? (
+                                    <ListItem>
+                                        <Button
+                                            variant="contained"
+                                            color="secondary"
+                                            sx={{ borderRadius: 20, px: 2 }}
+                                            size="small"
+                                            onClick={() =>
+                                                router.get(
+                                                    route("employer.dashboard")
+                                                )
+                                            }
+                                            fullWidth
+                                        >
+                                            <Typography fontSize={13}>
+                                                Account
+                                            </Typography>
+                                        </Button>
+                                    </ListItem>
+                                ) : (
+                                    ""
+                                )}
+
+                                <ListItem>
+                                    {/* <ListItemText primary="Contact Us" /> */}
+                                    <Button
+                                        variant="outlined"
+                                        sx={{ borderRadius: 10 }}
+                                        size="small"
+                                        fullWidth
+                                        color="error"
+                                        onClick={() => {
+                                            setOpenLogout(true);
+                                            setDrawerOpen(false);
+                                        }}
+                                    >
+                                        <Typography fontSize={13}>
+                                            Logout
+                                        </Typography>
+                                    </Button>
+                                </ListItem>
+                            </>
                         )}
                     </List>
                 </Box>

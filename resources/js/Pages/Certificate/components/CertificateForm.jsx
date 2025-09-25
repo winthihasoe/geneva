@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Box,
     TextField,
@@ -14,11 +14,15 @@ import {
 import Subtitle from "@/Components/Typo/Subtitle";
 import BodyText from "@/Components/Typo/BodyText";
 import TinyText from "@/Components/Typo/TinyText";
-import TitleCenter from "@/Components/Typo/TitleCenter";
 
-function CertificateForm({ data, handleChange, handleSubmit, errors }) {
-    const [preview, setPreview] = useState(null);
-
+function CertificateForm({
+    data,
+    handleChange,
+    handleSubmit,
+    errors,
+    preview,
+    setPreview,
+}) {
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -29,13 +33,20 @@ function CertificateForm({ data, handleChange, handleSubmit, errors }) {
         }
     };
 
+    // Clear preview when form is cleared
+    useEffect(() => {
+        if (!data.certificate_photo) {
+            setPreview(null);
+        }
+    }, [data.certificate_photo]);
+
     return (
         <form
             onSubmit={(event) => handleSubmit(event)}
             style={{
                 marginBottom: "1rem",
                 padding: "1rem",
-                maxWidth: "350px",
+                maxWidth: "400px",
                 borderRadius: "5px",
                 position: "relative",
                 overflow: "hidden",
@@ -43,14 +54,16 @@ function CertificateForm({ data, handleChange, handleSubmit, errors }) {
                 borderColor: "#ddd",
             }}
         >
-            <TitleCenter>Add New Qualification</TitleCenter>
-            <BodyText>
+            <Typography variant="h6">Add New Qualification</Typography>
+            <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
                 Please add qualification relevant to caregiver job.
-            </BodyText>
+            </Typography>
             <Divider sx={{ my: 2 }} />
             <Box mb={3}>
                 <FormControl component="fieldset">
-                    <Subtitle>Qualification type</Subtitle>
+                    <Typography variant="body1" fontWeight="bold">
+                        Qualification type
+                    </Typography>
                     {/* Display error message */}
                     {errors.qualification_type && (
                         <Typography
@@ -70,24 +83,26 @@ function CertificateForm({ data, handleChange, handleSubmit, errors }) {
                         <FormControlLabel
                             value="Certificate"
                             control={<Radio />}
-                            label={<BodyText>Certificate</BodyText>}
+                            label={<Typography>Certificate</Typography>}
                         />
                         <FormControlLabel
                             value="Degree"
                             control={<Radio />}
-                            label={<BodyText>Degree</BodyText>}
+                            label={<Typography>Degree</Typography>}
                         />
                         <FormControlLabel
                             value="Diploma"
                             control={<Radio />}
-                            label={<BodyText>Diploma</BodyText>}
+                            label={<Typography>Diploma</Typography>}
                         />
                     </RadioGroup>
                 </FormControl>
             </Box>
 
             <Box mb={3}>
-                <Subtitle>Course Name</Subtitle>
+                <Typography variant="body1" fontWeight="bold">
+                    Course Name
+                </Typography>
                 <TextField
                     required
                     value={data.course}
@@ -96,7 +111,9 @@ function CertificateForm({ data, handleChange, handleSubmit, errors }) {
                     fullWidth
                     size="small"
                 />
-                <TinyText>Example: Nurse Aid</TinyText>
+                <Typography variant="body2" color="textSecondary">
+                    Example: Nurse Aid
+                </Typography>
                 {errors.course && (
                     <Typography fontSize={12} color="error">
                         {errors.course}
@@ -105,7 +122,9 @@ function CertificateForm({ data, handleChange, handleSubmit, errors }) {
             </Box>
 
             <Box mb={3}>
-                <Subtitle>Training School Name</Subtitle>
+                <Typography variant="body1" fontWeight="bold">
+                    Training School Name
+                </Typography>
                 <TextField
                     required
                     value={data.training_center_name}
@@ -123,7 +142,9 @@ function CertificateForm({ data, handleChange, handleSubmit, errors }) {
             </Box>
 
             <Box mb={3}>
-                <Subtitle>Course Start Date</Subtitle>
+                <Typography variant="body1" fontWeight="bold">
+                    Course Start Date
+                </Typography>
                 <TextField
                     required
                     type="date"
@@ -145,7 +166,9 @@ function CertificateForm({ data, handleChange, handleSubmit, errors }) {
             </Box>
 
             <Box mb={3}>
-                <Subtitle>Course Duration (Months)</Subtitle>
+                <Typography variant="body1" fontWeight="bold">
+                    Course Duration (Months)
+                </Typography>
                 <TextField
                     required
                     select
@@ -215,9 +238,7 @@ function CertificateForm({ data, handleChange, handleSubmit, errors }) {
                     size="small"
                     type="submit"
                 >
-                    <Typography fontFamily={"Lilita One"} fontSize={18}>
-                        Save
-                    </Typography>
+                    Save Qualification
                 </Button>
             </Box>
         </form>

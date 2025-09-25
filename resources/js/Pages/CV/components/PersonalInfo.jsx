@@ -46,28 +46,31 @@ const PersonalInfo = () => {
                     data.full_name &&
                     data.nickname &&
                     data.introduction &&
-                    data.date_of_birth
+                    data.date_of_birth &&
+                    data.gender &&
+                    data.profile_photo
                 );
             case 2:
-                return data.gender && data.height && data.weight;
+                return (
+                    data.height &&
+                    data.weight &&
+                    data.nationality &&
+                    data.religion
+                );
             case 3:
-                return data.place_of_birth && data.nationality;
-            case 4:
-                return data.residential_address;
+                return (
+                    data.passport &&
+                    data.passport_number &&
+                    data.visa_type &&
+                    data.passport_expiry_date
+                );
+            // Case 4 is about to add Certificate
             case 5:
-                return data.emergency_contact;
+                return data.language;
             case 6:
-                return data.email && data.language;
-            case 7:
-                return data.religion;
-            case 8:
-                return data.education_level && data.caregiver_qualification;
-            case 9:
-                return data.marital_status;
-            case 10:
-                return data.number_of_siblings && data.wears_glasses;
-            case 11:
-                return data.has_tattoo;
+                return data.services;
+            // Case 7 is about to add experience
+
             default:
                 return true;
         }

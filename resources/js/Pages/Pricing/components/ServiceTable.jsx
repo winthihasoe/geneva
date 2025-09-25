@@ -19,6 +19,8 @@ function ServiceTable({ service }) {
         (pkg) => pkg.type === "Live-in"
     );
 
+    console.log("service", service);
+
     const renderPackageTable = (packages, type) => (
         <Box
             sx={{
@@ -252,7 +254,7 @@ function ServiceTable({ service }) {
                             alt="heart"
                             style={{ width: 15, marginRight: "5px" }}
                         />{" "}
-                        {packages[0].meals_provided}
+                        {packages[0]?.meals_provided}
                     </Typography>
                     <Typography
                         fontSize={{ xs: 13, sm: 15, md: 16 }}
@@ -263,7 +265,7 @@ function ServiceTable({ service }) {
                             alt="heart"
                             style={{ width: 15, marginRight: "5px" }}
                         />{" "}
-                        {packages[0].transportation}
+                        {packages[0]?.transportation}
                     </Typography>
                 </Box>
                 <Box sx={{ width: 290 }}>

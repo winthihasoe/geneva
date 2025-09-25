@@ -37,7 +37,7 @@ class JobApplyController extends Controller
                 'language' => 'required|string|max:255',
                 'passport' => 'nullable|file|mimes:jpeg,png,jpg|max:10048',
                 'visa' => 'nullable|file|mimes:jpeg,png,jpg|max:10048',
-                'certificates.*' => 'required|file|mimes:jpeg,png,jpg|max:1048',
+                'certificates.*' => 'required|file|mimes:jpeg,png,jpg|max:10048',
             ]);
     
               // Handle file uploads with null checks

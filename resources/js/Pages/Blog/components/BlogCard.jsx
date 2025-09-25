@@ -1,98 +1,72 @@
 import { router } from "@inertiajs/react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 import React from "react";
 
-function BlogCard({ title, image, content }) {
+function BlogCard({ image, title, content }) {
     return (
         <Box
             sx={{
-                width: { xs: "100%", sm: 500 },
-                height: { xs: 250, sm: 300 },
-                p: 2,
-                bgcolor: "transparent",
-                border: "none",
+                width: 220,
+                flexShrink: 0,
+                bgcolor: "background.paper",
+                borderRadius: 2,
+                overflow: "hidden",
+                boxShadow: "none",
+                transition: "box-shadow 0.3s ease-in",
+                ":hover": {
+                    boxShadow: 3,
+                },
+                display: "flex",
+                flexDirection: "column",
+                pb: 3,
                 cursor: "pointer",
             }}
-            component={"button"}
-            onClick={() => {
-                router.get(route("blog.single"));
-            }}
+            onClick={() => router.get(route("blog.single", title))}
         >
             <Box
                 sx={{
-                    width: "95%",
-                    height: "100%",
-                    borderRadius: 10,
-                    border: "1px solid",
-                    borderColor: "primary.main",
-                    position: "relative",
-                    bgcolor: "#f5f5f5",
-                    display: "flex",
+                    width: "100%",
+                    height: 160,
+                    overflow: "hidden",
+                    borderTopRightRadius: 3,
+                    borderTopLeftRadius: 3,
                 }}
             >
-                <Box
-                    sx={{
-                        position: "absolute",
-                        top: -1,
-                        right: -35,
-                        px: 1,
-                        py: 2,
-                        borderRadius: 6,
-                        bgcolor: "primary.main",
-                        border: "1px solid #000",
-                        width: "80%",
-                        boxShadow: 2,
-                        zIndex: 2,
-                    }}
-                >
-                    <Typography
-                        color="white"
-                        fontFamily={"Lilita One"}
-                        fontStyle={"italic"}
-                        textAlign={"center"}
-                        fontSize={25}
-                    >
-                        {title}
-                    </Typography>
-                </Box>
-                <Box
-                    sx={{
-                        width: "40%",
+                <img
+                    src={image}
+                    alt={title}
+                    style={{
+                        width: "100%",
                         height: "100%",
-                        bgcolor: "red",
-                        borderTopLeftRadius: 40,
-                        borderBottomLeftRadius: 40,
+                        objectFit: "cover",
+                    }}
+                />
+            </Box>
+            <Box
+                sx={{ flex: 1, p: 2, display: "flex", flexDirection: "column" }}
+            >
+                <Typography variant="h6" fontWeight="bold" mb={1} noWrap>
+                    {title}
+                </Typography>
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: 4,
+                        WebkitBoxOrient: "vertical",
                         overflow: "hidden",
-                        zIndex: 3,
-
-                        backgroundImage: `url(/images/blogContent/${image})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        backgroundRepeat: "no-repeat",
-                    }}
-                ></Box>
-                <Box
-                    sx={{
-                        width: "60%",
-                        height: "100%",
-                        bgcolor: "white",
-                        borderBottomRightRadius: 40,
-                        zIndex: 1,
-                        position: "relative",
+                        textOverflow: "ellipsis",
+                        mb: 3,
+                        minHeight: "4.8em",
                     }}
                 >
-                    <Typography
-                        sx={{
-                            fontFamily: "Livvic",
-                            fontSize: 13,
-                            position: "absolute",
-                            top: 90,
-                            left: 10,
-                            right: 10,
-                        }}
-                    >
-                        {content}
-                    </Typography>
+                    {content}
+                </Typography>
+                <Box>
+                    <Button variant="contained" color="secondary" size="small">
+                        See More
+                    </Button>
                 </Box>
             </Box>
         </Box>

@@ -1,0 +1,1 @@
+import{j as t}from"./app-PoFsRHJ3.js";import{D as m}from"./Dialog-DXjHcP0F.js";import{B as a}from"./Box-Dvh9K9mO.js";function x({open:o,onClose:i,imageSrc:r}){return t.jsx(m,{open:o,onClose:i,maxWidth:"md",fullWidth:!0,children:t.jsx(a,{component:"img",src:r,alt:"Enlarged view",sx:{width:"100%",height:"auto"}})})}export{x as I};

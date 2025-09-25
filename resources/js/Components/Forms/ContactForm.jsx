@@ -33,17 +33,12 @@ function ContactForm() {
                 pt: 3,
                 bgcolor: "white",
                 boxShadow: 2,
-                pb: 10,
+                pb: 5,
                 mx: { xs: 0, sm: 8 },
             }}
         >
             <Box textAlign={"center"}>
-                <Typography
-                    fontFamily={"Abel"}
-                    fontWeight={200}
-                    fontSize={{ xs: 20, sm: 25 }}
-                    mb={2}
-                >
+                <Typography fontWeight={200} variant="body2" mb={1}>
                     Have Questions?
                 </Typography>
                 <Typography
@@ -67,16 +62,12 @@ function ContactForm() {
                     <Box
                         sx={{
                             display: "flex",
-                            gap: { xs: 0, sm: 3 },
+                            gap: { xs: 0, sm: 2 },
                             alignItems: "center",
                             justifyContent: "center",
                         }}
                     >
-                        <Typography
-                            fontSize={20}
-                            fontFamily={"Afacad"}
-                            width={"40%"}
-                        >
+                        <Typography fvariant="body1" width={"40%"}>
                             Name
                         </Typography>
                         <TextField
@@ -95,16 +86,12 @@ function ContactForm() {
                     <Box
                         sx={{
                             display: "flex",
-                            gap: { xs: 0, sm: 3 },
+                            gap: { xs: 0, sm: 2 },
                             alignItems: "center",
                             justifyContent: "center",
                         }}
                     >
-                        <Typography
-                            fontSize={20}
-                            fontFamily={"Afacad"}
-                            width={"40%"}
-                        >
+                        <Typography fvariant="body1" width={"40%"}>
                             Email
                         </Typography>
                         <TextField
@@ -123,16 +110,12 @@ function ContactForm() {
                     <Box
                         sx={{
                             display: "flex",
-                            gap: { xs: 0, sm: 3 },
+                            gap: { xs: 0, sm: 2 },
                             alignItems: "center",
                             justifyContent: "center",
                         }}
                     >
-                        <Typography
-                            fontSize={20}
-                            fontFamily={"Afacad"}
-                            width={"40%"}
-                        >
+                        <Typography variant="body1" width={"40%"}>
                             Phone Number
                         </Typography>
                         <TextField
@@ -152,17 +135,13 @@ function ContactForm() {
                     <Box
                         sx={{
                             display: "flex",
-                            gap: { xs: 0, sm: 3 },
+                            gap: { xs: 0, sm: 2 },
                             alignItems: "flex-start",
                             justifyContent: "center",
                             mt: 2,
                         }}
                     >
-                        <Typography
-                            fontSize={20}
-                            fontFamily={"Afacad"}
-                            width={"40%"}
-                        >
+                        <Typography variant="body1" width={"40%"}>
                             Message.
                         </Typography>
                         <TextareaAutosize
@@ -191,18 +170,12 @@ function ContactForm() {
                     <Box textAlign={"center"} mt={5}>
                         <Button
                             variant="contained"
-                            size="small"
+                            size="medium"
                             type="submit"
                             disabled={processing}
                             sx={{ borderRadius: 20, px: 3 }}
                         >
-                            <Typography
-                                fontFamily={"Lilita One"}
-                                fontWeight={500}
-                                fontSize={{ xs: 20, sm: 30 }}
-                            >
-                                SUBMIT
-                            </Typography>
+                            <Typography variant="riH6">SUBMIT</Typography>
                         </Button>
                     </Box>
                 </Box>

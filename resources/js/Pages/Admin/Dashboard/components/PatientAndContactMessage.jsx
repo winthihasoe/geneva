@@ -25,7 +25,6 @@ function PatientAndContactMessage({ totalPatients, totalContactMessages }) {
                                 width: "100%",
                                 backgroundColor: "#eee",
                                 borderRadius: "5px",
-                                height: "140px",
                                 objectFit: "cover",
                             }}
                         />
@@ -62,7 +61,6 @@ function PatientAndContactMessage({ totalPatients, totalContactMessages }) {
                                 width: "100%",
                                 backgroundColor: "#4CC9FE",
                                 borderRadius: "5px",
-                                height: "140px",
                                 objectFit: "cover",
                             }}
                         />

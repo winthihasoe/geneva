@@ -61,7 +61,7 @@ export default function ForgotPassword({ status }) {
                             justifyContent: "center",
                             alignItems: "center",
                         }}
-                        size={{ xs: 12, sm: 6, md: 6 }}
+                        size={{ xs: 12, sm: 6, md: 4 }}
                     >
                         <Box
                             sx={{
@@ -74,36 +74,21 @@ export default function ForgotPassword({ status }) {
                                 bgcolor: "white",
                                 py: 3,
                                 px: { xs: 4, sm: 2, md: 3 },
+                                boxShadow: 1,
                             }}
                         >
-                            <Typography
-                                fontSize={13}
-                                mb={2}
-                                fontFamily={"Livvic"}
-                            >
-                                <strong style={{ fontSize: 15 }}>
-                                    Forgot password?{" "}
-                                </strong>
-                                <br />
+                            <Typography variant="h6" mb={2}>
+                                Forgot password?
+                            </Typography>
+                            <Typography variant="body2">
                                 Just let us know your email address and we will
                                 email you a password reset link that will allow
                                 you to choose a new one.
                             </Typography>
 
                             <form onSubmit={handleSubmit}>
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        gap: 1,
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                    }}
-                                >
-                                    <Typography
-                                        fontSize={20}
-                                        fontFamily={"Afacad"}
-                                        width={"60%"}
-                                    >
+                                <Box mt={3} mb={2}>
+                                    <Typography fontSize={20} width={"60%"}>
                                         Email
                                     </Typography>
                                     <TextField
@@ -114,30 +99,22 @@ export default function ForgotPassword({ status }) {
                                             setData("email", e.target.value)
                                         }
                                         fullWidth
+                                        placeholder="Enter your email"
                                     />
+                                    {errors && (
+                                        <Typography fontSize={12} color="error">
+                                            {errors.email}
+                                        </Typography>
+                                    )}
                                 </Box>
-                                {errors && (
-                                    <Typography
-                                        textAlign={"right"}
-                                        fontSize={12}
-                                        color="error"
-                                    >
-                                        {errors.email}
-                                    </Typography>
-                                )}
 
                                 <Box textAlign={"center"} mt={3}>
                                     <Button
-                                        disabled={processing}
+                                        disabled={processing || !data.email}
                                         variant="contained"
                                         type="submit"
                                     >
-                                        <Typography
-                                            fontSize={14}
-                                            fontFamily={"ADLaM Display"}
-                                        >
-                                            Email Password Reset Link
-                                        </Typography>
+                                        Submit
                                     </Button>
                                 </Box>
                             </form>

@@ -11,6 +11,8 @@ import PaymentsRoundedIcon from "@mui/icons-material/PaymentsRounded";
 import MessageRoundedIcon from "@mui/icons-material/MessageRounded";
 import AccessibleIcon from "@mui/icons-material/Accessible";
 import CoPresentIcon from "@mui/icons-material/CoPresent";
+import SchoolIcon from "@mui/icons-material/School";
+import SportsHandballRoundedIcon from "@mui/icons-material/SportsHandballRounded";
 
 export const AdminSidebarData = [
     {
@@ -39,6 +41,11 @@ export const AdminSidebarData = [
         link: "/admin/interviews",
     },
     {
+        title: "Training Course",
+        icon: <SchoolIcon />,
+        link: "/admin/training-courses",
+    },
+    {
         title: "Patient",
         icon: <AccessibleIcon />,
         link: "/admin/patients",
@@ -54,16 +61,16 @@ export const AdminSidebarData = [
     //     icon: <PeopleRoundedIcon />,
     //     link: "/admin/users",
     // },
-    // {
-    //     title: "Blog management",
-    //     icon: <NewspaperRoundedIcon />,
-    //     link: "/admin/blogs",
-    // },
-    // {
-    //     title: "Subscription",
-    //     icon: <PaymentsRoundedIcon />,
-    //     link: "/admin/admin-subscription",
-    // },
+    {
+        title: "Blog management",
+        icon: <NewspaperRoundedIcon />,
+        link: "/admin/blogs",
+    },
+    {
+        title: "Skill Assessment",
+        icon: <SportsHandballRoundedIcon />,
+        link: "/admin/skill-assessment-submissions",
+    },
     // {
     //     title: "System management",
     //     icon: <SettingsRoundedIcon />,

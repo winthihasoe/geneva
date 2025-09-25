@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class CarePlan extends Model
 {
@@ -11,6 +12,7 @@ class CarePlan extends Model
 
     protected $fillable = [
         'user_id',
+        'uuid',
         'care_type',
         'start_date',
         'duration',
@@ -40,9 +42,27 @@ class CarePlan extends Model
         'schedule' => 'array',
     ];
 
+    // Auto-generate UUID when creating
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::creating(function ($model) {
+            if (empty($model->uuid)) {
+                $model->uuid = Str::uuid();
+            }
+        });
+    }
+
+
     // Define the relationship with the User model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function interviews()
+    {
+        return $this->hasMany(Interview::class);
     }
 }

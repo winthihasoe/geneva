@@ -27,6 +27,7 @@ class CV extends Model
         'nationality',
         'other_nationality',
         'religion',
+        'personality',
         'language',
         'hobbies',
         'other_hobbies',
@@ -76,9 +77,11 @@ class CV extends Model
         // Required Documents
         'profile_photo',
         'passport',
+        'passport_expiry_date',
         'passport_number',
         'passport_type',
         'visa_type',
+        'visa_stamp',
         'citizenship_certificate',
         'family_member_record',
     
@@ -94,8 +97,10 @@ class CV extends Model
         // Care Details
         'gender_of_patient',
         'services',
+        'maid_service',
         'package_duration',
         'package',
+        'duty',
         'service_area',
     
         // Other Information
@@ -104,7 +109,8 @@ class CV extends Model
         'approved_at',
         'current_step',
         'status',
-        'agree_to_terms'
+        'agree_to_terms', 
+        'training_or_assessment'
     ];
     
 
@@ -127,6 +133,7 @@ class CV extends Model
         'services' => 'array',
         'package_duration' => 'array',
         'package' => 'array',
+        'duty' => 'array',
     ];
 
     protected static function boot()

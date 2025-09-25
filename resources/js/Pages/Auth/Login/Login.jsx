@@ -4,14 +4,11 @@ import React from "react";
 import {
     Box,
     Button,
-    Checkbox,
     Container,
-    FormControlLabel,
     Grid2,
     TextField,
     Typography,
 } from "@mui/material";
-import { useEmail } from "@/Context/EmailContext";
 
 function Login() {
     const { data, setData, post, errors, processing } = useForm({
@@ -30,15 +27,20 @@ function Login() {
     return (
         <AppLayout>
             <Head title="Login" />
-            <Container
-                maxWidth="md"
-                sx={{
-                    height: "70vh",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}
-            >
+            <Container maxWidth="lg">
+                <Typography
+                    sx={{
+                        textAlign: "center",
+                        fontFamily: "Righteous",
+                        fontWeight: 500,
+                        mt: 5,
+                    }}
+                    variant="h3"
+                    color="primary.main"
+                >
+                    Login
+                </Typography>
+
                 <Grid2
                     container
                     sx={{
@@ -46,6 +48,8 @@ function Login() {
                         display: "flex",
                         justifyContent: "center",
                         gap: 2,
+                        mb: 5,
+                        alignItems: "center",
                     }}
                 >
                     <Grid2
@@ -62,14 +66,7 @@ function Login() {
                             }}
                         />
                     </Grid2>
-                    <Grid2
-                        sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }}
-                        size={{ xs: 12, sm: 6, md: 6 }}
-                    >
+                    <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
                         <Box
                             component="form"
                             onSubmit={handleSubmit}
@@ -82,56 +79,26 @@ function Login() {
                                 borderRadius: 5,
                                 bgcolor: "white",
                                 py: 3,
+                                boxShadow: 1,
                             }}
                         >
-                            <Box textAlign={"center"}>
-                                <Typography
-                                    fontFamily={"Abel"}
-                                    fontWeight={16}
-                                    mb={2}
-                                >
-                                    Welcome
-                                </Typography>
-                                <Typography
-                                    sx={{
-                                        bgcolor: "primary.main",
-                                        px: 3,
-                                        mx: { xs: 2, sm: 4, md: 6 },
-                                        borderRadius: 5,
-                                        fontFamily: "Abhaya Libre",
-                                        color: "white",
-                                        fontWeight: "bold",
-                                        fontSize: 30,
-                                        mb: 4,
-                                    }}
-                                >
-                                    Log In
-                                </Typography>
-                            </Box>
-
                             <Box sx={{ px: 4, mt: 2 }}>
                                 {[
-                                    { label: "Email", key: "email" },
+                                    {
+                                        label: "Email",
+                                        key: "email",
+                                        placeholder: "Enter your email",
+                                    },
                                     {
                                         label: "Password",
                                         key: "password",
                                         type: "password",
+                                        placeholder: "Enter your password",
                                     },
                                 ].map((item) => (
-                                    <Box key={item.key}>
-                                        <Box
-                                            sx={{
-                                                display: "flex",
-                                                gap: 1,
-                                                alignItems: "center",
-                                                justifyContent: "center",
-                                            }}
-                                        >
-                                            <Typography
-                                                fontSize={20}
-                                                fontFamily={"Afacad"}
-                                                width={"60%"}
-                                            >
+                                    <Box sx={{ mb: 2 }} key={item.key}>
+                                        <Box>
+                                            <Typography variant="body1">
                                                 {item.label}
                                             </Typography>
                                             <TextField
@@ -144,45 +111,42 @@ function Login() {
                                                         e.target.value
                                                     )
                                                 }
-                                                sx={{ mb: 1 }}
+                                                placeholder={item.placeholder}
                                             />
                                         </Box>
-                                        <Typography
-                                            textAlign={"right"}
-                                            fontSize={12}
-                                            color="error"
-                                        >
+                                        <Typography fontSize={12} color="error">
                                             {errors[item.key]}
                                         </Typography>
                                     </Box>
                                 ))}
                             </Box>
 
-                            <Link href={route("signup")}>
-                                <Typography
-                                    sx={{
-                                        fontSize: 13,
-                                        fontFamily: "ADLaM Display",
-                                        textAlign: "center",
-                                        my: 2,
-                                    }}
-                                >
-                                    Create new account
-                                </Typography>
-                            </Link>
                             <Link href={route("password.request")}>
                                 <Typography
+                                    variant="body2"
                                     sx={{
-                                        fontSize: 13,
-                                        fontFamily: "ADLaM Display",
                                         textAlign: "center",
                                         my: 2,
+                                        color: "black",
+                                        fontWeight: 600,
                                     }}
                                 >
                                     Forgot Password?
                                 </Typography>
                             </Link>
-
+                            <Link href={route("signup")}>
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        textAlign: "center",
+                                        my: 2,
+                                        color: "info.main",
+                                        fontWeight: 600,
+                                    }}
+                                >
+                                    Create New Account
+                                </Typography>
+                            </Link>
                             {/* Submit Button */}
                             <Box textAlign={"center"} mt={2}>
                                 <Button
@@ -193,7 +157,8 @@ function Login() {
                                     disabled={!isFormValid}
                                 >
                                     <Typography
-                                        fontFamily={"Lilita One"}
+                                        variant="h6"
+                                        fontFamily={"Righteous"}
                                         fontWeight={500}
                                         fontSize={20}
                                     >

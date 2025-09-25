@@ -5,7 +5,7 @@ export default function Title({ children }) {
     return (
         <Typography
             variant="h4"
-            fontSize={{ xs: 20, sm: 22, md: 33 }}
+            fontSize={{ xs: 22, sm: 24, md: 33 }}
             fontWeight={800}
             mb={1}
             fontFamily={"Livvic"}

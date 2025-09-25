@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CV;
+use App\Models\TrainingCourse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -10,14 +11,24 @@ class PageController extends Controller
 {
    public function index ()
    {
-      $caregivers = CV::with('experiences')->where('is_approved', true)
+      $caregivers = CV::where('is_approved', true)
       ->inRandomOrder()
-      ->take(6)
-      ->select('id','nickname', 'newborn_care_level','nanny_care_level', 'level', 'date_of_birth', 'nationality', 'ha_id', 'profile_photo', 'status')
+      ->take(10)
+      ->select('id','nickname', 'newborn_care_level','nanny_care_level', 'level', 'date_of_birth', 'nationality', 'ha_id', 'profile_photo', 'status', 'services')
       ->get();
+
+     // Fetch 2 featured training courses
+      $courses = TrainingCourse::where('is_featured', true)
+         ->where('is_active', true)
+         ->orderBy('order')
+         ->orderBy('created_at', 'desc')
+         ->take(2)
+         ->select('id', 'title', 'description', 'instructor', 'category', 'price', 'duration', 'image', 'slug', 'level', 'language')
+         ->get();
 
       return Inertia::render('Home', [
          'caregivers' => $caregivers,
+         'courses' => $courses,
       ]);
    }
 
@@ -61,5 +72,21 @@ class PageController extends Controller
       return Inertia::render('PrivacyPolicy');
    }
 
+  
 
+   public function trainingCenter() {
+      return Inertia::render('ComingSoon');
+   }
+
+   // How it works
+   public function howItWorks()
+   {
+      return Inertia::render('HowItWorks');
+   }
+
+   // Coming Soon --- IGNORE ---
+   public function comingSoon()
+   {
+      return Inertia::render('ComingSoon');
+   }
 }

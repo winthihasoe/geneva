@@ -4,38 +4,63 @@ namespace App\Http\Controllers;
 
 use App\Models\Section;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class SectionController extends Controller
 {
-    public function index()
+    public function adminSectionManage()
     {
-        return Section::with('topics')->get();
+        $sections = Section::all();
+        return Inertia::render('Admin/Blog/SectionManage', [
+            'sections' => $sections,
+        ]);
     }
 
-    public function store(Request $request)
+    public function storeSection(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|unique:sections|max:255',
-            'icon' => 'nullable|string',
+        $data = $request->validate([
+            'name' => 'required|string|unique:sections,name',
+            'icon' => 'nullable|image|max:2048',
         ]);
 
-        return Section::create($validated);
+        if ($request->hasFile('icon')) {
+            $data['icon'] = $request->file('icon')->store('sections', 'public');
+        }
+
+        $section = Section::create($data);
+
+        return redirect()->back()->with('success', 'Section created!');
     }
 
-    public function update(Request $request, Section $section)
+    public function updateSection(Request $request, Section $section)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:sections,name,' . $section->id,
-            'icon' => 'nullable|string',
+        $data = $request->validate([
+            'name' => 'required|string|unique:sections,name,' . $section->id,
+            'icon' => 'nullable|image|max:2048',
         ]);
 
-        $section->update($validated);
-        return $section;
+        if ($request->hasFile('icon')) {
+            // Delete old icon if exists
+            if ($section->icon && Storage::disk('public')->exists($section->icon)) {
+                Storage::disk('public')->delete($section->icon);
+            }
+            $data['icon'] = $request->file('icon')->store('sections', 'public');
+        } else {
+            unset($data['icon']);
+        }
+
+        $section->update($data);
+
+        return redirect()->back()->with('success', 'Section updated!');
     }
 
-    public function destroy(Section $section)
+    public function deleteSection(Section $section)
     {
+        if ($section->icon && Storage::disk('public')->exists($section->icon)) {
+            Storage::disk('public')->delete($section->icon);
+        }
         $section->delete();
-        return response()->noContent();
+        return redirect()->back()->with('success', 'Section deleted!');
     }
 }

@@ -12,6 +12,7 @@ import YesOrNoModal from "@/Components/util/YesOrNoModal";
 
 function MyCertificates({ certificates }) {
     const [isAdding, setIsAdding] = useState(false);
+    const [preview, setPreview] = useState(null);
     const { data, setData, post, processing, errors, setError } = useForm({
         qualification_type: "",
         training_center_name: "",
@@ -48,6 +49,8 @@ function MyCertificates({ certificates }) {
                     ...prevData,
                     certificateImage: resizedImage, // Store the resized file
                 }));
+                const previewUrl = URL.createObjectURL(files[0]);
+                setPreview(previewUrl);
             } catch (error) {
                 console.error("Failed to resize image:", error);
             }
@@ -137,6 +140,8 @@ function MyCertificates({ certificates }) {
                             handleChange={handleChange}
                             handleSubmit={handleSubmit}
                             errors={errors}
+                            preview={preview}
+                            setPreview={setPreview}
                         />
                     </Box>
                 )}
