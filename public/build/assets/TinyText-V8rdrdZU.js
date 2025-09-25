@@ -1,1 +1,0 @@
-import{j as r}from"./app-PoFsRHJ3.js";import{T as e}from"./Typography-Cg8-dqaD.js";function n({children:t,textAlign:o="left"}){return r.jsx(e,{textAlign:o,fontSize:11,gutterBottom:!0,children:t})}export{n as T};

@@ -1,0 +1,1 @@
+import"./app-CYdokv8B.js";import{P as o}from"./index-CUR8FAYb.js";const a=({date:t})=>(e=>{const r={year:"numeric",month:"2-digit",day:"2-digit"};return new Intl.DateTimeFormat("en-GB",r).format(new Date(e))})(t);a.propTypes={date:o.string.isRequired};export{a as D};

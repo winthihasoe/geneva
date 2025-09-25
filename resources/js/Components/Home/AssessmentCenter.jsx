@@ -50,7 +50,9 @@ function AssessmentCenter() {
                             color="primary.main"
                             maxWidth={400}
                         >
-                            Singapore Caregiving Academy
+                            Hearty Aid
+                            <br />
+                            Assessment Center
                         </Typography>
                         <Button
                             size="large"
