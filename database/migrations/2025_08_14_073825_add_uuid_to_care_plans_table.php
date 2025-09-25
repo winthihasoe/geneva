@@ -13,13 +13,21 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Add uuid column without unique constraint first
         Schema::table('care_plans', function (Blueprint $table) {
-            $table->uuid('uuid')->unique()->after('id');
+            $table->uuid('uuid')->nullable()->after('id');
         });
-        DB::table('care_plans')->whereNull('uuid')->get()->each(function ($carePlan) {
+        
+        // Generate UUIDs for all existing records (handles empty strings too)
+        DB::table('care_plans')->get()->each(function ($carePlan) {
             DB::table('care_plans')
                 ->where('id', $carePlan->id)
-                ->update(['uuid' => Str::uuid()]);
+                ->update(['uuid' => (string) Str::uuid()]);
+        });
+        
+        // Now add the unique constraint
+        Schema::table('care_plans', function (Blueprint $table) {
+            $table->unique('uuid');
         });
     }
 
