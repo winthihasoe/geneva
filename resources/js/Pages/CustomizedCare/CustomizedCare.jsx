@@ -114,12 +114,11 @@ function CustomizedCare() {
                                         Get Care Now
                                     </Button>
                                 </Box>
-                                {/* Green Box with Baby Video */}
 
                                 <img
                                     src="/images/carePlan/baby_care.png"
                                     style={{
-                                        width: "350px",
+                                        width: "300px",
                                         height: "300px",
                                         objectFit: "cover",
                                         margin: "auto",

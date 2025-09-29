@@ -1,0 +1,1 @@
+import{j as r}from"./app-CAGAczA5.js";import{T as t}from"./Typography-BQKoZttK.js";function a({children:o}){return r.jsx(t,{variant:"h4",fontSize:{xs:22,sm:24,md:33},fontWeight:800,mb:1,fontFamily:"Livvic",color:"primary",children:o})}export{a as T};

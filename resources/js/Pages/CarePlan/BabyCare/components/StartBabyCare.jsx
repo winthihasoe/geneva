@@ -53,8 +53,7 @@ function StartBabyCare() {
                     carePlanData.care_recipient_info?.home_address &&
                     carePlanData.contact_info?.name &&
                     carePlanData.contact_info?.relationship &&
-                    carePlanData.contact_info?.phone_number &&
-                    carePlanData.contact_info?.email
+                    carePlanData.contact_info?.phone_number
                 );
             case 4:
                 return carePlanData.preferences?.age;
