@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CareLogController;
 use App\Http\Controllers\CarePlanController;
 use App\Http\Controllers\CarePlanPhotoController;
 use App\Http\Controllers\CertificateController;
@@ -174,9 +175,22 @@ Route::middleware(['auth', 'is.caregiver'])->group(function () {
 
     Route::get('/seven-day-training', [PageController::class, 'sevenDaysTraining'])->name('training.sevenDays');
     Route::get('/medical-checkup', [PageController::class, 'medicalCheckup'])->name('medical.chekup');
+    
+    // Care Logs 
+    Route::get('care-logs/newborn', [CgDashboardController::class, 'newbornCareLogs'])->name('cg.carelogs.newborn');
+    Route::post('care-logs/newborn', [CareLogController::class, 'storeNewbornCareLog'])->name('carelogs.newborn.store'); 
+    Route::get('my-care-logs', [CgDashboardController::class, 'myCareLogs'])->name('cg.mycarelogs');
+    Route::get('my-care-logs/filter', [CgDashboardController::class, 'filterCareLogs'])->name('cg.mycarelogs.filter');
+    
+    // Care Log Details Routes - Separated by care type
+    Route::get('care-log/{id}/newborn-details', [CareLogController::class, 'getNewbornCareLogDetails'])->name('cg.carelog.newborn.details');
+    Route::get('care-log/{id}/maternal-details', [CareLogController::class, 'getMaternalCareLogDetails'])->name('cg.carelog.maternal.details');
+    Route::get('care-log/{id}/elder-details', [CareLogController::class, 'getElderlyCareLogDetails'])->name('cg.carelog.elder.details');
 
-    // Fill Newborn care log
-    Route::get('newborn-care-log/fill', [NewbornBabyCareLogController::class, 'fillForm'])->name('newborn.careLog.create');
+    Route::get('care-logs/maternal', [CgDashboardController::class, 'maternalCareLogs'])->name('cg.carelogs.maternal');
+    Route::get('care-logs/elderly', [CgDashboardController::class, 'elderlyCareLogs'])->name('cg.carelogs.elderly');
+    Route::post('care-logs/elderly', [CareLogController::class, 'storeElderlyCareLog'])->name('carelogs.elderly.store');
+
 });
 
 Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
@@ -211,6 +225,13 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     // Care plans
     Route::get('/care-plans', [CarePlanController::class, 'adminCarePlans'])->name('admin.care.plans');
     Route::get('/care-plans/{id}', [CarePlanController::class, 'adminSingleCarePlan'])->name('admin.care.plan.detail');
+
+    // Care Logs 
+    Route::get('care-logs', [CareLogController::class, 'adminCareLogs'])->name('admin.care.logs');
+    // Admin Care Log Details Routes
+    Route::get('care-logs/{id}/newborn-details', [CareLogController::class, 'adminNewbornCareLogDetails'])->name('admin.carelog.newborn.details');
+    Route::get('care-logs/{id}/maternal-details', [CareLogController::class, 'adminMaternalCareLogDetails'])->name('admin.carelog.maternal.details');
+    Route::get('care-logs/{id}/elderly-details', [CareLogController::class, 'adminElderlyCareLogDetails'])->name('admin.carelog.elderly.details');
 
     Route::get('job-applies', [JobApplyController::class, 'adminJobApplies'])->name('admin.job.apply');
     Route::get('job-applies/{id}', [JobApplyController::class, 'adminSingleJobApply'])->name('admin.job.apply.single');

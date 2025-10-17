@@ -159,6 +159,102 @@ const StepTwo = () => {
                     </FormControl>
                 </Box>
             </Box>
+
+            {/* Marital status */}
+            <Box sx={{ my: 2 }}>
+                <Typography variant="subtitle1" fontWeight="bold">
+                    Marital Status
+                </Typography>
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        mb: 2,
+                        gap: 2,
+                    }}
+                >
+                    <FormControl component="fieldset" sx={{ flexGrow: 1 }}>
+                        <RadioGroup
+                            row
+                            value={data.marital_status}
+                            onChange={handleChange("marital_status")}
+                        >
+                            <FormControlLabel
+                                value="Single"
+                                control={<Radio />}
+                                label="Single"
+                            />
+                            <FormControlLabel
+                                value="Married"
+                                control={<Radio />}
+                                label="Married"
+                            />
+                        </RadioGroup>
+                    </FormControl>
+                </Box>
+                {data.marital_status == "Married" && (
+                    <>
+                        <Typography
+                            variant="subtitle1"
+                            fontWeight="bold"
+                            mb={1}
+                        >
+                            Number of Children and how old are they
+                        </Typography>
+                        <TextField
+                            value={data.number_of_children}
+                            onChange={handleChange("number_of_children")}
+                            fullWidth
+                            multiline
+                            inputProps={{ maxLength: 220 }}
+                            size="small"
+                            placeholder="2 children, one is 2 year old and another is 6 year old."
+                        />
+                    </>
+                )}
+            </Box>
+
+            {/* Current Address  */}
+            <Box
+                sx={{
+                    my: 3,
+                }}
+            >
+                <Typography variant="subtitle1" fontWeight="bold">
+                    Current Address
+                </Typography>
+                <TextField
+                    fullWidth
+                    value={data.current_address || ""}
+                    onChange={handleChange("current_address")}
+                    sx={{ flexGrow: 1 }}
+                    size="small"
+                    multiline
+                    placeholder="Address ..."
+                    rows={2}
+                />
+            </Box>
+
+            {/* Residential address in home country */}
+            <Box
+                sx={{
+                    my: 3,
+                }}
+            >
+                <Typography variant="subtitle1" fontWeight="bold">
+                    Residential Address in Home Country
+                </Typography>
+                <TextField
+                    fullWidth
+                    value={data.residential_address || ""}
+                    onChange={handleChange("residential_address")}
+                    sx={{ flexGrow: 1 }}
+                    size="small"
+                    multiline
+                    placeholder="Address in home town ..."
+                    rows={2}
+                />
+            </Box>
         </Box>
     );
 };

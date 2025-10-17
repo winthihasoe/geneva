@@ -24,6 +24,9 @@ import WorkIcon from "@mui/icons-material/Work";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import ContactMailIcon from "@mui/icons-material/ContactMail";
 import LogoutIcon from "@mui/icons-material/Logout";
+import ChildCareIcon from "@mui/icons-material/ChildCare";
+import PregnantWomanIcon from "@mui/icons-material/PregnantWoman";
+import ElderlyIcon from "@mui/icons-material/Elderly";
 
 const Menus = [
     {
@@ -71,12 +74,32 @@ const MyCares = [
         color: "#00BCD4",
         bgColor: "#E0F2F1",
     },
+];
+
+const CareLogTypes = [
     {
-        title: "Care Logs",
-        routeName: "coming.soon",
-        icon: <LocalHospitalIcon sx={{ fontSize: 30 }} />,
+        title: "Newborn Care Logs",
+        routeName: "cg.carelogs.newborn",
+        icon: <ChildCareIcon sx={{ fontSize: 24 }} />,
+        color: "#E91E63",
+        bgColor: "#FCE4EC",
+        description: "Track feeding, sleeping, and development",
+    },
+    {
+        title: "Maternal Care Logs",
+        routeName: "cg.carelogs.maternal",
+        icon: <PregnantWomanIcon sx={{ fontSize: 24 }} />,
+        color: "#9C27B0",
+        bgColor: "#F3E5F5",
+        description: "Monitor postnatal recovery and wellness",
+    },
+    {
+        title: "Elderly Care Logs",
+        routeName: "cg.carelogs.elderly",
+        icon: <ElderlyIcon sx={{ fontSize: 24 }} />,
         color: "#607D8B",
         bgColor: "#ECEFF1",
+        description: "Record medications, activities, and health",
     },
 ];
 
@@ -307,7 +330,7 @@ function CgDashboard({ hasCv, approvedCV }) {
                     ))}
                 </Grid2>
 
-                {/* My Care Section - Uncommented and Redesigned */}
+                {/* My Care Section */}
                 <Typography
                     variant="h5"
                     fontWeight="bold"
@@ -318,6 +341,193 @@ function CgDashboard({ hasCv, approvedCV }) {
                 </Typography>
 
                 <Grid2 container spacing={3} mb={4}>
+                    {/* Care Logs Section with Sub-types */}
+                    <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+                        <Card
+                            sx={{
+                                height: "100%",
+                                borderRadius: 3,
+                                boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+                                border: "2px solid #E3F2FD",
+                            }}
+                        >
+                            <CardContent sx={{ p: 3 }}>
+                                <Box textAlign="center" mb={3}>
+                                    <Avatar
+                                        sx={{
+                                            bgcolor: "#ECEFF1",
+                                            color: "#607D8B",
+                                            width: 60,
+                                            height: 60,
+                                            mx: "auto",
+                                            mb: 2,
+                                        }}
+                                    >
+                                        <LocalHospitalIcon
+                                            sx={{ fontSize: 30 }}
+                                        />
+                                    </Avatar>
+                                    <Typography
+                                        variant="h6"
+                                        fontWeight="bold"
+                                        mb={1}
+                                    >
+                                        New Care Log
+                                    </Typography>
+                                    <Typography
+                                        variant="body2"
+                                        color="text.secondary"
+                                    >
+                                        Start documenting care activities
+                                    </Typography>
+                                </Box>
+
+                                {/* Care Log Types */}
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        gap: 2,
+                                    }}
+                                >
+                                    {CareLogTypes.map((careType, index) => (
+                                        <Card
+                                            key={index}
+                                            sx={{
+                                                cursor: "pointer",
+                                                borderRadius: 2,
+                                                boxShadow:
+                                                    "0 2px 8px rgba(0,0,0,0.06)",
+                                                transition: "all 0.2s ease",
+                                                "&:hover": {
+                                                    transform:
+                                                        "translateX(5px)",
+                                                    boxShadow:
+                                                        "0 4px 12px rgba(0,0,0,0.1)",
+                                                },
+                                            }}
+                                            onClick={() =>
+                                                router.get(
+                                                    route(careType.routeName)
+                                                )
+                                            }
+                                        >
+                                            <CardContent sx={{ p: 2 }}>
+                                                <Box
+                                                    sx={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        gap: 2,
+                                                    }}
+                                                >
+                                                    <Avatar
+                                                        sx={{
+                                                            bgcolor:
+                                                                careType.bgColor,
+                                                            color: careType.color,
+                                                            width: 40,
+                                                            height: 40,
+                                                        }}
+                                                    >
+                                                        {careType.icon}
+                                                    </Avatar>
+                                                    <Box sx={{ flex: 1 }}>
+                                                        <Typography
+                                                            variant="subtitle2"
+                                                            fontWeight="bold"
+                                                            sx={{
+                                                                fontSize:
+                                                                    "0.875rem",
+                                                            }}
+                                                        >
+                                                            {careType.title}
+                                                        </Typography>
+                                                        <Typography
+                                                            variant="caption"
+                                                            color="text.secondary"
+                                                            sx={{
+                                                                fontSize:
+                                                                    "0.75rem",
+                                                            }}
+                                                        >
+                                                            {
+                                                                careType.description
+                                                            }
+                                                        </Typography>
+                                                    </Box>
+                                                </Box>
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </Box>
+                            </CardContent>
+                        </Card>
+                    </Grid2>
+                    {/* Add this after the Care Logs card and before MyCares.map */}
+                    <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+                        <Card
+                            sx={{
+                                cursor: "pointer",
+                                height: "100%",
+                                borderRadius: 3,
+                                boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+                                transition: "all 0.3s ease",
+                                border: "2px solid #E8F5E8",
+                                "&:hover": {
+                                    transform: "translateY(-5px)",
+                                    boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
+                                    border: "2px solid #4CAF50",
+                                },
+                            }}
+                            onClick={() => router.get(route("cg.mycarelogs"))}
+                        >
+                            <CardContent
+                                sx={{
+                                    p: 3,
+                                    textAlign: "center",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    height: "100%",
+                                }}
+                            >
+                                <Avatar
+                                    sx={{
+                                        bgcolor: "#E8F5E8",
+                                        color: "#4CAF50",
+                                        width: 60,
+                                        height: 60,
+                                        mx: "auto",
+                                        mb: 2,
+                                    }}
+                                >
+                                    <LocalHospitalIcon sx={{ fontSize: 30 }} />
+                                </Avatar>
+                                <Typography
+                                    variant="h6"
+                                    fontWeight="bold"
+                                    mb={1}
+                                >
+                                    My Care Logs
+                                </Typography>
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    mb={2}
+                                    sx={{ flexGrow: 1 }}
+                                >
+                                    View all your submitted care logs
+                                </Typography>
+                                <Box sx={{ flexGrow: 1 }}>
+                                    <Chip
+                                        label="View History"
+                                        color="success"
+                                        size="large"
+                                        sx={{ fontWeight: "bold", my: "auto" }}
+                                    />
+                                </Box>
+                            </CardContent>
+                        </Card>
+                    </Grid2>
                     {MyCares.map((item, index) => (
                         <Grid2 key={index} size={{ xs: 12, sm: 6, md: 4 }}>
                             <Card

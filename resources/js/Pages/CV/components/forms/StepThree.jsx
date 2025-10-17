@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import CvContext from "@/Context/CvContext";
 import Compressor from "compressorjs";
+import PersonalIDUploadForm from "./PersonalIDUploadForm";
 
 const years = Array.from(
     new Array(20), // Next 20 years for expiry
@@ -290,7 +291,7 @@ const StepThree = ({ oldPassport, oldVisaStamp }) => {
                 />
             </Box>
 
-            {/* Passport photos */}
+            {/* Passport photos & Visa stamp */}
             <Box
                 sx={{
                     display: "flex",
@@ -300,7 +301,9 @@ const StepThree = ({ oldPassport, oldVisaStamp }) => {
                     justifyContent: "center",
                     mb: 4,
                     borderBottom: "1px solid #ccc",
-                    pb: 3,
+                    pb: 2,
+
+                    mx: "auto",
                 }}
             >
                 {/* Visa Stamp Photo */}
@@ -309,6 +312,7 @@ const StepThree = ({ oldPassport, oldVisaStamp }) => {
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
+                        width: { xs: 140, sm: 170, md: 200 },
                     }}
                 >
                     <Typography variant="body1" fontWeight="bold" mb={2}>
@@ -325,8 +329,8 @@ const StepThree = ({ oldPassport, oldVisaStamp }) => {
                             }
                             alt="Visa Stamp"
                             style={{
-                                width: "170px",
-                                height: "200px",
+                                width: "140px",
+                                height: "130px",
                                 border: "2px solid #1c90a9",
                                 borderRadius: "16px",
                                 objectFit: "cover",
@@ -337,8 +341,8 @@ const StepThree = ({ oldPassport, oldVisaStamp }) => {
                     ) : (
                         <Box
                             sx={{
-                                width: "170px",
-                                height: "200px",
+                                width: "140px",
+                                height: "130px",
                                 border: "2px solid gray",
                                 borderRadius: 3,
                                 margin: "auto",
@@ -373,7 +377,7 @@ const StepThree = ({ oldPassport, oldVisaStamp }) => {
                     </Button>
 
                     {visaStampUploading && (
-                        <Box sx={{ width: "170px", mt: 2 }}>
+                        <Box sx={{ width: "140px", mt: 2 }}>
                             <LinearProgress />
                             <Typography
                                 fontSize={12}
@@ -391,6 +395,7 @@ const StepThree = ({ oldPassport, oldVisaStamp }) => {
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
+                        width: { xs: 140, sm: 170, md: 200 },
                     }}
                 >
                     <Typography variant="body1" fontWeight="bold" mb={2}>
@@ -404,8 +409,8 @@ const StepThree = ({ oldPassport, oldVisaStamp }) => {
                             }
                             alt="Passport First Page"
                             style={{
-                                width: "170px",
-                                height: "200px",
+                                width: "140px",
+                                height: "130px",
                                 border: "2px solid #1c90a9",
                                 borderRadius: "16px",
                                 objectFit: "cover",
@@ -416,8 +421,8 @@ const StepThree = ({ oldPassport, oldVisaStamp }) => {
                     ) : (
                         <Box
                             sx={{
-                                width: "170px",
-                                height: "200px",
+                                width: "140px",
+                                height: "130px",
                                 border: "2px solid gray",
                                 borderRadius: 3,
                                 margin: "auto",
@@ -451,7 +456,7 @@ const StepThree = ({ oldPassport, oldVisaStamp }) => {
                     </Button>
 
                     {passportUploading && (
-                        <Box sx={{ width: "170px", mt: 2 }}>
+                        <Box sx={{ width: "140px", mt: 2 }}>
                             <LinearProgress />
                             <Typography
                                 fontSize={12}
@@ -463,6 +468,7 @@ const StepThree = ({ oldPassport, oldVisaStamp }) => {
                     )}
                 </Box>
             </Box>
+            <PersonalIDUploadForm />
         </Box>
     );
 };

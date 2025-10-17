@@ -43,12 +43,11 @@ function MyExperiences({ experiences }) {
                 }}
             >
                 <Typography
-                    fontSize={{ xs: 18, sm: 20, md: 22 }}
-                    textAlign="center"
-                    fontWeight={600}
+                    variant="h4"
+                    textAlign={"center"}
                     fontFamily={"Livvic"}
                 >
-                    Recorded Experiences
+                    My Experiences
                 </Typography>
                 {experiences && experiences.length > 0 ? (
                     <Box p={{ xs: 1, sm: 2, md: 3 }} m={2}>
@@ -66,7 +65,7 @@ function MyExperiences({ experiences }) {
                 </TinyText>
             </Box>
             <Container maxWidth="md" sx={{ py: 3 }}>
-                <Title>My Experiences</Title>
+                <Title>Create New Experience</Title>
                 {experiences && experiences.length < 5 && (
                     <ExperienceForm
                         data={data}

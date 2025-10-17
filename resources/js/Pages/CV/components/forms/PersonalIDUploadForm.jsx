@@ -51,7 +51,6 @@ const PersonalIDUploadForm = ({ oldId, oldFamilyRecord, oldRefLetter }) => {
 
                     setIdUploading(false);
                     uploadIdPhoto(compressedFile);
-                    console.log("save photo");
                 },
                 error(err) {
                     console.error("Compression error:", err.message);
@@ -88,7 +87,6 @@ const PersonalIDUploadForm = ({ oldId, oldFamilyRecord, oldRefLetter }) => {
 
                     setFamilyRecordUploading(false);
                     uploadFamilyRecordPhoto(compressedFile);
-                    console.log("save photo");
                 },
                 error(err) {
                     console.error("Compression error:", err.message);
@@ -178,38 +176,45 @@ const PersonalIDUploadForm = ({ oldId, oldFamilyRecord, oldRefLetter }) => {
     }, [data.family_member_record]);
 
     return (
-        <Box sx={{ mb: 3, maxWidth: 400, margin: "0 auto" }}>
-            <Typography fontWeight="bold" fontSize={13} sx={{ mb: 2 }}>
+        <Box sx={{ mb: 3, maxWidth: 500, margin: "0 auto" }}>
+            {/* <Typography fontWeight="bold" fontSize={13} sx={{ mb: 2 }}>
                 Other documents to be uploaded for system keep record / not to
                 be shown to public
-            </Typography>
+            </Typography> */}
 
             <Box
                 sx={{
-                    mt: 3,
                     display: "flex",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    gap: 2,
                     justifyContent: "center",
-                    flexWrap: { xs: "wrap", sm: "none" },
+                    mb: 4,
+                    borderBottom: "1px solid #ccc",
+                    pb: 3,
                 }}
             >
                 {/* Citizenship Certificate */}
                 <Box
                     sx={{
-                        mb: 3,
-                        width: 120,
-                        textAlign: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        width: { xs: 140, sm: 170, md: 200 },
                     }}
                 >
-                    <Subtitle>Citizenship Certificate</Subtitle>
+                    <Typography variant="body1" fontWeight="bold" mb={2}>
+                        Citizenship Certificate
+                    </Typography>
 
                     {idPreview ? (
                         <img
                             src={idPreview}
                             style={{
-                                width: "100px",
-                                height: "100px",
+                                width: "140px",
+                                height: "130px",
                                 border: "2px solid #1c90a9",
-                                borderRadius: "40px",
+                                borderRadius: "16px",
                                 objectFit: "cover",
                                 objectPosition: "center",
                                 margin: "auto",
@@ -217,11 +222,13 @@ const PersonalIDUploadForm = ({ oldId, oldFamilyRecord, oldRefLetter }) => {
                         />
                     ) : (
                         <Box
-                            sx={{
-                                width: "100px",
-                                height: "100px",
+                            style={{
+                                width: "140px",
+                                height: "130px",
                                 border: "2px solid #1c90a9",
-                                borderRadius: 10,
+                                borderRadius: "16px",
+                                objectFit: "cover",
+                                objectPosition: "center",
                                 margin: "auto",
                             }}
                         />
@@ -241,21 +248,20 @@ const PersonalIDUploadForm = ({ oldId, oldFamilyRecord, oldRefLetter }) => {
                         <Typography
                             fontSize={{ xs: 11, sm: 12, md: 13 }}
                             fontWeight={600}
-                            fontFamily={"Mina"}
                             mb={2}
                         >
                             {uploadIdMessage}
                         </Typography>
                     )}
                     <Button
-                        variant="contained"
+                        variant="outlined"
                         sx={{ mt: 2 }}
                         size="small"
                         component="label"
                     >
                         <input
                             type="file"
-                            accept=".jpg, .jpeg, .png"
+                            accept=".jpg, .jpeg, .png, .heic"
                             onChange={handleIdChange}
                             hidden
                         />
@@ -266,21 +272,24 @@ const PersonalIDUploadForm = ({ oldId, oldFamilyRecord, oldRefLetter }) => {
                 {/* Family Member Record */}
                 <Box
                     sx={{
-                        mb: 3,
-                        width: 120,
-                        textAlign: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        width: { xs: 140, sm: 170, md: 200 },
                     }}
                 >
-                    <Subtitle>Family Member Record</Subtitle>
+                    <Typography variant="body1" fontWeight="bold" mb={2}>
+                        Family Member Record
+                    </Typography>
 
                     {familyRecordPreview ? (
                         <img
                             src={familyRecordPreview}
                             style={{
-                                width: "100px",
-                                height: "100px",
+                                width: "140px",
+                                height: "130px",
                                 border: "2px solid #1c90a9",
-                                borderRadius: "40px",
+                                borderRadius: "16px",
                                 objectFit: "cover",
                                 objectPosition: "center",
                                 margin: "auto",
@@ -288,11 +297,13 @@ const PersonalIDUploadForm = ({ oldId, oldFamilyRecord, oldRefLetter }) => {
                         />
                     ) : (
                         <Box
-                            sx={{
-                                width: "100px",
-                                height: "100px",
+                            style={{
+                                width: "140px",
+                                height: "130px",
                                 border: "2px solid #1c90a9",
-                                borderRadius: 10,
+                                borderRadius: "16px",
+                                objectFit: "cover",
+                                objectPosition: "center",
                                 margin: "auto",
                             }}
                         />
@@ -312,21 +323,20 @@ const PersonalIDUploadForm = ({ oldId, oldFamilyRecord, oldRefLetter }) => {
                         <Typography
                             fontSize={{ xs: 11, sm: 12, md: 13 }}
                             fontWeight={600}
-                            fontFamily={"Mina"}
                             mb={2}
                         >
                             {uploadFamilyRecordMessage}
                         </Typography>
                     )}
                     <Button
-                        variant="contained"
+                        variant="outlined"
                         sx={{ mt: 2 }}
                         size="small"
                         component="label"
                     >
                         <input
                             type="file"
-                            accept=".jpg, .jpeg, .png"
+                            accept=".jpg, .jpeg, .png, .heic"
                             onChange={handleFamilyRecordChange}
                             hidden
                         />

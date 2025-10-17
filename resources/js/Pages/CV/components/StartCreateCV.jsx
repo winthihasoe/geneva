@@ -55,7 +55,9 @@ function StartCreateCV() {
                     data.weight &&
                     data.nationality &&
                     data.religion &&
-                    data.profile_photo
+                    data.profile_photo &&
+                    data.marital_status &&
+                    data.current_address
                 );
             case 3:
                 return (

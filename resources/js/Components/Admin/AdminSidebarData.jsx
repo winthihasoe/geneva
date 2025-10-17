@@ -13,6 +13,7 @@ import AccessibleIcon from "@mui/icons-material/Accessible";
 import CoPresentIcon from "@mui/icons-material/CoPresent";
 import SchoolIcon from "@mui/icons-material/School";
 import SportsHandballRoundedIcon from "@mui/icons-material/SportsHandballRounded";
+import AssignmentIcon from "@mui/icons-material/Assignment";
 
 export const AdminSidebarData = [
     {
@@ -29,6 +30,11 @@ export const AdminSidebarData = [
         title: "Care Plan",
         icon: <EventAvailableRoundedIcon />,
         link: "/admin/care-plans",
+    },
+    {
+        title: "Care Logs 📝",
+        icon: <AssignmentIcon />,
+        link: "/admin/care-logs",
     },
     {
         title: "Job Apply",

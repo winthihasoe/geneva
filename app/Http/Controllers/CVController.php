@@ -432,7 +432,7 @@ class CVController extends Controller
                     //
                 ],
                 5 => [
-                    'language' => 'required|array|min:1',
+                    'language' => 'nullable|array|min:1',
                 ],
                 6 => [
                     //
@@ -475,8 +475,6 @@ class CVController extends Controller
 
             // Get existing cv data if exists
             $cv = CV::where('user_id', $userId)->first();
-
-            Log::info('Data from request:', $request->all());
 
             // Prepare the data to save (exclude file fields from direct assignment)
             $data = array_merge(
