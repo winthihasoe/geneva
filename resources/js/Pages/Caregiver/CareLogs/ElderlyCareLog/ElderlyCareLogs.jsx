@@ -1543,7 +1543,7 @@ const ElderlyCareLogs = ({ caregiverName }) => {
             <Head title="Elderly Care Log" />
             <Container maxWidth="lg" sx={{ pb: 8 }}>
                 {/* Add Test Data Buttons */}
-                <Paper
+                {/* <Paper
                     sx={{
                         p: 3,
                         mb: 4,
@@ -1616,7 +1616,7 @@ const ElderlyCareLogs = ({ caregiverName }) => {
                             Clear Form
                         </Button>
                     </Box>
-                </Paper>
+                </Paper> */}
 
                 {/* Enhanced Header */}
                 <Box

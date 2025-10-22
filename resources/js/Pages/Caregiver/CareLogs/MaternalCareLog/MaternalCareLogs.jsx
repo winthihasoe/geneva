@@ -54,6 +54,7 @@ import RequestedSuppliesSection from "./components/RequestedSuppliesSection";
 import AdditionalNotesSection from "./components/AdditionalNotesSection";
 import SignaturesSection from "./components/SignaturesSection";
 import PreviewMaternalCareLog from "./components/PreviewMaternalCareLog";
+import BackButton from "@/Components/BackButton";
 
 const longNote =
     "This is a detailed observation note. The client responded well to care and showed positive engagement throughout the activity. No adverse reactions were observed. Continued monitoring is recommended for optimal health and well-being. Family members were informed and are supportive of the current care plan. Further updates will be provided as needed.";
@@ -1018,7 +1019,7 @@ const MaternalCareLogs = ({ caregiverName }) => {
         <AppLayout>
             <Head title="Maternal Care Log" />
             <Container maxWidth="lg" sx={{ pb: 8 }}>
-                <Paper
+                {/* <Paper
                     sx={{
                         p: 3,
                         mb: 4,
@@ -1091,7 +1092,7 @@ const MaternalCareLogs = ({ caregiverName }) => {
                             Clear Form
                         </Button>
                     </Box>
-                </Paper>
+                </Paper> */}
                 {/* Enhanced Header */}
                 <Box
                     sx={{
@@ -1103,11 +1104,7 @@ const MaternalCareLogs = ({ caregiverName }) => {
                         color: "gray.600",
                     }}
                 >
-                    <IconButton
-                        onClick={() => router.get(route("cg.dashboard"))}
-                    >
-                        <ArrowBackIcon />
-                    </IconButton>
+                    <BackButton />
 
                     <Typography
                         variant="h4"

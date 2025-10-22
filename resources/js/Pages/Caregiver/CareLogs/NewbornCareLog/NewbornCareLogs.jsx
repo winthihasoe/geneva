@@ -45,6 +45,7 @@ import HealthBehaviorSection from "./components/HealthBehaviorSection";
 import AdditionalNotesSection from "./components/AdditionalNotesSection";
 import RequestedSuppliesSection from "./components/RequestedSuppliesSection";
 import SignaturesSection from "./components/SignaturesSection";
+import BackButton from "@/Components/BackButton";
 
 // Test Data Generator - Add this after imports
 const generateTestData = () => ({
@@ -1149,7 +1150,7 @@ const NewbornCareLogs = ({ caregiverName }) => {
             <Head title="Newborn Baby Daily Care Log" />
             <Container maxWidth="lg" sx={{ pb: 8 }}>
                 {/* Add Test Data Buttons - Insert this BEFORE the existing sections */}
-                <Paper
+                {/* <Paper
                     sx={{
                         p: 3,
                         mb: 4,
@@ -1222,7 +1223,7 @@ const NewbornCareLogs = ({ caregiverName }) => {
                             Clear Form
                         </Button>
                     </Box>
-                </Paper>
+                </Paper> */}
                 {/* Enhanced Header */}
                 <Box
                     sx={{
@@ -1234,12 +1235,7 @@ const NewbornCareLogs = ({ caregiverName }) => {
                         color: "gray.600",
                     }}
                 >
-                    <IconButton
-                        onClick={() => router.get(route("cg.dashboard"))}
-                    >
-                        <ArrowBackIcon />
-                    </IconButton>
-
+                    <BackButton />
                     <Typography
                         variant="h4"
                         fontWeight="bold"

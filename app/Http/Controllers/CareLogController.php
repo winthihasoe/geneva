@@ -30,6 +30,10 @@ class CareLogController extends Controller
             $cvId = null;
             if ($user->cv) {
                 $cvId = $user->cv->id;
+            } else {
+                return redirect()->back()->with(
+                    'error','Please create a CV before submitting care logs.'
+                );
             }
 
             \Log::info('User CV ID:', ['cv_id' => $cvId]);
@@ -291,8 +295,10 @@ class CareLogController extends Controller
             if ($user->cv) {
                 $cvId = $user->cv->id;
                 \Log::info('CV ID found:', ['cv_id' => $cvId]);
-            } else {
-                \Log::warning('No CV found for user');
+            }  else {
+                return redirect()->back()->with(
+                    'error','Please create a CV before submitting care logs.'
+                );
             }
 
             // Create the main care log entry
@@ -791,8 +797,10 @@ class CareLogController extends Controller
             if ($user->cv) {
                 $cvId = $user->cv->id;
                 \Log::info('CV ID found:', ['cv_id' => $cvId]);
-            } else {
-                \Log::warning('No CV found for user');
+            }  else {
+                return redirect()->back()->with(
+                    'error','Please create a CV before submitting care logs.'
+                );
             }
 
             // Create the main care log entry

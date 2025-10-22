@@ -43,6 +43,7 @@ import {
     Elderly as ElderlyIcon,
     Person as PersonIcon,
     CalendarToday as CalendarIcon,
+    PregnantWoman as PregnantIcon,
 } from "@mui/icons-material";
 import { generateCareLogPDF } from "@/utils/pdfGenerator";
 import ChildCareIcon from "@mui/icons-material/ChildCare";
@@ -119,7 +120,7 @@ const MyCareLogs = () => {
             case "elder":
                 return <ElderlyIcon />;
             case "maternal":
-                return <PersonIcon />;
+                return <PregnantIcon />;
             default:
                 return <PersonIcon />;
         }
@@ -188,7 +189,6 @@ const MyCareLogs = () => {
                             sx={{
                                 display: "flex",
                                 alignItems: "center",
-                                gap: 2,
                             }}
                         >
                             <Typography variant="h6" fontWeight="bold">
@@ -197,10 +197,11 @@ const MyCareLogs = () => {
                         </Box>
                     </DialogTitle>
 
-                    <DialogContent sx={{ pt: 2 }}>
+                    <DialogContent sx={{ pt: 1 }}>
                         <Typography
                             variant="body1"
-                            sx={{ mb: 3, textAlign: "center" }}
+                            color="text.secondary"
+                            sx={{ mb: 3 }}
                         >
                             Select the type of care log you want to create:
                         </Typography>
@@ -230,11 +231,11 @@ const MyCareLogs = () => {
                                     handleCareTypeSelect("cg.carelogs.newborn")
                                 }
                             >
-                                <CardContent sx={{ p: 3 }}>
+                                <CardContent sx={{ p: 2 }}>
                                     <Box
                                         sx={{
                                             display: "flex",
-                                            alignItems: "center",
+                                            alignItems: "flex-start",
                                             gap: 2,
                                         }}
                                     >
@@ -256,14 +257,21 @@ const MyCareLogs = () => {
                                                 fontWeight="bold"
                                                 mb={0.5}
                                             >
-                                                Newborn Care Logs
+                                                Create Newborn Care Logs
                                             </Typography>
                                             <Typography
                                                 variant="body2"
                                                 color="text.secondary"
+                                                sx={{
+                                                    display: {
+                                                        xs: "none",
+                                                        sm: "block",
+                                                        md: "block",
+                                                    },
+                                                }}
                                             >
-                                                Track feeding, sleeping, and
-                                                development
+                                                Track feeding, sleeping, diaper
+                                                changing, and activities.
                                             </Typography>
                                         </Box>
                                     </Box>
@@ -288,11 +296,11 @@ const MyCareLogs = () => {
                                     handleCareTypeSelect("cg.carelogs.maternal")
                                 }
                             >
-                                <CardContent sx={{ p: 3 }}>
+                                <CardContent sx={{ p: 2 }}>
                                     <Box
                                         sx={{
                                             display: "flex",
-                                            alignItems: "center",
+                                            alignItems: "flex-start",
                                             gap: 2,
                                         }}
                                     >
@@ -304,7 +312,9 @@ const MyCareLogs = () => {
                                                 height: 50,
                                             }}
                                         >
-                                            <PersonIcon sx={{ fontSize: 24 }} />
+                                            <PregnantIcon
+                                                sx={{ fontSize: 24 }}
+                                            />
                                         </Avatar>
                                         <Box sx={{ flex: 1 }}>
                                             <Typography
@@ -312,11 +322,18 @@ const MyCareLogs = () => {
                                                 fontWeight="bold"
                                                 mb={0.5}
                                             >
-                                                Maternal Care Logs
+                                                Create Maternal Care Logs
                                             </Typography>
                                             <Typography
                                                 variant="body2"
                                                 color="text.secondary"
+                                                sx={{
+                                                    display: {
+                                                        xs: "none",
+                                                        sm: "block",
+                                                        md: "block",
+                                                    },
+                                                }}
                                             >
                                                 Monitor postnatal recovery and
                                                 wellness
@@ -348,7 +365,7 @@ const MyCareLogs = () => {
                                     <Box
                                         sx={{
                                             display: "flex",
-                                            alignItems: "center",
+                                            alignItems: "flex-start",
                                             gap: 2,
                                         }}
                                     >
@@ -370,11 +387,18 @@ const MyCareLogs = () => {
                                                 fontWeight="bold"
                                                 mb={0.5}
                                             >
-                                                Elderly Care Logs
+                                                Create Elderly Care Logs
                                             </Typography>
                                             <Typography
                                                 variant="body2"
                                                 color="text.secondary"
+                                                sx={{
+                                                    display: {
+                                                        xs: "none",
+                                                        sm: "block",
+                                                        md: "block",
+                                                    },
+                                                }}
                                             >
                                                 Manage health and activities
                                             </Typography>
@@ -390,6 +414,7 @@ const MyCareLogs = () => {
                             onClick={() => setShowCareTypeDialog(false)}
                             variant="outlined"
                             startIcon={<CloseIcon />}
+                            size="small"
                         >
                             Cancel
                         </Button>
@@ -501,7 +526,7 @@ const MyCareLogs = () => {
                 )}
 
                 {/* Filters */}
-                <Card sx={{ mb: 3 }}>
+                {/* <Card sx={{ mb: 3 }}>
                     <CardContent>
                         <Box
                             sx={{
@@ -623,156 +648,142 @@ const MyCareLogs = () => {
                             </Grid>
                         </Grid>
                     </CardContent>
-                </Card>
+                </Card> */}
 
                 {/* Care Logs Table */}
-                <Card>
-                    <CardContent>
-                        <Typography variant="h6" gutterBottom>
-                            Care Logs
-                        </Typography>
 
-                        {careLogs?.data?.length > 0 ? (
-                            <>
-                                <TableContainer component={Paper} elevation={0}>
-                                    <Table>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>Date</TableCell>
-                                                <TableCell>Name</TableCell>
-                                                <TableCell>Age</TableCell>
-                                                <TableCell>Care Type</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {careLogs.data.map((log) => (
-                                                <TableRow
-                                                    key={log.id}
-                                                    hover
-                                                    sx={{
-                                                        cursor: "pointer",
-                                                        "&:hover": {
-                                                            backgroundColor:
-                                                                "rgba(0, 0, 0, 0.04)",
-                                                        },
-                                                    }}
-                                                    onClick={() => {
-                                                        const routeName =
-                                                            getDetailsRoute(
-                                                                log.care_type
-                                                            );
-                                                        router.get(
-                                                            route(
-                                                                routeName,
-                                                                log.id
-                                                            )
-                                                        );
-                                                    }}
-                                                >
-                                                    <TableCell>
-                                                        <Box
-                                                            sx={{
-                                                                display: "flex",
-                                                                alignItems:
-                                                                    "center",
-                                                                gap: 1,
-                                                            }}
-                                                        >
-                                                            <CalendarIcon
-                                                                fontSize="small"
-                                                                sx={{
-                                                                    display: {
-                                                                        xs: "none",
-                                                                        md: "block",
-                                                                    },
-                                                                }}
-                                                            />
-                                                            {formatDate(
-                                                                log.care_date
-                                                            )}
-                                                        </Box>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Typography fontWeight="medium">
-                                                            {log.first_name}{" "}
-                                                            {log.last_name}
-                                                        </Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        {log.age_display}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Chip
-                                                            icon={getCareTypeIcon(
-                                                                log.care_type
-                                                            )}
-                                                            label={
-                                                                log.care_type
-                                                            }
-                                                            color={getCareTypeColor(
-                                                                log.care_type
-                                                            )}
-                                                            size="small"
-                                                        />
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
+                <Typography variant="h6" gutterBottom>
+                    Care Logs
+                </Typography>
 
-                                {/* Pagination */}
-                                {careLogs.last_page > 1 && (
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            mt: 3,
-                                        }}
-                                    >
-                                        <Pagination
-                                            count={careLogs.last_page}
-                                            page={careLogs.current_page}
-                                            onChange={(event, page) => {
+                {careLogs?.data?.length > 0 ? (
+                    <>
+                        <TableContainer component={Paper} elevation={0}>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Date</TableCell>
+                                        <TableCell>Name</TableCell>
+                                        <TableCell>Age</TableCell>
+                                        <TableCell>Care Type</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {careLogs.data.map((log) => (
+                                        <TableRow
+                                            key={log.id}
+                                            hover
+                                            sx={{
+                                                cursor: "pointer",
+                                                "&:hover": {
+                                                    backgroundColor:
+                                                        "rgba(0, 0, 0, 0.04)",
+                                                },
+                                            }}
+                                            onClick={() => {
+                                                const routeName =
+                                                    getDetailsRoute(
+                                                        log.care_type
+                                                    );
                                                 router.get(
-                                                    route("cg.mycarelogs"),
-                                                    { page }
+                                                    route(routeName, log.id)
                                                 );
                                             }}
-                                            color="primary"
-                                        />
-                                    </Box>
-                                )}
-                            </>
-                        ) : (
-                            <Box sx={{ textAlign: "center", py: 8 }}>
-                                <Typography
-                                    variant="h6"
-                                    color="textSecondary"
-                                    gutterBottom
-                                >
-                                    No care logs found
-                                </Typography>
-                                <Typography
-                                    variant="body2"
-                                    color="textSecondary"
-                                    sx={{ mb: 3 }}
-                                >
-                                    Start by creating your first care log
-                                </Typography>
-                                <Button
-                                    variant="contained"
-                                    startIcon={<AddIcon />}
-                                    onClick={() =>
-                                        router.get(route("cg.carelogs.newborn"))
-                                    }
-                                >
-                                    Create Care Log
-                                </Button>
+                                        >
+                                            <TableCell>
+                                                <Box
+                                                    sx={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        gap: 1,
+                                                    }}
+                                                >
+                                                    <CalendarIcon
+                                                        fontSize="small"
+                                                        sx={{
+                                                            display: {
+                                                                xs: "none",
+                                                                md: "block",
+                                                            },
+                                                        }}
+                                                    />
+                                                    {formatDate(log.care_date)}
+                                                </Box>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Typography fontWeight="medium">
+                                                    {log.first_name}{" "}
+                                                    {log.last_name}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                {log.age_display}
+                                            </TableCell>
+                                            <TableCell>
+                                                <Chip
+                                                    icon={getCareTypeIcon(
+                                                        log.care_type
+                                                    )}
+                                                    label={log.care_type}
+                                                    color={getCareTypeColor(
+                                                        log.care_type
+                                                    )}
+                                                    size="small"
+                                                />
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+
+                        {/* Pagination */}
+                        {careLogs.last_page > 1 && (
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    mt: 3,
+                                }}
+                            >
+                                <Pagination
+                                    count={careLogs.last_page}
+                                    page={careLogs.current_page}
+                                    onChange={(event, page) => {
+                                        router.get(route("cg.mycarelogs"), {
+                                            page,
+                                        });
+                                    }}
+                                    color="primary"
+                                />
                             </Box>
                         )}
-                    </CardContent>
-                </Card>
+                    </>
+                ) : (
+                    <Box sx={{ textAlign: "center", py: 8 }}>
+                        <Typography
+                            variant="h6"
+                            color="textSecondary"
+                            gutterBottom
+                        >
+                            No care logs found
+                        </Typography>
+                        <Typography
+                            variant="body2"
+                            color="textSecondary"
+                            sx={{ mb: 3 }}
+                        >
+                            Start by creating your first care log
+                        </Typography>
+                        <Button
+                            variant="contained"
+                            startIcon={<AddIcon />}
+                            onClick={handleNewCareLogClick}
+                        >
+                            Create Care Log
+                        </Button>
+                    </Box>
+                )}
             </Container>
         </AppLayout>
     );
