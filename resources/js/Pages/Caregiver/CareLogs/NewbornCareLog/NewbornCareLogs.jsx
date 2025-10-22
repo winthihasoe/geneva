@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import AppLayout from "@/Layouts/AppLayout";
 import { Head, router } from "@inertiajs/react";
 import {
@@ -50,7 +50,7 @@ import SignaturesSection from "./components/SignaturesSection";
 const generateTestData = () => ({
     // Basic Information
     date: new Date().toISOString().split("T")[0],
-    firstName: "Emma",
+    firstName: "B' Emma",
     lastName: "Johnson",
     age: "3 months",
     weight: "5.2",
@@ -132,9 +132,9 @@ const generateTestData = () => ({
         },
         {
             time: "16:00",
-            activity: "Play time",
+            activity: "Singing",
             duration: "20 minutes",
-            details: "Playing with soft toys",
+            details: "ရောင်စုံဘောလုံးသီချင်းဆိုပြတယ်။",
         },
     ],
 
@@ -195,7 +195,7 @@ const generateTestData = () => ({
     ],
 
     // Signatures
-    caregiverSignature: "John Smith",
+    caregiverSignature: "",
     guardianSignature: "",
     guardianComment: "",
 });
@@ -393,12 +393,7 @@ const PreviewDialog = ({
                         item.notes
                     );
                 case "supplies":
-                    return (
-                        item.item ||
-                        item.quantity ||
-                        item.purpose ||
-                        item.priority
-                    );
+                    return item.item || item.quantity || item.purpose;
                 default:
                     return true;
             }
@@ -716,11 +711,11 @@ const PreviewDialog = ({
                     sx={{
                         background: isSubmitting
                             ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
-                            : "linear-gradient(45deg, #4caf50 30%, #81c784 90%)",
+                            : "linear-gradient(45deg, #e91e63 30%, #f8bbd9 90%)",
                         "&:hover": {
                             background: isSubmitting
                                 ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
-                                : "linear-gradient(45deg, #388e3c 30%, #66bb6a 90%)",
+                                : "linear-gradient(45deg, #d81b60 30%, #f48fb1 90%)",
                         },
                     }}
                 >
@@ -732,8 +727,6 @@ const PreviewDialog = ({
 };
 
 const NewbornCareLogs = ({ caregiverName }) => {
-    console.log("Caregiver Name:", caregiverName); // Debugging line
-
     const [formData, setFormData] = useState({
         // Basic Information (maps to care_logs table)
         date: new Date().toISOString().split("T")[0],
@@ -808,11 +801,25 @@ const NewbornCareLogs = ({ caregiverName }) => {
         }));
     };
 
-    const addArrayItem = (section, template) => {
-        setFormData((prev) => ({
-            ...prev,
-            [section]: [...prev[section], template],
-        }));
+    const entryRefs = useRef({});
+
+    const addArrayItem = (arrayName, defaultItem) => {
+        setFormData((prev) => {
+            const newArray = [...prev[arrayName], defaultItem];
+            return {
+                ...prev,
+                [arrayName]: newArray,
+            };
+        });
+
+        setTimeout(() => {
+            // Scroll to the last entry after state update
+            const lastIndex = formData[arrayName].length;
+            const ref = entryRefs.current[`${arrayName}-${lastIndex}`];
+            if (ref && ref.scrollIntoView) {
+                ref.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+        }, 300); // Delay to wait for render
     };
 
     const removeArrayItem = (section, index) => {
@@ -1039,11 +1046,7 @@ const NewbornCareLogs = ({ caregiverName }) => {
                 vital_signs: transformVitalSigns(),
                 requested_supplies: formData.requestedSupplies
                     .filter(
-                        (item) =>
-                            item.item ||
-                            item.quantity ||
-                            item.purpose ||
-                            item.priority
+                        (item) => item.item || item.quantity || item.purpose
                     )
                     .map((item) => ({
                         item: item.item,
@@ -1146,7 +1149,7 @@ const NewbornCareLogs = ({ caregiverName }) => {
             <Head title="Newborn Baby Daily Care Log" />
             <Container maxWidth="lg" sx={{ pb: 8 }}>
                 {/* Add Test Data Buttons - Insert this BEFORE the existing sections */}
-                {/* <Paper
+                <Paper
                     sx={{
                         p: 3,
                         mb: 4,
@@ -1219,7 +1222,7 @@ const NewbornCareLogs = ({ caregiverName }) => {
                             Clear Form
                         </Button>
                     </Box>
-                </Paper> */}
+                </Paper>
                 {/* Enhanced Header */}
                 <Box
                     sx={{
@@ -1246,6 +1249,7 @@ const NewbornCareLogs = ({ caregiverName }) => {
                                 sm: "2rem",
                                 md: "2.5rem",
                             },
+                            color: "#e91e63",
                         }}
                     >
                         Newborn Daily Care Logs
@@ -1283,6 +1287,7 @@ const NewbornCareLogs = ({ caregiverName }) => {
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -1292,6 +1297,7 @@ const NewbornCareLogs = ({ caregiverName }) => {
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -1301,6 +1307,7 @@ const NewbornCareLogs = ({ caregiverName }) => {
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -1310,6 +1317,7 @@ const NewbornCareLogs = ({ caregiverName }) => {
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -1319,6 +1327,7 @@ const NewbornCareLogs = ({ caregiverName }) => {
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -1327,6 +1336,7 @@ const NewbornCareLogs = ({ caregiverName }) => {
                         formData={formData}
                         handleInputChange={handleInputChange}
                         handleVitalSignChange={handleVitalSignChange}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -1343,6 +1353,7 @@ const NewbornCareLogs = ({ caregiverName }) => {
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -1375,12 +1386,12 @@ const NewbornCareLogs = ({ caregiverName }) => {
                             fontSize: "1.1rem",
                             fontWeight: "bold",
                             background:
-                                "linear-gradient(45deg, #4caf50 30%, #81c784 90%)",
-                            boxShadow: "0 6px 20px rgba(76,175,80,0.3)",
+                                "linear-gradient(45deg, #e91e63 30%, #f8bbd9 90%)",
+                            boxShadow: "0 6px 20px rgba(233,30,99,0.3)",
                             "&:hover": {
                                 background:
-                                    "linear-gradient(45deg, #388e3c 30%, #66bb6a 90%)",
-                                boxShadow: "0 8px 25px rgba(76,175,80,0.4)",
+                                    "linear-gradient(45deg, #d81b60 30%, #f48fb1 90%)",
+                                boxShadow: "0 8px 25px rgba(233,30,99,0.4)",
                             },
                         }}
                     >

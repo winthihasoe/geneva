@@ -19,6 +19,9 @@ import {
     Button,
     Alert,
     Avatar,
+    useTheme,
+    useMediaQuery,
+    Stack,
 } from "@mui/material";
 import {
     ArrowBack as ArrowBackIcon,
@@ -280,6 +283,9 @@ const ElderlyCareLogDetails = () => {
     };
 
     const renderTableData = (data, columns, emptyMessage) => {
+        const theme = useTheme();
+        const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
         if (!data || data.length === 0) {
             return (
                 <Box sx={{ textAlign: "center", py: 4 }}>
@@ -313,6 +319,46 @@ const ElderlyCareLogDetails = () => {
             );
         }
 
+        if (isMobile) {
+            // Render as cards for mobile
+            return (
+                <Stack spacing={2}>
+                    {filteredData.map((row, idx) => (
+                        <Paper key={idx} elevation={1} sx={{ p: 2 }}>
+                            {columns.map((column) => (
+                                <Box
+                                    key={column.key}
+                                    sx={{
+                                        mb: 1,
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        gap: 1,
+                                    }}
+                                >
+                                    <Typography
+                                        variant="caption"
+                                        color="textSecondary"
+                                        sx={{ fontWeight: "bold" }}
+                                    >
+                                        {column.label}:
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        {column.format
+                                            ? column.format(
+                                                  row[column.key],
+                                                  row
+                                              )
+                                            : row[column.key] || "N/A"}
+                                    </Typography>
+                                </Box>
+                            ))}
+                        </Paper>
+                    ))}
+                </Stack>
+            );
+        }
+
+        // Desktop/tablet: render as table
         return (
             <TableContainer component={Paper} elevation={0}>
                 <Table size="small">
@@ -370,7 +416,7 @@ const ElderlyCareLogDetails = () => {
 
     return (
         <AppLayout>
-            <Container maxWidth="lg" sx={{ py: 4 }}>
+            <Container maxWidth="lg" sx={{ pb: 4 }}>
                 <Typography
                     variant="h4"
                     textAlign={"center"}
@@ -382,7 +428,7 @@ const ElderlyCareLogDetails = () => {
                 <Box
                     sx={{
                         display: "flex",
-                        justifyContent: { xs: "center", md: "space-between" },
+                        justifyContent: "space-between",
                         alignItems: "center",
                         my: 3,
                         gap: 2,

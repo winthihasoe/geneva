@@ -9,14 +9,24 @@ import {
     Box,
     Grid2,
     Divider,
+    Radio,
+    RadioGroup,
+    FormControlLabel,
+    FormControl,
+    FormLabel,
 } from "@mui/material";
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 
 const HygieneSection = ({
     data,
+    moisturizer_applied,
+    pressure_areas_checked,
+    skin_care_findings,
     handleArrayChange,
+    handleInputChange,
     addArrayItem,
     removeArrayItem,
+    entryRefs,
 }) => {
     return (
         <Card sx={{ borderRadius: 2, bgcolor: "transparent" }}>
@@ -51,7 +61,14 @@ const HygieneSection = ({
                 </Box>
 
                 {data.map((item, index) => (
-                    <Box key={index}>
+                    <Box
+                        key={index}
+                        ref={(el) => {
+                            if (entryRefs) {
+                                entryRefs.current[`hygiene-${index}`] = el;
+                            }
+                        }}
+                    >
                         <Box
                             sx={{
                                 display: "flex",
@@ -140,6 +157,92 @@ const HygieneSection = ({
                         {index < data.length - 1 && <Divider sx={{ mb: 3 }} />}
                     </Box>
                 ))}
+
+                <Typography
+                    variant="subtitle"
+                    color="primary"
+                    mt={2}
+                    fontWeight={600}
+                >
+                    Special Skin Care
+                </Typography>
+                {/* Moisturizer applied Yes or No Radio button*/}
+
+                <Grid2 container spacing={2} sx={{ mb: 3, mt: 1 }}>
+                    <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+                        <FormControl component="fieldset" sx={{ mt: 2 }}>
+                            <FormLabel component="legend">
+                                Moisturizer Applied
+                            </FormLabel>
+                            <RadioGroup
+                                row
+                                value={String(moisturizer_applied)} // convert boolean → string
+                                onChange={(e) =>
+                                    handleInputChange(
+                                        "moisturizer_applied",
+                                        e.target.value === "true" // convert string → boolean
+                                    )
+                                }
+                            >
+                                <FormControlLabel
+                                    value="true"
+                                    control={<Radio size="small" />}
+                                    label="Yes"
+                                />
+                                <FormControlLabel
+                                    value="false"
+                                    control={<Radio size="small" />}
+                                    label="No"
+                                />
+                            </RadioGroup>
+                        </FormControl>
+                    </Grid2>
+                    <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+                        <FormControl component="fieldset" sx={{ mt: 2 }}>
+                            <FormLabel component="legend">
+                                Pressure Areas Checked
+                            </FormLabel>
+                            <RadioGroup
+                                row
+                                value={String(pressure_areas_checked)} // convert boolean → string
+                                onChange={(e) =>
+                                    handleInputChange(
+                                        "pressure_areas_checked",
+                                        e.target.value === "true" // convert string → boolean
+                                    )
+                                }
+                            >
+                                <FormControlLabel
+                                    value="true"
+                                    control={<Radio size="small" />}
+                                    label="Yes"
+                                />
+                                <FormControlLabel
+                                    value="false"
+                                    control={<Radio size="small" />}
+                                    label="No"
+                                />
+                            </RadioGroup>
+                        </FormControl>
+                    </Grid2>
+                    <Grid2 item size={{ xs: 12 }}>
+                        <TextField
+                            fullWidth
+                            variant="standard"
+                            label="Skin Care Findings"
+                            value={skin_care_findings}
+                            onChange={(e) =>
+                                handleInputChange(
+                                    "skin_care_findings",
+                                    e.target.value
+                                )
+                            }
+                            multiline
+                            maxRows={5}
+                            placeholder="Any skin issues, redness, irritation, dryness, wounds, rashes..."
+                        />
+                    </Grid2>
+                </Grid2>
             </CardContent>
         </Card>
     );

@@ -38,7 +38,7 @@ export default function AdminPatients({ patients, count }) {
     return (
         <AdminLayout>
             <Head title="Patients" />
-            <Container maxWidth="lg">
+            <Container maxWidth="lg" sx={{ pb: 4, px: { xs: 0 } }}>
                 <Box
                     sx={{
                         display: "flex",
@@ -55,7 +55,14 @@ export default function AdminPatients({ patients, count }) {
                             gap: 2,
                         }}
                     >
-                        <Title>Patients</Title>
+                        <Typography
+                            fontWeight="bold"
+                            color="primary"
+                            mb={1}
+                            variant="h4"
+                        >
+                            Patients
+                        </Typography>
                         <Box
                             sx={{
                                 bgcolor: "red",

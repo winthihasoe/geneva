@@ -21,6 +21,7 @@ const RequestedSuppliesSection = ({
     handleArrayChange,
     addArrayItem,
     removeArrayItem,
+    entryRefs,
 }) => {
     return (
         <Card sx={{ borderRadius: 2, bgcolor: "transparent" }}>
@@ -41,7 +42,7 @@ const RequestedSuppliesSection = ({
                     <Button
                         startIcon={<AddIcon />}
                         onClick={() =>
-                            addArrayItem("requestedSupplies", {
+                            addArrayItem("supplies", {
                                 item: "",
                                 quantity: "",
                                 purpose: "",
@@ -56,7 +57,14 @@ const RequestedSuppliesSection = ({
                 </Box>
 
                 {data.map((item, index) => (
-                    <Box key={index}>
+                    <Box
+                        key={index}
+                        ref={(el) => {
+                            if (entryRefs) {
+                                entryRefs.current[`supplies-${index}`] = el;
+                            }
+                        }}
+                    >
                         <Box
                             sx={{
                                 display: "flex",

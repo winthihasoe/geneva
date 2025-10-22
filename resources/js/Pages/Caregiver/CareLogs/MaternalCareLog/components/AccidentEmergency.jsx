@@ -21,6 +21,7 @@ const AccidentEmergency = ({
     handleArrayChange,
     addArrayItem,
     removeArrayItem,
+    entryRefs,
 }) => {
     const severityOptions = ["Low", "Medium", "High", "Critical"];
 
@@ -58,7 +59,14 @@ const AccidentEmergency = ({
                 </Box>
 
                 {data.map((item, index) => (
-                    <Box key={index}>
+                    <Box
+                        key={index}
+                        ref={(el) => {
+                            if (entryRefs) {
+                                entryRefs.current[`accident-${index}`] = el;
+                            }
+                        }}
+                    >
                         <Box
                             sx={{
                                 display: "flex",

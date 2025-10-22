@@ -142,6 +142,7 @@ class CV extends Model
 
         static::creating(function ($model) {
             // Generate a unique ha_id for the new CV record
+             \Log::info('Generating ha_id for new CV');
             $model->ha_id = self::generateHaId();
 
             // Ensure the slug is unique
@@ -154,24 +155,32 @@ class CV extends Model
     {
         // Get the current month and year in MMYY format
         $prefix = now()->format('my'); // 'my' generates 'MMYY' format
-
+        \Log::info('generateHaId: prefix', ['prefix' => $prefix]);
         // Find the last ha_id for the current month and year
         $lastHaId = self::where('ha_id', 'like', "{$prefix}%")
             ->orderBy('ha_id', 'desc')
             ->first();
+        \Log::info('generateHaId: lastHaId', ['lastHaId' => $lastHaId ? $lastHaId->ha_id : null]);
 
         // Determine the serial number
         if ($lastHaId) {
             // Extract the numeric part after the prefix and increment it
             $lastSerial = (int) substr($lastHaId->ha_id, 4); // Get the serial part
             $newSerial = str_pad($lastSerial + 1, 2, '0', STR_PAD_LEFT);
+            \Log::info('generateHaId: lastSerial and newSerial', [
+                'lastSerial' => $lastSerial,
+                'newSerial' => $newSerial
+            ]);
         } else {
             // Start from 01 if no record exists for the current month and year
             $newSerial = '01';
+            \Log::info('generateHaId: No previous ha_id, starting at 01');
         }
 
         // Combine the prefix and the serial
-        return $prefix . $newSerial;
+        $haId = $prefix . $newSerial;
+        \Log::info('generateHaId: generated ha_id', ['ha_id' => $haId]);
+        return $haId;
     }
 
     public function user()

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CareLog;
 use App\Models\ContactMessage;
 use App\Models\CV;
 use App\Models\JobApply;
@@ -17,11 +18,13 @@ class AdminDashboardController extends Controller
         $totalJobApplies = JobApply::all()->count();
         $totalPatients = Patient::all()->count();
         $totalContactMessages = ContactMessage::all()->count();
+        $totalCareLogs = CareLog::all()->count();
         return Inertia::render('Admin/Dashboard/Dashboard', [
             'totalCaregivers' => $totalCaregivers,
             'totalJobApplies' => $totalJobApplies,
             'totalPatients' => $totalPatients,
             'totalContactMessages' => $totalContactMessages,
+            'totalCareLogs' => $totalCareLogs,
         ]);
     }
 }

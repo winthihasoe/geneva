@@ -21,6 +21,7 @@ const Medication = ({
     handleArrayChange,
     addArrayItem,
     removeArrayItem,
+    entryRefs,
 }) => {
     const routes = [
         { value: "PO", label: "PO (Oral)" },
@@ -68,7 +69,14 @@ const Medication = ({
                 </Box>
 
                 {data.map((item, index) => (
-                    <Box key={index}>
+                    <Box
+                        key={index}
+                        ref={(el) => {
+                            if (entryRefs) {
+                                entryRefs.current[`medication-${index}`] = el;
+                            }
+                        }}
+                    >
                         <Box
                             sx={{
                                 display: "flex",

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
     Typography,
     TextField,
@@ -23,7 +23,20 @@ const HealthMonitoring = ({
     handleArrayChange,
     addArrayItem,
     removeArrayItem,
+    entryRefs,
 }) => {
+    const prevLength = useRef(formData.vitalSigns.times.length);
+
+    useEffect(() => {
+        const lastIndex = formData.vitalSigns.times.length - 1;
+        if (formData.vitalSigns.times.length > prevLength.current) {
+            const ref = entryRefs?.current?.[`vitalSigns-${lastIndex}`];
+            if (ref && ref.scrollIntoView) {
+                ref.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+        }
+        prevLength.current = formData.vitalSigns.times.length;
+    }, [formData.vitalSigns.times.length]);
     // Handle vital signs as array entries - Updated for elderly care
     const addVitalSignEntry = () => {
         const newIndex = formData.vitalSigns.times.length;
@@ -122,7 +135,15 @@ const HealthMonitoring = ({
                     </Box>
 
                     {formData.vitalSigns.times.map((_, index) => (
-                        <Box key={index}>
+                        <Box
+                            key={index}
+                            ref={(el) => {
+                                if (entryRefs) {
+                                    entryRefs.current[`vitalSigns-${index}`] =
+                                        el;
+                                }
+                            }}
+                        >
                             <Box
                                 sx={{
                                     display: "flex",
@@ -378,7 +399,15 @@ const HealthMonitoring = ({
                     </Box>
 
                     {formData.bloodGlucose.map((item, index) => (
-                        <Box key={index}>
+                        <Box
+                            key={index}
+                            ref={(el) => {
+                                if (entryRefs) {
+                                    entryRefs.current[`bloodGlucose-${index}`] =
+                                        el;
+                                }
+                            }}
+                        >
                             <Box
                                 sx={{
                                     display: "flex",

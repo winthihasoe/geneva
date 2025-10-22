@@ -160,71 +160,134 @@ export const generateCareLogPDF = async (formData) => {
         };
 
         const addTable = (headers, rows, columnWidths) => {
-            const tableHeight = (rows.length + 1) * 8 + 10;
-            addNewPageIfNeeded(tableHeight);
+            let x;
 
-            const startY = currentY;
-            let x = margin;
+            const drawTableBorders = (startY, endY) => {
+                // Outer border
+                pdf.setDrawColor(200, 200, 200);
+                pdf.rect(margin, startY, contentWidth, endY - startY);
 
-            // Header row
-            pdf.setFillColor(...primaryColor);
-            pdf.rect(margin, currentY, contentWidth, 8, "F");
+                // Column borders
+                let colX = margin;
+                columnWidths.forEach((width) => {
+                    colX += width;
+                    if (colX < margin + contentWidth) {
+                        pdf.line(colX, startY, colX, endY);
+                    }
+                });
+            };
 
-            pdf.setFontSize(10);
-            pdf.setTextColor(255, 255, 255); // White text
+            // --- Draw header row ---
+            const drawHeader = () => {
+                x = margin;
+                pdf.setFillColor(...primaryColor);
+                pdf.rect(margin, currentY, contentWidth, 8, "F");
+                pdf.setFontSize(10);
+                pdf.setTextColor(255, 255, 255);
+                headers.forEach((header, index) => {
+                    pdf.text(header, x + 2, currentY + 5.5);
+                    x += columnWidths[index];
+                });
+                currentY += 8;
+                pdf.setTextColor(...textColor);
+                pdf.setFontSize(9);
+            };
 
-            headers.forEach((header, index) => {
-                pdf.text(header, x + 2, currentY + 5.5);
-                x += columnWidths[index];
-            });
-
-            currentY += 8;
-
-            // Data rows
-            pdf.setTextColor(...textColor);
-            pdf.setFontSize(9);
+            // Start table
+            let segmentStartY = currentY;
+            drawHeader();
 
             rows.forEach((row, rowIndex) => {
-                x = margin;
-
-                // Alternate row colors
-                if (rowIndex % 2 === 0) {
-                    pdf.setFillColor(245, 245, 245);
-                    pdf.rect(margin, currentY, contentWidth, 7, "F");
-                }
-
-                row.forEach((cell, cellIndex) => {
-                    const cellText = pdf.splitTextToSize(
+                // Prepare cell lines
+                const cellLines = row.map((cell, cellIndex) =>
+                    pdf.splitTextToSize(
                         cell || "N/A",
-                        columnWidths[cellIndex] - 4
+                        columnWidths[cellIndex] - 6
+                    )
+                );
+                const maxLines = Math.max(
+                    ...cellLines.map((lines) => lines.length)
+                );
+                const lineHeight = 5;
+                const rowPadding = 2;
+                let linesDrawn = 0;
+
+                // For alternate row color
+                let rowBgColor = rowIndex % 2 === 0 ? [245, 245, 245] : null;
+
+                while (linesDrawn < maxLines) {
+                    // How many lines can we fit on this page?
+                    let availableLines = Math.floor(
+                        (pageHeight - margin - currentY - rowPadding * 2) /
+                            lineHeight
                     );
-                    pdf.text(cellText[0] || "", x + 2, currentY + 5);
-                    x += columnWidths[cellIndex];
-                });
+                    if (availableLines <= 0) {
+                        // Draw borders for the finished segment
+                        drawTableBorders(segmentStartY, currentY);
 
-                currentY += 7;
-            });
+                        // Start new page/segment
+                        pdf.addPage();
+                        currentY = margin;
+                        addPageHeader();
+                        segmentStartY = currentY;
+                        drawHeader();
+                        availableLines = Math.floor(
+                            (pageHeight - margin - currentY - rowPadding * 2) /
+                                lineHeight
+                        );
+                    }
 
-            // Table border
-            pdf.setDrawColor(200, 200, 200);
-            pdf.rect(margin, startY, contentWidth, currentY - startY);
+                    // How many lines to draw in this segment
+                    const linesThisSegment = Math.min(
+                        availableLines,
+                        maxLines - linesDrawn
+                    );
+                    const segmentHeight =
+                        linesThisSegment * lineHeight + rowPadding * 2;
 
-            // Column borders
-            x = margin;
-            columnWidths.forEach((width) => {
-                x += width;
-                if (x < margin + contentWidth) {
-                    pdf.line(x, startY, x, currentY);
+                    // Draw background if needed
+                    if (rowBgColor) {
+                        pdf.setFillColor(...rowBgColor);
+                        pdf.rect(
+                            margin,
+                            currentY,
+                            contentWidth,
+                            segmentHeight,
+                            "F"
+                        );
+                    }
+
+                    // Draw text cells for this segment
+                    x = margin;
+                    row.forEach((cell, cellIndex) => {
+                        const lines = cellLines[cellIndex].slice(
+                            linesDrawn,
+                            linesDrawn + linesThisSegment
+                        );
+                        const cellX = x + 3;
+                        let textY = currentY + rowPadding + lineHeight;
+                        lines.forEach((line) => {
+                            pdf.text(line, cellX, textY);
+                            textY += lineHeight;
+                        });
+                        x += columnWidths[cellIndex];
+                    });
+
+                    currentY += segmentHeight;
+                    linesDrawn += linesThisSegment;
                 }
             });
 
-            currentY += 12; // Increased from 5 to 12 for more space after table
+            // Draw borders for the last segment
+            drawTableBorders(segmentStartY, currentY);
+
+            currentY += 10;
         };
 
         // Start generating PDF content
 
         // Main Header
-        pdf.setFontSize(20);
+        pdf.setFontSize(18);
         pdf.setTextColor(...primaryColor);
         const headerText = "NEWBORN BABY DAILY CARE LOG";
         const headerX = (pageWidth - pdf.getTextWidth(headerText)) / 2;
@@ -513,36 +576,116 @@ export const generateCareLogPDF = async (formData) => {
         );
 
         // Signatures
+        addNewPageIfNeeded(60);
         addTitle("Signatures", 14);
-        addNewPageIfNeeded(60); // More space needed for signature images
 
-        // Caregiver section
+        const colWidth = (contentWidth - 10) / 2;
+        const leftX = margin;
+        const rightX = margin + colWidth + 10;
+        let sectionY = currentY;
+
+        // Caregiver (left)
+        let caregiverY = sectionY;
         pdf.setFontSize(11);
         pdf.setTextColor(...primaryColor);
-        pdf.text("Caregiver Information", margin, currentY);
-        currentY += 8;
+        pdf.text("Caregiver Information", leftX, caregiverY);
+        caregiverY += 8;
 
         pdf.setFontSize(10);
         pdf.setTextColor(...textColor);
-        addText(`Name: ${formData.caregiverName || "Not provided"}`);
+        pdf.text(
+            `Name: ${formData.caregiverName || "Not provided"}`,
+            leftX,
+            caregiverY
+        );
+        caregiverY += 6;
 
-        // Add caregiver signature image
-        addSignatureImage(formData.caregiverSignature, "Signature", 60, 20);
-
-        currentY += 5;
-
-        // Guardian section
+        if (
+            formData.caregiverSignature &&
+            typeof formData.caregiverSignature === "string" &&
+            formData.caregiverSignature.trim() !== ""
+        ) {
+            let base64Data = formData.caregiverSignature;
+            let imageType = "PNG";
+            if (base64Data.startsWith("data:image/jpeg")) {
+                imageType = "JPEG";
+            } else if (base64Data.startsWith("data:image/png")) {
+                imageType = "PNG";
+            } else if (!base64Data.startsWith("data:image/")) {
+                base64Data = `data:image/png;base64,${base64Data}`;
+                imageType = "PNG";
+            }
+            pdf.addImage(
+                base64Data,
+                imageType,
+                leftX + 5,
+                caregiverY,
+                60,
+                20,
+                undefined,
+                "FAST"
+            );
+            caregiverY += 25;
+        } else {
+            pdf.text("Signature: Not provided", leftX, caregiverY);
+            caregiverY += 8;
+        }
+        // Guardian (right)
+        let guardianY = sectionY;
         pdf.setFontSize(11);
         pdf.setTextColor(...primaryColor);
-        pdf.text("Guardian Information", margin, currentY);
-        currentY += 8;
+        pdf.text("Client Information", rightX, guardianY);
+        guardianY += 8;
 
         pdf.setFontSize(10);
         pdf.setTextColor(...textColor);
 
-        // Add guardian signature image
-        addSignatureImage(formData.guardianSignature, "Signature", 60, 20);
-        addText(`Comment: ${formData.guardianComment || "No comment"}`);
+        if (
+            formData.guardianSignature &&
+            typeof formData.guardianSignature === "string" &&
+            formData.guardianSignature.trim() !== ""
+        ) {
+            let base64Data = formData.guardianSignature;
+            let imageType = "PNG";
+            if (base64Data.startsWith("data:image/jpeg")) {
+                imageType = "JPEG";
+            } else if (base64Data.startsWith("data:image/png")) {
+                imageType = "PNG";
+            } else if (!base64Data.startsWith("data:image/")) {
+                base64Data = `data:image/png;base64,${base64Data}`;
+                imageType = "PNG";
+            }
+            pdf.addImage(
+                base64Data,
+                imageType,
+                rightX + 5,
+                guardianY,
+                60,
+                20,
+                undefined,
+                "FAST"
+            );
+            guardianY += 25;
+        } else {
+            pdf.text("Signature: Not provided", rightX, guardianY);
+            guardianY += 8;
+        }
+
+        const commentText = `Comment: ${
+            formData.guardianComment || "No comment"
+        }`;
+        const wrappedComment = pdf.splitTextToSize(
+            commentText,
+            pageWidth - rightX - margin
+        );
+        wrappedComment.forEach((line) => {
+            pdf.text(line, rightX, guardianY);
+            guardianY += 5; // Adjust line height as needed
+        });
+        guardianY += 8;
+
+        // Move currentY below both columns
+        currentY = Math.max(caregiverY, guardianY) + 5;
 
         // Add page numbers to all pages
         const totalPages = pdf.internal.getNumberOfPages();

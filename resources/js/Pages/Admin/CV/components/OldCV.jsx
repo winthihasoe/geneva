@@ -359,7 +359,7 @@ function OldCV({ cv }) {
                                 md: 15,
                             }}
                         >
-                            📞 +66 620 90 8578
+                            📞 +66 82 902 1957
                         </Typography>
                         <Typography
                             fontSize={{
@@ -388,7 +388,7 @@ function OldCV({ cv }) {
                 </Box>
                 <Typography
                     variant="h6"
-                    fontSize={{ xs: 13, sm: 15, md: 20 }}
+                    fontSize={{ xs: 13, sm: 15, md: 18 }}
                     fontWeight="bold"
                     bgcolor={"#85e1ba"}
                     display={"inline-block"}
@@ -523,11 +523,11 @@ function OldCV({ cv }) {
                                     (skill, index) => (
                                         <Typography
                                             key={index}
-                                            mb={1}
+                                            gutterBottom
                                             fontSize={{
                                                 xs: 12,
                                                 sm: 14,
-                                                md: 17,
+                                                md: 16,
                                             }}
                                         >
                                             <img

@@ -91,7 +91,7 @@ export default function AdminTrainingCourses({
         <AdminLayout>
             <Head title="Admin Training Courses" />
 
-            <Container maxWidth="lg">
+            <Container maxWidth="lg" sx={{ pb: 4, px: { xs: 0 } }}>
                 {/* Header Section */}
                 <Box sx={{ mb: 4 }}>
                     <Box
@@ -103,7 +103,15 @@ export default function AdminTrainingCourses({
                             mb: 3,
                         }}
                     >
-                        <Title>Training Courses</Title>
+                        <Typography
+                            fontWeight="bold"
+                            color="primary"
+                            mb={2}
+                            variant="h4"
+                        >
+                            Training Courses
+                        </Typography>
+
                         <Button
                             variant="contained"
                             color="primary"

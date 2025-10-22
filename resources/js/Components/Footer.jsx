@@ -1,8 +1,19 @@
 import { Box, Container, Grid2, Typography } from "@mui/material";
 import React from "react";
 import logo from "../../../public/images/logo/logo.png"; // Adjust the path to your logo
+import { usePage } from "@inertiajs/react";
 
 function Footer() {
+    const socialMediaLinks = usePage().props.socialMediaLinks || {};
+    const lineId = usePage().props.lineId; // Make sure you pass this from backend
+
+    const iconMap = {
+        Facebook: "/images/social/facebook.png",
+        Instagram: "/images/social/instagram.png",
+        LINE: "/images/social/line.png",
+        TikTok: "/images/social/tiktok.png",
+    };
+
     return (
         <Box sx={{ borderTop: "1px solid", borderColor: "primary.main" }}>
             <Container maxWidth="xl">
@@ -53,26 +64,50 @@ function Footer() {
                             alignItems: "center",
                         }}
                     >
-                        <img
-                            src="/images/social/tiktok.png"
-                            style={{ width: 50, height: 50 }}
-                            alt="Tiktok"
-                        />
-                        <img
-                            src="/images/social/instagram.png"
-                            style={{ width: 50, height: 50 }}
-                            alt="Instagram"
-                        />
-                        <img
-                            src="/images/social/facebook.png"
-                            style={{ width: 50, height: 50 }}
-                            alt="Facebook"
-                        />
-                        <img
-                            src="/images/social/line.png"
-                            style={{ width: 50, height: 50 }}
-                            alt="Line"
-                        />
+                        {Object.entries(socialMediaLinks).map(
+                            ([url, platform]) => {
+                                // Special handling for LINE
+                                if (platform === "LINE" && lineId) {
+                                    return (
+                                        <a
+                                            key="LINE"
+                                            href={`https://line.me/ti/p/${lineId}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            style={{ display: "inline-block" }}
+                                        >
+                                            <img
+                                                src={iconMap["LINE"]}
+                                                style={{
+                                                    width: 50,
+                                                    height: 50,
+                                                }}
+                                                alt="LINE"
+                                            />
+                                        </a>
+                                    );
+                                }
+                                // Normal platforms
+                                const iconSrc =
+                                    iconMap[platform] ||
+                                    "/images/social/default.png";
+                                return (
+                                    <a
+                                        key={platform}
+                                        href={url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style={{ display: "inline-block" }}
+                                    >
+                                        <img
+                                            src={iconSrc}
+                                            style={{ width: 50, height: 50 }}
+                                            alt={platform}
+                                        />
+                                    </a>
+                                );
+                            }
+                        )}
                     </Grid2>
                     <Grid2
                         size={{ xs: 12, sm: 12, md: 3 }}

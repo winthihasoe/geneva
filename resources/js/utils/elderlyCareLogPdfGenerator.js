@@ -148,88 +148,128 @@ export const generateElderlyCareLogPDF = async (formData) => {
         };
 
         const addTable = (headers, rows, columnWidths) => {
-            const tableHeight = (rows.length + 1) * 8 + 10;
-            addNewPageIfNeeded(tableHeight);
+            let x;
 
-            const startY = currentY;
-            let x = margin;
+            const drawTableBorders = (startY, endY) => {
+                // Outer border
+                pdf.setDrawColor(200, 200, 200);
+                pdf.rect(margin, startY, contentWidth, endY - startY);
 
-            // Header row
-            pdf.setFillColor(...primaryColor);
-            pdf.rect(margin, currentY, contentWidth, 8, "F");
+                // Column borders
+                let colX = margin;
+                columnWidths.forEach((width) => {
+                    colX += width;
+                    if (colX < margin + contentWidth) {
+                        pdf.line(colX, startY, colX, endY);
+                    }
+                });
+            };
 
-            pdf.setFontSize(10);
-            pdf.setTextColor(255, 255, 255); // White text
+            // --- Draw header row ---
+            const drawHeader = () => {
+                x = margin;
+                pdf.setFillColor(...primaryColor);
+                pdf.rect(margin, currentY, contentWidth, 8, "F");
+                pdf.setFontSize(10);
+                pdf.setTextColor(255, 255, 255);
+                headers.forEach((header, index) => {
+                    pdf.text(header, x + 2, currentY + 5.5);
+                    x += columnWidths[index];
+                });
+                currentY += 8;
+                pdf.setTextColor(...textColor);
+                pdf.setFontSize(9);
+            };
 
-            headers.forEach((header, index) => {
-                pdf.text(header, x + 2, currentY + 5.5);
-                x += columnWidths[index];
-            });
-
-            currentY += 8;
-
-            // Data rows
-            pdf.setTextColor(...textColor);
-            pdf.setFontSize(9);
+            // Start table
+            let segmentStartY = currentY;
+            drawHeader();
 
             rows.forEach((row, rowIndex) => {
-                x = margin;
-
-                // Split cell text into lines
+                // Prepare cell lines
                 const cellLines = row.map((cell, cellIndex) =>
                     pdf.splitTextToSize(
                         cell || "N/A",
                         columnWidths[cellIndex] - 6
                     )
                 );
-
-                // Compute the tallest cell (in lines)
                 const maxLines = Math.max(
                     ...cellLines.map((lines) => lines.length)
                 );
-                const lineHeight = 5; // more breathing room
-                const rowPadding = 2; // top/bottom padding
-                const rowHeight = maxLines * lineHeight + rowPadding * 2;
+                const lineHeight = 5;
+                const rowPadding = 2;
+                let linesDrawn = 0;
 
-                // Alternate row background color
-                if (rowIndex % 2 === 0) {
-                    pdf.setFillColor(245, 245, 245);
-                    pdf.rect(margin, currentY, contentWidth, rowHeight, "F");
-                }
+                // For alternate row color
+                let rowBgColor = rowIndex % 2 === 0 ? [245, 245, 245] : null;
 
-                // Draw text cells
-                x = margin;
-                row.forEach((cell, cellIndex) => {
-                    const lines = cellLines[cellIndex];
-                    const cellX = x + 3;
-                    let textY = currentY + rowPadding + lineHeight; // add padding
+                while (linesDrawn < maxLines) {
+                    // How many lines can we fit on this page?
+                    let availableLines = Math.floor(
+                        (pageHeight - margin - currentY - rowPadding * 2) /
+                            lineHeight
+                    );
+                    if (availableLines <= 0) {
+                        // Draw borders for the finished segment
+                        drawTableBorders(segmentStartY, currentY);
 
-                    lines.forEach((line) => {
-                        pdf.text(line, cellX, textY);
-                        textY += lineHeight;
+                        // Start new page/segment
+                        pdf.addPage();
+                        currentY = margin;
+                        addPageHeader();
+                        segmentStartY = currentY;
+                        drawHeader();
+                        availableLines = Math.floor(
+                            (pageHeight - margin - currentY - rowPadding * 2) /
+                                lineHeight
+                        );
+                    }
+
+                    // How many lines to draw in this segment
+                    const linesThisSegment = Math.min(
+                        availableLines,
+                        maxLines - linesDrawn
+                    );
+                    const segmentHeight =
+                        linesThisSegment * lineHeight + rowPadding * 2;
+
+                    // Draw background if needed
+                    if (rowBgColor) {
+                        pdf.setFillColor(...rowBgColor);
+                        pdf.rect(
+                            margin,
+                            currentY,
+                            contentWidth,
+                            segmentHeight,
+                            "F"
+                        );
+                    }
+
+                    // Draw text cells for this segment
+                    x = margin;
+                    row.forEach((cell, cellIndex) => {
+                        const lines = cellLines[cellIndex].slice(
+                            linesDrawn,
+                            linesDrawn + linesThisSegment
+                        );
+                        const cellX = x + 3;
+                        let textY = currentY + rowPadding + lineHeight;
+                        lines.forEach((line) => {
+                            pdf.text(line, cellX, textY);
+                            textY += lineHeight;
+                        });
+                        x += columnWidths[cellIndex];
                     });
 
-                    x += columnWidths[cellIndex];
-                });
-
-                // Move to next row
-                currentY += rowHeight;
-            });
-
-            // Table border
-            pdf.setDrawColor(200, 200, 200);
-            pdf.rect(margin, startY, contentWidth, currentY - startY);
-
-            // Column borders
-            x = margin;
-            columnWidths.forEach((width) => {
-                x += width;
-                if (x < margin + contentWidth) {
-                    pdf.line(x, startY, x, currentY);
+                    currentY += segmentHeight;
+                    linesDrawn += linesThisSegment;
                 }
             });
 
-            currentY += 10; // Increased from 5 to 12 for more space after table
+            // Draw borders for the last segment
+            drawTableBorders(segmentStartY, currentY);
+
+            currentY += 10;
         };
 
         // Start generating PDF content
@@ -429,7 +469,7 @@ export const generateElderlyCareLogPDF = async (formData) => {
                         case "sleep":
                             return [
                                 item.type || "N/A",
-                                item.timeStarted || "N/A",
+                                item.time || "N/A",
                                 item.duration || "N/A",
                                 item.quality || "N/A",
                                 item.notes || "None",
@@ -744,7 +784,7 @@ export const generateElderlyCareLogPDF = async (formData) => {
             "Accident & Emergency Situations",
             accidentData,
             ["Time", "Description", "Severity", "Action Taken"],
-            [30, 80, 30, 60],
+            [25, 80, 25, 50],
             "No accidents or emergencies reported"
         );
 
@@ -864,11 +904,18 @@ export const generateElderlyCareLogPDF = async (formData) => {
             guardianY += 8;
         }
 
-        pdf.text(
-            `Comment: ${formData.guardianComment || "No comment"}`,
-            rightX,
-            guardianY
+        const commentText = `Comment: ${
+            formData.guardianComment || "No comment"
+        }`;
+        const wrappedComment = pdf.splitTextToSize(
+            commentText,
+            pageWidth - rightX - margin
         );
+        wrappedComment.forEach((line) => {
+            pdf.text(line, rightX, guardianY);
+            guardianY += 5; // Adjust line height as needed
+        });
+
         guardianY += 8;
 
         // Move currentY below both columns

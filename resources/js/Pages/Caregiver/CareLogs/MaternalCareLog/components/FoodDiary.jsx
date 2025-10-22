@@ -30,6 +30,7 @@ const FoodDiary = ({
     handleArrayChange,
     addArrayItem,
     removeArrayItem,
+    entryRefs,
 }) => {
     const mealTypes = [
         { value: "breakfast", label: "Breakfast" },
@@ -166,7 +167,14 @@ const FoodDiary = ({
                     </Box>
 
                     {formData.intake.map((item, index) => (
-                        <Box key={index}>
+                        <Box
+                            key={index}
+                            ref={(el) => {
+                                if (entryRefs) {
+                                    entryRefs.current[`intake-${index}`] = el;
+                                }
+                            }}
+                        >
                             <Box
                                 sx={{
                                     display: "flex",
@@ -328,9 +336,9 @@ const FoodDiary = ({
                                                 onClick={() =>
                                                     addFoodItem(index)
                                                 }
-                                                variant="outlined"
+                                                variant="contained"
                                             >
-                                                Add Item
+                                                Add Food/Drink
                                             </Button>
                                         </Box>
 

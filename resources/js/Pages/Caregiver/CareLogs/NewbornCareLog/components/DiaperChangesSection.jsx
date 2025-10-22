@@ -21,6 +21,7 @@ const DiaperChangesSection = ({
     handleArrayChange,
     addArrayItem,
     removeArrayItem,
+    entryRefs,
 }) => {
     return (
         <Card sx={{ borderRadius: 2, bgcolor: "transparent" }}>
@@ -55,7 +56,15 @@ const DiaperChangesSection = ({
                 </Box>
 
                 {data.map((item, index) => (
-                    <Box key={index}>
+                    <Box
+                        key={index}
+                        ref={(el) => {
+                            if (entryRefs) {
+                                entryRefs.current[`diaperChanges-${index}`] =
+                                    el;
+                            }
+                        }}
+                    >
                         <Box
                             sx={{
                                 display: "flex",

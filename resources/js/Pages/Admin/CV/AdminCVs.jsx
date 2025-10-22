@@ -45,19 +45,15 @@ export default function AdminCVs({
     return (
         <AdminLayout>
             <Head title="Resumes" />
-            <Container maxWidth="lg">
-                <Box
-                    sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        flexWrap: "wrap",
-                        mb: 3,
-                        gap: 1,
-                    }}
+            <Container maxWidth="lg" sx={{ pb: 4, px: { xs: 0 } }}>
+                <Typography
+                    variant="h4"
+                    color="primary"
+                    fontWeight="bold"
+                    mb={2}
                 >
-                    <Title>Resumes</Title>
-                </Box>
+                    Resumes
+                </Typography>
 
                 {/* Resume list */}
 
@@ -100,6 +96,7 @@ export default function AdminCVs({
                             size="small"
                             value={search}
                             onChange={handleSearchChange}
+                            variant="standard"
                         />
                         <Button type="submit">Search</Button>
                     </form>
@@ -122,18 +119,17 @@ export default function AdminCVs({
                             />
                         </Box>
                         <Alert
-                            severity="warning"
+                            severity="info"
                             sx={{
                                 ml: "auto",
                                 mt: 1,
                             }}
                         >
-                            <ResumeText>Tips!</ResumeText>
-                            <ResumeText>
+                            <Typography variant="body2">
                                 Caregiver status will be green if caregivers use
                                 their account within 2 hours. After 2 hours away
                                 from platform, it turns red.
-                            </ResumeText>
+                            </Typography>
                         </Alert>
                     </>
                 ) : (

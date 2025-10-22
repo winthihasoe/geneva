@@ -3,7 +3,15 @@ import TitleCenter from "@/Components/Typo/TitleCenter";
 import DateTimeFormatter from "@/Components/util/DateTimeFormatter";
 import YesOrNoModal from "@/Components/util/YesOrNoModal";
 import { router } from "@inertiajs/react";
-import { Box, Button, Typography } from "@mui/material";
+import {
+    Box,
+    Button,
+    Typography,
+    Stack,
+    Chip,
+    Paper,
+    Alert,
+} from "@mui/material";
 import React, { useState } from "react";
 
 function EditApprove({ cv }) {
@@ -14,9 +22,7 @@ function EditApprove({ cv }) {
         router.put(
             route("admin.cv.approve", cv.id),
             {},
-            {
-                preserveScroll: true,
-            }
+            { preserveScroll: true }
         );
         handleClose();
     };
@@ -28,58 +34,70 @@ function EditApprove({ cv }) {
         router.put(
             route("admin.cv.unapprove", cv.id),
             {},
-            {
-                preserveScroll: true,
-            }
+            { preserveScroll: true }
         );
         handleCloseUnapprove();
     };
+
     return (
         <>
-            <TitleCenter>Caregiver Status:</TitleCenter>
-            <Box sx={{ margin: "auto", width: 280 }}>
-                <Subtitle>
-                    Status: {cv.is_approved ? "Approved" : "Unapporved"}
-                </Subtitle>
-                {cv.is_approved ? (
-                    <>
-                        <Subtitle>Approved by: {cv.approved_by}</Subtitle>
-                        <Subtitle>
-                            Approved at:{" "}
-                            <DateTimeFormatter dateTime={cv.approved_at} />
-                        </Subtitle>
-                    </>
-                ) : (
-                    ""
-                )}
-                {cv.is_approved ? (
-                    <Button
-                        onClick={handleOpenUnapprove}
-                        variant="contained"
-                        color="error"
-                        sx={{ borderRadius: 20 }}
-                    >
-                        <Typography fontSize={13} fontFamily={"Mina"}>
-                            Unapprove
-                        </Typography>
-                    </Button>
-                ) : (
-                    <Button
-                        sx={{ borderRadius: 20 }}
-                        onClick={handleOpen}
-                        variant="contained"
-                    >
-                        <Typography
-                            variant="contained"
-                            fontWeight={"bold"}
-                            fontSize={14}
-                            fontFamily={"Mina"}
-                        >
-                            Approve
-                        </Typography>
-                    </Button>
-                )}
-            </Box>
+            <TitleCenter>Caregiver Status</TitleCenter>
+            <Paper
+                elevation={2}
+                sx={{
+                    maxWidth: 340,
+                    mx: "auto",
+                    mt: 2,
+                    p: 3,
+                    borderRadius: 3,
+                    bgcolor: "gray.100",
+                }}
+            >
+                <Stack spacing={2} alignItems="center">
+                    <Typography variant="h5" fontWeight="bold">
+                        {cv.is_approved ? "Approved" : "Unapproved"}
+                    </Typography>
+
+                    {cv.is_approved ? (
+                        <Stack spacing={0.5} alignItems="center">
+                            <Typography variant="body2" color="text.secondary">
+                                Approved by: <b>{cv.approved_by}</b>
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                Approved at:{" "}
+                                <DateTimeFormatter dateTime={cv.approved_at} />
+                            </Typography>
+                        </Stack>
+                    ) : (
+                        <Alert severity="info">
+                            This resume is not approved yet.
+                        </Alert>
+                    )}
+                    <Box>
+                        {cv.is_approved ? (
+                            <Button
+                                onClick={handleOpenUnapprove}
+                                variant="outlined"
+                                color="error"
+                                sx={{ borderRadius: 20, minWidth: 120 }}
+                            >
+                                <Typography fontSize={14}>Unapprove</Typography>
+                            </Button>
+                        ) : (
+                            <Button
+                                sx={{ borderRadius: 20, minWidth: 120 }}
+                                onClick={handleOpen}
+                                variant="contained"
+                                color="success"
+                            >
+                                <Typography fontWeight="bold" fontSize={14}>
+                                    Approve
+                                </Typography>
+                            </Button>
+                        )}
+                    </Box>
+                </Stack>
+            </Paper>
 
             <YesOrNoModal
                 open={open}
@@ -91,7 +109,7 @@ function EditApprove({ cv }) {
             <YesOrNoModal
                 open={openUnapprove}
                 onClose={handleCloseUnapprove}
-                title="Unpprove Resume"
+                title="Unapprove Resume"
                 onConfirm={handleUnApprove}
             />
         </>

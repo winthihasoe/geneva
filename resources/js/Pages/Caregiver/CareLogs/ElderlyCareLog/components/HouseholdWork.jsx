@@ -17,6 +17,7 @@ const HouseholdWork = ({
     handleArrayChange,
     addArrayItem,
     removeArrayItem,
+    entryRefs,
 }) => {
     return (
         <Card sx={{ borderRadius: 2, bgcolor: "transparent" }}>
@@ -52,7 +53,14 @@ const HouseholdWork = ({
                 </Box>
 
                 {data.map((item, index) => (
-                    <Box key={index}>
+                    <Box
+                        key={index}
+                        ref={(el) => {
+                            if (entryRefs) {
+                                entryRefs.current[`household-${index}`] = el;
+                            }
+                        }}
+                    >
                         <Box
                             sx={{
                                 display: "flex",

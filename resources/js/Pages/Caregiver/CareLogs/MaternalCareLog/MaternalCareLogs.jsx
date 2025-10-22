@@ -1,5 +1,5 @@
 import AppLayout from "@/Layouts/AppLayout";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Head, router } from "@inertiajs/react";
 import {
     Box,
@@ -9,11 +9,6 @@ import {
     IconButton,
     Container,
     Alert,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    Divider,
 } from "@mui/material";
 import {
     Save as SaveIcon,
@@ -58,9 +53,271 @@ import HouseholdWork from "./components/HouseholdWork";
 import RequestedSuppliesSection from "./components/RequestedSuppliesSection";
 import AdditionalNotesSection from "./components/AdditionalNotesSection";
 import SignaturesSection from "./components/SignaturesSection";
+import PreviewMaternalCareLog from "./components/PreviewMaternalCareLog";
 
-// Import PDF generation utility
-import { generateCareLogPDF } from "@/utils/pdfGenerator";
+const longNote =
+    "This is a detailed observation note. The client responded well to care and showed positive engagement throughout the activity. No adverse reactions were observed. Continued monitoring is recommended for optimal health and well-being. Family members were informed and are supportive of the current care plan. Further updates will be provided as needed.";
+
+// Generate a full set of test data for the maternal care log form
+export function generateTestData(caregiverName = "Jane Caregiver") {
+    return {
+        date: "2025-10-17",
+        firstName: "Mary",
+        lastName: "Smith",
+        age: "32",
+        gestationalAge: "28 weeks",
+        weight: "68",
+        height: "165",
+
+        hygiene: [
+            { time: "08:00", activity: "Shower", notes: longNote },
+            { time: "19:00", activity: "Oral care", notes: longNote },
+        ],
+        moisturizer_applied: true,
+        pressure_areas_checked: true,
+        skin_care_findings: "No redness or irritation observed",
+        medication: [
+            {
+                time: "09:00",
+                medication: "Prenatal vitamin",
+                dosage: "1 tab",
+                route: "PO",
+                notes: longNote,
+            },
+            {
+                time: "21:00",
+                medication: "Iron supplement",
+                dosage: "1 tab",
+                route: "PO",
+                notes: longNote,
+            },
+        ],
+        vitalSigns: {
+            times: ["08:00", "20:00"],
+            bloodPressureSystolic: ["120", "118"],
+            bloodPressureDiastolic: ["80", "78"],
+            temperature: ["36.7", "36.8"],
+            temperatureUnit: ["C", "C"],
+            pulseRate: ["78", "76"],
+            respiratoryRate: ["16", "15"],
+            spo2: ["98", "99"],
+        },
+        bloodGlucose: [
+            {
+                measurement_time: "07:30",
+                glucose_level: "5.2",
+                timing: "fasting",
+                note: longNote,
+            },
+            {
+                measurement_time: "19:30",
+                glucose_level: "6.1",
+                timing: "2hpp",
+                note: longNote,
+            },
+        ],
+        mobility: [
+            {
+                time: "10:00",
+                duration: "20 min",
+                activity: "Walking around the park",
+                notes: "No issues",
+            },
+        ],
+        intake: [
+            {
+                meal_type: "breakfast",
+                meal_time: "08:30",
+                food_items: ["Oatmeal", "Banana"],
+                amount: "350",
+                amount_unit: "ml",
+                assistance_needed: false,
+                intake_notes: longNote,
+            },
+            {
+                meal_type: "lunch",
+                meal_time: "12:30",
+                food_items: ["Chicken", "Rice", "Salad"],
+                amount: "500",
+                amount_unit: "ml",
+                assistance_needed: false,
+                intake_notes: longNote,
+            },
+        ],
+        output: [
+            {
+                record_time: "09:00",
+                urine_frequency: "Normal",
+                blood_in_urine: false,
+                pain_discomfort_urination: true,
+                discharge: true,
+                bowel_movement_frequency: "Every 2 days",
+                blood_in_stool: true,
+                pain_discomfort_abdomen: false,
+                other_symptoms: longNote,
+            },
+        ],
+
+        activities: [
+            {
+                time: "15:00",
+                activity: "Knitting",
+                duration: "30 min",
+                notes: longNote,
+            },
+        ],
+        sleep: [
+            {
+                type: "Afternoon Nap",
+                sleep_start_time: "22:00",
+                duration: "7h",
+                sleep_quality: "Good",
+                notes: longNote,
+            },
+        ],
+        sleepIssues: "None",
+        emotionalMood: "Calm",
+        behavioralConcerns: "None",
+        emotionalActionTaken: "N/A",
+
+        fetalHealth: {
+            fetalMovementDetected: true,
+            kickCount: "12",
+            fetalHeartSound: "145",
+            notes: longNote,
+        },
+
+        accident: [
+            {
+                time: "11:32",
+                description: "Slip on foot",
+                severity: "Medium",
+                action: longNote,
+            },
+        ],
+        household: [
+            {
+                task: "Laundry",
+                time: "11:00",
+                duration: "30 min",
+                notes: longNote,
+            },
+            {
+                task: "Cleaning room",
+                time: "14:00",
+                duration: "15 min",
+                notes: longNote,
+            },
+        ],
+        supplies: [
+            {
+                item: "Maternity pads",
+                quantity: "2 packs",
+                purpose: "Postpartum",
+                priority: "high",
+            },
+        ],
+
+        additionalNotes: longNote,
+        caregiverSignature: "",
+        caregiverName,
+        clientSignature: "",
+        clientComment: longNote,
+    };
+}
+
+// Generate a minimal valid set of test data for the maternal care log form
+export function generateMinimalTestData(caregiverName = "Jane Caregiver") {
+    return {
+        date: "2025-10-17",
+        firstName: "Mary",
+        lastName: "",
+        age: "32",
+        gestationalAge: "28 weeks",
+        weight: "",
+        height: "",
+
+        hygiene: [{ time: "", activity: "", notes: "" }],
+        medication: [
+            { time: "", medication: "", dosage: "", route: "", notes: "" },
+        ],
+        vitalSigns: {
+            times: [""],
+            bloodPressureSystolic: [""],
+            bloodPressureDiastolic: [""],
+            temperature: [""],
+            temperatureUnit: ["C"],
+            pulseRate: [""],
+            respiratoryRate: [""],
+            spo2: [""],
+        },
+        bloodGlucose: [
+            { measurement_time: "", glucose_level: "", timing: "", note: "" },
+        ],
+        mobility: [{ time: "", duration: "", activity: "", notes: "" }],
+        intake: [
+            {
+                meal_type: "",
+                meal_time: "",
+                food_items: [""],
+                amount: "",
+                amount_unit: "ml",
+                assistance_needed: false,
+                intake_notes: "",
+            },
+        ],
+        output: [
+            {
+                output_time: "",
+                urine_volume: "",
+                urine_volume_unit: "ml",
+                urine_color: "",
+                bowel_movement: "",
+                bowel_consistency: "",
+                output_notes: "",
+            },
+        ],
+        hydrationRecord: {
+            fluid_intake: "",
+            fluid_intake_unit: "l",
+            dehydration_signs: "",
+            other_dehydration_signs: "",
+        },
+        activities: [{ time: "", activity: "", duration: "", notes: "" }],
+        sleep: [
+            {
+                type: "",
+                sleep_start_time: "",
+                duration: "",
+                sleep_quality: "",
+                notes: "",
+            },
+        ],
+        sleepIssues: "",
+        emotionalMood: "",
+        behavioralConcerns: "",
+        emotionalActionTaken: "",
+
+        fetalHealth: {
+            fetalMovementDetected: undefined,
+            kickCount: "",
+            fetalHeartSound: "",
+            notes: "",
+        },
+
+        accident: [
+            { time: "", description: "", severity: "Medium", action: "" },
+        ],
+        household: [{ task: "", time: "", duration: "", notes: "" }],
+        supplies: [{ item: "", quantity: "", purpose: "", priority: "medium" }],
+
+        additionalNotes: "",
+        caregiverSignature: "",
+        caregiverName,
+        clientSignature: "",
+        clientComment: "",
+    };
+}
 
 // Section configurations with sweet and warm colors for maternal care
 const sectionConfigs = {
@@ -180,189 +437,6 @@ const SectionCard = ({ children, config, sx = {} }) => {
     );
 };
 
-// Preview Dialog Component
-const PreviewDialog = ({
-    open,
-    onClose,
-    formData,
-    onEdit,
-    onSubmit,
-    onGeneratePDF,
-    isSubmitting = false,
-    isGeneratingPDF = false,
-}) => {
-    const formatFetalHealth = () => {
-        const fetal = formData.fetalHealth;
-        if (
-            !fetal ||
-            (!fetal.fetalMovementDetected &&
-                !fetal.fetalHeartSound &&
-                !fetal.kickCount)
-        ) {
-            return "No fetal health data recorded";
-        }
-
-        let result = [];
-        if (fetal.fetalMovementDetected !== undefined) {
-            result.push(
-                `Movement Detected: ${
-                    fetal.fetalMovementDetected ? "Yes" : "No"
-                }`
-            );
-        }
-        if (fetal.kickCount) {
-            result.push(`Kick Count: ${fetal.kickCount}`);
-        }
-        if (fetal.fetalHeartSound) {
-            result.push(`Heart Rate: ${fetal.fetalHeartSound} BPM`);
-        }
-        if (fetal.notes) {
-            result.push(`Notes: ${fetal.notes}`);
-        }
-
-        return result.join("\n");
-    };
-
-    return (
-        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-            <DialogTitle sx={{ pb: 2 }}>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <PreviewIcon color="primary" />
-                    <Typography variant="h6" fontWeight="bold">
-                        Maternal Care Log Preview
-                    </Typography>
-                </Box>
-            </DialogTitle>
-
-            <DialogContent dividers sx={{ maxHeight: "90vh" }}>
-                {/* Basic Information */}
-                <Box sx={{ mb: 3 }}>
-                    <Typography variant="h6" color="primary" gutterBottom>
-                        Basic Information
-                    </Typography>
-                    <Typography variant="subtitle1">
-                        <strong>Date:</strong>{" "}
-                        {formData.date || "Not specified"}
-                    </Typography>
-                    <Typography variant="subtitle1">
-                        <strong>Client Name:</strong>{" "}
-                        {formData.firstName || "Not specified"}{" "}
-                        {formData.lastName || ""}
-                    </Typography>
-                    <Typography variant="subtitle1">
-                        <strong>Age:</strong> {formData.age || "Not specified"}
-                    </Typography>
-                    <Typography variant="subtitle1">
-                        <strong>Gestational Age:</strong>{" "}
-                        {formData.gestationalAge || "Not specified"}
-                    </Typography>
-                </Box>
-
-                <Divider sx={{ my: 2 }} />
-
-                {/* Fetal Health */}
-                <Box sx={{ mb: 3 }}>
-                    <Typography variant="h6" color="primary" gutterBottom>
-                        Fetal Health Monitoring
-                    </Typography>
-                    <Typography
-                        component="pre"
-                        sx={{
-                            whiteSpace: "pre-line",
-                            fontSize: "0.875rem",
-                        }}
-                    >
-                        {formatFetalHealth()}
-                    </Typography>
-                </Box>
-
-                <Divider sx={{ my: 2 }} />
-
-                {/* Additional Notes */}
-                <Box sx={{ mb: 3 }}>
-                    <Typography variant="h6" color="primary" gutterBottom>
-                        Additional Notes
-                    </Typography>
-                    <Typography>
-                        {formData.additionalNotes || "No additional notes"}
-                    </Typography>
-                </Box>
-
-                <Divider sx={{ my: 2 }} />
-
-                {/* Signatures */}
-                <Box sx={{ mb: 3 }}>
-                    <Typography variant="h6" color="primary" gutterBottom>
-                        Signatures
-                    </Typography>
-                    <Typography>
-                        <strong>Caregiver Name:</strong>{" "}
-                        {formData.caregiverName || "Not provided"}
-                    </Typography>
-                    <Typography>
-                        <strong>Caregiver Signature:</strong>{" "}
-                        {formData.caregiverSignature
-                            ? "Provided"
-                            : "Not provided"}
-                    </Typography>
-                    <Typography>
-                        <strong>Client/Family Signature:</strong>{" "}
-                        {formData.clientSignature ? "Provided" : "Not provided"}
-                    </Typography>
-                    <Typography>
-                        <strong>Client/Family Comment:</strong>{" "}
-                        {formData.clientComment || "No comment"}
-                    </Typography>
-                </Box>
-            </DialogContent>
-
-            <DialogActions sx={{ p: 2, gap: 2 }}>
-                <Button
-                    onClick={onGeneratePDF}
-                    startIcon={<DownloadIcon />}
-                    variant="outlined"
-                    color="primary"
-                    disabled={isSubmitting || isGeneratingPDF}
-                >
-                    {isGeneratingPDF ? "Generating..." : "Download PDF"}
-                </Button>
-
-                <Button
-                    onClick={onEdit}
-                    startIcon={<EditIcon />}
-                    variant="outlined"
-                    color="primary"
-                    disabled={isSubmitting || isGeneratingPDF}
-                >
-                    Edit
-                </Button>
-
-                <Button
-                    onClick={onSubmit}
-                    startIcon={<SubmitIcon />}
-                    variant="contained"
-                    color="primary"
-                    disabled={isSubmitting || isGeneratingPDF}
-                    sx={{
-                        background:
-                            isSubmitting || isGeneratingPDF
-                                ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
-                                : "linear-gradient(45deg, #e91e63 30%, #f8bbd9 90%)",
-                        "&:hover": {
-                            background:
-                                isSubmitting || isGeneratingPDF
-                                    ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
-                                    : "linear-gradient(45deg, #d81b60 30%, #f48fb1 90%)",
-                        },
-                    }}
-                >
-                    {isSubmitting ? "Submitting..." : "Submit"}
-                </Button>
-            </DialogActions>
-        </Dialog>
-    );
-};
-
 const MaternalCareLogs = ({ caregiverName }) => {
     const [formData, setFormData] = useState({
         // Basic Information
@@ -376,6 +450,9 @@ const MaternalCareLogs = ({ caregiverName }) => {
 
         // Array fields for all sections
         hygiene: [{ time: "", activity: "", notes: "" }],
+        moisturizer_applied: null,
+        pressure_areas_checked: null,
+        skin_care_findings: "",
         medication: [
             { time: "", medication: "", dosage: "", route: "", notes: "" },
         ],
@@ -406,23 +483,29 @@ const MaternalCareLogs = ({ caregiverName }) => {
         ],
         output: [
             {
-                output_time: "",
-                urine_volume: "",
-                urine_volume_unit: "ml",
-                urine_color: "",
-                bowel_movement: "",
-                bowel_consistency: "",
-                output_notes: "",
+                record_time: "",
+                urine_frequency: "",
+                blood_in_urine: null,
+                pain_discomfort_urination: null,
+                discharge: null,
+                bowel_movement_frequency: "",
+                blood_in_stool: null,
+                pain_discomfort_abdomen: null,
+                other_symptoms: "",
             },
         ],
-        hydrationRecord: {
-            fluid_intake: "",
-            fluid_intake_unit: "l",
-            dehydration_signs: "",
-            other_dehydration_signs: "",
-        },
+
         activities: [{ time: "", activity: "", duration: "", notes: "" }],
-        sleep: [{ time: "", duration: "", quality: "", notes: "" }],
+        sleep: [
+            {
+                type: "",
+                sleep_start_time: "",
+                duration: "",
+                sleep_quality: "",
+                notes: "",
+                issue: "",
+            },
+        ],
         sleepIssues: "",
         emotionalMood: "",
         behavioralConcerns: "",
@@ -440,9 +523,7 @@ const MaternalCareLogs = ({ caregiverName }) => {
             { time: "", description: "", severity: "Medium", action: "" },
         ],
         household: [{ task: "", time: "", duration: "", notes: "" }],
-        requestedSupplies: [
-            { item: "", quantity: "", purpose: "", priority: "medium" },
-        ],
+        supplies: [{ item: "", quantity: "", purpose: "", priority: "medium" }],
 
         // Additional Notes
         additionalNotes: "",
@@ -457,7 +538,6 @@ const MaternalCareLogs = ({ caregiverName }) => {
     const [showPreview, setShowPreview] = useState(false);
     const [validationErrors, setValidationErrors] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
     const handleInputChange = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
@@ -475,11 +555,25 @@ const MaternalCareLogs = ({ caregiverName }) => {
         }));
     };
 
+    const entryRefs = useRef({});
+
     const addArrayItem = (arrayName, defaultItem) => {
-        setFormData((prev) => ({
-            ...prev,
-            [arrayName]: [...prev[arrayName], defaultItem],
-        }));
+        setFormData((prev) => {
+            const newArray = [...prev[arrayName], defaultItem];
+            return {
+                ...prev,
+                [arrayName]: newArray,
+            };
+        });
+
+        setTimeout(() => {
+            // Scroll to the last entry after state update
+            const lastIndex = formData[arrayName].length;
+            const ref = entryRefs.current[`${arrayName}-${lastIndex}`];
+            if (ref && ref.scrollIntoView) {
+                ref.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+        }, 300); // Delay to wait for render
     };
 
     const removeArrayItem = (arrayName, index) => {
@@ -489,16 +583,53 @@ const MaternalCareLogs = ({ caregiverName }) => {
         }));
     };
 
-    const handleVitalSignChange = (field, index, value) => {
-        setFormData((prev) => ({
-            ...prev,
-            vitalSigns: {
-                ...prev.vitalSigns,
-                [field]: prev.vitalSigns[field].map((item, i) =>
-                    i === index ? value : item
-                ),
-            },
-        }));
+    const handleVitalSignChange = (type, index, value) => {
+        setFormData((prev) => {
+            const newVitalSigns = { ...prev.vitalSigns };
+
+            if (!newVitalSigns[type]) {
+                newVitalSigns[type] = [];
+            }
+
+            while (newVitalSigns[type].length <= index) {
+                newVitalSigns[type].push("");
+            }
+
+            newVitalSigns[type][index] = value;
+
+            const maxLength = Math.max(
+                newVitalSigns.times.length,
+                newVitalSigns.bloodPressureSystolic.length,
+                newVitalSigns.bloodPressureDiastolic.length,
+                newVitalSigns.temperature.length,
+                newVitalSigns.temperatureUnit.length,
+                newVitalSigns.pulseRate.length,
+                newVitalSigns.respiratoryRate.length,
+                newVitalSigns.spo2.length
+            );
+
+            [
+                "times",
+                "bloodPressureSystolic",
+                "bloodPressureDiastolic",
+                "temperature",
+                "temperatureUnit",
+                "pulseRate",
+                "respiratoryRate",
+                "spo2",
+            ].forEach((key) => {
+                while (newVitalSigns[key].length < maxLength) {
+                    newVitalSigns[key].push(
+                        key === "temperatureUnit" ? "C" : ""
+                    );
+                }
+            });
+
+            return {
+                ...prev,
+                vitalSigns: newVitalSigns,
+            };
+        });
     };
 
     const validateForm = () => {
@@ -539,25 +670,6 @@ const MaternalCareLogs = ({ caregiverName }) => {
         setShowPreview(false);
     };
 
-    const handleGeneratePDF = async () => {
-        setIsGeneratingPDF(true);
-        try {
-            const result = await generateCareLogPDF(formData, "maternal");
-            if (result.success) {
-                alert(
-                    `PDF generated successfully! Saved as: ${result.filename}`
-                );
-            } else {
-                alert(`Failed to generate PDF: ${result.error}`);
-            }
-        } catch (error) {
-            console.error("PDF generation error:", error);
-            alert("Failed to generate PDF. Please try again.");
-        } finally {
-            setIsGeneratingPDF(false);
-        }
-    };
-
     const handleSubmit = async () => {
         setIsSubmitting(true);
         try {
@@ -576,6 +688,102 @@ const MaternalCareLogs = ({ caregiverName }) => {
                 client_comment: formData.clientComment,
 
                 // All the other data sections would be included here
+                hygiene_records: formData.hygiene.filter(
+                    (item) => item.time || item.activity || item.notes
+                ),
+                moisturizer_applied: formData.moisturizer_applied,
+                pressure_areas_checked: formData.pressure_areas_checked,
+                skin_care_findings: formData.skin_care_findings || null,
+
+                medication_records: formData.medication.filter(
+                    (item) => item.time || item.medication || item.dosage
+                ),
+                mobility_records: formData.mobility.filter(
+                    (item) => item.time || item.activity || item.duration
+                ),
+                intake_records: formData.intake.filter(
+                    (item) => item.meal_time || item.meal_type || item.amount
+                ),
+                output_records: formData.output.filter(
+                    (item) =>
+                        item.record_time ||
+                        item.urine_frequency ||
+                        item.blood_in_urine ||
+                        item.pain_discomfort_urination ||
+                        item.discharge ||
+                        item.bowel_movement_frequency ||
+                        item.blood_in_stool ||
+                        item.pain_discomfort_abdomen ||
+                        item.other_symptoms
+                ),
+
+                activity_records: formData.activities.filter(
+                    (item) => item.time || item.activity || item.duration
+                ),
+                sleep_records: formData.sleep.filter(
+                    (item) =>
+                        item.type ||
+                        item.sleep_start_time ||
+                        item.duration ||
+                        item.sleep_quality
+                ),
+                sleep_issues: formData.sleepIssues || null,
+
+                // Replace emotional_records with emotion_behavior
+                emotion_behavior: {
+                    mood:
+                        formData.emotionalMood === "Other"
+                            ? formData.emotionalMoodOther
+                            : formData.emotionalMood,
+                    behavior:
+                        formData.behavioralConcerns === "Other"
+                            ? formData.behavioralConcernsOther
+                            : formData.behavioralConcerns,
+                    action_taken: formData.emotionalActionTaken || null,
+                },
+
+                accident_records: formData.accident.filter(
+                    (item) => item.time || item.description || item.action
+                ),
+                household_records: formData.household
+                    .filter(
+                        (item) =>
+                            item.task ||
+                            item.time ||
+                            item.duration ||
+                            item.notes
+                    )
+                    .map((item) => ({
+                        household_work: item.task || null,
+                        start_time: item.time || null,
+                        duration: item.duration || null,
+                        notes: item.notes || null,
+                    })),
+                supply_requests: formData.supplies.filter(
+                    (item) => item.item || item.quantity || item.purpose
+                ),
+                vital_signs: transformVitalSigns(),
+                blood_glucose_records: formData.bloodGlucose.filter(
+                    (item) =>
+                        item.measurement_time ||
+                        item.glucose_level ||
+                        item.timing
+                ),
+
+                // Update accident_records to use the new field names and include severity
+                emergency_incidents: formData.accident
+                    .filter(
+                        (item) => item.time || item.description || item.action
+                    )
+                    .map((item) => ({
+                        incident_time: item.time || null,
+                        incident_description: item.description || null,
+                        severity: item.severity
+                            ? item.severity.toLowerCase()
+                            : "medium",
+                        actions_taken: item.action || null,
+                    })),
+
                 fetal_health:
                     formData.fetalHealth.fetalMovementDetected !== undefined ||
                     formData.fetalHealth.kickCount ||
@@ -617,10 +825,273 @@ const MaternalCareLogs = ({ caregiverName }) => {
         }
     };
 
+    const transformVitalSigns = () => {
+        const vitalSignsRecords = [];
+        const {
+            times,
+            bloodPressureSystolic,
+            bloodPressureDiastolic,
+            temperature,
+            temperatureUnit,
+            pulseRate,
+            respiratoryRate,
+            spo2, // Use spo2 instead of bloodSugar
+        } = formData.vitalSigns;
+
+        const maxLength = Math.max(
+            times.length,
+            bloodPressureSystolic.length,
+            bloodPressureDiastolic.length,
+            temperature.length,
+            pulseRate.length,
+            respiratoryRate.length,
+            spo2.length // Use spo2 instead of bloodSugar and weight
+        );
+
+        for (let i = 0; i < maxLength; i++) {
+            if (
+                times[i] ||
+                bloodPressureSystolic[i] ||
+                bloodPressureDiastolic[i] ||
+                temperature[i] ||
+                pulseRate[i] ||
+                respiratoryRate[i] ||
+                spo2[i] // Use spo2
+            ) {
+                vitalSignsRecords.push({
+                    measurement_time: times[i] || null,
+                    systolic_pressure: bloodPressureSystolic[i]
+                        ? parseInt(bloodPressureSystolic[i])
+                        : null,
+                    diastolic_pressure: bloodPressureDiastolic[i]
+                        ? parseInt(bloodPressureDiastolic[i])
+                        : null,
+                    temperature: temperature[i]
+                        ? parseFloat(temperature[i])
+                        : null,
+                    temperature_unit: temperatureUnit[i] || "C",
+                    pulse_rate: pulseRate[i] ? parseInt(pulseRate[i]) : null,
+                    respiratory_rate: respiratoryRate[i]
+                        ? parseInt(respiratoryRate[i])
+                        : null,
+                    spo2: spo2[i] ? parseInt(spo2[i]) : null, // Add spo2
+                    notes: null,
+                });
+            }
+        }
+
+        return vitalSignsRecords;
+    };
+
+    // Add these new functions for test data
+    const fillWithTestData = () => {
+        const testData = generateTestData();
+        setFormData({
+            ...testData,
+            caregiverName: caregiverName || testData.caregiverName,
+        });
+        // Clear any validation errors
+        setValidationErrors([]);
+    };
+
+    const clearForm = () => {
+        setFormData({
+            date: new Date().toISOString().split("T")[0],
+            firstName: "",
+            lastName: "",
+            age: "",
+            weight: "",
+            height: "",
+
+            hygiene: [
+                {
+                    time: "",
+                    activity: "",
+                    notes: "",
+                },
+            ],
+            moisturizer_applied: null,
+            pressure_areas_checked: null,
+            skin_care_findings: "",
+            medication: [
+                { time: "", medication: "", dosage: "", route: "", notes: "" },
+            ],
+            mobility: [{ time: "", duration: "", activity: "", notes: "" }],
+
+            intake: [
+                {
+                    meal_type: "",
+                    meal_time: "",
+                    food_items: [""],
+                    amount: "",
+                    amount_unit: "oz",
+                    assistance_needed: false,
+                    intake_notes: "",
+                },
+            ],
+            output: [
+                {
+                    output_time: "",
+                    urine_volume: "",
+                    urine_volume_unit: "l",
+                    urine_color: "",
+                    bowel_movement: "",
+                    bowel_consistency: "",
+                    output_notes: "",
+                },
+            ],
+            hydration: {
+                fluid_intake: "",
+                fluid_intake_unit: "l",
+                dehydration_signs: "",
+                other_dehydration_signs: "",
+            },
+
+            activities: [{ time: "", activity: "", duration: "", notes: "" }],
+            sleep: [
+                {
+                    type: "",
+                    sleep_start_time: "",
+                    duration: "",
+                    sleep_quality: "",
+                    notes: "",
+                    issue: "",
+                },
+            ],
+            sleepIssues: "",
+
+            emotionalMood: "",
+            emotionalMoodOther: "",
+            behavioralConcerns: "",
+            behavioralConcernsOther: "",
+            emotionalActionTaken: "",
+
+            accident: [
+                { time: "", description: "", severity: "Medium", action: "" },
+            ],
+            household: [{ task: "", duration: "", notes: "" }],
+            supplies: [
+                { item: "", quantity: "", purpose: "", priority: "medium" },
+            ],
+
+            vitalSigns: {
+                times: [""],
+                bloodPressureSystolic: [""],
+                bloodPressureDiastolic: [""],
+                temperature: [""],
+                temperatureUnit: ["C"],
+                pulseRate: [""],
+                respiratoryRate: [""],
+                spo2: [""],
+            },
+
+            bloodGlucose: [
+                {
+                    measurement_time: "",
+                    glucose_level: "",
+                    timing: "",
+                    note: "",
+                },
+            ],
+
+            additionalNotes: "",
+            caregiverSignature: "",
+            caregiverName: caregiverName || "",
+            clientSignature: "",
+            clientComment: "",
+        });
+        setValidationErrors([]);
+    };
+
+    const fillWithMinimalData = () => {
+        const minimalData = generateMinimalTestData();
+        setFormData({
+            ...formData, // Keep existing data
+            ...minimalData,
+            caregiverName: caregiverName || minimalData.caregiverSignature,
+        });
+        // Clear any validation errors
+        setValidationErrors([]);
+    };
+
     return (
         <AppLayout>
             <Head title="Maternal Care Log" />
             <Container maxWidth="lg" sx={{ pb: 8 }}>
+                <Paper
+                    sx={{
+                        p: 3,
+                        mb: 4,
+                        borderRadius: 3,
+                        background:
+                            "linear-gradient(135deg, #f3e5f5 0%, #f8f9fa 100%)",
+                        border: "2px dashed #7b1fa2",
+                    }}
+                >
+                    <Typography
+                        variant="h6"
+                        gutterBottom
+                        sx={{ color: "#7b1fa2", fontWeight: "bold" }}
+                    >
+                        🧪 Testing Tools (Development Only)
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 2, color: "#666" }}>
+                        Use these buttons to quickly fill the form with test
+                        data instead of entering manually:
+                    </Typography>
+
+                    <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+                        <Button
+                            variant="contained"
+                            onClick={fillWithTestData}
+                            sx={{
+                                background:
+                                    "linear-gradient(45deg, #7b1fa2 30%, #ba68c8 90%)",
+                                color: "white",
+                                fontWeight: "bold",
+                                "&:hover": {
+                                    background:
+                                        "linear-gradient(45deg, #6a1b9a 30%, #ab47bc 90%)",
+                                },
+                            }}
+                        >
+                            Fill Complete Test Data
+                        </Button>
+
+                        <Button
+                            variant="contained"
+                            onClick={fillWithMinimalData}
+                            sx={{
+                                background:
+                                    "linear-gradient(45deg, #2196f3 30%, #64b5f6 90%)",
+                                color: "white",
+                                fontWeight: "bold",
+                                "&:hover": {
+                                    background:
+                                        "linear-gradient(45deg, #1976d2 30%, #42a5f5 90%)",
+                                },
+                            }}
+                        >
+                            Fill Minimal Data
+                        </Button>
+
+                        <Button
+                            variant="outlined"
+                            onClick={clearForm}
+                            sx={{
+                                borderColor: "#f44336",
+                                color: "#f44336",
+                                fontWeight: "bold",
+                                "&:hover": {
+                                    borderColor: "#d32f2f",
+                                    bgcolor: "#ffebee",
+                                },
+                            }}
+                        >
+                            Clear Form
+                        </Button>
+                    </Box>
+                </Paper>
                 {/* Enhanced Header */}
                 <Box
                     sx={{
@@ -684,9 +1155,14 @@ const MaternalCareLogs = ({ caregiverName }) => {
                 <SectionCard config={sectionConfigs.hygiene}>
                     <HygieneSection
                         data={formData.hygiene}
+                        moisturizer_applied={formData.moisturizer_applied}
+                        pressure_areas_checked={formData.pressure_areas_checked}
+                        skin_care_findings={formData.skin_care_findings}
                         handleArrayChange={handleArrayChange}
+                        handleInputChange={handleInputChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -697,6 +1173,7 @@ const MaternalCareLogs = ({ caregiverName }) => {
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -709,6 +1186,7 @@ const MaternalCareLogs = ({ caregiverName }) => {
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -719,6 +1197,7 @@ const MaternalCareLogs = ({ caregiverName }) => {
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -730,13 +1209,14 @@ const MaternalCareLogs = ({ caregiverName }) => {
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
                 {/* 6. Urinary & Bowel Health Record */}
                 <SectionCard config={sectionConfigs.urinary}>
                     <UrinaryBowelRecord
-                        formData={formData}
+                        data={formData.output}
                         handleInputChange={handleInputChange}
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
@@ -751,6 +1231,7 @@ const MaternalCareLogs = ({ caregiverName }) => {
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -763,6 +1244,7 @@ const MaternalCareLogs = ({ caregiverName }) => {
                         removeArrayItem={removeArrayItem}
                         formData={formData}
                         handleInputChange={handleInputChange}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -789,6 +1271,7 @@ const MaternalCareLogs = ({ caregiverName }) => {
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -799,16 +1282,18 @@ const MaternalCareLogs = ({ caregiverName }) => {
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
                 {/* 13. Requested Supplies */}
                 <SectionCard config={sectionConfigs.supplies}>
                     <RequestedSuppliesSection
-                        data={formData.requestedSupplies}
+                        data={formData.supplies}
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -838,29 +1323,6 @@ const MaternalCareLogs = ({ caregiverName }) => {
                         flexDirection: { xs: "column", sm: "row" },
                     }}
                 >
-                    <Button
-                        variant="outlined"
-                        startIcon={<DownloadIcon />}
-                        onClick={handleGeneratePDF}
-                        disabled
-                        fullWidth={window.innerWidth < 600}
-                        sx={{
-                            py: 1.5,
-                            px: 4,
-                            borderRadius: 3,
-                            fontSize: "1rem",
-                            fontWeight: "bold",
-                            border: "2px solid #e91e63",
-                            color: "#e91e63",
-                            "&:hover": {
-                                border: "2px solid #d81b60",
-                                bgcolor: "#fce4ec",
-                            },
-                        }}
-                    >
-                        {isGeneratingPDF ? "Generating PDF..." : "Download PDF"}
-                    </Button>
-
                     <Button
                         variant="contained"
                         startIcon={<SaveIcon />}
@@ -905,15 +1367,14 @@ const MaternalCareLogs = ({ caregiverName }) => {
                 </Box>
 
                 {/* Preview Dialog */}
-                <PreviewDialog
+
+                <PreviewMaternalCareLog
                     open={showPreview}
                     onClose={() => setShowPreview(false)}
                     formData={formData}
                     onEdit={handleEditClick}
                     onSubmit={handleSubmit}
-                    onGeneratePDF={handleGeneratePDF}
                     isSubmitting={isSubmitting}
-                    isGeneratingPDF={isGeneratingPDF}
                 />
             </Container>
         </AppLayout>

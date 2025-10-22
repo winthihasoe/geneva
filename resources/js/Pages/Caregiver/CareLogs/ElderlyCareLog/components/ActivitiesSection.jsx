@@ -17,6 +17,7 @@ const ActivitiesSection = ({
     handleArrayChange,
     addArrayItem,
     removeArrayItem,
+    entryRefs,
 }) => {
     return (
         <Card sx={{ borderRadius: 2, bgcolor: "transparent" }}>
@@ -52,7 +53,14 @@ const ActivitiesSection = ({
                 </Box>
 
                 {data.map((item, index) => (
-                    <Box key={index}>
+                    <Box
+                        key={index}
+                        ref={(el) => {
+                            if (entryRefs) {
+                                entryRefs.current[`activities-${index}`] = el;
+                            }
+                        }}
+                    >
                         <Box
                             sx={{
                                 display: "flex",

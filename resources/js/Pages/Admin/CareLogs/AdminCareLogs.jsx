@@ -25,6 +25,7 @@ import {
     Pagination,
     Stack,
     Avatar,
+    Alert,
 } from "@mui/material";
 import {
     Search as SearchIcon,
@@ -39,6 +40,7 @@ import ChildCareIcon from "@mui/icons-material/ChildCare";
 function AdminCareLogs() {
     const { props } = usePage();
     const { careLogs, filters } = props;
+    const careTypeCounts = props.careTypeCounts || {};
 
     // Filter states
     const [searchTerm, setSearchTerm] = useState("");
@@ -48,7 +50,8 @@ function AdminCareLogs() {
     const [dateTo, setDateTo] = useState("");
     const [showFilters, setShowFilters] = useState(false);
 
-    const handleSearch = () => {
+    const handleSearch = (e) => {
+        e.preventDefault();
         const params = new URLSearchParams();
         if (searchTerm) params.append("search", searchTerm);
         if (selectedCareType) params.append("care_type", selectedCareType);
@@ -88,7 +91,7 @@ function AdminCareLogs() {
             case "elder":
                 return "warning";
             case "maternal":
-                return "success";
+                return "secondary";
             default:
                 return "default";
         }
@@ -109,24 +112,33 @@ function AdminCareLogs() {
             case "maternal":
                 return "admin.carelog.maternal.details";
             case "elder":
-                return "admin.carelog.elder.details";
+                return "admin.carelog.elderly.details";
             default:
                 return "admin.carelog.newborn.details";
         }
     };
 
+    // Check if any filter is applied via URL query string
+    const hasFilter =
+        !!searchTerm ||
+        !!selectedCareType ||
+        !!selectedCaregiver ||
+        !!dateFrom ||
+        !!dateTo ||
+        window.location.search.length > 1;
+
     return (
         <AdminLayout>
             <Head title="Care Logs Management" />
 
-            <Container maxWidth="xl" sx={{ py: 4 }}>
+            <Container maxWidth="lg" sx={{ pb: 4, px: { xs: 0 } }}>
                 {/* Header */}
                 <Box
                     sx={{
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
-                        mb: 4,
+                        mb: 3,
                     }}
                 >
                     <Typography variant="h4" fontWeight="bold" color="primary">
@@ -139,390 +151,394 @@ function AdminCareLogs() {
                     />
                 </Box>
 
-                {/* Statistics Overview */}
-                <Grid container spacing={3} mb={3}>
-                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                        <Card>
-                            <CardContent sx={{ textAlign: "center" }}>
-                                <Avatar
-                                    sx={{
-                                        bgcolor: "#e3f2fd",
-                                        color: "#1976d2",
-                                        mx: "auto",
-                                        mb: 1,
-                                    }}
-                                >
-                                    <ChildCareIcon />
-                                </Avatar>
-                                <Typography variant="h6" color="primary">
-                                    {careLogs?.data?.filter(
-                                        (log) => log.care_type === "newborn"
-                                    ).length || 0}
-                                </Typography>
-                                <Typography
-                                    variant="body2"
-                                    color="textSecondary"
-                                >
-                                    Newborn Logs
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                        <Card>
-                            <CardContent sx={{ textAlign: "center" }}>
-                                <Avatar
-                                    sx={{
-                                        bgcolor: "#f3e5f5",
-                                        color: "#9c27b0",
-                                        mx: "auto",
-                                        mb: 1,
-                                    }}
-                                >
-                                    <PersonIcon />
-                                </Avatar>
-                                <Typography variant="h6" color="secondary">
-                                    {careLogs?.data?.filter(
-                                        (log) => log.care_type === "maternal"
-                                    ).length || 0}
-                                </Typography>
-                                <Typography
-                                    variant="body2"
-                                    color="textSecondary"
-                                >
-                                    Maternal Logs
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                        <Card>
-                            <CardContent sx={{ textAlign: "center" }}>
-                                <Avatar
-                                    sx={{
-                                        bgcolor: "#fff3e0",
-                                        color: "#f57c00",
-                                        mx: "auto",
-                                        mb: 1,
-                                    }}
-                                >
-                                    <ElderlyIcon />
-                                </Avatar>
-                                <Typography
-                                    variant="h6"
-                                    sx={{ color: "#f57c00" }}
-                                >
-                                    {careLogs?.data?.filter(
-                                        (log) => log.care_type === "elder"
-                                    ).length || 0}
-                                </Typography>
-                                <Typography
-                                    variant="body2"
-                                    color="textSecondary"
-                                >
-                                    Elder Logs
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                        <Card>
-                            <CardContent sx={{ textAlign: "center" }}>
-                                <Avatar
-                                    sx={{
-                                        bgcolor: "#e8f5e8",
-                                        color: "#388e3c",
-                                        mx: "auto",
-                                        mb: 1,
-                                    }}
-                                >
-                                    <CalendarIcon />
-                                </Avatar>
-                                <Typography
-                                    variant="h6"
-                                    sx={{ color: "#388e3c" }}
-                                >
-                                    {careLogs?.total || 0}
-                                </Typography>
-                                <Typography
-                                    variant="body2"
-                                    color="textSecondary"
-                                >
-                                    Total Logs
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                </Grid>
-
                 {/* Filters */}
-                <Card sx={{ mb: 3 }}>
-                    <CardContent>
-                        <Box
-                            sx={{
-                                display: "flex",
-                                justifyContent: "flex-end",
-                                alignItems: "center",
-                                mb: 2,
-                            }}
-                        >
-                            <Button
-                                startIcon={<FilterIcon />}
-                                onClick={() => setShowFilters(!showFilters)}
-                                variant="outlined"
-                                size="small"
+
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                        mb: 2,
+                    }}
+                >
+                    <Button
+                        startIcon={<FilterIcon />}
+                        onClick={() => setShowFilters(!showFilters)}
+                        variant="outlined"
+                        size="small"
+                    >
+                        {showFilters ? "Hide Filters" : "Show Filters"}
+                    </Button>
+                </Box>
+                {showFilters && (
+                    <Grid container spacing={1} mb={3}>
+                        <Grid size={{ xs: 4 }}>
+                            <Card
+                                onClick={() => {
+                                    router.get(route("admin.care.logs"), {
+                                        care_type: "newborn",
+                                    });
+                                }}
+                                sx={{ cursor: "pointer" }}
                             >
-                                {showFilters ? "Hide Filters" : "Show Filters"}
-                            </Button>
-                        </Box>
-
-                        <Grid container spacing={2}>
-                            <Grid size={{ xs: 12, md: 4 }}>
-                                <TextField
-                                    fullWidth
-                                    label="Search"
-                                    placeholder="Search by patient name, caregiver..."
-                                    value={searchTerm}
-                                    onChange={(e) =>
-                                        setSearchTerm(e.target.value)
-                                    }
-                                    InputProps={{
-                                        startAdornment: (
-                                            <SearchIcon
-                                                sx={{
-                                                    mr: 1,
-                                                    color: "action.active",
-                                                }}
-                                            />
-                                        ),
-                                    }}
-                                />
-                            </Grid>
-
-                            {showFilters && (
-                                <>
-                                    <Grid size={{ xs: 12, md: 2 }}>
-                                        <FormControl fullWidth>
-                                            <InputLabel>Care Type</InputLabel>
-                                            <Select
-                                                value={selectedCareType}
-                                                onChange={(e) =>
-                                                    setSelectedCareType(
-                                                        e.target.value
-                                                    )
-                                                }
-                                                label="Care Type"
-                                            >
-                                                <MenuItem value="">
-                                                    All Types
-                                                </MenuItem>
-                                                <MenuItem value="newborn">
-                                                    Newborn
-                                                </MenuItem>
-                                                <MenuItem value="maternal">
-                                                    Maternal
-                                                </MenuItem>
-                                                <MenuItem value="elder">
-                                                    Elder
-                                                </MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-
-                                    <Grid size={{ xs: 12, md: 3 }}>
-                                        <TextField
-                                            fullWidth
-                                            type="date"
-                                            label="Date From"
-                                            value={dateFrom}
-                                            onChange={(e) =>
-                                                setDateFrom(e.target.value)
-                                            }
-                                            InputLabelProps={{ shrink: true }}
-                                        />
-                                    </Grid>
-
-                                    <Grid size={{ xs: 12, md: 3 }}>
-                                        <TextField
-                                            fullWidth
-                                            type="date"
-                                            label="Date To"
-                                            value={dateTo}
-                                            onChange={(e) =>
-                                                setDateTo(e.target.value)
-                                            }
-                                            InputLabelProps={{ shrink: true }}
-                                        />
-                                    </Grid>
-                                </>
-                            )}
-
-                            <Grid size={{ xs: 12, md: showFilters ? 12 : 8 }}>
-                                <Stack
-                                    direction="row"
-                                    spacing={1}
-                                    justifyContent="flex-end"
-                                >
-                                    <Button
-                                        variant="contained"
-                                        onClick={handleSearch}
-                                        size="small"
-                                    >
-                                        Search
-                                    </Button>
-                                    <Button
-                                        variant="outlined"
-                                        onClick={clearFilters}
-                                        size="small"
-                                    >
-                                        Clear
-                                    </Button>
-                                </Stack>
-                            </Grid>
-                        </Grid>
-                    </CardContent>
-                </Card>
-
-                {/* Care Logs Table */}
-                <Card>
-                    <CardContent>
-                        <Typography variant="h6" gutterBottom>
-                            Care Logs ({careLogs?.total || 0})
-                        </Typography>
-
-                        {careLogs?.data?.length > 0 ? (
-                            <>
-                                <TableContainer component={Paper} elevation={0}>
-                                    <Table>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>Date</TableCell>
-                                                <TableCell>
-                                                    Patient Name
-                                                </TableCell>
-                                                <TableCell>Age</TableCell>
-                                                <TableCell>Care Type</TableCell>
-                                                <TableCell>Caregiver</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {careLogs.data.map((log) => (
-                                                <TableRow
-                                                    key={log.id}
-                                                    hover
-                                                    sx={{
-                                                        "&:hover": {
-                                                            backgroundColor:
-                                                                "rgba(0, 0, 0, 0.04)",
-                                                        },
-                                                        cursor: "pointer",
-                                                    }}
-                                                    onClick={() => {
-                                                        const routeName =
-                                                            getDetailsRoute(
-                                                                log.care_type
-                                                            );
-                                                        router.get(
-                                                            route(
-                                                                routeName,
-                                                                log.id
-                                                            )
-                                                        );
-                                                    }}
-                                                >
-                                                    <TableCell>
-                                                        <Box
-                                                            sx={{
-                                                                display: "flex",
-                                                                alignItems:
-                                                                    "center",
-                                                                gap: 1,
-                                                            }}
-                                                        >
-                                                            <CalendarIcon fontSize="small" />
-                                                            {formatDate(
-                                                                log.care_date
-                                                            )}
-                                                        </Box>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Typography fontWeight="medium">
-                                                            {log.first_name}{" "}
-                                                            {log.last_name}
-                                                        </Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        {log.age_display}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Chip
-                                                            icon={getCareTypeIcon(
-                                                                log.care_type
-                                                            )}
-                                                            label={
-                                                                log.care_type
-                                                            }
-                                                            color={getCareTypeColor(
-                                                                log.care_type
-                                                            )}
-                                                            size="small"
-                                                        />
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Typography variant="body2">
-                                                            {log.caregiver_name ||
-                                                                "Not specified"}
-                                                        </Typography>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-
-                                {/* Pagination */}
-                                {careLogs.last_page > 1 && (
-                                    <Box
+                                <CardContent sx={{ textAlign: "center" }}>
+                                    <Avatar
                                         sx={{
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            mt: 3,
+                                            bgcolor: "#e3f2fd",
+                                            color: "#1976d2",
+                                            mx: "auto",
+                                            mb: 1,
                                         }}
                                     >
-                                        <Pagination
-                                            count={careLogs.last_page}
-                                            page={careLogs.current_page}
-                                            onChange={(event, page) => {
+                                        <ChildCareIcon />
+                                    </Avatar>
+                                    <Typography variant="h6" color="primary">
+                                        {careTypeCounts.newborn || 0}
+                                    </Typography>
+                                    <Typography
+                                        variant="body2"
+                                        color="textSecondary"
+                                    >
+                                        Newborn Care Logs
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid size={{ xs: 4 }}>
+                            <Card
+                                onClick={() => {
+                                    router.get(route("admin.care.logs"), {
+                                        care_type: "maternal",
+                                    });
+                                }}
+                                sx={{ cursor: "pointer" }}
+                            >
+                                <CardContent sx={{ textAlign: "center" }}>
+                                    <Avatar
+                                        sx={{
+                                            bgcolor: "#f3e5f5",
+                                            color: "#9c27b0",
+                                            mx: "auto",
+                                            mb: 1,
+                                        }}
+                                    >
+                                        <PersonIcon />
+                                    </Avatar>
+                                    <Typography variant="h6" color="secondary">
+                                        {careTypeCounts.maternal || 0}
+                                    </Typography>
+                                    <Typography
+                                        variant="body2"
+                                        color="textSecondary"
+                                    >
+                                        Maternal Care Logs
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid size={{ xs: 4 }}>
+                            <Card
+                                onClick={() => {
+                                    router.get(route("admin.care.logs"), {
+                                        care_type: "elder",
+                                    });
+                                }}
+                                sx={{ cursor: "pointer" }}
+                            >
+                                <CardContent sx={{ textAlign: "center" }}>
+                                    <Avatar
+                                        sx={{
+                                            bgcolor: "#fff3e0",
+                                            color: "#f57c00",
+                                            mx: "auto",
+                                            mb: 1,
+                                        }}
+                                    >
+                                        <ElderlyIcon />
+                                    </Avatar>
+                                    <Typography
+                                        variant="h6"
+                                        sx={{
+                                            color: "#f57c00",
+                                        }}
+                                    >
+                                        {careTypeCounts.elder || 0}
+                                    </Typography>
+                                    <Typography
+                                        variant="body2"
+                                        color="textSecondary"
+                                    >
+                                        Elderly Care Logs
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    </Grid>
+                )}
+
+                <form onSubmit={handleSearch}>
+                    <Grid container spacing={2} mb={3}>
+                        <Grid size={{ xs: 12, md: 6 }}>
+                            <TextField
+                                fullWidth
+                                variant="standard"
+                                label="Search"
+                                placeholder="Search by patient name, caregiver..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                InputProps={{
+                                    startAdornment: (
+                                        <SearchIcon
+                                            sx={{
+                                                mr: 1,
+                                                color: "action.active",
+                                            }}
+                                        />
+                                    ),
+                                }}
+                            />
+                        </Grid>
+
+                        {showFilters && (
+                            <>
+                                <Grid size={{ xs: 12, md: 6 }}>
+                                    <FormControl fullWidth>
+                                        <InputLabel>Care Type</InputLabel>
+                                        <Select
+                                            value={selectedCareType}
+                                            onChange={(e) =>
+                                                setSelectedCareType(
+                                                    e.target.value
+                                                )
+                                            }
+                                            label="Care Type"
+                                        >
+                                            <MenuItem value="">
+                                                All Types
+                                            </MenuItem>
+                                            <MenuItem value="newborn">
+                                                Newborn
+                                            </MenuItem>
+                                            <MenuItem value="maternal">
+                                                Maternal
+                                            </MenuItem>
+                                            <MenuItem value="elder">
+                                                Elder
+                                            </MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+
+                                <Grid size={{ xs: 12, md: 6 }}>
+                                    <TextField
+                                        fullWidth
+                                        type="date"
+                                        label="Date From"
+                                        variant="standard"
+                                        value={dateFrom}
+                                        onChange={(e) =>
+                                            setDateFrom(e.target.value)
+                                        }
+                                        InputLabelProps={{ shrink: true }}
+                                    />
+                                </Grid>
+
+                                <Grid size={{ xs: 12, md: 6 }}>
+                                    <TextField
+                                        fullWidth
+                                        type="date"
+                                        label="Date To"
+                                        variant="standard"
+                                        value={dateTo}
+                                        onChange={(e) =>
+                                            setDateTo(e.target.value)
+                                        }
+                                        InputLabelProps={{ shrink: true }}
+                                    />
+                                </Grid>
+                            </>
+                        )}
+
+                        <Grid size={{ xs: 12 }}>
+                            <Stack
+                                direction="row"
+                                spacing={1}
+                                justifyContent="flex-end"
+                            >
+                                <Button
+                                    variant="contained"
+                                    type="submit"
+                                    size="small"
+                                    disabled={
+                                        !dateFrom &&
+                                        !dateTo &&
+                                        !searchTerm &&
+                                        !selectedCareType
+                                    }
+                                >
+                                    Search
+                                </Button>
+                                <Button
+                                    variant="outlined"
+                                    onClick={clearFilters}
+                                    size="small"
+                                >
+                                    Clear
+                                </Button>
+                            </Stack>
+                        </Grid>
+                    </Grid>
+                </form>
+
+                {/* Show Alert if filter applied */}
+                {hasFilter && (
+                    <Alert severity="info" sx={{ mb: 1 }}>
+                        Filters are applied. To see all the care logs, please
+                        clear the filters.
+                    </Alert>
+                )}
+                {/* Care Logs Table */}
+
+                {careLogs?.data?.length > 0 ? (
+                    <>
+                        <TableContainer component={Paper} elevation={0}>
+                            <Table>
+                                <TableHead
+                                    sx={{
+                                        bgcolor: "primary.main",
+                                    }}
+                                >
+                                    <TableRow>
+                                        <TableCell sx={{ color: "#fff" }}>
+                                            Date
+                                        </TableCell>
+                                        <TableCell sx={{ color: "#fff" }}>
+                                            Patient Name
+                                        </TableCell>
+                                        <TableCell sx={{ color: "#fff" }}>
+                                            Age
+                                        </TableCell>
+                                        <TableCell sx={{ color: "#fff" }}>
+                                            Care Type
+                                        </TableCell>
+                                        <TableCell sx={{ color: "#fff" }}>
+                                            Caregiver
+                                        </TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {careLogs.data.map((log, idx) => (
+                                        <TableRow
+                                            key={log.id}
+                                            hover
+                                            sx={{
+                                                backgroundColor:
+                                                    idx % 2 === 0
+                                                        ? "background.paper"
+                                                        : "gray.100", // alternate color
+                                                "&:hover": {
+                                                    backgroundColor:
+                                                        "rgba(0, 0, 0, 0.04)",
+                                                },
+                                                cursor: "pointer",
+                                            }}
+                                            onClick={() => {
+                                                const routeName =
+                                                    getDetailsRoute(
+                                                        log.care_type
+                                                    );
                                                 router.get(
-                                                    route("admin.care.logs"),
-                                                    { page }
+                                                    route(routeName, log.id)
                                                 );
                                             }}
-                                            color="primary"
-                                        />
-                                    </Box>
-                                )}
-                            </>
-                        ) : (
-                            <Box sx={{ textAlign: "center", py: 8 }}>
-                                <Typography
-                                    variant="h6"
-                                    color="textSecondary"
-                                    gutterBottom
-                                >
-                                    No care logs found
-                                </Typography>
-                                <Typography
-                                    variant="body2"
-                                    color="textSecondary"
-                                >
-                                    Care logs will appear here once caregivers
-                                    start submitting them.
-                                </Typography>
+                                        >
+                                            <TableCell>
+                                                <Box
+                                                    sx={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        gap: 1,
+                                                    }}
+                                                >
+                                                    {formatDate(log.care_date)}
+                                                </Box>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Typography fontWeight="medium">
+                                                    {log.first_name}{" "}
+                                                    {log.last_name}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                {log.age_display}
+                                            </TableCell>
+                                            <TableCell>
+                                                <Chip
+                                                    icon={getCareTypeIcon(
+                                                        log.care_type
+                                                    )}
+                                                    label={log.care_type}
+                                                    color={getCareTypeColor(
+                                                        log.care_type
+                                                    )}
+                                                    size="small"
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <Typography variant="body2">
+                                                    {log.caregiver_name ||
+                                                        "Not specified"}
+                                                </Typography>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+
+                        {/* Pagination */}
+                        {careLogs.last_page > 1 && (
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    mt: 3,
+                                }}
+                            >
+                                <Pagination
+                                    count={careLogs.last_page}
+                                    page={careLogs.current_page}
+                                    onChange={(event, page) => {
+                                        const params = new URLSearchParams(
+                                            window.location.search
+                                        );
+                                        params.set("page", page);
+                                        router.get(
+                                            route("admin.care.logs") +
+                                                "?" +
+                                                params.toString()
+                                        );
+                                    }}
+                                    color="primary"
+                                />
                             </Box>
                         )}
-                    </CardContent>
-                </Card>
+                    </>
+                ) : (
+                    <Box sx={{ textAlign: "center", py: 8 }}>
+                        <Typography
+                            variant="h6"
+                            color="textSecondary"
+                            gutterBottom
+                        >
+                            No care logs found
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
+                            Care logs will appear here once caregivers start
+                            submitting them.
+                        </Typography>
+                    </Box>
+                )}
             </Container>
         </AdminLayout>
     );

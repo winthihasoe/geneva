@@ -186,6 +186,37 @@ function CVdetail({ cv }) {
                                     </ResumeText>
                                 </Grid2>
                             </Grid2>
+                            <Grid2
+                                container
+                                sx={{
+                                    bgcolor: "gray.100",
+                                    p: { xs: 0.3, sm: 1, md: 2 },
+                                }}
+                                spacing={1}
+                            >
+                                <Grid2 size={5}>
+                                    <Typography
+                                        fontSize={{
+                                            xs: 12,
+                                            sm: 13,
+                                            md: 15,
+                                        }}
+                                    >
+                                        📞 +66 82 902 1957
+                                    </Typography>
+                                </Grid2>
+                                <Grid2 size={6}>
+                                    <Typography
+                                        fontSize={{
+                                            xs: 12,
+                                            sm: 13,
+                                            md: 15,
+                                        }}
+                                    >
+                                        📧 heartyaidbkk@gmail.com
+                                    </Typography>
+                                </Grid2>
+                            </Grid2>
                         </Box>
                     </Grid2>
                 </Grid2>

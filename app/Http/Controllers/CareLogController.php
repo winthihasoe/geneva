@@ -760,6 +760,504 @@ class CareLogController extends Controller
             ])->withInput();
         }
     }
+    // Store Maternal Care Log
+    public function storeMaternalCareLog(Request $request)
+    {
+        // Add debug logging
+        \Log::info('=== Maternal CARE LOG DEBUG START ===');
+        \Log::info('Request data:', $request->all());
+        
+        // Validate the main required fields
+        try {
+            $request->validate([
+                'care_date' => 'required|date',
+                'first_name' => 'required|string|max:255',
+                'age_display' => 'required|string|max:255',
+            ]);
+            \Log::info('Validation passed');
+        } catch (\Exception $e) {
+            \Log::error('Validation failed:', ['error' => $e->getMessage()]);
+            throw $e;
+        }
+
+        try {
+            DB::beginTransaction();
+            \Log::info('Transaction started');
+            
+            $user = Auth::user();
+            \Log::info('User retrieved:', ['user_id' => $user->id ?? 'null']);
+            
+            $cvId = null;
+            if ($user->cv) {
+                $cvId = $user->cv->id;
+                \Log::info('CV ID found:', ['cv_id' => $cvId]);
+            } else {
+                \Log::warning('No CV found for user');
+            }
+
+            // Create the main care log entry
+            \Log::info('Preparing care log data...');
+            $careLogData = [
+                'cv_id' => $cvId,
+                'care_date' => $request->care_date,
+                'care_type' => 'maternal',
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'age_display' => $request->age_display,
+                'weight_kg' => $request->weight_kg ? (float) $request->weight_kg : null,
+                'height_cm' => $request->height_cm ? (float) $request->height_cm : null,
+                'additional_notes' => $request->additional_notes,
+                'caregiver_name' => $request->caregiver_name,
+                'caregiver_signature' => $request->caregiver_signature,
+                'guardian_signature' => $request->client_signature,
+                'guardian_comment' => $request->client_comment,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+            \Log::info('Care log data prepared:', $careLogData);
+            
+            $careLog = DB::table('care_logs')->insertGetId($careLogData);
+            \Log::info('Care log inserted with ID:', ['care_log_id' => $careLog]);
+
+            // Store emotion/behavior data
+            if ($request->emotion_behavior) {
+                \Log::info('Processing emotion/behavior data...');
+                $emotionData = $request->emotion_behavior;
+                try {
+                    DB::table('emotion_behaviors')->insert([
+                        'care_log_id' => $careLog,
+                        'mood' => $emotionData['mood'] ?? null,
+                        'behavior' => $emotionData['behavior'] ?? null,
+                        'action_taken' => $emotionData['action_taken'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                    \Log::info('Emotion/behavior data inserted');
+                } catch (\Exception $e) {
+                    \Log::error('Error inserting emotion/behavior data:', ['error' => $e->getMessage()]);
+                    throw $e;
+                }
+            }
+
+            // Store hygiene records
+            if ($request->hygiene_records && count($request->hygiene_records) > 0) {
+                \Log::info('Processing hygiene records...', ['count' => count($request->hygiene_records)]);
+                $hygieneRecords = [];
+                foreach ($request->hygiene_records as $index => $hygiene) {
+                    // Fix: Map frontend fields (time, activity) to backend fields (hygiene_time, hygiene_activity)
+                    if (!empty($hygiene['time']) || !empty($hygiene['activity'])) {
+                        $hygieneRecords[] = [
+                            'care_log_id' => $careLog,
+                            'hygiene_time' => $hygiene['time'] ?? null,
+                            'hygiene_activity' => $hygiene['activity'] ?? null,
+                            'notes' => $hygiene['notes'] ?? null,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                }
+                if (!empty($hygieneRecords)) {
+                    try {
+                        DB::table('hygiene_records')->insert($hygieneRecords);
+                        \Log::info('Hygiene records inserted', ['count' => count($hygieneRecords)]);
+                    } catch (\Exception $e) {
+                        \Log::error('Error inserting hygiene records:', ['error' => $e->getMessage()]);
+                        throw $e;
+                    }
+                }
+                if($request->moisturizer_applied !== null || $request->pressure_areas_checked !== null || $request->skin_care_findings !== null) {
+                    DB::table('hygiene_records')->insert([
+                        'care_log_id' => $careLog,
+                        'moisturizer_applied' => $request->moisturizer_applied ?? null,
+                        'pressure_areas_checked' => $request->pressure_areas_checked ?? null,
+                        'skin_care_findings' => $request->skin_care_findings ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+            
+            // Store medication records
+            if ($request->medication_records && count($request->medication_records) > 0) {
+                \Log::info('Processing medication records...', ['count' => count($request->medication_records)]);
+                $medicationRecords = [];
+                foreach ($request->medication_records as $medication) {
+                    // Fix: Map frontend fields (time, medication) to backend fields (medication_time, medication_name)
+                    if (!empty($medication['time']) || !empty($medication['medication'])) {
+                        $medicationRecords[] = [
+                            'care_log_id' => $careLog,
+                            'administration_time' => $medication['time'] ?? null,
+                            'medication_name' => $medication['medication'] ?? null,
+                            'dosage' => $medication['dosage'] ?? null,
+                            'route' => $medication['route'] ?? null,
+                            'notes' => $medication['notes'] ?? null,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                }
+                if (!empty($medicationRecords)) {
+                    try {
+                        DB::table('medication_administrations')->insert($medicationRecords);
+                        \Log::info('Medication records inserted', ['count' => count($medicationRecords)]);
+                    } catch (\Exception $e) {
+                        \Log::error('Error inserting medication records:', ['error' => $e->getMessage()]);
+                        throw $e;
+                    }
+                }
+            }
+
+            // Store mobility/exercise records
+            if ($request->mobility_records && count($request->mobility_records) > 0) {
+                \Log::info('Processing mobility records...', ['count' => count($request->mobility_records)]);
+                $mobilityRecords = [];
+                foreach ($request->mobility_records as $mobility) {
+                    // Fix: Map frontend fields (time, activity) to backend fields (exercise_time, mobility_assistance_details)
+                    if (!empty($mobility['time']) || !empty($mobility['activity'])) {
+                        $mobilityRecords[] = [
+                            'care_log_id' => $careLog,
+                            'exercise_time' => $mobility['time'] ?? null,
+                            'duration' => $mobility['duration'] ?? null,
+                            'mobility_assistance_details' => $mobility['activity'] ?? null,
+                            'notes' => $mobility['notes'] ?? null,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                }
+                if (!empty($mobilityRecords)) {
+                    try {
+                        DB::table('mobility_exercises')->insert($mobilityRecords);
+                        \Log::info('Mobility records inserted', ['count' => count($mobilityRecords)]);
+                    } catch (\Exception $e) {
+                        \Log::error('Error inserting mobility records:', ['error' => $e->getMessage()]);
+                        throw $e;
+                    }
+                }
+            }
+
+            // Store intake and output records
+            if ($request->intake_records && count($request->intake_records) > 0) {
+                \Log::info('Processing intake records...', ['count' => count($request->intake_records)]);
+                $intakeRecords = [];
+                foreach ($request->intake_records as $intake) {
+                    if (!empty($intake['meal_time']) || !empty($intake['meal_type'])) {
+                        $intakeRecords[] = [
+                            'care_log_id' => $careLog,
+                            'meal_type' => $intake['meal_type'] ?? null,
+                            'meal_time' => $intake['meal_time'] ?? null,
+                            'food_items' => json_encode($intake['food_items'] ?? []),
+                            'amount' => !empty($intake['amount']) ? $intake['amount'] : null,
+                            'amount_unit' => $intake['amount_unit'] ?? 'oz',
+                            'assistance_needed' => $intake['assistance_needed'] ?? false,
+                            'intake_notes' => $intake['intake_notes'] ?? null,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                }
+                if (!empty($intakeRecords)) {
+                    try {
+                        DB::table('intake_output_records')->insert($intakeRecords);
+                        \Log::info('Intake records inserted', ['count' => count($intakeRecords)]);
+                    } catch (\Exception $e) {
+                        \Log::error('Error inserting intake records:', ['error' => $e->getMessage()]);
+                        throw $e;
+                    }
+                }
+            }
+
+            // Store output records
+            if ($request->output_records && count($request->output_records) > 0) {
+                \Log::info('Processing output records...', ['count' => count($request->output_records)]);
+                $outputRecords = [];
+                foreach ($request->output_records as $output) {
+                    if (!empty($output['record_time']) || !empty($output['urine_frequency'])) {
+                        $outputRecords[] = [
+                            'care_log_id' => $careLog,
+                            'record_time' => $output['record_time'] ?? null,
+                            'urine_frequency' => $output['urine_frequency'] ?? null,
+                            'blood_in_urine' => $output['blood_in_urine'] ?? false,
+                            'pain_discomfort_urination' => $output['pain_discomfort_urination'] ?? false,
+                            'discharge' => $output['discharge'] ?? false,
+                            'bowel_movement_frequency' => $output['bowel_movement_frequency'] ?? null,
+                            'blood_in_stool' => $output['blood_in_stool'] ?? false,
+                            'pain_discomfort_abdomen' => $output['pain_discomfort_abdomen'] ?? false,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                }
+                if (!empty($outputRecords)) {
+                    try {
+                        DB::table('urinary_bowel_records')->insert($outputRecords);
+                        \Log::info('Output records inserted', ['count' => count($outputRecords)]);
+                    } catch (\Exception $e) {
+                        \Log::error('Error inserting output records:', ['error' => $e->getMessage()]);
+                        throw $e;
+                    }
+                }
+            }
+
+            // Store activity records
+            if ($request->activity_records && count($request->activity_records) > 0) {
+                \Log::info('Processing activity records...', ['count' => count($request->activity_records)]);
+                $activityRecords = [];
+                foreach ($request->activity_records as $activity) {
+                    // Fix: Map frontend fields (time, activity) to backend fields (activity_time, activity_type)
+                    if (!empty($activity['time']) || !empty($activity['activity'])) {
+                        $activityRecords[] = [
+                            'care_log_id' => $careLog,
+                            'activity_time' => $activity['time'] ?? null,
+                            'activity_type' => $activity['activity'] ?? null,
+                            'duration' => $activity['duration'] ?? null,
+                            'notes' => $activity['notes'] ?? null,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                }
+                if (!empty($activityRecords)) {
+                    try {
+                        DB::table('activity_records')->insert($activityRecords);
+                        \Log::info('Activity records inserted', ['count' => count($activityRecords)]);
+                    } catch (\Exception $e) {
+                        \Log::error('Error inserting activity records:', ['error' => $e->getMessage()]);
+                        throw $e;
+                    }
+                }
+            }
+
+            // Store sleep records
+            if ($request->sleep_records && count($request->sleep_records) > 0) {
+                \Log::info('Processing sleep records...', ['count' => count($request->sleep_records)]);
+                $sleepRecords = [];
+                foreach ($request->sleep_records as $sleep) {
+                    if (!empty($sleep['sleep_start_time']) || !empty($sleep['duration'])) {
+                        $sleepRecords[] = [
+                            'care_log_id' => $careLog,
+                            'type' => $sleep['type'] ?? null,
+                            'sleep_start_time' => $sleep['sleep_start_time'] ?? null,
+                            'duration' => $sleep['duration'] ?? null,
+                            'sleep_quality' => $sleep['sleep_quality'] ?? null,
+                            'notes' => $sleep['notes'] ?? null,
+                            'sleep_issues' => $request->sleep_issues ?? null,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                }
+                if (!empty($sleepRecords)) {
+                    try {
+                        DB::table('sleep_records')->insert($sleepRecords);
+                        \Log::info('Sleep records inserted', ['count' => count($sleepRecords)]);
+                    } catch (\Exception $e) {
+                        \Log::error('Error inserting sleep records:', ['error' => $e->getMessage()]);
+                        throw $e;
+                    }
+                }
+            }
+
+            // Fetal Health records
+            if ($request->fetal_health ) {
+                \Log::info('Processing fetal health records...');
+                $fetalHealthRecords = $request->fetal_health;
+                try {
+                    DB::table('fetal_health_records')->insert([
+                        'care_log_id' => $careLog,
+                        'fetal_movement_detected' => $fetalHealthRecords['fetal_movement_detected'] ?? null,
+                        'kick_count' => $fetalHealthRecords['kick_count'] ? (int) $fetalHealthRecords['kick_count'] : null,
+                        'fetal_heart_sound' => $fetalHealthRecords['fetal_heart_sound'] ? (int) $fetalHealthRecords['fetal_heart_sound'] : null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                    \Log::info('Fetal health data inserted');
+                } catch (\Exception $e) {
+                    \Log::error('Error inserting fetal health data:', ['error' => $e->getMessage()]);
+                    throw $e;
+                }
+            }
+
+            // Store emergency incidents
+            if ($request->emergency_incidents && count($request->emergency_incidents) > 0) {
+                \Log::info('Processing emergency incidents...', ['count' => count($request->emergency_incidents)]);
+                $emergencyRecords = [];
+                foreach ($request->emergency_incidents as $incident) {
+                    if (!empty($incident['incident_time']) || !empty($incident['incident_description'])) {
+                        $emergencyRecords[] = [
+                            'care_log_id' => $careLog,
+                            'incident_time' => !empty($incident['incident_time']) ? 
+                                $request->care_date . ' ' . $incident['incident_time'] : null,
+                            'incident_description' => $incident['incident_description'] ?? null,
+                            'severity' => $incident['severity'] ?? 'medium',
+                            'actions_taken' => $incident['actions_taken'] ?? null,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                }
+                if (!empty($emergencyRecords)) {
+                    try {
+                        DB::table('emergency_incidents')->insert($emergencyRecords);
+                        \Log::info('Emergency incidents inserted', ['count' => count($emergencyRecords)]);
+                    } catch (\Exception $e) {
+                        \Log::error('Error inserting emergency incidents:', ['error' => $e->getMessage()]);
+                        throw $e;
+                    }
+                }
+            }
+
+            // Store household work records
+            if ($request->household_records && count($request->household_records) > 0) {
+                \Log::info('Processing household work records...', ['count' => count($request->household_records)]);
+                $houseworkRecords = [];
+                foreach ($request->household_records as $housework) {
+                    if (!empty($housework['household_work']) || !empty($housework['start_time'])) {
+                        $houseworkRecords[] = [
+                            'care_log_id' => $careLog,
+                            'household_work' => $housework['household_work'] ?? null,
+                            'start_time' => $housework['start_time'] ?? null,
+                            'duration' => $housework['duration'] ?? null,
+                            'notes' => $housework['notes'] ?? null,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                }
+                if (!empty($houseworkRecords)) {
+                    try {
+                        DB::table('household_work_records')->insert($houseworkRecords);
+                        \Log::info('Household work records inserted', ['count' => count($houseworkRecords)]);
+                    } catch (\Exception $e) {
+                        \Log::error('Error inserting household work records:', ['error' => $e->getMessage()]);
+                        throw $e;
+                    }
+                }
+            }
+
+            // Store vital signs
+            if ($request->vital_signs && count($request->vital_signs) > 0) {
+                \Log::info('Processing vital signs...', ['count' => count($request->vital_signs)]);
+                $vitalRecords = [];
+                foreach ($request->vital_signs as $vital) {
+                    if (!empty($vital['measurement_time']) || 
+                        !empty($vital['temperature']) || 
+                        !empty($vital['pulse_rate']) || 
+                        !empty($vital['respiratory_rate']) ||
+                        !empty($vital['systolic_pressure']) ||
+                        !empty($vital['spo2'])) {
+                        
+                        $vitalRecords[] = [
+                            'care_log_id' => $careLog,
+                            'measurement_time' => $vital['measurement_time'] ?? null,
+                            'temperature' => !empty($vital['temperature']) ? (float) $vital['temperature'] : null,
+                            'temperature_unit' => $vital['temperature_unit'] ?? 'C',
+                            'pulse_rate' => !empty($vital['pulse_rate']) ? (int) $vital['pulse_rate'] : null,
+                            'respiratory_rate' => !empty($vital['respiratory_rate']) ? (int) $vital['respiratory_rate'] : null,
+                            'systolic_pressure' => !empty($vital['systolic_pressure']) ? (int) $vital['systolic_pressure'] : null,
+                            'diastolic_pressure' => !empty($vital['diastolic_pressure']) ? (int) $vital['diastolic_pressure'] : null,
+                            'spo2' => !empty($vital['spo2']) ? (int) $vital['spo2'] : null,
+                            'notes' => $vital['notes'] ?? null,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                }
+                if (!empty($vitalRecords)) {
+                    try {
+                        DB::table('vital_signs')->insert($vitalRecords);
+                        \Log::info('Vital signs inserted', ['count' => count($vitalRecords)]);
+                    } catch (\Exception $e) {
+                        \Log::error('Error inserting vital signs:', ['error' => $e->getMessage()]);
+                        throw $e;
+                    }
+                }
+            }
+
+            // Store blood glucose records
+            if ($request->blood_glucose_records && count($request->blood_glucose_records) > 0) {
+                \Log::info('Processing blood glucose records...', ['count' => count($request->blood_glucose_records)]);
+                $glucoseRecords = [];
+                foreach ($request->blood_glucose_records as $glucose) {
+                    if (!empty($glucose['measurement_time']) || !empty($glucose['glucose_level'])) {
+                        $glucoseRecords[] = [
+                            'care_log_id' => $careLog,
+                            'measurement_time' => $glucose['measurement_time'] ?? null,
+                            'glucose_level' => !empty($glucose['glucose_level']) ? (float) $glucose['glucose_level'] : null,
+                            'timing' => $glucose['timing'] ?? null,
+                            'notes' => $glucose['notes'] ?? null,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                }
+                if (!empty($glucoseRecords)) {
+                    try {
+                        DB::table('blood_glucose_records')->insert($glucoseRecords);
+                        \Log::info('Blood glucose records inserted', ['count' => count($glucoseRecords)]);
+                    } catch (\Exception $e) {
+                        \Log::error('Error inserting blood glucose records:', ['error' => $e->getMessage()]);
+                        throw $e;
+                    }
+                }
+            }
+
+            // Store requested supplies
+            if ($request->supply_requests && count($request->supply_requests) > 0) {
+                \Log::info('Processing supply requests...', ['count' => count($request->supply_requests)]);
+                $supplyRecords = [];
+                foreach ($request->supply_requests as $supply) {
+                    if (!empty($supply['item'])) {
+                        $supplyRecords[] = [
+                            'care_log_id' => $careLog,
+                            'item' => $supply['item'],
+                            'quantity' => $supply['quantity'] ?? null,
+                            'purpose' => $supply['purpose'] ?? null,
+                            'priority' => $supply['priority'] ?? 'medium',
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                }
+                if (!empty($supplyRecords)) {
+                    try {
+                        DB::table('requested_supplies')->insert($supplyRecords);
+                        \Log::info('Supply requests inserted', ['count' => count($supplyRecords)]);
+                    } catch (\Exception $e) {
+                        \Log::error('Error inserting supply requests:', ['error' => $e->getMessage()]);
+                        throw $e;
+                    }
+                }
+            }
+
+            DB::commit();
+            \Log::info('Transaction committed successfully');
+
+            // Redirect with flash message containing the care log data
+            return redirect()->route('cg.mycarelogs')->with([
+                'success' => 'Maternal care log submitted successfully!',
+                'show_pdf_prompt' => true,
+                'care_log_data' => [
+                    'id' => $careLog,
+                    'first_name' => $request->first_name,
+                    'form_data' => $request->all()
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('=== ELDERLY CARE LOG ERROR ===');
+            \Log::error('Error message: ' . $e->getMessage());
+            \Log::error('Error file: ' . $e->getFile());
+            \Log::error('Error line: ' . $e->getLine());
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
+            \Log::info('=== ELDERLY CARE LOG DEBUG END ===');
+            
+            return redirect()->back()->withErrors([
+                'error' => 'Failed to save care log. Please try again.'
+            ])->withInput();
+        }
+    }
 
     // Newborn Care Log Details
     public function getNewbornCareLogDetails($id)
@@ -813,6 +1311,25 @@ class CareLogController extends Controller
             abort(404, 'Care log not found or access denied');
         }
 
+        // Fetch Feeding records only for newborn care logs
+        if ($expectedCareType == 'newborn') {
+            $feedingRecords = DB::table('feeding_records')
+                ->where('care_log_id', $id)
+                ->orderBy('feeding_time')
+                ->get();
+        } else {
+            $feedingRecords = [];
+        }
+        
+        // Fetch Diaper Change records only for newborn care logs
+        if ($expectedCareType == 'newborn') {
+            $diaperChangeRecords = DB::table('diaper_changes')
+                ->where('care_log_id', $id)
+                ->orderBy('change_time')
+                ->get();
+        } else {
+            $diaperChangeRecords = [];
+        }
         // Fetch related data
         $emotionBehavior = DB::table('emotion_behaviors')
             ->where('care_log_id', $id)
@@ -873,8 +1390,20 @@ class CareLogController extends Controller
             ->where('care_log_id', $id)
             ->get();
 
+        $fetalRecords = DB::table('fetal_health_records')
+            ->where('care_log_id', $id)
+            ->first();
+
+        $urinaryBowelRecords = DB::table('urinary_bowel_records')
+            ->where('care_log_id', $id)
+            ->orderBy('record_time')
+            ->get();
+
+
         return [
             'care_log' => $careLog,
+            'feeding_records' => $feedingRecords,
+            'diaper_changes' => $diaperChangeRecords,
             'emotion_behavior' => $emotionBehavior,
             'hygiene_records' => $hygieneRecords,
             'medication_records' => $medicationRecords,
@@ -887,13 +1416,9 @@ class CareLogController extends Controller
             'vital_signs' => $vitalSigns,
             'blood_glucose_records' => $bloodGlucoseRecords,
             'supply_requests' => $supplyRequests,
+            'fetal_health_records' => $fetalRecords,
+            'urinary_bowel_records' => $urinaryBowelRecords,
         ];
-    }
-
-    // Keep the old method for backward compatibility (optional)
-    public function getCareLogDetails($id)
-    {
-        return $this->getNewbornCareLogDetails($id);
     }
 
     // Show all care logs to admin 
@@ -931,13 +1456,28 @@ class CareLogController extends Controller
         }
 
         // Get paginated results
-        $careLogs = $query->paginate(5);
+        $careLogs = $query->paginate(20);
 
         // Transform caregiver name for display
         $careLogs->through(function ($log) {
             $log->caregiver_name = $log->caregiver_full_name ?: 'Not specified';
             return $log;
         });
+
+        // Count care logs by type (no filters, total in DB)
+        $careTypeCounts = DB::table('care_logs')
+            ->select('care_type', DB::raw('count(*) as total'))
+            ->whereIn('care_type', ['newborn', 'maternal', 'elder'])
+            ->groupBy('care_type')
+            ->pluck('total', 'care_type')
+            ->toArray();
+
+        // Ensure all types are present
+        $careTypeCounts = array_merge([
+            'newborn' => 0,
+            'maternal' => 0,
+            'elder' => 0,
+        ], $careTypeCounts);
 
         return Inertia::render('Admin/CareLogs/AdminCareLogs', [
             'careLogs' => $careLogs,
@@ -946,7 +1486,8 @@ class CareLogController extends Controller
                 'care_type' => $request->care_type,
                 'date_from' => $request->date_from,
                 'date_to' => $request->date_to,
-            ]
+            ],
+            'careTypeCounts' => $careTypeCounts, 
         ]);
     }
 
@@ -964,7 +1505,16 @@ class CareLogController extends Controller
     {
         $careLogData = $this->getAdminCareLogData($id, 'maternal');
         
-        return Inertia::render('Admin/CareLogs/MaternalCareLog/AdminMaternalCareLogDetails', [
+        return Inertia::render('Admin/CareLogs/AdminMaternalCareLogDetails', [
+            'careLogData' => $careLogData
+        ]);
+    }
+   
+    public function adminElderlyCareLogDetails($id)
+    {
+        $careLogData = $this->getAdminCareLogData($id, 'elder');
+
+        return Inertia::render('Admin/CareLogs/AdminElderlyCareLogDetails', [
             'careLogData' => $careLogData
         ]);
     }
@@ -973,7 +1523,7 @@ class CareLogController extends Controller
     {
         $careLogData = $this->getAdminCareLogData($id, 'elder');
         
-        return Inertia::render('Admin/CareLogs/ElderCareLog/AdminElderCareLogDetails', [
+        return Inertia::render('Admin/CareLogs/AdminElderCareLogDetails', [
             'careLogData' => $careLogData
         ]);
     }
@@ -1004,19 +1554,54 @@ class CareLogController extends Controller
         // Add caregiver name for display
         $careLog->caregiver_display_name = $careLog->caregiver_full_name ?: 'Not specified';
 
-        // Fetch related data (same as caregiver version)
+        // Fetch Feeding records only for newborn care logs
+        if ($expectedCareType == 'newborn') {
+            $feedingRecords = DB::table('feeding_records')
+                ->where('care_log_id', $id)
+                ->orderBy('feeding_time')
+                ->get();
+        } else {
+            $feedingRecords = [];
+        }
+        
+        // Fetch Diaper Change records only for newborn care logs
+        if ($expectedCareType == 'newborn') {
+            $diaperChangeRecords = DB::table('diaper_changes')
+                ->where('care_log_id', $id)
+                ->orderBy('change_time')
+                ->get();
+        } else {
+            $diaperChangeRecords = [];
+        }
+        // Fetch related data
         $emotionBehavior = DB::table('emotion_behaviors')
             ->where('care_log_id', $id)
             ->first();
 
-        $feedingRecords = DB::table('feeding_records')
+        $hygieneRecords = DB::table('hygiene_records')
             ->where('care_log_id', $id)
-            ->orderBy('feeding_time')
+            ->orderBy('hygiene_time')
             ->get();
 
-        $diaperChanges = DB::table('diaper_changes')
+        $medicationRecords = DB::table('medication_administrations')
             ->where('care_log_id', $id)
-            ->orderBy('change_time')
+            ->orderBy('administration_time')
+            ->get();
+
+        $mobilityRecords = DB::table('mobility_exercises')
+            ->where('care_log_id', $id)
+            ->orderBy('exercise_time')
+            ->get();
+
+        $intake_output_records = DB::table('intake_output_records')
+            ->where('care_log_id', $id)
+            ->orderBy('created_at')
+            ->get();
+
+
+        $activityRecords = DB::table('activity_records')
+            ->where('care_log_id', $id)
+            ->orderBy('activity_time')
             ->get();
 
         $sleepRecords = DB::table('sleep_records')
@@ -1024,14 +1609,14 @@ class CareLogController extends Controller
             ->orderBy('sleep_start_time')
             ->get();
 
-        $activityRecords = DB::table('activity_records')
+        $emergencyIncidents = DB::table('emergency_incidents')
             ->where('care_log_id', $id)
-            ->orderBy('activity_time')
+            ->orderBy('incident_time')
             ->get();
 
-        $hygieneRecords = DB::table('hygiene_records')
+        $householdRecords = DB::table('household_work_records')
             ->where('care_log_id', $id)
-            ->orderBy('hygiene_time')
+            ->orderBy('start_time')
             ->get();
 
         $vitalSigns = DB::table('vital_signs')
@@ -1039,21 +1624,43 @@ class CareLogController extends Controller
             ->orderBy('measurement_time')
             ->get();
 
-        $requestedSupplies = DB::table('requested_supplies')
+        $bloodGlucoseRecords = DB::table('blood_glucose_records')
+            ->where('care_log_id', $id)
+            ->orderBy('measurement_time')
+            ->get();
+
+        $supplyRequests = DB::table('requested_supplies')
             ->where('care_log_id', $id)
             ->get();
 
+        $fetalRecords = DB::table('fetal_health_records')
+            ->where('care_log_id', $id)
+            ->first();
+
+        $urinaryBowelRecords = DB::table('urinary_bowel_records')
+            ->where('care_log_id', $id)
+            ->orderBy('record_time')
+            ->get();
+
         // Return combined data
-        return [
+       return [
             'care_log' => $careLog,
-            'emotion_behavior' => $emotionBehavior,
             'feeding_records' => $feedingRecords,
-            'diaper_changes' => $diaperChanges,
-            'sleep_records' => $sleepRecords,
-            'activity_records' => $activityRecords,
+            'diaper_changes' => $diaperChangeRecords,
+            'emotion_behavior' => $emotionBehavior,
             'hygiene_records' => $hygieneRecords,
+            'medication_records' => $medicationRecords,
+            'mobility_records' => $mobilityRecords,
+            'intake_output_records' => $intake_output_records,
+            'activity_records' => $activityRecords,
+            'sleep_records' => $sleepRecords,
+            'emergency_incidents' => $emergencyIncidents,
+            'household_records' => $householdRecords,
             'vital_signs' => $vitalSigns,
-            'requested_supplies' => $requestedSupplies,
+            'blood_glucose_records' => $bloodGlucoseRecords,
+            'supply_requests' => $supplyRequests,
+            'fetal_health_records' => $fetalRecords,
+            'urinary_bowel_records' => $urinaryBowelRecords,
         ];
     }
 }

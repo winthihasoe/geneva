@@ -20,7 +20,7 @@ export default function ResumeToApproveCard({ resume }) {
                 p: 1,
                 borderWidth: 2,
                 borderColor: "primary",
-                borderRadius: 3,
+                borderRadius: 2,
                 boxShadow: 3,
             }}
         >
@@ -28,7 +28,7 @@ export default function ResumeToApproveCard({ resume }) {
 
             <Typography
                 fontWeight={600}
-                fontFamily={"Karma"}
+                gutterBottom
                 variant="h6"
                 textAlign="center"
             >
@@ -37,6 +37,7 @@ export default function ResumeToApproveCard({ resume }) {
             <Typography
                 fontSize={{ xs: 12, sm: 13, md: 14 }}
                 textAlign="center"
+                color="text.secondary"
             >
                 Nickname: <strong>{resume.nickname}</strong>
             </Typography>
@@ -83,32 +84,59 @@ export default function ResumeToApproveCard({ resume }) {
                             variant="contained"
                             color="primary"
                             onClick={handleOpen}
+                            size="small"
                         >
-                            <Typography fontSize={11}>Approve</Typography>
+                            <Typography variant="body2">Approve</Typography>
                         </Button>
                         <Button
                             variant="contained"
                             color="secondary"
+                            size="small"
                             onClick={() =>
                                 router.get(route("admin.cv.single", resume.id))
                             }
                         >
-                            <Typography fontSize={10}>Detail</Typography>
+                            <Typography variant="body2">Detail</Typography>
                         </Button>
                     </Box>
                 </Grid>
                 <Grid item xs={5}>
-                    <Box
-                        sx={{
-                            backgroundImage: `url(/storage/${resume.profile_photo})`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "center",
-                            backgroundSize: "cover",
-                            height: 150,
-                            borderRadius: 3,
-                            border: "1px solid #ddd",
-                        }}
-                    />
+                    {resume.profile_photo ? (
+                        <img
+                            src={`/storage/${resume.profile_photo}`}
+                            alt="Profile"
+                            style={{
+                                height: "150px",
+                                width: "100%",
+                                objectFit: "cover",
+                                backgroundRepeat: "no-repeat",
+                                backgroundPosition: "center",
+                                backgroundColor: "orange",
+                                borderRadius: 18,
+                            }}
+                        />
+                    ) : (
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                width: "100%",
+                                p: 2,
+                                height: 150,
+                                borderRadius: 3,
+                                border: "1px solid #ddd",
+                            }}
+                        >
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                textAlign={"center"}
+                            >
+                                No Profile Photo
+                            </Typography>
+                        </Box>
+                    )}
                 </Grid>
             </Grid>
             <YesOrNoModal

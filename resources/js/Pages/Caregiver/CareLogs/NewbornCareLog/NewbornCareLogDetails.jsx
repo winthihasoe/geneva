@@ -21,6 +21,8 @@ import {
     Divider,
     Alert,
     Avatar,
+    useMediaQuery,
+    useTheme,
 } from "@mui/material";
 import {
     ArrowBack as ArrowBackIcon,
@@ -54,7 +56,7 @@ const NewbornCareLogDetails = () => {
         activity_records,
         hygiene_records,
         vital_signs,
-        requested_supplies,
+        supply_requests,
     } = careLogData;
 
     const handleGeneratePDF = async () => {
@@ -133,7 +135,7 @@ const NewbornCareLogDetails = () => {
                 })) || [],
             vitalSigns: transformVitalSigns(),
             requestedSupplies:
-                requested_supplies?.map((record) => ({
+                supply_requests?.map((record) => ({
                     item: record.item,
                     quantity: record.quantity,
                     purpose: record.purpose,
@@ -183,6 +185,9 @@ const NewbornCareLogDetails = () => {
     };
 
     const renderTableData = (data, columns, emptyMessage) => {
+        const theme = useTheme();
+        const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
         if (!data || data.length === 0) {
             return (
                 <Box sx={{ textAlign: "center", py: 4 }}>
@@ -193,6 +198,46 @@ const NewbornCareLogDetails = () => {
             );
         }
 
+        if (isMobile) {
+            // Render as cards for mobile
+            return (
+                <Stack spacing={2}>
+                    {data.map((row, idx) => (
+                        <Paper key={idx} elevation={1} sx={{ p: 2 }}>
+                            {columns.map((column) => (
+                                <Box
+                                    key={column.key}
+                                    sx={{
+                                        mb: 1,
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        gap: 1,
+                                    }}
+                                >
+                                    <Typography
+                                        variant="caption"
+                                        color="textSecondary"
+                                        sx={{ fontWeight: "bold" }}
+                                    >
+                                        {column.label}:
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        {column.format
+                                            ? column.format(
+                                                  row[column.key],
+                                                  row
+                                              )
+                                            : row[column.key] || "N/A"}
+                                    </Typography>
+                                </Box>
+                            ))}
+                        </Paper>
+                    ))}
+                </Stack>
+            );
+        }
+
+        // Desktop/tablet: render as table
         return (
             <TableContainer component={Paper} elevation={0}>
                 <Table size="small">
@@ -217,7 +262,7 @@ const NewbornCareLogDetails = () => {
                                             ? column.format(
                                                   row[column.key],
                                                   row
-                                              ) // ✅ Pass the full row object
+                                              )
                                             : row[column.key] || "N/A"}
                                     </TableCell>
                                 ))}
@@ -243,7 +288,7 @@ const NewbornCareLogDetails = () => {
                 <Box
                     sx={{
                         display: "flex",
-                        justifyContent: { xs: "center", md: "space-between" },
+                        justifyContent: "space-between",
                         alignItems: "center",
                         my: 3,
                         gap: 2,
@@ -736,7 +781,7 @@ const NewbornCareLogDetails = () => {
                         </Box>
 
                         {renderTableData(
-                            requested_supplies,
+                            supply_requests,
                             [
                                 { key: "item", label: "Item" },
                                 { key: "quantity", label: "Quantity" },

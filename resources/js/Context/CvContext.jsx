@@ -236,7 +236,6 @@ export const CvProvider = ({
         }
     };
 
-    // Old save function
     const saveData = async () => {
         try {
             let payload;

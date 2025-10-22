@@ -1,5 +1,5 @@
 import AppLayout from "@/Layouts/AppLayout";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Head, router } from "@inertiajs/react";
 import {
     Box,
@@ -57,6 +57,9 @@ import HouseholdWork from "./components/HouseholdWork";
 import Backbutton from "@/Components/Backbutton";
 
 // Test Data Generator - Add this after imports
+const longNote =
+    "This is a detailed observation note. The client responded well to care and showed positive engagement throughout the activity. No adverse reactions were observed. Continued monitoring is recommended for optimal health and well-being. Family members were informed and are supportive of the current care plan. Further updates will be provided as needed.";
+
 const generateTestData = () => ({
     // Basic Information
     date: new Date().toISOString().split("T")[0],
@@ -71,22 +74,22 @@ const generateTestData = () => ({
         {
             time: "08:00",
             activity: "Morning shower",
-            notes: "Assisted with washing, used grab bars safely",
+            notes: longNote,
         },
         {
             time: "14:30",
             activity: "Oral care",
-            notes: "Brushed teeth, cleaned dentures thoroughly",
+            notes: longNote,
         },
         {
             time: "20:00",
             activity: "Evening wash",
-            notes: "Face and hands wash before bed",
+            notes: longNote,
         },
     ],
     moisturizer_applied: true,
     pressure_areas_checked: true,
-    skin_care_findings: "No redness or irritation observed",
+    skin_care_findings: longNote,
 
     // Medication data
     medication: [
@@ -95,21 +98,21 @@ const generateTestData = () => ({
             medication: "Metformin",
             dosage: "500mg",
             route: "PO",
-            notes: "Taken with breakfast, no side effects",
+            notes: longNote,
         },
         {
             time: "12:00",
             medication: "Lisinopril",
             dosage: "10mg",
             route: "PO",
-            notes: "Blood pressure medication, taken as prescribed",
+            notes: longNote,
         },
         {
             time: "18:00",
             medication: "Vitamin D",
             dosage: "1000 IU",
             route: "IV",
-            notes: "Daily supplement, taken with dinner",
+            notes: longNote,
         },
     ],
 
@@ -119,13 +122,13 @@ const generateTestData = () => ({
             time: "09:30",
             activity: "Walking exercise",
             duration: "20 minutes",
-            notes: "Walked in garden, good balance, used walking stick",
+            notes: longNote,
         },
         {
             time: "15:00",
             activity: "Chair exercises",
             duration: "15 minutes",
-            notes: "Arm and leg stretches, responded well",
+            notes: longNote,
         },
     ],
 
@@ -146,7 +149,7 @@ const generateTestData = () => ({
             amount: "75",
             amount_unit: "ml",
             assistance_needed: false,
-            intake_notes: "Ate well, enjoyed the meal",
+            intake_notes: longNote,
         },
         {
             meal_type: "lunch",
@@ -155,7 +158,7 @@ const generateTestData = () => ({
             amount: "90",
             amount_unit: "ml",
             assistance_needed: false,
-            intake_notes: "Good appetite, finished most of the meal",
+            intake_notes: longNote,
         },
         {
             meal_type: "dinner",
@@ -164,7 +167,7 @@ const generateTestData = () => ({
             amount: "80",
             amount_unit: "ml",
             assistance_needed: true,
-            intake_notes: "Needed help cutting food, ate slowly but well",
+            intake_notes: longNote,
         },
     ],
 
@@ -177,7 +180,7 @@ const generateTestData = () => ({
             urine_color: "pale_yellow",
             bowel_movement: "yes",
             bowel_consistency: "soft",
-            output_notes: "Regular elimination, no issues",
+            output_notes: longNote,
         },
         {
             output_time: "16:30",
@@ -186,7 +189,7 @@ const generateTestData = () => ({
             urine_color: "amber",
             bowel_movement: "no",
             bowel_consistency: "",
-            output_notes: "Good hydration levels",
+            output_notes: longNote,
         },
     ],
 
@@ -195,7 +198,7 @@ const generateTestData = () => ({
         fluid_intake: "1.8",
         fluid_intake_unit: "l",
         dehydration_signs: "none",
-        other_dehydration_signs: "",
+        other_dehydration_signs: "none",
     },
 
     // Activities data
@@ -204,19 +207,19 @@ const generateTestData = () => ({
             time: "10:30",
             activity: "Reading newspaper",
             duration: "45 minutes",
-            notes: "Enjoyed daily news, good cognitive engagement",
+            notes: longNote,
         },
         {
             time: "14:00",
             activity: "Playing cards",
             duration: "30 minutes",
-            notes: "Played solitaire, good hand-eye coordination",
+            notes: longNote,
         },
         {
             time: "19:30",
             activity: "Watching TV",
             duration: "60 minutes",
-            notes: "Watched favorite evening program, relaxed",
+            notes: longNote,
         },
     ],
 
@@ -227,7 +230,7 @@ const generateTestData = () => ({
             sleep_start_time: "22:00",
             duration: "7 hours",
             sleep_quality: "Good",
-            notes: "Fell asleep easily, slept through the night",
+            notes: longNote,
             issue: "none",
         },
         {
@@ -235,29 +238,28 @@ const generateTestData = () => ({
             time: "14:30",
             duration: "45 minutes",
             sleep_quality: "Fair",
-            notes: "Afternoon nap in chair",
+            notes: longNote,
             issue: "",
         },
     ],
 
     // Sleep issues
-    sleepIssues:
-        "Occasionally wakes up during the night but falls back asleep quickly",
+    sleepIssues: "Restlessness",
 
     // Emotional & Behavioral data
     emotionalMood: "Other",
-    emotionalMoodOther: "Somewhat anxious due to health concerns",
+    emotionalMoodOther: longNote,
     behavioralConcerns: "None",
-    behavioralConcernsOther: "",
-    emotionalActionTaken: "Encouraged social interaction during activities",
+    behavioralConcernsOther: longNote,
+    emotionalActionTaken: longNote,
 
     // Accident data
     accident: [
         {
             time: "16:45",
-            description: "Minor stumble while walking",
+            description: longNote,
             severity: "Low",
-            action: "Checked for injuries, provided reassurance, reminded to use walking aid",
+            action: longNote,
         },
     ],
 
@@ -267,12 +269,12 @@ const generateTestData = () => ({
             time: "15:30",
             task: "Laundry assistance",
             duration: "30 minutes",
-            notes: "Helped sort and fold clothes, client participated actively",
+            notes: longNote,
         },
         {
             task: "Light cleaning",
             duration: "45 minutes",
-            notes: "Dusted surfaces, organized medications",
+            notes: longNote,
         },
     ],
 
@@ -294,38 +296,37 @@ const generateTestData = () => ({
             measurement_time: "08:15",
             glucose_level: "110",
             timing: "fasting",
-            note: "Within normal range",
+            note: longNote,
         },
         {
             measurement_time: "18:15",
             glucose_level: "145",
             timing: "2hpp",
-            note: "Slightly elevated, will monitor",
+            note: longNote,
         },
     ],
 
     // Additional Notes
-    additionalNotes:
-        "Client had a good day overall. Showed good engagement during activities and maintained independence in most daily tasks. Blood pressure remains stable. Continue current care plan and monitor blood glucose levels closely.",
+    additionalNotes: longNote + " " + longNote + " " + longNote,
 
     // Requested Supplies
     supplies: [
         {
             item: "Blood pressure monitor strips",
             quantity: "1 box",
-            purpose: "Daily vital signs monitoring",
+            purpose: longNote,
             priority: "high",
         },
         {
             item: "Incontinence pads",
             quantity: "2 packs",
-            purpose: "Comfort and hygiene",
+            purpose: longNote,
             priority: "medium",
         },
         {
             item: "Non-slip bath mat",
             quantity: "1 piece",
-            purpose: "Bathroom safety",
+            purpose: longNote,
             priority: "high",
         },
     ],
@@ -333,7 +334,7 @@ const generateTestData = () => ({
     // Signatures
     caregiverSignature: "",
     clientSignature: "",
-    clientComment: "",
+    clientComment: longNote,
 });
 
 // Minimal test data for quick testing
@@ -989,6 +990,7 @@ const ElderlyCareLogs = ({ caregiverName }) => {
         moisturizer_applied: null,
         pressure_areas_checked: null,
         skin_care_findings: "",
+
         medication: [
             { time: "", medication: "", dosage: "", route: "", notes: "" },
         ],
@@ -1035,10 +1037,7 @@ const ElderlyCareLogs = ({ caregiverName }) => {
                 issue: "",
             },
         ],
-        sleepIssues: "", // Add this new field
-
-        // Remove the old emotional array and replace with individual fields
-        // emotional: [{ time: "", mood: "", behavior: "", notes: "" }], // Remove this line
+        sleepIssues: "",
 
         // Add new emotional/behavioral fields
         emotionalMood: "",
@@ -1106,11 +1105,25 @@ const ElderlyCareLogs = ({ caregiverName }) => {
         }));
     };
 
-    const addArrayItem = (section, template) => {
-        setFormData((prev) => ({
-            ...prev,
-            [section]: [...prev[section], template],
-        }));
+    const entryRefs = useRef({});
+
+    const addArrayItem = (arrayName, defaultItem) => {
+        setFormData((prev) => {
+            const newArray = [...prev[arrayName], defaultItem];
+            return {
+                ...prev,
+                [arrayName]: newArray,
+            };
+        });
+
+        setTimeout(() => {
+            // Scroll to the last entry after state update
+            const lastIndex = formData[arrayName].length;
+            const ref = entryRefs.current[`${arrayName}-${lastIndex}`];
+            if (ref && ref.scrollIntoView) {
+                ref.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+        }, 300); // Delay to wait for render
     };
 
     const removeArrayItem = (section, index) => {
@@ -1530,7 +1543,7 @@ const ElderlyCareLogs = ({ caregiverName }) => {
             <Head title="Elderly Care Log" />
             <Container maxWidth="lg" sx={{ pb: 8 }}>
                 {/* Add Test Data Buttons */}
-                {/* <Paper
+                <Paper
                     sx={{
                         p: 3,
                         mb: 4,
@@ -1603,7 +1616,7 @@ const ElderlyCareLogs = ({ caregiverName }) => {
                             Clear Form
                         </Button>
                     </Box>
-                </Paper> */}
+                </Paper>
 
                 {/* Enhanced Header */}
                 <Box
@@ -1670,6 +1683,7 @@ const ElderlyCareLogs = ({ caregiverName }) => {
                         handleInputChange={handleInputChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -1679,6 +1693,7 @@ const ElderlyCareLogs = ({ caregiverName }) => {
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -1690,6 +1705,7 @@ const ElderlyCareLogs = ({ caregiverName }) => {
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -1699,6 +1715,7 @@ const ElderlyCareLogs = ({ caregiverName }) => {
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -1709,6 +1726,7 @@ const ElderlyCareLogs = ({ caregiverName }) => {
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -1718,6 +1736,7 @@ const ElderlyCareLogs = ({ caregiverName }) => {
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -1729,6 +1748,7 @@ const ElderlyCareLogs = ({ caregiverName }) => {
                         removeArrayItem={removeArrayItem}
                         formData={formData}
                         handleInputChange={handleInputChange}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -1745,6 +1765,7 @@ const ElderlyCareLogs = ({ caregiverName }) => {
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -1754,6 +1775,7 @@ const ElderlyCareLogs = ({ caregiverName }) => {
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 
@@ -1763,6 +1785,7 @@ const ElderlyCareLogs = ({ caregiverName }) => {
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
+                        entryRefs={entryRefs}
                     />
                 </SectionCard>
 

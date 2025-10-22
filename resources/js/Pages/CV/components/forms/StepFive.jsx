@@ -23,9 +23,9 @@ const StepFive = () => {
                 <TextField
                     variant="outlined"
                     fullWidth
-                    name="phone"
-                    value={data.phone || ""}
-                    onChange={handleChange("phone")}
+                    name="emergency_contact"
+                    value={data.emergency_contact || ""}
+                    onChange={handleChange("emergency_contact")}
                     sx={{ mb: 2 }}
                 />
                 <Typography variant="body2" sx={{ mb: 0.5 }}>

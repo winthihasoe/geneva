@@ -21,6 +21,7 @@ use App\Http\Controllers\PhoneVerificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\SocialMediaController;
 use App\Http\Controllers\TrainingCourseController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -188,6 +189,7 @@ Route::middleware(['auth', 'is.caregiver'])->group(function () {
     Route::get('care-log/{id}/elder-details', [CareLogController::class, 'getElderlyCareLogDetails'])->name('cg.carelog.elder.details');
 
     Route::get('care-logs/maternal', [CgDashboardController::class, 'maternalCareLogs'])->name('cg.carelogs.maternal');
+    Route::post('care-logs/maternal', [CareLogController::class, 'storeMaternalCareLog'])->name('carelogs.maternal.store');
     Route::get('care-logs/elderly', [CgDashboardController::class, 'elderlyCareLogs'])->name('cg.carelogs.elderly');
     Route::post('care-logs/elderly', [CareLogController::class, 'storeElderlyCareLog'])->name('carelogs.elderly.store');
 
@@ -284,6 +286,22 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
 
     // ---- Skill assessment ----
     Route::get('skill-assessment-submissions', [AssessmentController::class, 'adminAssessments'])->name('admin.assessments');
+
+    // ---- Pricing management ----
+    Route::get('pricing-management', [ServiceController::class, 'adminServicePricings'])->name('admin.service.pricings');
+    // Pricing management actions
+    Route::put('service/{id}/title', [ServiceController::class, 'updateServiceTitle'])->name('admin.service.title.update');
+    Route::delete('service/{id}', [ServiceController::class, 'deleteService'])->name('admin.service.delete');
+    Route::put('salary/{id}', [ServiceController::class, 'updateSalary'])->name('admin.salary.update');
+    Route::delete('salary/{id}', [ServiceController::class, 'deleteSalary'])->name('admin.salary.delete');
+    Route::put('service-fee/{id}', [ServiceController::class, 'updateServiceFee'])->name('admin.service_fee.update');
+    Route::delete('service-fee/{id}', [ServiceController::class, 'deleteServiceFee'])->name('admin.service_fee.delete');
+    
+    // ---- Social Media Management ----
+    Route::get('social-media', [SocialMediaController::class, 'index'])->name('admin.social.media');
+    Route::post('social-media', [SocialMediaController::class, 'store'])->name('admin.social_media.store');
+    Route::put('social-media/{id}', [SocialMediaController::class, 'update'])->name('admin.social_media.update');
+    Route::delete('social-media/{id}', [SocialMediaController::class, 'destroy'])->name('admin.social_media.delete');
     
     // ---- contact message ----
     Route::get('contact-message', [ContactMessageController::class, 'contactMessage'])->name('admin.messages');

@@ -113,6 +113,7 @@ const AboutUs = [
 
 const Navbar = () => {
     const user = usePage().props.auth.user;
+    const Pricings = usePage().props.services;
     const [anchorElPricing, setAnchorElPricing] = useState(null);
     const [anchorElAbout, setAnchorElAbout] = useState(null);
     const [anchorElJoin, setAnchorElJoin] = useState(null);
@@ -284,19 +285,6 @@ const Navbar = () => {
                                     </Button>
                                 </Box>
                             ) : (
-                                // <Box
-                                //     sx={{ display: { xs: "none", md: "flex" } }}
-                                // >
-                                //     <Button
-                                //         size="small"
-                                //         color="error"
-                                //         onClick={() => setOpenLogout(true)}
-                                //     >
-                                //         <Typography fontSize={13}>
-                                //             Logout
-                                //         </Typography>
-                                //     </Button>
-                                // </Box>
                                 ""
                             )}
                         </Box>
@@ -336,16 +324,13 @@ const Navbar = () => {
                                     },
                                 }}
                             >
-                                {Pricing.map((item, index) => (
+                                {Pricings.map((item, index) => (
                                     <MenuItem
                                         key={index}
                                         onClick={() => {
                                             handleMenuClose(setAnchorElPricing);
                                             router.get(
-                                                route(
-                                                    "service.pricing",
-                                                    item.service
-                                                )
+                                                route("service.pricing", item)
                                             );
                                         }}
                                         sx={{
@@ -362,7 +347,7 @@ const Navbar = () => {
                                             borderColor: "#fff",
                                         }}
                                     >
-                                        {item.title}
+                                        {item}
                                     </MenuItem>
                                 ))}
                             </Menu>

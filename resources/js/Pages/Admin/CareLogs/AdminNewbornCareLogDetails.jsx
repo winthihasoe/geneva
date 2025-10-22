@@ -17,8 +17,6 @@ import {
     TableRow,
     Paper,
     Button,
-    Stack,
-    Divider,
     Alert,
     Avatar,
 } from "@mui/material";
@@ -55,7 +53,7 @@ function AdminNewbornCareLogDetails() {
         activity_records,
         hygiene_records,
         vital_signs,
-        requested_supplies,
+        supply_requests,
     } = careLogData;
 
     const handleGeneratePDF = async () => {
@@ -135,7 +133,7 @@ function AdminNewbornCareLogDetails() {
                 })) || [],
             vitalSigns: transformVitalSigns(),
             requestedSupplies:
-                requested_supplies?.map((record) => ({
+                supply_requests?.map((record) => ({
                     item: record.item,
                     quantity: record.quantity,
                     purpose: record.purpose,
@@ -240,12 +238,12 @@ function AdminNewbornCareLogDetails() {
                     fontWeight="bold"
                     color="primary"
                 >
-                    Newborn Care Log Details{" "}
+                    Newborn Care Log Details
                 </Typography>
                 <Box
                     sx={{
                         display: "flex",
-                        justifyContent: { xs: "center", md: "space-between" },
+                        justifyContent: "space-between",
                         alignItems: "center",
                         my: 3,
                         gap: 2,
@@ -276,18 +274,8 @@ function AdminNewbornCareLogDetails() {
                         </Typography>
                     </Button>
                 </Box>
-
-                {/* Admin Info Alert */}
-                <Alert severity="info" sx={{ mb: 3 }}>
-                    <Typography variant="body2">
-                        <strong>Admin View:</strong> You are viewing this care
-                        log as an administrator. Caregiver:{" "}
-                        <strong>
-                            {care_log.caregiver_display_name ||
-                                care_log.caregiver_full_name ||
-                                "Not specified"}
-                        </strong>
-                    </Typography>
+                <Alert severity="info" sx={{ mb: 1 }}>
+                    Logged by: {care_log.caregiver_display_name || "N/A"}
                 </Alert>
 
                 {/* Basic Information */}
@@ -751,7 +739,7 @@ function AdminNewbornCareLogDetails() {
                         </Box>
 
                         {renderTableData(
-                            requested_supplies,
+                            supply_requests,
                             [
                                 { key: "item", label: "Item" },
                                 { key: "quantity", label: "Quantity" },

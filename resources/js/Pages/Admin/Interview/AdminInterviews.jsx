@@ -32,7 +32,7 @@ export default function AdminInterviews({ interviews, count }) {
     return (
         <AdminLayout>
             <Head title="Interviews" />
-            <Container maxWidth="lg">
+            <Container maxWidth="lg" sx={{ pb: 4, px: { xs: 0 } }}>
                 <Box
                     sx={{
                         display: "flex",
@@ -49,7 +49,15 @@ export default function AdminInterviews({ interviews, count }) {
                             gap: 2,
                         }}
                     >
-                        <Title>Interviews</Title>
+                        <Typography
+                            fontWeight="bold"
+                            color="primary"
+                            mb={1}
+                            variant="h4"
+                        >
+                            Interviews
+                        </Typography>
+
                         <Box
                             sx={{
                                 bgcolor: "red",

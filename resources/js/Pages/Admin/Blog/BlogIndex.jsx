@@ -15,6 +15,7 @@ import {
     IconButton,
     Tooltip,
     TextField,
+    Container,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -48,10 +49,16 @@ function BlogIndex({ sections, topics, blogs }) {
     }
     return (
         <AdminLayout>
-            <Box sx={{ p: 3 }}>
-                <Typography variant="h4" fontWeight="bold" mb={3}>
+            <Container maxWidth="lg" sx={{ pb: 3, px: { xs: 0 } }}>
+                <Typography
+                    fontWeight="bold"
+                    color="primary"
+                    mb={2}
+                    variant="h4"
+                >
                     Blog Management
                 </Typography>
+
                 {/* Section Tabs */}
                 <Tabs
                     value={selectedSection}
@@ -229,7 +236,7 @@ function BlogIndex({ sections, topics, blogs }) {
                         </List>
                     </Box>
                 </Stack>
-            </Box>
+            </Container>
         </AdminLayout>
     );
 }

@@ -30,6 +30,7 @@ const IntakeOutput = ({
     handleArrayChange,
     addArrayItem,
     removeArrayItem,
+    entryRefs,
 }) => {
     const mealTypes = [
         { value: "breakfast", label: "Breakfast" },
@@ -166,7 +167,14 @@ const IntakeOutput = ({
                     </Box>
 
                     {formData.intake.map((item, index) => (
-                        <Box key={index}>
+                        <Box
+                            key={index}
+                            ref={(el) => {
+                                if (entryRefs) {
+                                    entryRefs.current[`intake-${index}`] = el;
+                                }
+                            }}
+                        >
                             <Box
                                 sx={{
                                     display: "flex",
@@ -313,6 +321,7 @@ const IntakeOutput = ({
                                                 display: "flex",
                                                 justifyContent: "space-between",
                                                 alignItems: "center",
+                                                gap: 3,
                                                 mb: 2,
                                             }}
                                         >
@@ -324,13 +333,12 @@ const IntakeOutput = ({
                                             </Typography>
                                             <Button
                                                 size="small"
-                                                startIcon={<AddFoodIcon />}
                                                 onClick={() =>
                                                     addFoodItem(index)
                                                 }
-                                                variant="outlined"
+                                                variant="contained"
                                             >
-                                                Add Item
+                                                Add Food/Drink
                                             </Button>
                                         </Box>
 
@@ -453,7 +461,14 @@ const IntakeOutput = ({
                     </Box>
 
                     {formData.output.map((item, index) => (
-                        <Box key={index}>
+                        <Box
+                            key={index}
+                            ref={(el) => {
+                                if (entryRefs) {
+                                    entryRefs.current[`output-${index}`] = el;
+                                }
+                            }}
+                        >
                             <Box
                                 sx={{
                                     display: "flex",

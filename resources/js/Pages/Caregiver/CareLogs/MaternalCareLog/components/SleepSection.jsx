@@ -23,6 +23,7 @@ const SleepSection = ({
     removeArrayItem,
     formData,
     handleInputChange,
+    entryRefs,
 }) => {
     const qualityOptions = ["Good", "Fair", "Poor"];
     const sleepIssuesOptions = [
@@ -31,6 +32,7 @@ const SleepSection = ({
         "Frequent Walking",
         "Difficulty Falling Asleep",
     ];
+    const sleepTypes = ["Morning Nap", "Afternoon Nap", "Night Sleep"];
 
     return (
         <Card sx={{ borderRadius: 2, bgcolor: "transparent" }}>
@@ -52,9 +54,10 @@ const SleepSection = ({
                         startIcon={<AddIcon />}
                         onClick={() =>
                             addArrayItem("sleep", {
-                                time: "",
+                                type: "",
+                                sleep_start_time: "",
                                 duration: "",
-                                quality: "",
+                                sleep_quality: "",
                                 notes: "",
                                 issue: "",
                             })
@@ -67,7 +70,14 @@ const SleepSection = ({
                 </Box>
 
                 {data.map((item, index) => (
-                    <Box key={index}>
+                    <Box
+                        key={index}
+                        ref={(el) => {
+                            if (entryRefs) {
+                                entryRefs.current[`sleep-${index}`] = el;
+                            }
+                        }}
+                    >
                         <Box
                             sx={{
                                 display: "flex",
@@ -94,17 +104,43 @@ const SleepSection = ({
 
                         <Grid2 container spacing={2} sx={{ mb: 3 }}>
                             <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
+                                <FormControl fullWidth variant="standard">
+                                    <InputLabel>Type</InputLabel>
+                                    <Select
+                                        value={item.type || ""}
+                                        onChange={(e) =>
+                                            handleArrayChange(
+                                                "sleep",
+                                                index,
+                                                "type",
+                                                e.target.value
+                                            )
+                                        }
+                                        label="Type"
+                                    >
+                                        {sleepTypes.map((option) => (
+                                            <MenuItem
+                                                key={option}
+                                                value={option}
+                                            >
+                                                {option}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid2>
+                            <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
                                 <TextField
                                     fullWidth
                                     variant="standard"
                                     label="Time"
                                     type="time"
-                                    value={item.time}
+                                    value={item.sleep_start_time}
                                     onChange={(e) =>
                                         handleArrayChange(
                                             "sleep",
                                             index,
-                                            "time",
+                                            "sleep_start_time",
                                             e.target.value
                                         )
                                     }
@@ -134,12 +170,12 @@ const SleepSection = ({
                                 <FormControl fullWidth variant="standard">
                                     <InputLabel>Quality</InputLabel>
                                     <Select
-                                        value={item.quality}
+                                        value={item.sleep_quality}
                                         onChange={(e) =>
                                             handleArrayChange(
                                                 "sleep",
                                                 index,
-                                                "quality",
+                                                "sleep_quality",
                                                 e.target.value
                                             )
                                         }

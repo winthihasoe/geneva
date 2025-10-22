@@ -24,8 +24,16 @@ const AdminContactMessages = ({ messages }) => {
     return (
         <AdminLayout>
             <Head title="Contact Message" />
-            <Container maxWidth="md">
-                <Title>Contact Messages</Title>
+            <Container maxWidth="lg" sx={{ pb: 3, px: { xs: 0 } }}>
+                <Typography
+                    fontWeight="bold"
+                    color="primary"
+                    mb={2}
+                    variant="h4"
+                >
+                    Contact Messages
+                </Typography>
+
                 <TableContainer component={Paper}>
                     {messages.data.length == 0 ? (
                         <NoData />

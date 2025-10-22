@@ -14,6 +14,7 @@ import {
     OutlinedInput,
     Select,
     Autocomplete,
+    Container,
 } from "@mui/material";
 import { useForm, router } from "@inertiajs/react";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
@@ -104,7 +105,7 @@ function CreateBlog({ sections, topics }) {
 
     return (
         <AdminLayout>
-            <Box sx={{ maxWidth: 800, mx: "auto", p: 3 }}>
+            <Container maxWidth="lg" sx={{ pb: 3 }}>
                 <Typography variant="h4" fontWeight="bold" mb={3}>
                     Create New Blog
                 </Typography>
@@ -379,7 +380,7 @@ function CreateBlog({ sections, topics }) {
                         </Button>
                     </Stack>
                 </form>
-            </Box>
+            </Container>
         </AdminLayout>
     );
 }

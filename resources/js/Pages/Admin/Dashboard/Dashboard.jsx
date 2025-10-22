@@ -8,6 +8,7 @@ import {
     CardContent,
     Paper,
     Avatar,
+    Container,
 } from "@mui/material";
 import { Head } from "@inertiajs/react";
 import { router } from "@inertiajs/react";
@@ -15,12 +16,14 @@ import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import WorkIcon from "@mui/icons-material/Work";
 import PersonIcon from "@mui/icons-material/Person";
 import MessageIcon from "@mui/icons-material/Message";
+import AssignmentIcon from "@mui/icons-material/Assignment";
 
 function Dashboard({
     totalCaregivers,
     totalJobApplies,
     totalPatients,
     totalContactMessages,
+    totalCareLogs,
 }) {
     const stats = [
         {
@@ -40,12 +43,12 @@ function Dashboard({
             route: "admin.job.apply",
         },
         {
-            title: "Total Patients",
-            value: totalPatients,
-            icon: <PersonIcon sx={{ fontSize: 40 }} />,
+            title: "Total Care Logs",
+            value: totalCareLogs,
+            icon: <AssignmentIcon sx={{ fontSize: 40 }} />,
             color: "#FF9800",
             bgColor: "#FFF3E0",
-            route: "admin.patients",
+            route: "admin.care.logs",
         },
         {
             title: "Messages",
@@ -55,19 +58,27 @@ function Dashboard({
             bgColor: "#F3E5F5",
             route: "admin.messages",
         },
+        {
+            title: "Total Patients",
+            value: totalPatients,
+            icon: <PersonIcon sx={{ fontSize: 40 }} />,
+            color: "#FF9800",
+            bgColor: "#FFF3E0",
+            route: "admin.patients",
+        },
     ];
 
     return (
         <AdminLayout>
             <Head title="Dashboard" />
-            <Box sx={{ p: 3 }}>
+            <Container maxWidth="lg" sx={{ pb: 3, px: { xs: 0 } }}>
                 <Typography
                     variant="h4"
                     fontWeight="bold"
                     mb={4}
                     color="primary"
                 >
-                    Dashboard Overview
+                    Admin Dashboard
                 </Typography>
 
                 <Grid2 container spacing={3} mb={4}>
@@ -148,7 +159,7 @@ function Dashboard({
                                     <Box
                                         sx={{
                                             p: 2,
-                                            bgcolor: "#F5F5F5",
+                                            bgcolor: "gray.100",
                                             borderRadius: 2,
                                             cursor: "pointer",
                                             "&:hover": { bgcolor: "#EEEEEE" },
@@ -169,20 +180,20 @@ function Dashboard({
                                     <Box
                                         sx={{
                                             p: 2,
-                                            bgcolor: "#F5F5F5",
+                                            bgcolor: "gray.100",
                                             borderRadius: 2,
                                             cursor: "pointer",
                                             "&:hover": { bgcolor: "#EEEEEE" },
                                         }}
                                         onClick={() =>
-                                            router.get(route("admin.patients"))
+                                            router.get(route("admin.care.logs"))
                                         }
                                     >
                                         <Typography
                                             variant="body1"
                                             fontWeight={500}
                                         >
-                                            View Patients
+                                            View Care Logs
                                         </Typography>
                                     </Box>
                                 </Grid2>
@@ -223,7 +234,7 @@ function Dashboard({
                         </Paper>
                     </Grid2>
                 </Grid2>
-            </Box>
+            </Container>
         </AdminLayout>
     );
 }

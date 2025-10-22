@@ -23,6 +23,7 @@ const SleepSection = ({
     removeArrayItem,
     formData,
     handleInputChange,
+    entryRefs,
 }) => {
     const qualityOptions = ["Good", "Fair", "Poor"];
     const sleepIssuesOptions = [
@@ -70,7 +71,14 @@ const SleepSection = ({
                 </Box>
 
                 {data.map((item, index) => (
-                    <Box key={index}>
+                    <Box
+                        key={index}
+                        ref={(el) => {
+                            if (entryRefs) {
+                                entryRefs.current[`sleep-${index}`] = el;
+                            }
+                        }}
+                    >
                         <Box
                             sx={{
                                 display: "flex",

@@ -12,16 +12,24 @@ import {
     Paper,
     Chip,
     Stack,
+    Container,
 } from "@mui/material";
 import dayjs from "dayjs";
 
 function AdminAssessments({ assessments }) {
     return (
         <AdminLayout>
-            <Box sx={{ p: 3 }}>
-                <Typography variant="h4" fontWeight="bold" mb={3}>
+            <Container maxWidth="lg" sx={{ pb: 3, px: { xs: 0 } }}>
+                <Typography
+                    fontWeight="bold"
+                    color="primary"
+                    mb={2}
+                    variant="h4"
+                >
+                    {" "}
                     Caregiver Skill Assessments
                 </Typography>
+
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
@@ -94,7 +102,7 @@ function AdminAssessments({ assessments }) {
                         </TableBody>
                     </Table>
                 </TableContainer>
-            </Box>
+            </Container>
         </AdminLayout>
     );
 }

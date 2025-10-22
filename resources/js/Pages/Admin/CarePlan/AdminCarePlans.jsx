@@ -11,11 +11,19 @@ function AdminCarePlans({ carePlans }) {
     return (
         <AdminLayout>
             <Head title="Care Plans" />
-            <Container maxWidth="lg">
-                {carePlans && carePlans.length > 0 ? (
+            <Container maxWidth="lg" sx={{ pb: 4, px: { xs: 0 } }}>
+                <Typography
+                    fontWeight="bold"
+                    color="primary"
+                    mb={2}
+                    variant="h4"
+                >
+                    Care Plans
+                </Typography>
+
+                {/* {carePlans && carePlans.length > 0 ? (
                     <>
-                        <Title>Care Plans</Title>
-                        {/* {carePlans.map((plan) => (
+                        {carePlans.map((plan) => (
                             <Box
                                 key={plan.id}
                                 sx={{
@@ -47,11 +55,12 @@ function AdminCarePlans({ carePlans }) {
                                     {plan.start_date}
                                 </Typography>
                             </Box>
-                        ))} */}
+                        ))}
                     </>
                 ) : (
                     <NoData />
-                )}
+                    )} */}
+                <NoData />
             </Container>
         </AdminLayout>
     );

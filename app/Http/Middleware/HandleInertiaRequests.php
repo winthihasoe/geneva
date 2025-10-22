@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\CarePlan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
 
@@ -46,7 +47,20 @@ class HandleInertiaRequests extends Middleware
                     'error' => $request->session()->get('error'),
                 ];
             },
-            'carePlans' => $this->getCarePlan($request)
+            'carePlans' => $this->getCarePlan($request),
+            
+            // Get Services title from services table
+            'services' => DB::table('services')->pluck('name')->toArray(),
+
+            // Get social media links from social_media table and cache for 12 hours
+            'socialMediaLinks' => cache()->remember(
+                'social_media_links',
+                1800,
+                fn () => DB::table('social_media')->pluck('name', 'url')->toArray()
+            ),
+
+            // Add this for LINE ID
+            'lineId' => DB::table('social_media')->where('name', 'LINE')->value('line_id'),
         ];
     }
 

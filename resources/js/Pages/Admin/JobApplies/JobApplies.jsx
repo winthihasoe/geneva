@@ -1,20 +1,11 @@
-import Subtitle from "@/Components/Typo/Subtitle";
-import AgeCalculator from "@/Components/util/AgeCalculator";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { Head, router } from "@inertiajs/react";
 import {
     Box,
     Container,
     Pagination,
-    Paper,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
     Typography,
     Button,
-    Table,
-    TableBody,
     TextField,
 } from "@mui/material";
 import React, { useState } from "react";
@@ -41,7 +32,7 @@ function JobApplies({ jobApplies, count }) {
     };
     return (
         <AdminLayout>
-            <Container maxWidth="lg">
+            <Container maxWidth="lg" sx={{ pb: 4, px: { xs: 0 } }}>
                 <Head title="Job Applies" />
                 <Box
                     sx={{
@@ -59,7 +50,15 @@ function JobApplies({ jobApplies, count }) {
                             gap: 2,
                         }}
                     >
-                        <Title>Job Applies</Title>
+                        <Typography
+                            fontWeight="bold"
+                            color="primary"
+                            mb={1}
+                            variant="h4"
+                        >
+                            Job Applies
+                        </Typography>
+
                         <Box
                             sx={{
                                 bgcolor: "red",

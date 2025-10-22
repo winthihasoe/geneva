@@ -21,6 +21,7 @@ const FeedingSection = ({
     handleArrayChange,
     addArrayItem,
     removeArrayItem,
+    entryRefs,
 }) => {
     return (
         <Card sx={{ borderRadius: 2, bgcolor: "transparent" }}>
@@ -57,7 +58,14 @@ const FeedingSection = ({
                 </Box>
 
                 {data.map((item, index) => (
-                    <Box key={index}>
+                    <Box
+                        key={index}
+                        ref={(el) => {
+                            if (entryRefs) {
+                                entryRefs.current[`feeding-${index}`] = el;
+                            }
+                        }}
+                    >
                         <Box
                             sx={{
                                 display: "flex",
@@ -169,9 +177,7 @@ const FeedingSection = ({
                                     >
                                         <MenuItem value="ml">ml</MenuItem>
                                         <MenuItem value="oz">oz</MenuItem>
-                                        <MenuItem value="minutes">
-                                            minutes
-                                        </MenuItem>
+                                        <MenuItem value="l">Liter</MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid2>

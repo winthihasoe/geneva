@@ -14,11 +14,13 @@ import CoPresentIcon from "@mui/icons-material/CoPresent";
 import SchoolIcon from "@mui/icons-material/School";
 import SportsHandballRoundedIcon from "@mui/icons-material/SportsHandballRounded";
 import AssignmentIcon from "@mui/icons-material/Assignment";
+import MonetizationOnRoundedIcon from "@mui/icons-material/MonetizationOnRounded";
+import FacebookRoundedIcon from "@mui/icons-material/FacebookRounded";
 
 export const AdminSidebarData = [
     {
         title: "Dashboard",
-        icon: <HomeIcon />,
+        icon: <HomeIcon color="info" />,
         link: "/admin/dashboard",
     },
     {
@@ -33,7 +35,7 @@ export const AdminSidebarData = [
     },
     {
         title: "Care Logs 📝",
-        icon: <AssignmentIcon />,
+        icon: <AssignmentIcon color="primary" />,
         link: "/admin/care-logs",
     },
     {
@@ -77,11 +79,16 @@ export const AdminSidebarData = [
         icon: <SportsHandballRoundedIcon />,
         link: "/admin/skill-assessment-submissions",
     },
-    // {
-    //     title: "System management",
-    //     icon: <SettingsRoundedIcon />,
-    //     link: "/admin/system",
-    // },
+    {
+        title: "Pricing management",
+        icon: <MonetizationOnRoundedIcon />,
+        link: "/admin/pricing-management",
+    },
+    {
+        title: "Social Media",
+        icon: <FacebookRoundedIcon />,
+        link: "/admin/social-media",
+    },
     {
         title: "Contact message",
         icon: <MessageRoundedIcon />,

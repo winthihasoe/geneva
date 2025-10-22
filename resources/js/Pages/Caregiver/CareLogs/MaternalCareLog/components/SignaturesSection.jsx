@@ -9,8 +9,14 @@ import {
     Grid2,
     Collapse,
     IconButton,
+    Chip,
 } from "@mui/material";
-import { ExpandMore, ExpandLess, Clear, Save } from "@mui/icons-material";
+import {
+    ExpandMore,
+    ExpandLess,
+    Clear,
+    CheckCircle,
+} from "@mui/icons-material";
 import SignatureCanvas from "react-signature-canvas";
 
 const SignaturesSection = ({ formData, handleInputChange }) => {
@@ -25,6 +31,10 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
         useState("");
     const [isGuardianSectionOpen, setIsGuardianSectionOpen] = useState(false);
     const [canvasWidth, setCanvasWidth] = useState(800);
+
+    // Auto-save status states
+    const [caregiverAutoSaved, setCaregiverAutoSaved] = useState(false);
+    const [guardianAutoSaved, setGuardianAutoSaved] = useState(false);
 
     // Update canvas width when component mounts or window resizes
     useEffect(() => {
@@ -47,28 +57,62 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
         };
     }, [isGuardianSectionOpen]);
 
+    // Auto-save function for caregiver signature
+    const autoSaveCaregiverSignature = () => {
+        if (
+            caregiverSigCanvasRef.current &&
+            !caregiverSigCanvasRef.current.isEmpty()
+        ) {
+            const dataURL = caregiverSigCanvasRef.current.toDataURL();
+            setCaregiverSignatureDataURL(dataURL);
+            handleInputChange("caregiverSignature", dataURL);
+            setCaregiverAutoSaved(true);
+
+            // Reset auto-saved indicator after 2 seconds
+            setTimeout(() => setCaregiverAutoSaved(false), 2000);
+        }
+    };
+
+    // Auto-save function for guardian signature
+    const autoSaveGuardianSignature = () => {
+        if (
+            guardianSigCanvasRef.current &&
+            !guardianSigCanvasRef.current.isEmpty()
+        ) {
+            const dataURL = guardianSigCanvasRef.current.toDataURL();
+            setGuardianSignatureDataURL(dataURL);
+            handleInputChange("clientSignature", dataURL);
+            setGuardianAutoSaved(true);
+
+            // Reset auto-saved indicator after 2 seconds
+            setTimeout(() => setGuardianAutoSaved(false), 2000);
+        }
+    };
+
+    // Handle caregiver signature events
+    const handleCaregiverSignatureEnd = () => {
+        // Auto-save after user finishes drawing
+        setTimeout(autoSaveCaregiverSignature, 500); // Small delay to ensure stroke is complete
+    };
+
+    // Handle guardian signature events
+    const handleGuardianSignatureEnd = () => {
+        // Auto-save after user finishes drawing
+        setTimeout(autoSaveGuardianSignature, 500); // Small delay to ensure stroke is complete
+    };
+
     const clearCaregiverSignature = () => {
         caregiverSigCanvasRef.current.clear();
         setCaregiverSignatureDataURL("");
+        setCaregiverAutoSaved(false);
         handleInputChange("caregiverSignature", "");
-    };
-
-    const saveCaregiverSignature = () => {
-        const dataURL = caregiverSigCanvasRef.current.toDataURL();
-        setCaregiverSignatureDataURL(dataURL);
-        handleInputChange("caregiverSignature", dataURL);
     };
 
     const clearGuardianSignature = () => {
         guardianSigCanvasRef.current.clear();
         setGuardianSignatureDataURL("");
-        handleInputChange("guardianSignature", "");
-    };
-
-    const saveGuardianSignature = () => {
-        const dataURL = guardianSigCanvasRef.current.toDataURL();
-        setGuardianSignatureDataURL(dataURL);
-        handleInputChange("guardianSignature", dataURL);
+        setGuardianAutoSaved(false);
+        handleInputChange("clientSignature", "");
     };
 
     const toggleGuardianSection = () => {
@@ -118,8 +162,33 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                     </Grid2>
 
                     <Grid2 size={12}>
-                        <Typography variant="subtitle2" gutterBottom>
-                            Caregiver Signature
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 2,
+                                mb: 1,
+                            }}
+                        >
+                            <Typography variant="subtitle2">
+                                Caregiver Signature
+                            </Typography>
+                            {caregiverAutoSaved && (
+                                <Chip
+                                    icon={<CheckCircle />}
+                                    label="Auto-saved"
+                                    size="small"
+                                    color="success"
+                                    variant="filled"
+                                />
+                            )}
+                        </Box>
+                        <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            sx={{ mb: 1, display: "block" }}
+                        >
+                            Signature will be automatically saved as you draw
                         </Typography>
                         <Box
                             ref={caregiverBoxRef}
@@ -129,7 +198,7 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                                 width: "100%",
                                 height: 150,
                                 mb: 1,
-                                overflow: "hidden", // Prevent overflow
+                                overflow: "hidden",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
@@ -137,9 +206,10 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                         >
                             <SignatureCanvas
                                 ref={caregiverSigCanvasRef}
+                                onEnd={handleCaregiverSignatureEnd} // Auto-save on signature end
                                 canvasProps={{
                                     width: canvasWidth,
-                                    height: 148, // Slightly less than box height
+                                    height: 148,
                                     style: {
                                         border: "none",
                                         borderRadius: "4px",
@@ -156,18 +226,10 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                             >
                                 Clear
                             </Button>
-                            <Button
-                                size="small"
-                                variant="contained"
-                                startIcon={<Save />}
-                                onClick={saveCaregiverSignature}
-                            >
-                                Save Signature
-                            </Button>
                         </Box>
                     </Grid2>
 
-                    {/* Guardian/Parent Section - Collapsible */}
+                    {/* Guardian Section - Collapsible */}
                     <Grid2 size={12}>
                         <Box
                             sx={{
@@ -184,7 +246,7 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                                 color="primary"
                                 sx={{ flexGrow: 1 }}
                             >
-                                Guardian/Parent Section (Optional)
+                                Guardian Section (Optional)
                             </Typography>
                             <IconButton size="small">
                                 {isGuardianSectionOpen ? (
@@ -206,10 +268,10 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                                         label="Guardian Comment/Feedback"
                                         multiline
                                         rows={3}
-                                        value={formData.guardianComment || ""}
+                                        value={formData.clientComment || ""}
                                         onChange={(e) =>
                                             handleInputChange(
-                                                "guardianComment",
+                                                "clientComment",
                                                 e.target.value
                                             )
                                         }
@@ -218,11 +280,34 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                                 </Grid2>
 
                                 <Grid2 size={{ xs: 12 }}>
-                                    <Typography
-                                        variant="subtitle2"
-                                        gutterBottom
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: 2,
+                                            mb: 1,
+                                        }}
                                     >
-                                        Guardian Signature
+                                        <Typography variant="subtitle2">
+                                            Guardian Signature
+                                        </Typography>
+                                        {guardianAutoSaved && (
+                                            <Chip
+                                                icon={<CheckCircle />}
+                                                label="Auto-saved"
+                                                size="small"
+                                                color="success"
+                                                variant="filled"
+                                            />
+                                        )}
+                                    </Box>
+                                    <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                        sx={{ mb: 1, display: "block" }}
+                                    >
+                                        Signature will be automatically saved as
+                                        you draw
                                     </Typography>
                                     <Box
                                         ref={guardianBoxRef}
@@ -232,7 +317,7 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                                             width: "100%",
                                             height: 150,
                                             mb: 1,
-                                            overflow: "hidden", // Prevent overflow
+                                            overflow: "hidden",
                                             display: "flex",
                                             alignItems: "center",
                                             justifyContent: "center",
@@ -240,9 +325,10 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                                     >
                                         <SignatureCanvas
                                             ref={guardianSigCanvasRef}
+                                            onEnd={handleGuardianSignatureEnd} // Auto-save on signature end
                                             canvasProps={{
                                                 width: canvasWidth,
-                                                height: 148, // Slightly less than box height
+                                                height: 148,
                                                 style: {
                                                     border: "none",
                                                     borderRadius: "4px",
@@ -258,14 +344,6 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                                             onClick={clearGuardianSignature}
                                         >
                                             Clear
-                                        </Button>
-                                        <Button
-                                            size="small"
-                                            variant="contained"
-                                            startIcon={<Save />}
-                                            onClick={saveGuardianSignature}
-                                        >
-                                            Save Signature
                                         </Button>
                                     </Box>
                                 </Grid2>
