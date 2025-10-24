@@ -1,1 +1,0 @@
-import"./app-CWXQ9nt7.js";import{P as o}from"./index-BhqMQQZU.js";import{d as t}from"./dayjs.min-ByegzNTC.js";const s=({date:a})=>(e=>{const r=t(e);return t().diff(r,"year")})(a);s.propTypes={date:o.string.isRequired};export{s as A};

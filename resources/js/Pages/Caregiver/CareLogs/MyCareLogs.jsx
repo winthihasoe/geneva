@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Head, usePage, router } from "@inertiajs/react";
 import AppLayout from "@/Layouts/AppLayout";
 import {
@@ -45,9 +45,8 @@ import {
     CalendarToday as CalendarIcon,
     PregnantWoman as PregnantIcon,
 } from "@mui/icons-material";
-import { generateCareLogPDF } from "@/utils/pdfGenerator";
 import ChildCareIcon from "@mui/icons-material/ChildCare";
-import BackButton from "@/Components/BackButton";
+import ArrowCircleLeftOutlinedIcon from "@mui/icons-material/ArrowCircleLeftOutlined";
 
 // Add this function near the top of your component, after the imports
 const getDetailsRoute = (careType) => {
@@ -430,7 +429,13 @@ const MyCareLogs = () => {
                         fontWeight="bold"
                         color="primary"
                     >
-                        <BackButton route={"dashboard"} /> My Care Logs
+                        <IconButton
+                            sx={{ mr: 1 }}
+                            onClick={() => router.get(route("cg.dashboard"))}
+                        >
+                            <ArrowCircleLeftOutlinedIcon />
+                        </IconButton>
+                        My Care Logs
                     </Typography>
                 </Box>
 
