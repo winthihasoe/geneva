@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\CareLog;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CgDashboardController extends Controller
 {
@@ -22,25 +23,95 @@ class CgDashboardController extends Controller
 
     public function newbornCareLogs()
     {
-        $caregiverName = Auth::user()->cv->full_name ?? 'Caregiver';
+        $user = Auth::user();
+        $caregiverName = $user->cv->full_name ?? 'Caregiver';
+        $cvId = $user->cv ? $user->cv->id : null;
+
+        // Fetch the last newborn care log for this caregiver
+        $lastNewbornCareLog = CareLog::where('cv_id', $cvId)
+            ->where('care_type', 'newborn')
+            ->orderBy('care_date', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        // Only send the fields needed for "continue"
+        $lastCareLogData = null;
+        if ($lastNewbornCareLog) {
+            $lastCareLogData = [
+                'date' => $lastNewbornCareLog->care_date,
+                'firstName' => $lastNewbornCareLog->first_name,
+                'age' => $lastNewbornCareLog->age_display,
+                'weight' => $lastNewbornCareLog->weight_kg,
+                'height' => $lastNewbornCareLog->height_cm,
+            ];
+        }
+
         return Inertia::render('Caregiver/CareLogs/NewbornCareLog/NewbornCareLogs', [
             'caregiverName' => $caregiverName,
+            'lastCareLog' => $lastCareLogData,
         ]);
     }
 
     public function maternalCareLogs()
     {
-        $caregiverName = Auth::user()->cv->full_name ?? 'Caregiver';
+        $user = Auth::user();
+        $caregiverName = $user->cv->full_name ?? 'Caregiver';
+        $cvId = $user->cv ? $user->cv->id : null;
+
+        // Fetch the last maternal care log for this caregiver
+        $lastMaternalCareLog = \App\Models\CareLog::where('cv_id', $cvId)
+            ->where('care_type', 'maternal')
+            ->orderBy('care_date', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        $lastCareLogData = null;
+        if ($lastMaternalCareLog) {
+            $lastCareLogData = [
+                'date' => $lastMaternalCareLog->care_date,
+                'firstName' => $lastMaternalCareLog->first_name,
+                'lastName' => $lastMaternalCareLog->last_name,
+                'age' => $lastMaternalCareLog->age_display,
+                'gestationalAge' => $lastMaternalCareLog->gestational_age,
+                'weight' => $lastMaternalCareLog->weight_kg,
+                'height' => $lastMaternalCareLog->height_cm,
+            ];
+        }
+
         return Inertia::render('Caregiver/CareLogs/MaternalCareLog/MaternalCareLogs', [
             'caregiverName' => $caregiverName,
+            'lastCareLog' => $lastCareLogData,
         ]);
     }
 
     public function elderlyCareLogs()
     {
-        $caregiverName = Auth::user()->cv->full_name ?? 'Caregiver';
+       $user = Auth::user();
+        $caregiverName = $user->cv->full_name ?? 'Caregiver';
+        $cvId = $user->cv ? $user->cv->id : null;
+
+        // Fetch the last elderly care log for this caregiver
+        $lastElderlyCareLog = \App\Models\CareLog::where('cv_id', $cvId)
+            ->where('care_type', 'elder')
+            ->orderBy('care_date', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        $lastCareLogData = null;
+        if ($lastElderlyCareLog) {
+            $lastCareLogData = [
+                'date' => $lastElderlyCareLog->care_date,
+                'firstName' => $lastElderlyCareLog->first_name,
+                'lastName' => $lastElderlyCareLog->last_name,
+                'age' => $lastElderlyCareLog->age_display,
+                'weight' => $lastElderlyCareLog->weight_kg,
+                'height' => $lastElderlyCareLog->height_cm,
+            ];
+        }
+
         return Inertia::render('Caregiver/CareLogs/ElderlyCareLog/ElderlyCareLogs', [
             'caregiverName' => $caregiverName,
+            'lastCareLog' => $lastCareLogData,
         ]);
     }
 
@@ -101,7 +172,7 @@ class CgDashboardController extends Controller
             'stats' => $stats,
             'recentLogs' => $recentLogs,
             'filters' => [
-                'care_types' => ['newborn', 'baby', 'maternal', 'elder'],
+                'care_types' => ['newborn', 'maternal', 'elder'],
                 'date_ranges' => [
                     'today' => now()->toDateString(),
                     'this_week' => [now()->startOfWeek()->toDateString(), now()->endOfWeek()->toDateString()],
@@ -116,47 +187,39 @@ class CgDashboardController extends Controller
     {
         $user = Auth::user();
         $cvId = $user->cv ? $user->cv->id : null;
-        
-        $query = CareLog::where('cv_id', $cvId);
 
-        // Apply filters
-        if ($request->filled('care_type')) {
-            $query->where('care_type', $request->care_type);
-        }
-
-        if ($request->filled('date_from')) {
-            $query->whereDate('care_date', '>=', $request->date_from);
-        }
-
-        if ($request->filled('date_to')) {
-            $query->whereDate('care_date', '<=', $request->date_to);
-        }
+        $query = DB::table('care_logs')
+            ->where('cv_id', $cvId) // <-- Only logs for this caregiver
+            ->orderBy('care_date', 'desc');
 
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('first_name', 'like', "%{$search}%")
-                  ->orWhere('last_name', 'like', "%{$search}%")
-                  ->orWhere('additional_notes', 'like', "%{$search}%");
+                ->orWhere('last_name', 'like', "%{$search}%")
+                ->orWhere('caregiver_name', 'like', "%{$search}%");
             });
         }
+        if ($request->filled('care_type')) {
+            $query->where('care_type', $request->care_type);
+        }
+        if ($request->filled('date_from')) {
+            $query->where('care_date', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->where('care_date', '<=', $request->date_to);
+        }
 
-        $careLogs = $query->with([
-                'emotionBehavior',
-                'feedingRecords',
-                'diaperChanges', 
-                'sleepRecords',
-                'activityRecords',
-                'hygieneRecords',
-                'vitalSigns',
-                'requestedSupplies'
-            ])
-            ->orderBy('care_date', 'desc')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $careLogs = $query->paginate(20)->appends($request->all());
 
-        return response()->json([
-            'careLogs' => $careLogs
+        return Inertia::render('Caregiver/CareLogs/MyCareLogs', [
+            'careLogs' => $careLogs,
+            'filters' => [
+                'search' => $request->search,
+                'care_types' => ['newborn', 'maternal', 'elder'],
+                'date_from' => $request->date_from,
+                'date_to' => $request->date_to,
+            ],
         ]);
     }
 

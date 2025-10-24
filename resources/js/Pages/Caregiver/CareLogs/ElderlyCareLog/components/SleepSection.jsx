@@ -176,7 +176,7 @@ const SleepSection = ({
                                             handleArrayChange(
                                                 "sleep",
                                                 index,
-                                                "quality",
+                                                "sleep_quality",
                                                 e.target.value
                                             )
                                         }

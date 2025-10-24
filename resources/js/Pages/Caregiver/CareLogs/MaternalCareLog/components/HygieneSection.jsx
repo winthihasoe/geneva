@@ -96,7 +96,7 @@ const HygieneSection = ({
                         </Box>
 
                         <Grid2 container spacing={2} sx={{ mb: 3 }}>
-                            <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
+                            <Grid2 item size={{ xs: 12, sm: 6, md: 3 }}>
                                 <TextField
                                     fullWidth
                                     variant="standard"
@@ -115,7 +115,7 @@ const HygieneSection = ({
                                 />
                             </Grid2>
 
-                            <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+                            <Grid2 item size={{ xs: 12, sm: 6, md: 4 }}>
                                 <TextField
                                     fullWidth
                                     variant="standard"
@@ -133,7 +133,7 @@ const HygieneSection = ({
                                 />
                             </Grid2>
 
-                            <Grid2 size={{ xs: 12, sm: 12, md: 5 }}>
+                            <Grid2 item size={{ xs: 12, sm: 12, md: 5 }}>
                                 <TextField
                                     fullWidth
                                     variant="standard"
@@ -169,7 +169,7 @@ const HygieneSection = ({
                 {/* Moisturizer applied Yes or No Radio button*/}
 
                 <Grid2 container spacing={2} sx={{ mb: 3, mt: 1 }}>
-                    <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+                    <Grid2 item size={{ xs: 12, sm: 6, md: 4 }}>
                         <FormControl component="fieldset" sx={{ mt: 2 }}>
                             <FormLabel component="legend">
                                 Moisturizer Applied
@@ -197,7 +197,7 @@ const HygieneSection = ({
                             </RadioGroup>
                         </FormControl>
                     </Grid2>
-                    <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+                    <Grid2 item size={{ xs: 12, sm: 6, md: 4 }}>
                         <FormControl component="fieldset" sx={{ mt: 2 }}>
                             <FormLabel component="legend">
                                 Pressure Areas Checked

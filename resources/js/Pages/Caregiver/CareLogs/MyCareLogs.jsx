@@ -65,36 +65,23 @@ const getDetailsRoute = (careType) => {
 
 const MyCareLogs = () => {
     const { props } = usePage();
-    const { flash, careLogs, stats, recentLogs, filters } = props;
+    const { flash, careLogs, stats, filters } = props;
 
-    const [showPDFDialog, setShowPDFDialog] = useState(false);
-    const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-    const [careLogData, setCareLogData] = useState(null);
     const [showCareTypeDialog, setShowCareTypeDialog] = useState(false);
 
     // Filter states
-    const [searchTerm, setSearchTerm] = useState("");
-    const [selectedCareType, setSelectedCareType] = useState("");
-    const [dateFrom, setDateFrom] = useState("");
-    const [dateTo, setDateTo] = useState("");
+    const [searchTerm, setSearchTerm] = useState(filters?.search || "");
+    const [selectedCareType, setSelectedCareType] = useState(
+        filters?.care_type || ""
+    );
+    const [dateFrom, setDateFrom] = useState(filters?.date_from || "");
+    const [dateTo, setDateTo] = useState(filters?.date_to || "");
     const [showFilters, setShowFilters] = useState(false);
 
-    // Check for flash messages when component mounts
-    useEffect(() => {
-        if (flash?.success && flash?.show_pdf_prompt && flash?.care_log_data) {
-            setCareLogData(flash.care_log_data);
-            setShowSuccessAlert(true);
-            setShowPDFDialog(true);
-        }
-    }, [flash]);
-
-    const handleClosePDFDialog = () => {
-        setShowPDFDialog(false);
-        setShowSuccessAlert(false);
-    };
-
-    const handleSearch = () => {
+    // Search handler (same as admin)
+    const handleSearch = (e) => {
+        e.preventDefault();
         const params = new URLSearchParams();
         if (searchTerm) params.append("search", searchTerm);
         if (selectedCareType) params.append("care_type", selectedCareType);
@@ -104,6 +91,7 @@ const MyCareLogs = () => {
         router.get(route("cg.mycarelogs.filter"), Object.fromEntries(params));
     };
 
+    // Clear filters
     const clearFilters = () => {
         setSearchTerm("");
         setSelectedCareType("");
@@ -112,10 +100,24 @@ const MyCareLogs = () => {
         router.get(route("cg.mycarelogs"));
     };
 
+    const handlePageChange = (event, page) => {
+        const params = new URLSearchParams();
+        if (searchTerm) params.append("search", searchTerm);
+        if (selectedCareType) params.append("care_type", selectedCareType);
+        if (dateFrom) params.append("date_from", dateFrom);
+        if (dateTo) params.append("date_to", dateTo);
+        params.set("page", page);
+
+        // Use filter route if any filter is active
+        const isFiltered = searchTerm || selectedCareType || dateFrom || dateTo;
+        const routeName = isFiltered ? "cg.mycarelogs.filter" : "cg.mycarelogs";
+
+        router.get(route(routeName), Object.fromEntries(params));
+    };
+
     const getCareTypeIcon = (careType) => {
         switch (careType) {
             case "newborn":
-            case "baby":
                 return <ChildCareIcon />;
             case "elder":
                 return <ElderlyIcon />;
@@ -130,8 +132,6 @@ const MyCareLogs = () => {
         switch (careType) {
             case "newborn":
                 return "primary";
-            case "baby":
-                return "secondary";
             case "elder":
                 return "warning";
             case "maternal":
@@ -158,25 +158,17 @@ const MyCareLogs = () => {
         router.get(route(routeName));
     };
 
+    // Check if any filter is applied via URL query string
+    const hasFilter =
+        !!searchTerm ||
+        !!selectedCareType ||
+        !!dateFrom ||
+        !!dateTo ||
+        window.location.search.length > 1;
+
     return (
         <AppLayout>
             <Container maxWidth="lg" sx={{ pb: 4 }}>
-                {/* Success Alert */}
-                <Snackbar
-                    open={showSuccessAlert}
-                    autoHideDuration={6000}
-                    onClose={() => setShowSuccessAlert(false)}
-                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
-                >
-                    <Alert
-                        severity="success"
-                        onClose={() => setShowSuccessAlert(false)}
-                        sx={{ width: "100%" }}
-                    >
-                        {flash?.success}
-                    </Alert>
-                </Snackbar>
-
                 {/* Care Type Selection Dialog */}
                 <Dialog
                     open={showCareTypeDialog}
@@ -438,11 +430,20 @@ const MyCareLogs = () => {
                         fontWeight="bold"
                         color="primary"
                     >
-                        <BackButton /> My Care Logs
+                        <BackButton route={"dashboard"} /> My Care Logs
                     </Typography>
+                </Box>
+
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                    }}
+                >
                     <Button
                         variant="contained"
-                        startIcon={<AddIcon />}
                         onClick={handleNewCareLogClick}
                         sx={{
                             background:
@@ -452,213 +453,265 @@ const MyCareLogs = () => {
                                     "linear-gradient(45deg, #388e3c 30%, #66bb6a 90%)",
                             },
                         }}
+                        size="small"
                     >
                         New Care Log
                     </Button>
+                    <Button
+                        startIcon={<FilterIcon />}
+                        onClick={() => setShowFilters(!showFilters)}
+                    >
+                        {showFilters ? "Hide Filters " : "Show Filters "}
+                    </Button>
                 </Box>
+                {/* Filters & Statistics Card*/}
+                {showFilters && (
+                    <Card sx={{ mb: 3, mt: 1 }}>
+                        <CardContent>
+                            <>
+                                {/* Statistics Cards */}
+                                {stats && (
+                                    <Box sx={{ mb: 2 }}>
+                                        <Grid
+                                            container
+                                            sx={{ mt: 1 }}
+                                            spacing={1}
+                                        >
+                                            <Grid
+                                                item
+                                                size={{ xs: 4, sm: 4, md: 4 }}
+                                            >
+                                                <Card>
+                                                    <CardContent>
+                                                        <Typography
+                                                            variant="body2"
+                                                            color="textSecondary"
+                                                            gutterBottom
+                                                        >
+                                                            Total
+                                                            <br /> Logs
+                                                        </Typography>
+                                                        <Typography
+                                                            variant="h4"
+                                                            component="div"
+                                                            color="primary"
+                                                        >
+                                                            {stats.total_logs}
+                                                        </Typography>
+                                                    </CardContent>
+                                                </Card>
+                                            </Grid>
+                                            <Grid
+                                                item
+                                                size={{ xs: 4, sm: 4, md: 4 }}
+                                            >
+                                                <Card>
+                                                    <CardContent>
+                                                        <Typography
+                                                            variant="body2"
+                                                            color="textSecondary"
+                                                            gutterBottom
+                                                        >
+                                                            This <br /> Month
+                                                        </Typography>
+                                                        <Typography
+                                                            variant="h4"
+                                                            component="div"
+                                                            color="secondary"
+                                                        >
+                                                            {stats.this_month}
+                                                        </Typography>
+                                                    </CardContent>
+                                                </Card>
+                                            </Grid>
+                                            <Grid
+                                                item
+                                                size={{ xs: 4, sm: 4, md: 4 }}
+                                            >
+                                                <Card>
+                                                    <CardContent>
+                                                        <Typography
+                                                            variant="body2"
+                                                            color="textSecondary"
+                                                            gutterBottom
+                                                        >
+                                                            This <br />
+                                                            Week
+                                                        </Typography>
+                                                        <Typography
+                                                            variant="h4"
+                                                            component="div"
+                                                            color="success.main"
+                                                        >
+                                                            {stats.this_week}
+                                                        </Typography>
+                                                    </CardContent>
+                                                </Card>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                )}
 
-                {/* Statistics Cards */}
-                {stats && (
-                    <Box>
-                        <Grid container spacing={1} mb={2}>
-                            <Grid item size={{ xs: 4, sm: 4, md: 4 }}>
-                                <Card>
-                                    <CardContent>
-                                        <Typography
-                                            variant="body2"
-                                            color="textSecondary"
-                                            gutterBottom
-                                        >
-                                            Total Logs
-                                        </Typography>
-                                        <Typography
-                                            variant="h4"
-                                            component="div"
-                                            color="primary"
-                                        >
-                                            {stats.total_logs}
-                                        </Typography>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                            <Grid item size={{ xs: 4, sm: 4, md: 4 }}>
-                                <Card>
-                                    <CardContent>
-                                        <Typography
-                                            variant="body2"
-                                            color="textSecondary"
-                                            gutterBottom
-                                        >
-                                            This Month
-                                        </Typography>
-                                        <Typography
-                                            variant="h4"
-                                            component="div"
-                                            color="secondary"
-                                        >
-                                            {stats.this_month}
-                                        </Typography>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                            <Grid item size={{ xs: 4, sm: 4, md: 4 }}>
-                                <Card>
-                                    <CardContent>
-                                        <Typography
-                                            variant="body2"
-                                            color="textSecondary"
-                                            gutterBottom
-                                        >
-                                            This Week
-                                        </Typography>
-                                        <Typography
-                                            variant="h4"
-                                            component="div"
-                                            color="success.main"
-                                        >
-                                            {stats.this_week}
-                                        </Typography>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                )}
-
-                {/* Filters */}
-                {/* <Card sx={{ mb: 3 }}>
-                    <CardContent>
-                        <Box
-                            sx={{
-                                display: "flex",
-                                justifyContent: "flex-end",
-                                alignItems: "center",
-                            }}
-                        >
-                            <Button
-                                startIcon={<FilterIcon />}
-                                onClick={() => setShowFilters(!showFilters)}
-                            >
-                                {showFilters ? "Hide Filters" : "Show Filters"}
-                            </Button>
-                        </Box>
-
-                        <Grid container spacing={2}>
-                            <Grid item size={{ xs: 12, md: 4 }}>
-                                <TextField
-                                    fullWidth
-                                    label="Search"
-                                    placeholder="Search by baby name or notes..."
-                                    value={searchTerm}
-                                    onChange={(e) =>
-                                        setSearchTerm(e.target.value)
-                                    }
-                                    InputProps={{
-                                        startAdornment: (
-                                            <SearchIcon
-                                                sx={{
-                                                    mr: 1,
-                                                    color: "action.active",
-                                                }}
-                                            />
-                                        ),
-                                    }}
-                                />
-                            </Grid>
-
-                            {showFilters && (
-                                <>
-                                    <Grid item size={{ xs: 12, md: 4 }}>
-                                        <FormControl fullWidth>
-                                            <InputLabel>Care Type</InputLabel>
-                                            <Select
-                                                value={selectedCareType}
+                                {/* Filters */}
+                                <form onSubmit={handleSearch}>
+                                    <Grid container spacing={2}>
+                                        <Grid item size={{ xs: 12, md: 4 }}>
+                                            <TextField
+                                                fullWidth
+                                                variant="standard"
+                                                label="Search"
+                                                placeholder="Search by name..."
+                                                value={searchTerm}
                                                 onChange={(e) =>
-                                                    setSelectedCareType(
+                                                    setSearchTerm(
                                                         e.target.value
                                                     )
                                                 }
-                                                label="Care Type"
-                                            >
-                                                <MenuItem value="">
-                                                    All Types
-                                                </MenuItem>
-                                                {filters?.care_types?.map(
-                                                    (type) => (
-                                                        <MenuItem
-                                                            key={type}
-                                                            value={type}
-                                                        >
-                                                            {type
-                                                                .charAt(0)
-                                                                .toUpperCase() +
-                                                                type.slice(1)}
-                                                        </MenuItem>
-                                                    )
-                                                )}
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <SearchIcon
+                                                            sx={{
+                                                                mr: 1,
+                                                                color: "action.active",
+                                                            }}
+                                                        />
+                                                    ),
+                                                }}
+                                            />
+                                        </Grid>
 
-                                    <Grid item size={{ xs: 12, md: 4 }}>
-                                        <TextField
-                                            fullWidth
-                                            type="date"
-                                            label="Date From"
-                                            value={dateFrom}
-                                            onChange={(e) =>
-                                                setDateFrom(e.target.value)
-                                            }
-                                            InputLabelProps={{ shrink: true }}
-                                        />
-                                    </Grid>
+                                        <Grid item size={{ xs: 12, md: 4 }}>
+                                            <FormControl fullWidth>
+                                                <InputLabel>
+                                                    Care Type
+                                                </InputLabel>
+                                                <Select
+                                                    value={selectedCareType}
+                                                    onChange={(e) =>
+                                                        setSelectedCareType(
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    label="Care Type"
+                                                >
+                                                    <MenuItem value="">
+                                                        All Types
+                                                    </MenuItem>
+                                                    {filters?.care_types?.map(
+                                                        (type) => (
+                                                            <MenuItem
+                                                                key={type}
+                                                                value={type}
+                                                            >
+                                                                {type
+                                                                    .charAt(0)
+                                                                    .toUpperCase() +
+                                                                    type.slice(
+                                                                        1
+                                                                    )}
+                                                            </MenuItem>
+                                                        )
+                                                    )}
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
 
-                                    <Grid item size={{ xs: 12, md: 4 }}>
-                                        <TextField
-                                            fullWidth
-                                            type="date"
-                                            label="Date To"
-                                            value={dateTo}
-                                            onChange={(e) =>
-                                                setDateTo(e.target.value)
-                                            }
-                                            InputLabelProps={{ shrink: true }}
-                                        />
-                                    </Grid>
-                                </>
-                            )}
+                                        <Grid item size={{ xs: 12, md: 4 }}>
+                                            <TextField
+                                                fullWidth
+                                                type="date"
+                                                label="Date From"
+                                                value={dateFrom}
+                                                variant="standard"
+                                                onChange={(e) =>
+                                                    setDateFrom(e.target.value)
+                                                }
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
+                                            />
+                                        </Grid>
 
-                            <Grid item size={{ xs: 12, md: 4 }}>
-                                <Stack direction="row" spacing={1}>
-                                    <Button
-                                        variant="contained"
-                                        onClick={handleSearch}
-                                        size="small"
-                                    >
-                                        Search
-                                    </Button>
-                                    <Button
-                                        variant="outlined"
-                                        onClick={clearFilters}
-                                        size="small"
-                                    >
-                                        Clear
-                                    </Button>
-                                </Stack>
-                            </Grid>
-                        </Grid>
-                    </CardContent>
-                </Card> */}
+                                        <Grid item size={{ xs: 12, md: 4 }}>
+                                            <TextField
+                                                fullWidth
+                                                type="date"
+                                                label="Date To"
+                                                value={dateTo}
+                                                variant="standard"
+                                                onChange={(e) =>
+                                                    setDateTo(e.target.value)
+                                                }
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
+                                            />
+                                        </Grid>
+
+                                        <Grid
+                                            item
+                                            size={{ xs: 12 }}
+                                            sx={{
+                                                display: "flex",
+                                                justifyContent: "flex-end",
+                                                mt: 1,
+                                            }}
+                                        >
+                                            <Stack direction="row" spacing={1}>
+                                                <Button
+                                                    variant="contained"
+                                                    type="submit"
+                                                    size="small"
+                                                    disabled={
+                                                        !dateFrom &&
+                                                        !dateTo &&
+                                                        !searchTerm &&
+                                                        !selectedCareType
+                                                    }
+                                                >
+                                                    Search
+                                                </Button>
+                                                <Button
+                                                    variant="outlined"
+                                                    onClick={clearFilters}
+                                                    size="small"
+                                                >
+                                                    Clear
+                                                </Button>
+                                            </Stack>
+                                        </Grid>
+                                    </Grid>
+                                </form>
+                            </>
+                        </CardContent>
+                    </Card>
+                )}
+
+                {hasFilter && (
+                    <Alert severity="info" sx={{ my: 1 }}>
+                        Filters are applied. To see all the care logs, please{" "}
+                        <span
+                            onClick={clearFilters}
+                            style={{
+                                cursor: "pointer",
+                                color: "blue",
+                                textDecoration: "underline",
+                            }}
+                        >
+                            clear the filters.
+                        </span>
+                    </Alert>
+                )}
 
                 {/* Care Logs Table */}
 
-                <Typography variant="h6" gutterBottom>
-                    Care Logs
-                </Typography>
-
                 {careLogs?.data?.length > 0 ? (
                     <>
-                        <TableContainer component={Paper} elevation={0}>
+                        <TableContainer
+                            sx={{ mt: 3 }}
+                            component={Paper}
+                            elevation={0}
+                        >
                             <Table>
                                 <TableHead>
                                     <TableRow>
@@ -749,11 +802,7 @@ const MyCareLogs = () => {
                                 <Pagination
                                     count={careLogs.last_page}
                                     page={careLogs.current_page}
-                                    onChange={(event, page) => {
-                                        router.get(route("cg.mycarelogs"), {
-                                            page,
-                                        });
-                                    }}
+                                    onChange={handlePageChange}
                                     color="primary"
                                 />
                             </Box>

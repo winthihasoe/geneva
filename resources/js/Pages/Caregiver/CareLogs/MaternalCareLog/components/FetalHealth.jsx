@@ -15,10 +15,11 @@ import {
 } from "@mui/material";
 import {
     FavoriteBorder as HeartIcon,
-    DirectionsRun as MovementIcon,
-    VolumeUp as SoundIcon,
     Notes as NotesIcon,
 } from "@mui/icons-material";
+import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
+import MonitorHeartRoundedIcon from "@mui/icons-material/MonitorHeartRounded";
+import AirlineSeatLegroomReducedRoundedIcon from "@mui/icons-material/AirlineSeatLegroomReducedRounded";
 
 function FetalHealth({ formData, setFormData }) {
     const handleFetalMovementChange = (event) => {
@@ -107,7 +108,7 @@ function FetalHealth({ formData, setFormData }) {
                                 mb: 2,
                             }}
                         >
-                            <MovementIcon
+                            <MonitorHeartRoundedIcon
                                 sx={{ color: "#2196f3", fontSize: 20 }}
                             />
                             <FormLabel
@@ -153,7 +154,9 @@ function FetalHealth({ formData, setFormData }) {
                             mb: 1,
                         }}
                     >
-                        <MovementIcon sx={{ color: "#4caf50", fontSize: 20 }} />
+                        <AirlineSeatLegroomReducedRoundedIcon
+                            sx={{ color: "#4caf50", fontSize: 20 }}
+                        />
                         <Typography variant="subtitle2" fontWeight="bold">
                             Kick Count (if movement detected)
                         </Typography>
@@ -169,7 +172,7 @@ function FetalHealth({ formData, setFormData }) {
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <MovementIcon
+                                    <AirlineSeatLegroomReducedRoundedIcon
                                         sx={{ color: "#666", fontSize: 18 }}
                                     />
                                 </InputAdornment>
@@ -201,7 +204,9 @@ function FetalHealth({ formData, setFormData }) {
                             mb: 1,
                         }}
                     >
-                        <SoundIcon sx={{ color: "#e91e63", fontSize: 20 }} />
+                        <FavoriteRoundedIcon
+                            sx={{ color: "#e91e63", fontSize: 20 }}
+                        />
                         <Typography variant="subtitle2" fontWeight="bold">
                             Fetal Heart Rate (BPM)
                         </Typography>
@@ -234,7 +239,7 @@ function FetalHealth({ formData, setFormData }) {
                         }}
                         helperText="Normal fetal heart rate: 110-160 BPM"
                         error={
-                            fetalHealth.fetalHeartSound &&
+                            !!fetalHealth.fetalHeartSound &&
                             (parseInt(fetalHealth.fetalHeartSound) < 110 ||
                                 parseInt(fetalHealth.fetalHeartSound) > 160)
                         }

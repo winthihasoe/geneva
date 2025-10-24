@@ -168,6 +168,14 @@ const PreviewMaternalCareLog = ({
                         <strong>Gestational Age:</strong>{" "}
                         {formData.gestationalAge || "Not specified"}
                     </Typography>
+                    <Typography variant="subtitle1">
+                        <strong>Weight:</strong>{" "}
+                        {`${formData.weight} Kg` || "Not specified"}
+                    </Typography>
+                    <Typography variant="subtitle1">
+                        <strong>Height:</strong>{" "}
+                        {`${formData.height} cm` || "Not specified"}
+                    </Typography>
                 </Box>
                 <Divider sx={{ my: 2 }} />
 

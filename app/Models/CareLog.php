@@ -22,7 +22,10 @@ class CareLog extends Model
         'care_date',
         'first_name',
         'last_name',
-        'age',
+        'age_display',
+        'age_in_days',
+        'age_category',
+        'gestational_age',
         'weight_kg',
         'height_cm',
         

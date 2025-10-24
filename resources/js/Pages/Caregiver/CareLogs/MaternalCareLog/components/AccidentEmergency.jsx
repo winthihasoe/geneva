@@ -47,7 +47,7 @@ const AccidentEmergency = ({
                             addArrayItem("accident", {
                                 time: "",
                                 description: "",
-                                severity: "Medium",
+                                severity: "",
                                 action: "",
                             })
                         }
@@ -119,7 +119,7 @@ const AccidentEmergency = ({
                                 <FormControl fullWidth variant="standard">
                                     <InputLabel>Severity</InputLabel>
                                     <Select
-                                        value={item.severity || "Medium"}
+                                        value={item.severity || ""}
                                         onChange={(e) =>
                                             handleArrayChange(
                                                 "accident",

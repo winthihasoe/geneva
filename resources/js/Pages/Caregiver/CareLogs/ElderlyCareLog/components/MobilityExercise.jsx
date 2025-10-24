@@ -141,7 +141,6 @@ const MobilityExercise = ({
                                     }
                                     multiline
                                     rows={3}
-                                    maxRows={6}
                                     placeholder="Describe mobility assistance provided or exercises performed (e.g., walking assistance with walker, range of motion exercises for arms, transfer assistance from bed to wheelchair, physical therapy exercises)"
                                 />
                             </Grid2>

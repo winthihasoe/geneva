@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AppLayout from "@/Layouts/AppLayout";
 import { Head, router } from "@inertiajs/react";
 import {
@@ -727,7 +727,9 @@ const PreviewDialog = ({
     );
 };
 
-const NewbornCareLogs = ({ caregiverName }) => {
+const LOCAL_STORAGE_KEY = "newbornCareLogDraft";
+
+const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
     const [formData, setFormData] = useState({
         // Basic Information (maps to care_logs table)
         date: new Date().toISOString().split("T")[0],
@@ -891,6 +893,30 @@ const NewbornCareLogs = ({ caregiverName }) => {
             errors.push("Date is required");
         }
 
+        // At least one feeding record
+        const hasFeeding =
+            Array.isArray(formData.feeding) &&
+            formData.feeding.some(
+                (item) => item.time || item.type || item.amount || item.notes
+            );
+        if (!hasFeeding) {
+            errors.push("Feeding record is required");
+        }
+
+        // At least one sleep record
+        const hasSleep =
+            Array.isArray(formData.sleep) &&
+            formData.sleep.some(
+                (item) =>
+                    item.timeStarted ||
+                    item.timeEnded ||
+                    item.duration ||
+                    item.notes
+            );
+        if (!hasSleep) {
+            errors.push("Sleep record is required");
+        }
+
         return errors;
     };
 
@@ -954,6 +980,28 @@ const NewbornCareLogs = ({ caregiverName }) => {
 
     const handleEditClick = () => {
         setShowPreview(false);
+    };
+
+    // Load draft from localStorage on mount
+    useEffect(() => {
+        const savedDraft = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (savedDraft) {
+            try {
+                setFormData(JSON.parse(savedDraft));
+            } catch (e) {
+                // Ignore parse errors
+            }
+        }
+    }, []);
+
+    // Save draft to localStorage on every change
+    useEffect(() => {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formData));
+    }, [formData]);
+
+    // Clear draft helper
+    const clearDraft = () => {
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
     };
 
     const handleSubmit = async () => {
@@ -1062,6 +1110,7 @@ const NewbornCareLogs = ({ caregiverName }) => {
                 onSuccess: () => {
                     // This will fire when redirected to mycarelogs page
                     setShowPreview(false);
+                    clearDraft();
                 },
                 onError: (errors) => {
                     console.error("Submission errors:", errors);
@@ -1142,6 +1191,22 @@ const NewbornCareLogs = ({ caregiverName }) => {
             guardianSignature: "",
             guardianComment: "",
         });
+        setValidationErrors([]);
+        clearDraft();
+    };
+
+    // Function to continue from last care log
+    const continueFromLastCareLog = () => {
+        if (!lastCareLog) return;
+        setFormData((prev) => ({
+            ...prev,
+            date: new Date().toISOString().split("T")[0], // today's date
+            firstName: lastCareLog.firstName || "",
+            lastName: lastCareLog.lastName || "",
+            age: lastCareLog.age || "",
+            weight: lastCareLog.weight || "",
+            height: lastCareLog.height || "",
+        }));
         setValidationErrors([]);
     };
 
@@ -1224,6 +1289,7 @@ const NewbornCareLogs = ({ caregiverName }) => {
                         </Button>
                     </Box>
                 </Paper> */}
+
                 {/* Enhanced Header */}
                 <Box
                     sx={{
@@ -1251,6 +1317,74 @@ const NewbornCareLogs = ({ caregiverName }) => {
                         Newborn Daily Care Logs
                     </Typography>
                 </Box>
+
+                {/* Continue Care Log Feature */}
+                {lastCareLog && (
+                    <Paper
+                        sx={{
+                            mb: 3,
+                            p: 2,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            background:
+                                "linear-gradient(90deg, #e3f2fd 60%, #f8bbd9 100%)",
+                            border: "1px solid #e0e0e0",
+                            borderRadius: 2,
+                        }}
+                        elevation={0}
+                    >
+                        <Box>
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ fontWeight: "bold" }}
+                            >
+                                Your last care log:
+                                <span style={{ color: "#e91e63" }}></span>
+                            </Typography>
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: "red" }}
+                            >
+                                {lastCareLog.firstName}
+                            </Typography>
+                            <Typography
+                                variant="body2"
+                                sx={{ mb: 0.5, color: "red" }}
+                            >
+                                Age: {lastCareLog.age}
+                            </Typography>
+                            <Typography variant="body2" sx={{ color: "#555" }}>
+                                Last log date:{" "}
+                                {lastCareLog.date
+                                    ? new Date(
+                                          lastCareLog.date
+                                      ).toLocaleDateString(undefined, {
+                                          year: "numeric",
+                                          month: "short",
+                                          day: "numeric",
+                                      })
+                                    : "Unknown"}{" "}
+                            </Typography>
+                        </Box>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={continueFromLastCareLog}
+                            sx={{
+                                fontWeight: "bold",
+                                background:
+                                    "linear-gradient(45deg, #1976d2 30%, #64b5f6 90%)",
+                                "&:hover": {
+                                    background:
+                                        "linear-gradient(45deg, #1565c0 30%, #42a5f5 90%)",
+                                },
+                            }}
+                        >
+                            Continue
+                        </Button>
+                    </Paper>
+                )}
 
                 {/* Validation Errors */}
                 {validationErrors.length > 0 && (
@@ -1360,6 +1494,24 @@ const NewbornCareLogs = ({ caregiverName }) => {
                     />
                 </SectionCard>
 
+                {/* Validation Errors */}
+                {validationErrors.length > 0 && (
+                    <Alert severity="error" sx={{ mb: 3 }}>
+                        <Typography
+                            variant="subtitle2"
+                            fontWeight="bold"
+                            gutterBottom
+                        >
+                            Please fill the following fields:
+                        </Typography>
+                        <ul style={{ margin: 0, paddingLeft: "1.5rem" }}>
+                            {validationErrors.map((error, index) => (
+                                <li key={index}>{error}</li>
+                            ))}
+                        </ul>
+                    </Alert>
+                )}
+
                 {/* Enhanced Action Buttons */}
                 <Box
                     sx={{
@@ -1395,7 +1547,10 @@ const NewbornCareLogs = ({ caregiverName }) => {
                     </Button>
 
                     <Button
-                        onClick={() => router.get(route("cg.dashboard"))}
+                        onClick={() => {
+                            clearDraft();
+                            router.get(route("cg.dashboard"));
+                        }}
                         fullWidth={window.innerWidth < 600}
                         sx={{
                             py: 1.5,

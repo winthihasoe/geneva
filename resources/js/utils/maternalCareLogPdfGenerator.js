@@ -301,25 +301,27 @@ export const generateMaternalCareLogPDF = async (formData) => {
 
         const basicInfo = [
             [
-                `Date: ${formData.date || "Not specified"}`,
                 `Name: ${formData.firstName || "Not specified"} ${
                     formData.lastName || ""
                 }`,
+                `Date: ${formData.date || "Not specified"}`,
             ],
             [
                 `Age: ${formData.age || "Not specified"}`,
-                `Weight: ${
-                    formData.weight ? formData.weight + " kg" : "Not specified"
+                `Gestational Age: ${
+                    formData.gestationalAge || "Not specified"
                 }`,
             ],
             [
                 `Height: ${
                     formData.height ? formData.height + " cm" : "Not specified"
                 }`,
-                ``,
+                `Weight: ${
+                    formData.weight ? formData.weight + " kg" : "Not specified"
+                }`,
             ],
         ];
-
+        currentY += 5;
         basicInfo.forEach((row) => {
             addNewPageIfNeeded(8);
             pdf.setFontSize(10);
@@ -775,11 +777,15 @@ export const generateMaternalCareLogPDF = async (formData) => {
                 }`,
                 10
             );
+        } else {
+            addText("No fetal movement recorded", 10, lightGray);
         }
 
         // Show Fetal Kick Count
         if (formData.fetalHealth.kick_count) {
             addText(`Fetal Kick Count: ${formData.fetalHealth.kick_count}`, 10);
+        } else {
+            addText("No fetal kick count recorded", 10, lightGray);
         }
 
         // Show Fetal Heart Sound
@@ -788,6 +794,8 @@ export const generateMaternalCareLogPDF = async (formData) => {
                 `Fetal Heart Rate: ${formData.fetalHealth.fetal_heart_sound} bpm`,
                 10
             );
+        } else {
+            addText("No fetal heart rate recorded", 10, lightGray);
         }
 
         // Show Other Symptoms if available

@@ -68,6 +68,28 @@ const BasicInformation = ({ formData, handleInputChange }) => {
                         />
                     </Grid2>
 
+                    <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+                        <TextField
+                            fullWidth
+                            variant="standard"
+                            label="Gestational Age *"
+                            value={formData.gestationalAge}
+                            onChange={(e) =>
+                                handleInputChange(
+                                    "gestationalAge",
+                                    e.target.value
+                                )
+                            }
+                            placeholder="e.g., 20 weeks"
+                            required
+                        />
+                        <Typography variant="caption" color="textSecondary">
+                            Gestational age is the duration of pregnancy,
+                            measured in weeks from the first day of a person's
+                            last menstrual period (LMP)
+                        </Typography>
+                    </Grid2>
+
                     <Grid2 size={{ xs: 6, sm: 6, md: 4 }}>
                         <TextField
                             fullWidth

@@ -1,5 +1,5 @@
 import AppLayout from "@/Layouts/AppLayout";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Head, router } from "@inertiajs/react";
 import {
     Box,
@@ -438,7 +438,9 @@ const SectionCard = ({ children, config, sx = {} }) => {
     );
 };
 
-const MaternalCareLogs = ({ caregiverName }) => {
+const LOCAL_STORAGE_KEY = "maternalCareLogDraft";
+
+const MaternalCareLogs = ({ caregiverName, lastCareLog }) => {
     const [formData, setFormData] = useState({
         // Basic Information
         date: new Date().toISOString().split("T")[0],
@@ -514,15 +516,13 @@ const MaternalCareLogs = ({ caregiverName }) => {
 
         // Fetal Health
         fetalHealth: {
-            fetalMovementDetected: undefined,
+            fetalMovementDetected: null,
             kickCount: "",
             fetalHeartSound: "",
             notes: "",
         },
 
-        accident: [
-            { time: "", description: "", severity: "Medium", action: "" },
-        ],
+        accident: [{ time: "", description: "", severity: "", action: "" }],
         household: [{ task: "", time: "", duration: "", notes: "" }],
         supplies: [{ item: "", quantity: "", purpose: "", priority: "medium" }],
 
@@ -652,6 +652,28 @@ const MaternalCareLogs = ({ caregiverName }) => {
             errors.push("Date is required");
         }
 
+        if (formData.fetalHealth.fetalMovementDetected == null) {
+            errors.push("Fetal movement data is required");
+        }
+
+        // check vital signs blood pressure pairs
+        if (
+            formData.vitalSigns &&
+            formData.vitalSigns.bloodPressureSystolic &&
+            formData.vitalSigns.bloodPressureDiastolic
+        ) {
+            formData.vitalSigns.bloodPressureSystolic.forEach((sys, i) => {
+                const dia = formData.vitalSigns.bloodPressureDiastolic[i];
+                if ((sys && !dia) || (!sys && dia)) {
+                    errors.push(
+                        `Both systolic and diastolic blood pressure are required for vital sign entry #${
+                            i + 1
+                        }`
+                    );
+                }
+            });
+        }
+
         return errors;
     };
 
@@ -669,6 +691,28 @@ const MaternalCareLogs = ({ caregiverName }) => {
 
     const handleEditClick = () => {
         setShowPreview(false);
+    };
+
+    // Load draft from localStorage on mount
+    useEffect(() => {
+        const savedDraft = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (savedDraft) {
+            try {
+                setFormData(JSON.parse(savedDraft));
+            } catch (e) {
+                // Ignore parse errors
+            }
+        }
+    }, []);
+
+    // Save draft to localStorage on every change
+    useEffect(() => {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formData));
+    }, [formData]);
+
+    // Clear draft helper
+    const clearDraft = () => {
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
     };
 
     const handleSubmit = async () => {
@@ -781,7 +825,7 @@ const MaternalCareLogs = ({ caregiverName }) => {
                         incident_description: item.description || null,
                         severity: item.severity
                             ? item.severity.toLowerCase()
-                            : "medium",
+                            : "",
                         actions_taken: item.action || null,
                     })),
 
@@ -810,6 +854,7 @@ const MaternalCareLogs = ({ caregiverName }) => {
             router.post(route("carelogs.maternal.store"), transformedData, {
                 onSuccess: () => {
                     setShowPreview(false);
+                    clearDraft();
                 },
                 onError: (errors) => {
                     console.error("Submission errors:", errors);
@@ -967,9 +1012,7 @@ const MaternalCareLogs = ({ caregiverName }) => {
             behavioralConcernsOther: "",
             emotionalActionTaken: "",
 
-            accident: [
-                { time: "", description: "", severity: "Medium", action: "" },
-            ],
+            accident: [{ time: "", description: "", severity: "", action: "" }],
             household: [{ task: "", duration: "", notes: "" }],
             supplies: [
                 { item: "", quantity: "", purpose: "", priority: "medium" },
@@ -1002,6 +1045,7 @@ const MaternalCareLogs = ({ caregiverName }) => {
             clientComment: "",
         });
         setValidationErrors([]);
+        clearDraft();
     };
 
     const fillWithMinimalData = () => {
@@ -1012,6 +1056,22 @@ const MaternalCareLogs = ({ caregiverName }) => {
             caregiverName: caregiverName || minimalData.caregiverSignature,
         });
         // Clear any validation errors
+        setValidationErrors([]);
+    };
+
+    // Continue from last care log feature
+    const continueFromLastCareLog = () => {
+        if (!lastCareLog) return;
+        setFormData((prev) => ({
+            ...prev,
+            date: new Date().toISOString().split("T")[0],
+            firstName: lastCareLog.firstName || "",
+            lastName: lastCareLog.lastName || "",
+            age: lastCareLog.age || "",
+            gestationalAge: lastCareLog.gestationalAge || "",
+            weight: lastCareLog.weight || "",
+            height: lastCareLog.height || "",
+        }));
         setValidationErrors([]);
     };
 
@@ -1121,6 +1181,73 @@ const MaternalCareLogs = ({ caregiverName }) => {
                         Maternal Daily Care Logs
                     </Typography>
                 </Box>
+
+                {/* Continue Care Log Feature */}
+                {lastCareLog && (
+                    <Paper
+                        sx={{
+                            mb: 3,
+                            p: 2,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            background:
+                                "linear-gradient(90deg, #fce4ec 60%, #f8bbd9 100%)",
+                            border: "1px solid #e0e0e0",
+                            borderRadius: 2,
+                        }}
+                        elevation={0}
+                    >
+                        <Box>
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ fontWeight: "bold" }}
+                            >
+                                Your last care log:{" "}
+                            </Typography>
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: "red" }}
+                            >
+                                {lastCareLog.firstName} {lastCareLog.lastName}
+                            </Typography>
+                            <Typography
+                                variant="body2"
+                                sx={{ mb: 0.5, color: "red" }}
+                            >
+                                Age: {lastCareLog.age}
+                            </Typography>
+                            <Typography variant="body2" sx={{ color: "#555" }}>
+                                Last log date:{" "}
+                                {lastCareLog.date
+                                    ? new Date(
+                                          lastCareLog.date
+                                      ).toLocaleDateString(undefined, {
+                                          year: "numeric",
+                                          month: "short",
+                                          day: "numeric",
+                                      })
+                                    : "Unknown"}
+                            </Typography>
+                        </Box>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={continueFromLastCareLog}
+                            sx={{
+                                fontWeight: "bold",
+                                background:
+                                    "linear-gradient(45deg, #e91e63 30%, #f8bbd9 90%)",
+                                "&:hover": {
+                                    background:
+                                        "linear-gradient(45deg, #d81b60 30%, #f48fb1 90%)",
+                                },
+                            }}
+                        >
+                            Continue
+                        </Button>
+                    </Paper>
+                )}
 
                 {/* Validation Errors */}
                 {validationErrors.length > 0 && (
@@ -1310,6 +1437,24 @@ const MaternalCareLogs = ({ caregiverName }) => {
                     />
                 </SectionCard>
 
+                {/* Validation Errors */}
+                {validationErrors.length > 0 && (
+                    <Alert severity="error" sx={{ mb: 3 }}>
+                        <Typography
+                            variant="subtitle2"
+                            fontWeight="bold"
+                            gutterBottom
+                        >
+                            Please fill the following fields:
+                        </Typography>
+                        <ul style={{ margin: 0, paddingLeft: "1.5rem" }}>
+                            {validationErrors.map((error, index) => (
+                                <li key={index}>{error}</li>
+                            ))}
+                        </ul>
+                    </Alert>
+                )}
+
                 {/* Action Buttons */}
                 <Box
                     sx={{
@@ -1345,7 +1490,10 @@ const MaternalCareLogs = ({ caregiverName }) => {
                     </Button>
 
                     <Button
-                        onClick={() => router.get(route("cg.dashboard"))}
+                        onClick={() => {
+                            clearDraft();
+                            router.get(route("cg.dashboard"));
+                        }}
                         fullWidth={window.innerWidth < 600}
                         sx={{
                             py: 1.5,

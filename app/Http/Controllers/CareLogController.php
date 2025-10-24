@@ -561,7 +561,7 @@ class CareLogController extends Controller
                 \Log::info('Processing sleep records...', ['count' => count($request->sleep_records)]);
                 $sleepRecords = [];
                 foreach ($request->sleep_records as $sleep) {
-                    if (!empty($sleep['sleep_start_time']) || !empty($sleep['duration'])) {
+                    if (!empty($sleep['type']) || !empty($sleep['sleep_start_time']) || !empty($sleep['duration'])) {
                         $sleepRecords[] = [
                             'care_log_id' => $careLog,
                             'type' => $sleep['type'] ?? null,
@@ -812,6 +812,7 @@ class CareLogController extends Controller
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'age_display' => $request->age_display,
+                'gestational_age' => $request->gestational_age,
                 'weight_kg' => $request->weight_kg ? (float) $request->weight_kg : null,
                 'height_cm' => $request->height_cm ? (float) $request->height_cm : null,
                 'additional_notes' => $request->additional_notes,
@@ -1041,7 +1042,7 @@ class CareLogController extends Controller
                 \Log::info('Processing sleep records...', ['count' => count($request->sleep_records)]);
                 $sleepRecords = [];
                 foreach ($request->sleep_records as $sleep) {
-                    if (!empty($sleep['sleep_start_time']) || !empty($sleep['duration'])) {
+                    if (!empty($sleep['type']) || !empty($sleep['sleep_start_time']) || !empty($sleep['duration'])) {
                         $sleepRecords[] = [
                             'care_log_id' => $careLog,
                             'type' => $sleep['type'] ?? null,

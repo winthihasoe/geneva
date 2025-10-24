@@ -1,5 +1,5 @@
 import AppLayout from "@/Layouts/AppLayout";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Head, router } from "@inertiajs/react";
 import {
     Box,
@@ -415,7 +415,7 @@ const generateMinimalTestData = () => ({
         {
             time: "22:00",
             duration: "8 hours",
-            quality: "Good",
+            sleep_quality: "Good",
             notes: "Restful sleep",
             issue: "",
         },
@@ -781,6 +781,14 @@ const PreviewDialog = ({
                     <Typography variant="subtitle1">
                         <strong>Age:</strong> {formData.age || "Not specified"}
                     </Typography>
+                    <Typography variant="subtitle1">
+                        <strong>Weight:</strong>{" "}
+                        {`${formData.weight} Kg` || "Not specified"}
+                    </Typography>
+                    <Typography variant="subtitle1">
+                        <strong>Height:</strong>{" "}
+                        {`${formData.height} cm` || "Not specified"}
+                    </Typography>
                 </Box>
 
                 <Divider sx={{ my: 2 }} />
@@ -974,7 +982,9 @@ const PreviewDialog = ({
     );
 };
 
-const ElderlyCareLogs = ({ caregiverName }) => {
+const LOCAL_STORAGE_KEY = "elderlyCareLogDraft";
+
+const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
     const [formData, setFormData] = useState({
         // Basic Information
         date: new Date().toISOString().split("T")[0],
@@ -1199,6 +1209,82 @@ const ElderlyCareLogs = ({ caregiverName }) => {
             errors.push("Date is required");
         }
 
+        // At least one vital sign
+        const hasVitalSign =
+            formData.vitalSigns &&
+            formData.vitalSigns.times &&
+            formData.vitalSigns.times.some(
+                (t, i) =>
+                    t ||
+                    formData.vitalSigns.bloodPressureSystolic[i] ||
+                    formData.vitalSigns.bloodPressureDiastolic[i] ||
+                    formData.vitalSigns.temperature[i] ||
+                    formData.vitalSigns.pulseRate[i] ||
+                    formData.vitalSigns.respiratoryRate[i] ||
+                    formData.vitalSigns.spo2[i]
+            );
+        if (!hasVitalSign) {
+            errors.push("Please record vital sign");
+        }
+        if (
+            formData.vitalSigns &&
+            formData.vitalSigns.bloodPressureSystolic &&
+            formData.vitalSigns.bloodPressureDiastolic
+        ) {
+            formData.vitalSigns.bloodPressureSystolic.forEach((sys, i) => {
+                const dia = formData.vitalSigns.bloodPressureDiastolic[i];
+                if ((sys && !dia) || (!sys && dia)) {
+                    errors.push(
+                        `Both systolic and diastolic blood pressure are required for vital sign entry #${
+                            i + 1
+                        }`
+                    );
+                }
+            });
+        }
+
+        // At least one intake record
+        const hasIntake =
+            Array.isArray(formData.intake) &&
+            formData.intake.some(
+                (item) =>
+                    item.meal_type ||
+                    item.meal_time ||
+                    (item.food_items && item.food_items.some(Boolean)) ||
+                    item.amount
+            );
+        if (!hasIntake) {
+            errors.push("Food and fluid intake record is required");
+        }
+
+        // At least one output record
+        const hasOutput =
+            Array.isArray(formData.output) &&
+            formData.output.some(
+                (item) =>
+                    item.output_time ||
+                    item.urine_volume ||
+                    item.bowel_movement ||
+                    item.urine_color
+            );
+        if (!hasOutput) {
+            errors.push("At least one output record is required");
+        }
+
+        // At least one sleep/rest tracking record
+        const hasSleep =
+            Array.isArray(formData.sleep) &&
+            formData.sleep.some(
+                (item) =>
+                    item.type ||
+                    item.sleep_start_time ||
+                    item.duration ||
+                    item.sleep_quality
+            );
+        if (!hasSleep) {
+            errors.push("Sleep record is required");
+        }
+
         return errors;
     };
 
@@ -1216,6 +1302,30 @@ const ElderlyCareLogs = ({ caregiverName }) => {
 
     const handleEditClick = () => {
         setShowPreview(false);
+    };
+
+    // ----- Local Storage Draft Management ------
+
+    // Load draft from localStorage on mount
+    useEffect(() => {
+        const savedDraft = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (savedDraft) {
+            try {
+                setFormData(JSON.parse(savedDraft));
+            } catch (e) {
+                // Ignore parse errors
+            }
+        }
+    }, []);
+
+    // Save draft to localStorage on every change
+    useEffect(() => {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formData));
+    }, [formData]);
+
+    // Clear draft helper
+    const clearDraft = () => {
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
     };
 
     const handleSubmit = async () => {
@@ -1333,6 +1443,7 @@ const ElderlyCareLogs = ({ caregiverName }) => {
             router.post(route("carelogs.elderly.store"), transformedData, {
                 onSuccess: () => {
                     setShowPreview(false);
+                    clearDraft();
                 },
                 onError: (errors) => {
                     console.error("Submission errors:", errors);
@@ -1536,6 +1647,21 @@ const ElderlyCareLogs = ({ caregiverName }) => {
             clientComment: "",
         });
         setValidationErrors([]);
+        clearDraft();
+    };
+
+    const continueFromLastCareLog = () => {
+        if (!lastCareLog) return;
+        setFormData((prev) => ({
+            ...prev,
+            date: new Date().toISOString().split("T")[0],
+            firstName: lastCareLog.firstName || "",
+            lastName: lastCareLog.lastName || "",
+            age: lastCareLog.age || "",
+            weight: lastCareLog.weight || "",
+            height: lastCareLog.height || "",
+        }));
+        setValidationErrors([]);
     };
 
     return (
@@ -1646,6 +1772,73 @@ const ElderlyCareLogs = ({ caregiverName }) => {
                         Elderly Daily Care Logs
                     </Typography>
                 </Box>
+
+                {/* Continue Care Log Feature */}
+                {lastCareLog && (
+                    <Paper
+                        sx={{
+                            mb: 3,
+                            p: 2,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            background:
+                                "linear-gradient(90deg, #f3e5f5 60%, #ba68c8 100%)",
+                            border: "1px solid #e0e0e0",
+                            borderRadius: 2,
+                        }}
+                        elevation={0}
+                    >
+                        <Box>
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ fontWeight: "bold" }}
+                            >
+                                Your last care log:
+                            </Typography>
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: "red" }}
+                            >
+                                {lastCareLog.firstName} {lastCareLog.lastName}
+                            </Typography>
+                            <Typography
+                                variant="body2"
+                                sx={{ mb: 0.5, color: "red" }}
+                            >
+                                Age: {lastCareLog.age}
+                            </Typography>
+                            <Typography variant="body2" sx={{ color: "#555" }}>
+                                Last log date:{" "}
+                                {lastCareLog.date
+                                    ? new Date(
+                                          lastCareLog.date
+                                      ).toLocaleDateString(undefined, {
+                                          year: "numeric",
+                                          month: "short",
+                                          day: "numeric",
+                                      })
+                                    : "Unknown"}
+                            </Typography>
+                        </Box>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={continueFromLastCareLog}
+                            sx={{
+                                fontWeight: "bold",
+                                background:
+                                    "linear-gradient(45deg, #7b1fa2 30%, #ba68c8 90%)",
+                                "&:hover": {
+                                    background:
+                                        "linear-gradient(45deg, #6a1b9a 30%, #ab47bc 90%)",
+                                },
+                            }}
+                        >
+                            Continue
+                        </Button>
+                    </Paper>
+                )}
 
                 {/* Validation Errors */}
                 {validationErrors.length > 0 && (
@@ -1803,6 +1996,24 @@ const ElderlyCareLogs = ({ caregiverName }) => {
                     />
                 </SectionCard>
 
+                {/* Validation Errors */}
+                {validationErrors.length > 0 && (
+                    <Alert severity="error" sx={{ mb: 3 }}>
+                        <Typography
+                            variant="subtitle2"
+                            fontWeight="bold"
+                            gutterBottom
+                        >
+                            Please fill the following fields:
+                        </Typography>
+                        <ul style={{ margin: 0, paddingLeft: "1.5rem" }}>
+                            {validationErrors.map((error, index) => (
+                                <li key={index}>{error}</li>
+                            ))}
+                        </ul>
+                    </Alert>
+                )}
+
                 {/* Action Buttons */}
                 <Box
                     sx={{
@@ -1838,7 +2049,10 @@ const ElderlyCareLogs = ({ caregiverName }) => {
                     </Button>
 
                     <Button
-                        onClick={() => router.get(route("cg.dashboard"))}
+                        onClick={() => {
+                            clearDraft();
+                            router.get(route("cg.dashboard"));
+                        }}
                         fullWidth={window.innerWidth < 600}
                         sx={{
                             py: 1.5,

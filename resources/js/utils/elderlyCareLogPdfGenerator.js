@@ -603,7 +603,7 @@ export const generateElderlyCareLogPDF = async (formData) => {
                 .map((time, index) => [
                     time || "N/A",
                     formData.vitalSigns.temperature[index]
-                        ? `${formData.vitalSigns.temperature[index]}°${
+                        ? `${formData.vitalSigns.temperature[index]} ${
                               formData.vitalSigns.temperatureUnit[index] || "C"
                           }`
                         : "N/A",

@@ -100,6 +100,7 @@ const MaternalCareLogDetails = () => {
             firstName: care_log.first_name,
             lastName: care_log.last_name || "",
             age: care_log.age_display,
+            gestationalAge: care_log.gestational_age,
             weight: care_log.weight_kg,
             height: care_log.height_cm,
             additionalNotes: care_log.additional_notes,
@@ -1035,7 +1036,10 @@ const MaternalCareLogDetails = () => {
                             Movement Detected:{" "}
                             {fetal_health_records?.fetal_movement_detected == 1
                                 ? "Yes"
-                                : "No"}
+                                : fetal_health_records?.fetal_movement_detected ==
+                                  0
+                                ? "No"
+                                : "Not recorded"}
                         </Typography>
                         <Typography variant="body1">
                             Kick Count: {fetal_health_records?.kick_count}

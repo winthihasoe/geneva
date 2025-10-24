@@ -64,7 +64,7 @@ function UrinaryBowelRecord({
 
             {/* Record Time */}
             {data.map((item, index) => (
-                <Grid container spacing={3}>
+                <Grid container spacing={3} key={index}>
                     <Grid size={{ xs: 12, md: 6 }}>
                         <Box
                             sx={{
