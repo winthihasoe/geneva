@@ -1,0 +1,1 @@
+.a4-page{width:210mm;margin:0 auto 24px;background:#fff;box-shadow:0 0 8px #00000026;padding:24mm 18mm;box-sizing:border-box;position:relative;overflow:hidden;transform-origin:top left;transition:transform .2s}@media (max-width: 900px){.a4-page{width:210mm;min-width:0;padding:16vw 10vw;box-shadow:none;transform:scale(calc(100vw/793px))}body{overflow-x:hidden}}

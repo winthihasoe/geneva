@@ -1,17 +1,31 @@
 .a4-page {
     width: 210mm;
-    margin: 14px auto;
+    margin: 0 auto 24px auto;
     background: #fff;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
-    padding: 18mm 16mm;
+    padding: 24mm 18mm;
     box-sizing: border-box;
     position: relative;
     overflow: hidden;
+    /* Responsive scaling */
+    transform-origin: top left;
+    transition: transform 0.2s;
 }
-@media print {
+
+@media (max-width: 900px) {
     .a4-page {
-        margin: 0;
+        /* Calculate scale to fit viewport width */
+        width: 210mm;
+        min-width: 0;
+
+        padding: 16vw 10vw;
         box-shadow: none;
-        page-break-after: always;
+        /* Scale down to fit screen */
+        transform: scale(calc(100vw / 793px));
+        /* 793px is approx 210mm at 96dpi */
+        /* Adjust if your base dpi is different */
+    }
+    body {
+        overflow-x: hidden;
     }
 }

@@ -358,6 +358,7 @@ const ShowElderlyCareLogDetails = () => {
                 rows={hygieneRows}
                 emptyMessage="No hygiene records found"
             />
+
             {/* Moisturizer, Pressure Area, Skin Care Findings summary */}
             {hygiene_records &&
                 hygiene_records.length > 0 &&
