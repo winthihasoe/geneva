@@ -1293,7 +1293,7 @@ class CareLogController extends Controller
     {
         $careLogData = $this->getCareLogData($id, 'elder');
         
-        return Inertia::render('Caregiver/CareLogs/ElderlyCareLog/ElderlyCareLogDetails', [
+        return Inertia::render('Caregiver/CareLogs/ElderlyCareLog/ShowElderlyCareLogDetails', [
             'careLogData' => $careLogData
         ]);
     }
