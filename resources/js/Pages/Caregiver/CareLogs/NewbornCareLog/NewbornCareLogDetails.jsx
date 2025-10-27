@@ -339,9 +339,7 @@ const NewbornCareLogDetails = () => {
                             size="small"
                         >
                             <Typography variant="body2" fontWeight="bold">
-                                {isGeneratingPDF
-                                    ? "Generating PDF..."
-                                    : "Download PDF"}
+                                {isGeneratingPDF ? "Generating..." : "Download"}
                             </Typography>
                         </Button>
                     </Box>

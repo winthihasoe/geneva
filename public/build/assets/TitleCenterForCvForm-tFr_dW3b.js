@@ -1,1 +1,0 @@
-import{j as o}from"./app-CCnUZtEW.js";import{T as r}from"./Typography-DhvuBUUb.js";function m({children:t}){return o.jsx(r,{fontSize:{xs:18,sm:20,md:24},textAlign:"center",fontWeight:400,mb:5,color:"grey.700",fontFamily:"ADLaM Display",children:t})}export{m as T};

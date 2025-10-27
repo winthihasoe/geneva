@@ -356,7 +356,7 @@ const IntakeOutput = ({
                                                     <TextField
                                                         fullWidth
                                                         size="small"
-                                                        variant="outlined"
+                                                        variant="standard"
                                                         label={`Item ${
                                                             foodIndex + 1
                                                         }`}

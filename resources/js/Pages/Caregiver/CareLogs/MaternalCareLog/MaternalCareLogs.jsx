@@ -210,7 +210,7 @@ export function generateTestData(caregiverName = "Jane Caregiver") {
                 notes: longNote,
             },
         ],
-        supplies: [
+        requestedSupplies: [
             {
                 item: "Maternity pads",
                 quantity: "2 packs",
@@ -310,7 +310,9 @@ export function generateMinimalTestData(caregiverName = "Jane Caregiver") {
             { time: "", description: "", severity: "Medium", action: "" },
         ],
         household: [{ task: "", time: "", duration: "", notes: "" }],
-        supplies: [{ item: "", quantity: "", purpose: "", priority: "medium" }],
+        requestedSupplies: [
+            { item: "", quantity: "", purpose: "", priority: "medium" },
+        ],
 
         additionalNotes: "",
         caregiverSignature: "",
@@ -524,7 +526,9 @@ const MaternalCareLogs = ({ caregiverName, lastCareLog }) => {
 
         accident: [{ time: "", description: "", severity: "", action: "" }],
         household: [{ task: "", time: "", duration: "", notes: "" }],
-        supplies: [{ item: "", quantity: "", purpose: "", priority: "medium" }],
+        requestedSupplies: [
+            { item: "", quantity: "", purpose: "", priority: "medium" },
+        ],
 
         // Additional Notes
         additionalNotes: "",
@@ -804,9 +808,16 @@ const MaternalCareLogs = ({ caregiverName, lastCareLog }) => {
                         duration: item.duration || null,
                         notes: item.notes || null,
                     })),
-                supply_requests: formData.supplies.filter(
-                    (item) => item.item || item.quantity || item.purpose
-                ),
+                requested_supplies: formData.requestedSupplies
+                    .filter(
+                        (item) => item.item || item.quantity || item.purpose
+                    )
+                    .map((item) => ({
+                        item: item.item,
+                        quantity: item.quantity,
+                        purpose: item.purpose,
+                        priority: item.priority || "medium",
+                    })),
                 vital_signs: transformVitalSigns(),
                 blood_glucose_records: formData.bloodGlucose.filter(
                     (item) =>
@@ -1413,7 +1424,7 @@ const MaternalCareLogs = ({ caregiverName, lastCareLog }) => {
                 {/* 13. Requested Supplies */}
                 <SectionCard config={sectionConfigs.supplies}>
                     <RequestedSuppliesSection
-                        data={formData.supplies}
+                        data={formData.requestedSupplies}
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}

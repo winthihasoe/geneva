@@ -310,7 +310,7 @@ const generateTestData = () => ({
     additionalNotes: longNote + " " + longNote + " " + longNote,
 
     // Requested Supplies
-    supplies: [
+    requestedSupplies: [
         {
             item: "Blood pressure monitor strips",
             quantity: "1 box",
@@ -455,7 +455,7 @@ const generateMinimalTestData = () => ({
         },
     ],
     additionalNotes: "Client is doing well with current care plan",
-    supplies: [
+    requestedSupplies: [
         {
             item: "Toiletries",
             quantity: "1 set",
@@ -810,7 +810,6 @@ const PreviewDialog = ({
                         title: "Accident & Emergency Situation",
                     },
                     { key: "household", title: "Household Work by Caregiver" },
-                    { key: "supplies", title: "Requested Supplies" },
                 ].map(({ key, title }) => (
                     <React.Fragment key={key}>
                         <Box sx={{ mb: 3 }}>
@@ -904,6 +903,24 @@ const PreviewDialog = ({
                     </Typography>
                     <Typography>
                         {formData.sleepIssues || "No sleep issues observed"}
+                    </Typography>
+                </Box>
+
+                <Divider sx={{ my: 2 }} />
+
+                {/* Requested Supplies */}
+                <Box sx={{ mb: 3 }}>
+                    <Typography variant="h6" color="primary" gutterBottom>
+                        Requested Supplies
+                    </Typography>
+                    <Typography
+                        component="pre"
+                        sx={{ whiteSpace: "pre-line", fontSize: "0.875rem" }}
+                    >
+                        {formatArrayData(
+                            formData.requestedSupplies,
+                            "supplies"
+                        )}
                     </Typography>
                 </Box>
 
@@ -1061,7 +1078,9 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
             { time: "", description: "", severity: "Medium", action: "" },
         ],
         household: [{ task: "", duration: "", notes: "" }],
-        supplies: [{ item: "", quantity: "", purpose: "", priority: "medium" }],
+        requestedSupplies: [
+            { item: "", quantity: "", purpose: "", priority: "medium" },
+        ],
 
         // Health Monitoring (Vital Signs)
         vitalSigns: {
@@ -1414,9 +1433,17 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                         duration: item.duration || null,
                         notes: item.notes || null,
                     })),
-                supply_requests: formData.supplies.filter(
-                    (item) => item.item || item.quantity || item.purpose
-                ),
+                requested_supplies: formData.requestedSupplies
+                    .filter(
+                        (item) => item.item || item.quantity || item.purpose
+                    )
+                    .map((item) => ({
+                        item: item.item,
+                        quantity: item.quantity,
+                        purpose: item.purpose,
+                        priority: item.priority || "medium",
+                    })),
+
                 vital_signs: transformVitalSigns(),
                 blood_glucose_records: formData.bloodGlucose.filter(
                     (item) =>
@@ -1974,7 +2001,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
 
                 <SectionCard config={sectionConfigs.supplies}>
                     <RequestedSuppliesSection
-                        data={formData.supplies}
+                        data={formData.requestedSupplies}
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}

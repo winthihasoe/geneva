@@ -416,7 +416,7 @@ const ElderlyCareLogDetails = () => {
 
     return (
         <AppLayout>
-            <Container maxWidth="lg" sx={{ pb: 4 }}>
+            <Container maxWidth="lg" sx={{ py: 4 }}>
                 <Typography
                     variant="h4"
                     textAlign={"center"}
@@ -479,9 +479,7 @@ const ElderlyCareLogDetails = () => {
                             size="small"
                         >
                             <Typography variant="body2" fontWeight="bold">
-                                {isGeneratingPDF
-                                    ? "Generating PDF..."
-                                    : "Download PDF"}
+                                {isGeneratingPDF ? "Generating..." : "Download"}
                             </Typography>
                         </Button>
                     </Box>

@@ -144,11 +144,15 @@ const ShowMaternalCareLogDetails = () => {
         ) || [];
 
     // Table data helpers
-    const hygieneRows = (hygiene_records || []).map((item) => [
-        formatTime(item.hygiene_time),
-        item.hygiene_activity || "N/A",
-        item.notes || "N/A",
-    ]);
+    const hygieneRows = (hygiene_records || [])
+        .filter(
+            (item) => item.hygiene_time || item.hygiene_activity || item.notes
+        )
+        .map((item) => [
+            formatTime(item.hygiene_time),
+            item.hygiene_activity || "N/A",
+            item.notes || "N/A",
+        ]);
     const medicationRows = (medication_records || []).map((item) => [
         formatTime(item.administration_time),
         item.medication_name || "N/A",

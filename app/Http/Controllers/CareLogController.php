@@ -711,10 +711,10 @@ class CareLogController extends Controller
             }
 
             // Store requested supplies
-            if ($request->supply_requests && count($request->supply_requests) > 0) {
-                \Log::info('Processing supply requests...', ['count' => count($request->supply_requests)]);
+            if ($request->requested_supplies && count($request->requested_supplies) > 0) {
+                \Log::info('Processing supply requests...', ['count' => count($request->requested_supplies)]);
                 $supplyRecords = [];
-                foreach ($request->supply_requests as $supply) {
+                foreach ($request->requested_supplies as $supply) {
                     if (!empty($supply['item'])) {
                         $supplyRecords[] = [
                             'care_log_id' => $careLog,
@@ -1212,10 +1212,10 @@ class CareLogController extends Controller
             }
 
             // Store requested supplies
-            if ($request->supply_requests && count($request->supply_requests) > 0) {
-                \Log::info('Processing supply requests...', ['count' => count($request->supply_requests)]);
+            if ($request->requested_supplies && count($request->requested_supplies) > 0) {
+                \Log::info('Processing supply requests...', ['count' => count($request->requested_supplies)]);
                 $supplyRecords = [];
-                foreach ($request->supply_requests as $supply) {
+                foreach ($request->requested_supplies as $supply) {
                     if (!empty($supply['item'])) {
                         $supplyRecords[] = [
                             'care_log_id' => $careLog,

@@ -42,7 +42,7 @@ const RequestedSuppliesSection = ({
                     <Button
                         startIcon={<AddIcon />}
                         onClick={() =>
-                            addArrayItem("supplies", {
+                            addArrayItem("requestedSupplies", {
                                 item: "",
                                 quantity: "",
                                 purpose: "",
@@ -61,7 +61,9 @@ const RequestedSuppliesSection = ({
                         key={index}
                         ref={(el) => {
                             if (entryRefs) {
-                                entryRefs.current[`supplies-${index}`] = el;
+                                entryRefs.current[
+                                    `requestedSupplies-${index}`
+                                ] = el;
                             }
                         }}
                     >

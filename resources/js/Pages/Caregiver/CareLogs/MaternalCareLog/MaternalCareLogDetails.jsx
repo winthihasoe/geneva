@@ -460,8 +460,8 @@ const MaternalCareLogDetails = () => {
                         >
                             <Typography variant="body2" fontWeight="bold">
                                 {isGeneratingPDF
-                                    ? "Generating PDF..."
-                                    : "Download PDF"}
+                                    ? "Generating ..."
+                                    : "Download"}
                             </Typography>
                         </Button>
                     </Box>

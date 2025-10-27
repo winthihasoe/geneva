@@ -495,8 +495,9 @@ const PreviewMaternalCareLog = ({
                     <Typography variant="h6" color="primary" gutterBottom>
                         Requested Supplies
                     </Typography>
-                    {filterArray(formData.supplies, "supplies").length > 0 ? (
-                        filterArray(formData.supplies, "supplies").map(
+                    {filterArray(formData.requestedSupplies, "supplies")
+                        .length > 0 ? (
+                        filterArray(formData.requestedSupplies, "supplies").map(
                             (item, idx) => (
                                 <Typography key={idx} variant="body2">
                                     {item.item} ({item.quantity}) -{" "}

@@ -141,7 +141,7 @@ const SleepSection = ({
                                         handleArrayChange(
                                             "sleep",
                                             index,
-                                            "time",
+                                            "sleep_start_time",
                                             e.target.value
                                         )
                                     }
