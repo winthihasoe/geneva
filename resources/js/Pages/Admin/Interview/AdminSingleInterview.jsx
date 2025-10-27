@@ -134,12 +134,7 @@ function AdminSingleInterview({ interview }) {
                         variant="contained"
                         sx={{ borderRadius: 10 }}
                     >
-                        <Typography
-                            fontFamily={"Karma"}
-                            fontSize={{ xs: 13, sm: 14, md: 15 }}
-                        >
-                            Change Status
-                        </Typography>
+                        <Typography variant="body2">Change Status</Typography>
                     </Button>
                 </Box>
 
@@ -311,12 +306,7 @@ function AdminSingleInterview({ interview }) {
                         onClick={handleSubmitStatus}
                         sx={{ borderRadius: 20 }}
                     >
-                        <Typography
-                            fontFamily={"Karma"}
-                            fontSize={{ xs: 13, sm: 14, md: 15 }}
-                        >
-                            Submit
-                        </Typography>
+                        <Typography variant="body2">Submit</Typography>
                     </Button>
                 </Box>
             </ReusableModal>

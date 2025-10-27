@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     Box,
     Typography,
@@ -15,6 +15,7 @@ import {
     Chip,
     Alert,
     Container,
+    Button,
 } from "@mui/material";
 import { usePage } from "@inertiajs/react";
 import ElderlyIcon from "@mui/icons-material/Elderly";
@@ -30,7 +31,6 @@ import EmotionalIcon from "@mui/icons-material/Psychology";
 import EmergencyIcon from "@mui/icons-material/Warning";
 import HouseholdIcon from "@mui/icons-material/CleaningServices";
 import SupplyIcon from "@mui/icons-material/Inventory";
-import CalendarIcon from "@mui/icons-material/CalendarToday";
 import "../../../../../css/a4.css";
 
 const primaryColor = "#21875C";
@@ -316,7 +316,7 @@ const ShowElderlyCareLogDetails = () => {
             <SectionTitle>Basic Information</SectionTitle>
             <Grid container columnSpacing={5} sx={{ mb: 1 }}>
                 {basicInfoRows.map((row, idx) => (
-                    <Grid item size={6}>
+                    <Grid item size={6} key={idx}>
                         <Grid container spacing={1} sx={{ mb: 0.5 }}>
                             <Grid item size={5}>
                                 <Typography
@@ -765,16 +765,6 @@ const ShowElderlyCareLogDetails = () => {
                                 color="textSecondary"
                                 mb={1}
                             >
-                                Caregiver Name
-                            </Typography>
-                            <Typography variant="body1" mb={2}>
-                                {care_log.caregiver_name || "Not provided"}
-                            </Typography>
-                            <Typography
-                                variant="subtitle2"
-                                color="textSecondary"
-                                mb={1}
-                            >
                                 Caregiver Signature
                             </Typography>
                             {care_log.caregiver_signature ? (
@@ -823,6 +813,16 @@ const ShowElderlyCareLogDetails = () => {
                                     </Typography>
                                 </Box>
                             )}
+                            <Typography
+                                variant="subtitle2"
+                                color="textSecondary"
+                                my={1}
+                            >
+                                Caregiver Name
+                            </Typography>
+                            <Typography variant="body1" mb={2}>
+                                {care_log.caregiver_name || "Not provided"}
+                            </Typography>
                         </Box>
                     </Grid>
                     <Grid item size={{ xs: 6 }}>

@@ -185,8 +185,11 @@ Route::middleware(['auth', 'is.caregiver'])->group(function () {
     
     // Care Log Details Routes - Separated by care type
     Route::get('care-log/{id}/newborn-details', [CareLogController::class, 'getNewbornCareLogDetails'])->name('cg.carelog.newborn.details');
+    Route::get('care-log/{id}/newborn-details-preview', [CareLogController::class, 'showNewbornCareLogDetails'])->name('cg.carelog.newborn.details.show');
     Route::get('care-log/{id}/maternal-details', [CareLogController::class, 'getMaternalCareLogDetails'])->name('cg.carelog.maternal.details');
-    Route::get('care-log/{id}/elder-details', [CareLogController::class, 'getElderlyCareLogDetails'])->name('cg.carelog.elder.details');
+    Route::get('care-log/{id}/maternal-details-preview', [CareLogController::class, 'showMaternalCareLogDetails'])->name('cg.carelog.maternal.details.show');
+    Route::get('care-log/{id}/elderly-details', [CareLogController::class, 'getElderlyCareLogDetails'])->name('cg.carelog.elder.details');
+    Route::get('care-log/{id}/elderly-details-preview', [CareLogController::class, 'showElderlyCareLogDetails'])->name('cg.carelog.elder.details.show');
 
     Route::get('care-logs/maternal', [CgDashboardController::class, 'maternalCareLogs'])->name('cg.carelogs.maternal');
     Route::post('care-logs/maternal', [CareLogController::class, 'storeMaternalCareLog'])->name('carelogs.maternal.store');

@@ -182,6 +182,7 @@ const Navbar = () => {
                                     display: "flex",
                                     alignItems: "center",
                                     cursor: "pointer",
+                                    py: 1,
                                 }}
                                 onClick={() => router.get("/")}
                             >
@@ -531,7 +532,7 @@ const Navbar = () => {
                         </ListItem>
                         <Collapse in={openPricing} timeout="auto" unmountOnExit>
                             <List component="div" disablePadding>
-                                {Pricing.map((item, index) => (
+                                {Pricings.map((item, index) => (
                                     <ListItem
                                         key={index}
                                         button
@@ -543,10 +544,7 @@ const Navbar = () => {
                                         onClick={() => {
                                             toggleDrawer(false);
                                             router.get(
-                                                route(
-                                                    "service.pricing",
-                                                    item.service
-                                                )
+                                                route("service.pricing", item)
                                             );
                                         }}
                                     >
@@ -555,7 +553,7 @@ const Navbar = () => {
                                                 fontSize: 13,
                                                 cursor: "pointer",
                                             }}
-                                            primary={item.title}
+                                            primary={item}
                                         />
                                     </ListItem>
                                 ))}
@@ -712,7 +710,7 @@ const Navbar = () => {
                             </>
                         ) : (
                             <>
-                                {user && user.is_admin && (
+                                {user && user.is_admin ? (
                                     <ListItem
                                         sx={{
                                             mt: 2,
@@ -737,6 +735,8 @@ const Navbar = () => {
                                             </Typography>
                                         </Button>
                                     </ListItem>
+                                ) : (
+                                    ""
                                 )}
                                 {user && user.is_caregiver ? (
                                     <ListItem>
@@ -764,7 +764,7 @@ const Navbar = () => {
                                     <ListItem>
                                         <Button
                                             variant="contained"
-                                            color="secondary"
+                                            color="primary"
                                             sx={{ borderRadius: 20, px: 2 }}
                                             size="small"
                                             onClick={() =>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { usePage } from "@inertiajs/react";
+import { usePage, router } from "@inertiajs/react";
 import AppLayout from "@/Layouts/AppLayout";
 import {
     Container,
@@ -216,10 +216,11 @@ const MaternalCareLogDetails = () => {
                 })) || [],
             fetalHealth: {
                 fetal_movement_detected:
-                    fetal_health_records.fetal_movement_detected,
-                fetal_heart_sound: fetal_health_records.fetal_heart_sound,
-                kick_count: fetal_health_records.kick_count,
-                notes: fetal_health_records.notes,
+                    fetal_health_records?.fetal_movement_detected ?? null,
+                fetal_heart_sound:
+                    fetal_health_records?.fetal_heart_sound ?? null,
+                kick_count: fetal_health_records?.kick_count ?? null,
+                notes: fetal_health_records?.notes ?? null,
             },
         };
     };
@@ -414,29 +415,56 @@ const MaternalCareLogDetails = () => {
                     }}
                 >
                     <BackButton />
-                    <Button
-                        variant="contained"
-                        startIcon={<DownloadIcon />}
-                        onClick={handleGeneratePDF}
-                        disabled={isGeneratingPDF}
-                        size="small"
+                    <Box
                         sx={{
-                            background: isGeneratingPDF
-                                ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
-                                : "linear-gradient(45deg, #7b1fa2 30%, #ba68c8 90%)",
-                            "&:hover": {
-                                background: isGeneratingPDF
-                                    ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
-                                    : "linear-gradient(45deg, #6a1b9a 30%, #ab47bc 90%)",
-                            },
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            my: 3,
+                            gap: 2,
                         }}
                     >
-                        <Typography variant="body2" fontWeight="bold">
-                            {isGeneratingPDF
-                                ? "Generating PDF..."
-                                : "Download PDF"}
-                        </Typography>
-                    </Button>
+                        <Button
+                            variant="contained"
+                            startIcon={<CalendarIcon />}
+                            onClick={() =>
+                                router.get(
+                                    route(
+                                        "cg.carelog.maternal.details.show",
+                                        care_log.id
+                                    )
+                                )
+                            }
+                            size="small"
+                            sx={{
+                                background: isGeneratingPDF
+                                    ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
+                                    : "linear-gradient(45deg, #7b1fa2 30%, #ba68c8 90%)",
+                                "&:hover": {
+                                    background: isGeneratingPDF
+                                        ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
+                                        : "linear-gradient(45deg, #6a1b9a 30%, #ab47bc 90%)",
+                                },
+                            }}
+                        >
+                            <Typography variant="body2" fontWeight="bold">
+                                Preview
+                            </Typography>
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            startIcon={<DownloadIcon />}
+                            onClick={handleGeneratePDF}
+                            disabled={isGeneratingPDF}
+                            size="small"
+                        >
+                            <Typography variant="body2" fontWeight="bold">
+                                {isGeneratingPDF
+                                    ? "Generating PDF..."
+                                    : "Download PDF"}
+                            </Typography>
+                        </Button>
+                    </Box>
                 </Box>
 
                 {/* Basic Information */}

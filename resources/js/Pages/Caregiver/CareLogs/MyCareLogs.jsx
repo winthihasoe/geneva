@@ -167,7 +167,7 @@ const MyCareLogs = () => {
 
     return (
         <AppLayout>
-            <Container maxWidth="lg" sx={{ pb: 4 }}>
+            <Container maxWidth="lg" sx={{ pb: 4, minHeight: "70vh" }}>
                 {/* Care Type Selection Dialog */}
                 <Dialog
                     open={showCareTypeDialog}

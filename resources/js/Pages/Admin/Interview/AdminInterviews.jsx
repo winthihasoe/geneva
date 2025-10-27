@@ -1,4 +1,3 @@
-import Title from "@/Components/Typo/Title";
 import NoData from "@/Components/util/NoData";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { Head, router } from "@inertiajs/react";

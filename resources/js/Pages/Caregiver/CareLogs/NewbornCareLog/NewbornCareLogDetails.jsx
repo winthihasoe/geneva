@@ -295,29 +295,56 @@ const NewbornCareLogDetails = () => {
                     }}
                 >
                     <BackButton />
-                    <Button
-                        variant="contained"
-                        startIcon={<DownloadIcon />}
-                        onClick={handleGeneratePDF}
-                        disabled={isGeneratingPDF}
-                        size="small"
+                    <Box
                         sx={{
-                            background: isGeneratingPDF
-                                ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
-                                : "linear-gradient(45deg, #2196f3 30%, #64b5f6 90%)",
-                            "&:hover": {
-                                background: isGeneratingPDF
-                                    ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
-                                    : "linear-gradient(45deg, #1976d2 30%, #42a5f5 90%)",
-                            },
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            my: 3,
+                            gap: 2,
                         }}
                     >
-                        <Typography variant="body2" fontWeight="bold">
-                            {isGeneratingPDF
-                                ? "Generating PDF..."
-                                : "Download PDF"}
-                        </Typography>
-                    </Button>
+                        <Button
+                            variant="contained"
+                            startIcon={<CalendarIcon />}
+                            onClick={() =>
+                                router.get(
+                                    route(
+                                        "cg.carelog.newborn.details.show",
+                                        care_log.id
+                                    )
+                                )
+                            }
+                            size="small"
+                            sx={{
+                                background: isGeneratingPDF
+                                    ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
+                                    : "linear-gradient(45deg, #2196f3 30%, #64b5f6 90%)",
+                                "&:hover": {
+                                    background: isGeneratingPDF
+                                        ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
+                                        : "linear-gradient(45deg, #1976d2 30%, #42a5f5 90%)",
+                                },
+                            }}
+                        >
+                            <Typography variant="body2" fontWeight="bold">
+                                Preview
+                            </Typography>
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            startIcon={<DownloadIcon />}
+                            onClick={handleGeneratePDF}
+                            disabled={isGeneratingPDF}
+                            size="small"
+                        >
+                            <Typography variant="body2" fontWeight="bold">
+                                {isGeneratingPDF
+                                    ? "Generating PDF..."
+                                    : "Download PDF"}
+                            </Typography>
+                        </Button>
+                    </Box>
                 </Box>
 
                 {/* Basic Information */}

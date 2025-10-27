@@ -298,10 +298,10 @@ export const generateElderlyCareLogPDF = async (formData) => {
 
         const basicInfo = [
             [
-                `Date: ${formData.date || "Not specified"}`,
                 `Name: ${formData.firstName || "Not specified"} ${
                     formData.lastName || ""
                 }`,
+                `Date: ${formData.date || "Not specified"}`,
             ],
             [
                 `Age: ${formData.age || "Not specified"}`,
@@ -317,6 +317,7 @@ export const generateElderlyCareLogPDF = async (formData) => {
             ],
         ];
 
+        currentY += 5;
         basicInfo.forEach((row) => {
             addNewPageIfNeeded(8);
             pdf.setFontSize(10);

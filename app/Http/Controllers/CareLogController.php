@@ -1278,6 +1278,16 @@ class CareLogController extends Controller
         ]);
     }
 
+    // Preview like PDF file in webpage (not real PDF file) because Myanmar font issue
+    public function showNewbornCareLogDetails($id)
+    {
+         $careLogData = $this->getCareLogData($id, 'newborn');
+        
+        return Inertia::render('Caregiver/CareLogs/NewbornCareLog/ShowNewbornCareLogDetails', [
+            'careLogData' => $careLogData
+        ]);
+    }
+    
     // Maternal Care Log Details
     public function getMaternalCareLogDetails($id)
     {
@@ -1287,9 +1297,31 @@ class CareLogController extends Controller
             'careLogData' => $careLogData
         ]);
     }
+    
+    // Preview like PDF file in webpage (not real PDF file) because Myanmar font issue
+    public function showMaternalCareLogDetails($id)
+    {
+        $careLogData = $this->getCareLogData($id, 'maternal');
+        
+        return Inertia::render('Caregiver/CareLogs/MaternalCareLog/ShowMaternalCareLogDetails', [
+            'careLogData' => $careLogData
+        ]);
+    }
+
+
 
     // Elderly Care Log Details
     public function getElderlyCareLogDetails($id)
+    {
+        $careLogData = $this->getCareLogData($id, 'elder');
+        
+        return Inertia::render('Caregiver/CareLogs/ElderlyCareLog/ElderlyCareLogDetails', [
+            'careLogData' => $careLogData
+        ]);
+    }
+    
+    // Preview like PDF file in webpage (not real PDF file) because Myanmar font issue
+    public function showElderlyCareLogDetails($id)
     {
         $careLogData = $this->getCareLogData($id, 'elder');
         
