@@ -14,18 +14,15 @@ use App\Http\Controllers\EmployerDashboardController;
 use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\JobApplyController;
-use App\Http\Controllers\NewbornBabyCareLogController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PhoneVerificationController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SocialMediaController;
 use App\Http\Controllers\TrainingCourseController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', [PageController::class, 'index'])->name('home');
 
@@ -235,9 +232,13 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::get('care-logs', [CareLogController::class, 'adminCareLogs'])->name('admin.care.logs');
     // Admin Care Log Details Routes
     Route::get('care-logs/{id}/newborn-details', [CareLogController::class, 'adminNewbornCareLogDetails'])->name('admin.carelog.newborn.details');
+    Route::get('care-logs/{id}/newborn-details-preview', [CareLogController::class, 'adminShowNewbornCareLogDetails'])->name('admin.carelog.newborn.details.show');
     Route::get('care-logs/{id}/maternal-details', [CareLogController::class, 'adminMaternalCareLogDetails'])->name('admin.carelog.maternal.details');
+    Route::get('care-logs/{id}/maternal-details-preview', [CareLogController::class, 'adminShowMaternalCareLogDetails'])->name('admin.carelog.maternal.details.show');
     Route::get('care-logs/{id}/elderly-details', [CareLogController::class, 'adminElderlyCareLogDetails'])->name('admin.carelog.elderly.details');
+    Route::get('care-logs/{id}/elderly-details-preview', [CareLogController::class, 'adminShowElderlyCareLogDetails'])->name('admin.carelog.elderly.details.show');
 
+    // Job applies
     Route::get('job-applies', [JobApplyController::class, 'adminJobApplies'])->name('admin.job.apply');
     Route::get('job-applies/{id}', [JobApplyController::class, 'adminSingleJobApply'])->name('admin.job.apply.single');
     Route::get('job-search-result', [JobApplyController::class, 'adminSearchJobApply'])->name('admin.job.apply.search');

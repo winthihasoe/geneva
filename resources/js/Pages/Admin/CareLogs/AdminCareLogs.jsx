@@ -32,8 +32,7 @@ import {
     FilterList as FilterIcon,
     Elderly as ElderlyIcon,
     Person as PersonIcon,
-    CalendarToday as CalendarIcon,
-    Visibility as ViewIcon,
+    PregnantWoman as PregnantIcon,
 } from "@mui/icons-material";
 import ChildCareIcon from "@mui/icons-material/ChildCare";
 
@@ -78,7 +77,7 @@ function AdminCareLogs() {
             case "elder":
                 return <ElderlyIcon />;
             case "maternal":
-                return <PersonIcon />;
+                return <PregnantIcon />;
             default:
                 return <PersonIcon />;
         }
@@ -138,17 +137,12 @@ function AdminCareLogs() {
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
-                        mb: 3,
+                        mb: 2,
                     }}
                 >
                     <Typography variant="h4" fontWeight="bold" color="primary">
-                        Care Logs Management
+                        Care Logs
                     </Typography>
-                    <Chip
-                        label={`Total: ${careLogs?.total || 0} logs`}
-                        color="primary"
-                        variant="outlined"
-                    />
                 </Box>
 
                 {/* Filters */}
@@ -156,11 +150,15 @@ function AdminCareLogs() {
                 <Box
                     sx={{
                         display: "flex",
-                        justifyContent: "flex-end",
+                        justifyContent: "space-between",
                         alignItems: "center",
                         mb: 2,
                     }}
                 >
+                    <Typography variant="body1" color="textSecondary">
+                        Total: {careLogs?.total || 0} logs
+                    </Typography>
+
                     <Button
                         startIcon={<FilterIcon />}
                         onClick={() => setShowFilters(!showFilters)}
@@ -393,8 +391,17 @@ function AdminCareLogs() {
                 {/* Show Alert if filter applied */}
                 {hasFilter && (
                     <Alert severity="info" sx={{ mb: 1 }}>
-                        Filters are applied. To see all the care logs, please
-                        clear the filters.
+                        Filters are applied. To see all the care logs, please{" "}
+                        <span
+                            onClick={clearFilters}
+                            style={{
+                                cursor: "pointer",
+                                color: "blue",
+                                textDecoration: "underline",
+                            }}
+                        >
+                            clear the filters.
+                        </span>
                     </Alert>
                 )}
                 {/* Care Logs Table */}
@@ -464,7 +471,10 @@ function AdminCareLogs() {
                                                 </Box>
                                             </TableCell>
                                             <TableCell>
-                                                <Typography fontWeight="medium">
+                                                <Typography
+                                                    fontWeight="medium"
+                                                    variant="body2"
+                                                >
                                                     {log.first_name}{" "}
                                                     {log.last_name}
                                                 </Typography>

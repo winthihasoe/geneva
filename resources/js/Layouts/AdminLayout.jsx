@@ -169,7 +169,14 @@ export default function AdminLayout({ children }) {
                             </ListItemIcon>
                             <ListItemText
                                 primary={menuItem.title}
-                                sx={{ opacity: open ? 0.8 : 0 }}
+                                sx={{
+                                    opacity: open ? 0.8 : 0,
+                                    fontSize: "1rem",
+                                }}
+                                primaryTypographyProps={{
+                                    fontSize: 13,
+                                    fontWeight: 700,
+                                }}
                             />
                         </ListItemButton>
                     </ListItem>

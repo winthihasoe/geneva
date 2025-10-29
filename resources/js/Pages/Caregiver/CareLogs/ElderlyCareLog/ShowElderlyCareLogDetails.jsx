@@ -115,7 +115,7 @@ const TableSection = ({ title, columns, rows, emptyMessage }) => (
 );
 
 const formatTime = (timeString) => {
-    if (!timeString) return "N/A";
+    if (!timeString) return "-";
     if (timeString.includes(" ")) {
         const timePart = timeString.split(" ")[1];
         return new Date(`2000-01-01T${timePart}`).toLocaleTimeString("en-US", {
@@ -132,7 +132,7 @@ const formatTime = (timeString) => {
 };
 
 const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
+    if (!dateString) return "-";
     return new Date(dateString).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
@@ -184,44 +184,44 @@ const ShowElderlyCareLogDetails = () => {
         )
         .map((item) => [
             formatTime(item.hygiene_time),
-            item.hygiene_activity || "N/A",
-            item.notes || "N/A",
+            item.hygiene_activity || "-",
+            item.notes || "-",
         ]);
     const medicationRows = (medication_records || []).map((item) => [
         formatTime(item.administration_time),
-        item.medication_name || "N/A",
-        item.dosage || "N/A",
-        item.route || "N/A",
-        item.notes || "N/A",
+        item.medication_name || "-",
+        item.dosage || "-",
+        item.route || "-",
+        item.notes || "-",
     ]);
     const vitalRows = (vital_signs || []).map((item) => [
         formatTime(item.measurement_time),
         item.systolic_pressure && item.diastolic_pressure
             ? `${item.systolic_pressure}/${item.diastolic_pressure} mmHg`
-            : "N/A",
+            : "-",
         item.temperature
             ? `${item.temperature}°${item.temperature_unit || "C"}`
-            : "N/A",
-        item.pulse_rate ? `${item.pulse_rate}/min` : "N/A",
-        item.respiratory_rate ? `${item.respiratory_rate}/min` : "N/A",
-        item.spo2 ? `${item.spo2}%` : "N/A",
-        item.notes || "N/A",
+            : "-",
+        item.pulse_rate ? `${item.pulse_rate}/min` : "-",
+        item.respiratory_rate ? `${item.respiratory_rate}/min` : "-",
+        item.spo2 ? `${item.spo2}%` : "-",
+        item.notes || "-",
     ]);
     const glucoseRows = (blood_glucose_records || []).map((item) => [
         formatTime(item.measurement_time),
-        item.glucose_level ? `${item.glucose_level} mg/dL` : "N/A",
-        item.timing || "N/A",
-        item.notes || "N/A",
+        item.glucose_level ? `${item.glucose_level} mg/dL` : "-",
+        item.timing || "-",
+        item.notes || "-",
     ]);
     const mobilityRows = (mobility_records || []).map((item) => [
         formatTime(item.exercise_time),
-        item.duration || "N/A",
-        item.mobility_assistance_details || "N/A",
-        item.notes || "N/A",
+        item.duration || "-",
+        item.mobility_assistance_details || "-",
+        item.notes || "-",
     ]);
     const intakeRows = (intakeRecords || []).map((item) => [
         formatTime(item.meal_time),
-        item.meal_type || "N/A",
+        item.meal_type || "-",
         (() => {
             try {
                 const items =
@@ -230,55 +230,55 @@ const ShowElderlyCareLogDetails = () => {
                         : item.food_items;
                 return Array.isArray(items)
                     ? items.filter(Boolean).join(", ")
-                    : "N/A";
+                    : "-";
             } catch {
-                return "N/A";
+                return "-";
             }
         })(),
-        item.amount ? `${item.amount} ${item.amount_unit || ""}` : "N/A",
+        item.amount ? `${item.amount} ${item.amount_unit || ""}` : "-",
         item.assistance_needed ? "Yes" : "No",
-        item.intake_notes || "N/A",
+        item.intake_notes || "-",
     ]);
     const outputRows = (outputRecords || []).map((item) => [
         formatTime(item.output_time),
         item.urine_volume
             ? `${item.urine_volume} ${item.urine_volume_unit || ""}`
-            : "N/A",
-        item.urine_color || "N/A",
-        item.bowel_movement || "N/A",
-        item.bowel_consistency || "N/A",
-        item.output_notes || "N/A",
+            : "-",
+        item.urine_color || "-",
+        item.bowel_movement || "-",
+        item.bowel_consistency || "-",
+        item.output_notes || "-",
     ]);
     const activityRows = (activity_records || []).map((item) => [
         formatTime(item.activity_time),
-        item.activity_type || "N/A",
-        item.duration || "N/A",
-        item.notes || "N/A",
+        item.activity_type || "-",
+        item.duration || "-",
+        item.notes || "-",
     ]);
     const sleepRows = (sleep_records || []).map((item) => [
-        item.type || "N/A",
+        item.type || "-",
         formatTime(item.sleep_start_time),
-        item.duration || "N/A",
-        item.sleep_quality || "N/A",
-        item.notes || "N/A",
+        item.duration || "-",
+        item.sleep_quality || "-",
+        item.notes || "-",
     ]);
     const emergencyRows = (emergency_incidents || []).map((item) => [
         formatTime(item.incident_time),
-        item.incident_description || "N/A",
-        item.severity || "N/A",
-        item.actions_taken || "N/A",
+        item.incident_description || "-",
+        item.severity || "-",
+        item.actions_taken || "-",
     ]);
     const householdRows = (household_records || []).map((item) => [
-        item.household_work || "N/A",
+        item.household_work || "-",
         formatTime(item.start_time),
-        item.duration || "N/A",
-        item.notes || "N/A",
+        item.duration || "-",
+        item.notes || "-",
     ]);
     const supplyRows = (supply_requests || []).map((item) => [
-        item.item || "N/A",
-        item.quantity || "N/A",
-        item.purpose || "N/A",
-        item.priority || "N/A",
+        item.item || "-",
+        item.quantity || "-",
+        item.purpose || "-",
+        item.priority || "-",
     ]);
 
     // Basic Info
@@ -288,14 +288,14 @@ const ShowElderlyCareLogDetails = () => {
             value: `${care_log?.first_name || ""} ${care_log?.last_name || ""}`,
         },
         { label: "Date", value: formatDate(care_log?.care_date) },
-        { label: "Age", value: care_log?.age_display || "N/A" },
+        { label: "Age", value: care_log?.age_display || "-" },
         {
             label: "Weight",
-            value: care_log?.weight_kg ? `${care_log.weight_kg} kg` : "N/A",
+            value: care_log?.weight_kg ? `${care_log.weight_kg} kg` : "-",
         },
         {
             label: "Height",
-            value: care_log?.height_cm ? `${care_log.height_cm} cm` : "N/A",
+            value: care_log?.height_cm ? `${care_log.height_cm} cm` : "-",
         },
     ];
 

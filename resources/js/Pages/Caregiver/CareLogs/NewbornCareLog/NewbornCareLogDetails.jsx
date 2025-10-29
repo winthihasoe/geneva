@@ -173,7 +173,7 @@ const NewbornCareLogDetails = () => {
     };
 
     const formatTime = (timeString) => {
-        if (!timeString) return "N/A";
+        if (!timeString) return "-";
         return new Date(`2000-01-01T${timeString}`).toLocaleTimeString(
             "en-US",
             {
@@ -227,7 +227,7 @@ const NewbornCareLogDetails = () => {
                                                   row[column.key],
                                                   row
                                               )
-                                            : row[column.key] || "N/A"}
+                                            : row[column.key] || "-"}
                                     </Typography>
                                 </Box>
                             ))}
@@ -263,7 +263,7 @@ const NewbornCareLogDetails = () => {
                                                   row[column.key],
                                                   row
                                               )
-                                            : row[column.key] || "N/A"}
+                                            : row[column.key] || "-"}
                                     </TableCell>
                                 ))}
                             </TableRow>
@@ -278,7 +278,7 @@ const NewbornCareLogDetails = () => {
         <AppLayout>
             <Container maxWidth="lg" sx={{ py: 4 }}>
                 <Typography
-                    variant="h4"
+                    variant="h5"
                     textAlign={"center"}
                     fontWeight="bold"
                     color="primary"
@@ -300,7 +300,6 @@ const NewbornCareLogDetails = () => {
                             display: "flex",
                             justifyContent: "space-between",
                             alignItems: "center",
-                            my: 3,
                             gap: 2,
                         }}
                     >
@@ -338,7 +337,7 @@ const NewbornCareLogDetails = () => {
                             disabled={isGeneratingPDF}
                             size="small"
                         >
-                            <Typography variant="body2" fontWeight="bold">
+                            <Typography fontSize={13} fontWeight="bold">
                                 {isGeneratingPDF ? "Generating..." : "Download"}
                             </Typography>
                         </Button>
@@ -361,7 +360,7 @@ const NewbornCareLogDetails = () => {
                             >
                                 <ChildCareIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Basic Information
                             </Typography>
                         </Box>
@@ -374,7 +373,10 @@ const NewbornCareLogDetails = () => {
                                 >
                                     Baby Name
                                 </Typography>
-                                <Typography variant="h6" fontWeight="medium">
+                                <Typography
+                                    variant="subtitle1"
+                                    fontWeight="medium"
+                                >
                                     {care_log.first_name}{" "}
                                     {care_log.last_name || ""}
                                 </Typography>
@@ -470,7 +472,7 @@ const NewbornCareLogDetails = () => {
                             >
                                 <FeedingIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Feeding Records
                             </Typography>
                         </Box>
@@ -492,7 +494,7 @@ const NewbornCareLogDetails = () => {
                                             ? `${value} ${
                                                   row.amount_unit || "ml"
                                               }`
-                                            : "N/A",
+                                            : "-",
                                 },
                                 { key: "notes", label: "Notes" },
                             ],
@@ -517,7 +519,7 @@ const NewbornCareLogDetails = () => {
                             >
                                 <DiaperIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Diaper Changes
                             </Typography>
                         </Box>
@@ -554,7 +556,7 @@ const NewbornCareLogDetails = () => {
                             >
                                 <SleepIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Sleep Records
                             </Typography>
                         </Box>
@@ -596,7 +598,7 @@ const NewbornCareLogDetails = () => {
                             >
                                 <ActivityIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Activity Records
                             </Typography>
                         </Box>
@@ -634,7 +636,7 @@ const NewbornCareLogDetails = () => {
                             >
                                 <HygieneIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Hygiene & Grooming
                             </Typography>
                         </Box>
@@ -675,7 +677,7 @@ const NewbornCareLogDetails = () => {
                             >
                                 <VitalIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Vital Signs
                             </Typography>
                         </Box>
@@ -696,19 +698,19 @@ const NewbornCareLogDetails = () => {
                                             ? `${value}°${
                                                   row.temperature_unit || "C"
                                               }`
-                                            : "N/A",
+                                            : "-",
                                 },
                                 {
                                     key: "pulse_rate",
                                     label: "Pulse Rate",
                                     format: (value) =>
-                                        value ? `${value}/min` : "N/A",
+                                        value ? `${value}/min` : "-",
                                 },
                                 {
                                     key: "respiratory_rate",
                                     label: "Respiratory Rate",
                                     format: (value) =>
-                                        value ? `${value}/min` : "N/A",
+                                        value ? `${value}/min` : "-",
                                 },
                                 { key: "notes", label: "Notes" },
                             ],
@@ -737,7 +739,7 @@ const NewbornCareLogDetails = () => {
                                 >
                                     <MoodIcon />
                                 </Avatar>
-                                <Typography variant="h5" fontWeight="bold">
+                                <Typography variant="h6" fontWeight="bold">
                                     Health & Behavior
                                 </Typography>
                             </Box>
@@ -800,7 +802,7 @@ const NewbornCareLogDetails = () => {
                             >
                                 <SupplyIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Requested Supplies
                             </Typography>
                         </Box>
@@ -822,7 +824,7 @@ const NewbornCareLogDetails = () => {
                 {care_log.additional_notes && (
                     <Card sx={{ mb: 3 }}>
                         <CardContent>
-                            <Typography variant="h5" fontWeight="bold" mb={2}>
+                            <Typography variant="h6" fontWeight="bold" mb={2}>
                                 Additional Notes
                             </Typography>
                             <Alert severity="info" sx={{ fontSize: "1rem" }}>
@@ -835,7 +837,7 @@ const NewbornCareLogDetails = () => {
                 {/* Signatures */}
                 <Card>
                     <CardContent>
-                        <Typography variant="h5" fontWeight="bold" mb={3}>
+                        <Typography variant="h6" fontWeight="bold" mb={3}>
                             Signatures & Comments
                         </Typography>
 

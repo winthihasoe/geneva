@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { usePage } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import AppLayout from "@/Layouts/AppLayout";
 import {
     Container,
@@ -261,7 +261,7 @@ const AdminMaternalCareLogDetails = () => {
         });
 
     const formatTime = (timeString) => {
-        if (!timeString) return "N/A";
+        if (!timeString) return "-";
         return new Date(`2000-01-01T${timeString}`).toLocaleTimeString(
             "en-US",
             {
@@ -339,7 +339,7 @@ const AdminMaternalCareLogDetails = () => {
                                                   row[column.key],
                                                   row
                                               )
-                                            : row[column.key] || "N/A"}
+                                            : row[column.key] || "-"}
                                     </Typography>
                                 </Box>
                             ))}
@@ -375,7 +375,7 @@ const AdminMaternalCareLogDetails = () => {
                                                   row[column.key],
                                                   row
                                               )
-                                            : row[column.key] || "N/A"}
+                                            : row[column.key] || "-"}
                                     </TableCell>
                                 ))}
                             </TableRow>
@@ -395,9 +395,9 @@ const AdminMaternalCareLogDetails = () => {
 
     return (
         <AdminLayout>
-            <Container maxWidth="lg" sx={{ pb: 4 }}>
+            <Container maxWidth="lg" sx={{ pb: 4, px: { xs: 0 } }}>
                 <Typography
-                    variant="h4"
+                    variant="h6"
                     textAlign={"center"}
                     fontWeight="bold"
                     color="primary"
@@ -414,33 +414,59 @@ const AdminMaternalCareLogDetails = () => {
                     }}
                 >
                     <BackButton />
-                    <Button
-                        variant="contained"
-                        startIcon={<DownloadIcon />}
-                        onClick={handleGeneratePDF}
-                        disabled={isGeneratingPDF}
-                        size="small"
+                    <Box
                         sx={{
-                            background: isGeneratingPDF
-                                ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
-                                : "linear-gradient(45deg, #7b1fa2 30%, #ba68c8 90%)",
-                            "&:hover": {
-                                background: isGeneratingPDF
-                                    ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
-                                    : "linear-gradient(45deg, #6a1b9a 30%, #ab47bc 90%)",
-                            },
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            gap: 1,
                         }}
                     >
-                        <Typography variant="body2" fontWeight="bold">
-                            {isGeneratingPDF
-                                ? "Generating PDF..."
-                                : "Download PDF"}
-                        </Typography>
-                    </Button>
+                        <Button
+                            sx={{
+                                background: isGeneratingPDF
+                                    ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
+                                    : "linear-gradient(45deg, #7b1fa2 30%, #ba68c8 90%)",
+                                "&:hover": {
+                                    background: isGeneratingPDF
+                                        ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
+                                        : "linear-gradient(45deg, #6a1b9a 30%, #ab47bc 90%)",
+                                },
+                            }}
+                            variant="contained"
+                            disabled={isGeneratingPDF}
+                            size="small"
+                            onClick={() =>
+                                router.get(
+                                    route(
+                                        "admin.carelog.maternal.details.show",
+                                        care_log.id
+                                    )
+                                )
+                            }
+                        >
+                            <Typography variant="body2" fontWeight="bold">
+                                Preview
+                            </Typography>
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            startIcon={<DownloadIcon />}
+                            onClick={handleGeneratePDF}
+                            disabled={isGeneratingPDF}
+                            size="small"
+                        >
+                            <Typography fontSize={13} fontWeight="bold">
+                                {isGeneratingPDF
+                                    ? "Generating ..."
+                                    : "Download "}
+                            </Typography>
+                        </Button>
+                    </Box>
                 </Box>
 
                 <Alert severity="info" sx={{ mb: 1 }}>
-                    Logged by: {care_log.caregiver_display_name || "N/A"}
+                    Logged by: {care_log.caregiver_display_name || "-"}
                 </Alert>
                 {/* Basic Information */}
                 <Card sx={{ mb: 3 }}>
@@ -458,7 +484,7 @@ const AdminMaternalCareLogDetails = () => {
                             >
                                 <PregnantIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Basic Information
                             </Typography>
                         </Box>
@@ -470,7 +496,10 @@ const AdminMaternalCareLogDetails = () => {
                                 >
                                     Client Name
                                 </Typography>
-                                <Typography variant="h6" fontWeight="medium">
+                                <Typography
+                                    variant="subtitle1"
+                                    fontWeight="medium"
+                                >
                                     {care_log.first_name}{" "}
                                     {care_log.last_name || ""}
                                 </Typography>
@@ -537,7 +566,7 @@ const AdminMaternalCareLogDetails = () => {
                             >
                                 <HygieneIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Hygiene & Grooming
                             </Typography>
                         </Box>
@@ -632,7 +661,7 @@ const AdminMaternalCareLogDetails = () => {
                             >
                                 <MedicationIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Medication Administration
                             </Typography>
                         </Box>
@@ -670,7 +699,7 @@ const AdminMaternalCareLogDetails = () => {
                             >
                                 <VitalIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Vital Signs
                             </Typography>
                         </Box>
@@ -688,7 +717,7 @@ const AdminMaternalCareLogDetails = () => {
                                     format: (value, row) =>
                                         value && row.diastolic_pressure
                                             ? `${value}/${row.diastolic_pressure} mmHg`
-                                            : "N/A",
+                                            : "-",
                                 },
                                 {
                                     key: "temperature",
@@ -698,25 +727,25 @@ const AdminMaternalCareLogDetails = () => {
                                             ? `${value}°${
                                                   row.temperature_unit || "C"
                                               }`
-                                            : "N/A",
+                                            : "-",
                                 },
                                 {
                                     key: "pulse_rate",
                                     label: "Pulse Rate",
                                     format: (value) =>
-                                        value ? `${value}/min` : "N/A",
+                                        value ? `${value}/min` : "-",
                                 },
                                 {
                                     key: "respiratory_rate",
                                     label: "Respiratory Rate",
                                     format: (value) =>
-                                        value ? `${value}/min` : "N/A",
+                                        value ? `${value}/min` : "-",
                                 },
                                 {
                                     key: "spo2",
                                     label: "SpO2",
                                     format: (value) =>
-                                        value ? `${value}%` : "N/A",
+                                        value ? `${value}%` : "-",
                                 },
                                 { key: "notes", label: "Notes" },
                             ],
@@ -741,7 +770,7 @@ const AdminMaternalCareLogDetails = () => {
                             >
                                 <VitalIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Blood Glucose Records
                             </Typography>
                         </Box>
@@ -757,7 +786,7 @@ const AdminMaternalCareLogDetails = () => {
                                     key: "glucose_level",
                                     label: "Glucose Level",
                                     format: (value) =>
-                                        value ? `${value} mg/dL` : "N/A",
+                                        value ? `${value} mg/dL` : "-",
                                 },
                                 { key: "timing", label: "Timing" },
                                 { key: "notes", label: "Notes" },
@@ -783,7 +812,7 @@ const AdminMaternalCareLogDetails = () => {
                             >
                                 <MobilityIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Mobility & Exercise
                             </Typography>
                         </Box>
@@ -823,7 +852,7 @@ const AdminMaternalCareLogDetails = () => {
                             >
                                 <IntakeIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Food Diary
                             </Typography>
                         </Box>
@@ -849,9 +878,9 @@ const AdminMaternalCareLogDetails = () => {
                                                 ? items
                                                       .filter(Boolean)
                                                       .join(", ")
-                                                : "N/A";
+                                                : "-";
                                         } catch {
-                                            return "N/A";
+                                            return "-";
                                         }
                                     },
                                 },
@@ -863,7 +892,7 @@ const AdminMaternalCareLogDetails = () => {
                                             ? `${value} ${
                                                   row.amount_unit || ""
                                               }`
-                                            : "N/A",
+                                            : "-",
                                 },
                                 {
                                     key: "assistance_needed",
@@ -893,7 +922,7 @@ const AdminMaternalCareLogDetails = () => {
                             >
                                 <OutputIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Urinary & Bowel Health Records
                             </Typography>
                         </Box>
@@ -956,7 +985,7 @@ const AdminMaternalCareLogDetails = () => {
                             >
                                 <ActivityIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Activities & Social Interaction
                             </Typography>
                         </Box>
@@ -993,7 +1022,7 @@ const AdminMaternalCareLogDetails = () => {
                             >
                                 <SleepIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Sleep & Rest Tracking
                             </Typography>
                         </Box>
@@ -1031,7 +1060,7 @@ const AdminMaternalCareLogDetails = () => {
                             >
                                 <PregnantIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Fetal Health Monitoring
                             </Typography>
                         </Box>
@@ -1074,7 +1103,7 @@ const AdminMaternalCareLogDetails = () => {
                                 >
                                     <EmotionalIcon />
                                 </Avatar>
-                                <Typography variant="h5" fontWeight="bold">
+                                <Typography variant="h6" fontWeight="bold">
                                     Emotional & Behavioral Records
                                 </Typography>
                             </Box>
@@ -1137,7 +1166,7 @@ const AdminMaternalCareLogDetails = () => {
                             >
                                 <EmergencyIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Accident & Emergency Situations
                             </Typography>
                         </Box>
@@ -1180,7 +1209,7 @@ const AdminMaternalCareLogDetails = () => {
                             >
                                 <HouseholdIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Household Work by Caregiver
                             </Typography>
                         </Box>
@@ -1217,7 +1246,7 @@ const AdminMaternalCareLogDetails = () => {
                             >
                                 <SupplyIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Requested Supplies
                             </Typography>
                         </Box>
@@ -1238,7 +1267,7 @@ const AdminMaternalCareLogDetails = () => {
                 {care_log.additional_notes && (
                     <Card sx={{ mb: 3 }}>
                         <CardContent>
-                            <Typography variant="h5" fontWeight="bold" mb={2}>
+                            <Typography variant="h6" fontWeight="bold" mb={2}>
                                 Additional Notes
                             </Typography>
                             <Alert severity="info" sx={{ fontSize: "1rem" }}>
@@ -1251,24 +1280,12 @@ const AdminMaternalCareLogDetails = () => {
                 {/* Signatures */}
                 <Card>
                     <CardContent>
-                        <Typography variant="h5" fontWeight="bold" mb={3}>
+                        <Typography variant="h6" fontWeight="bold" mb={3}>
                             Signatures & Comments
                         </Typography>
                         <Grid container spacing={3}>
                             <Grid size={{ xs: 12, md: 6 }}>
                                 <Box>
-                                    <Typography
-                                        variant="subtitle2"
-                                        color="textSecondary"
-                                        mb={1}
-                                    >
-                                        Caregiver Name
-                                    </Typography>
-                                    <Typography variant="body1" mb={2}>
-                                        {care_log.caregiver_name ||
-                                            "Not provided"}
-                                    </Typography>
-
                                     <Typography
                                         variant="subtitle2"
                                         color="textSecondary"
@@ -1337,6 +1354,17 @@ const AdminMaternalCareLogDetails = () => {
                                             </Typography>
                                         </Box>
                                     )}
+                                    <Typography
+                                        variant="subtitle2"
+                                        color="textSecondary"
+                                        my={1}
+                                    >
+                                        Caregiver Name
+                                    </Typography>
+                                    <Typography variant="body1" mb={2}>
+                                        {care_log.caregiver_name ||
+                                            "Not provided"}
+                                    </Typography>
                                 </Box>
                             </Grid>
 

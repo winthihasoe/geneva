@@ -171,7 +171,7 @@ function AdminNewbornCareLogDetails() {
     };
 
     const formatTime = (timeString) => {
-        if (!timeString) return "N/A";
+        if (!timeString) return "-";
         return new Date(`2000-01-01T${timeString}`).toLocaleTimeString(
             "en-US",
             {
@@ -218,7 +218,7 @@ function AdminNewbornCareLogDetails() {
                                                   row[column.key],
                                                   row
                                               )
-                                            : row[column.key] || "N/A"}
+                                            : row[column.key] || "-"}
                                     </TableCell>
                                 ))}
                             </TableRow>
@@ -231,7 +231,7 @@ function AdminNewbornCareLogDetails() {
 
     return (
         <AdminLayout>
-            <Container maxWidth="lg" sx={{ pb: 4 }}>
+            <Container maxWidth="lg" sx={{ pb: 4, px: { xs: 0 } }}>
                 <Typography
                     variant="h4"
                     textAlign={"center"}
@@ -250,32 +250,56 @@ function AdminNewbornCareLogDetails() {
                     }}
                 >
                     <BackButton />
-                    <Button
-                        variant="contained"
-                        startIcon={<DownloadIcon />}
-                        onClick={handleGeneratePDF}
-                        disabled={isGeneratingPDF}
-                        size="small"
+                    <Box
                         sx={{
-                            background: isGeneratingPDF
-                                ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
-                                : "linear-gradient(45deg, #2196f3 30%, #64b5f6 90%)",
-                            "&:hover": {
-                                background: isGeneratingPDF
-                                    ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
-                                    : "linear-gradient(45deg, #1976d2 30%, #42a5f5 90%)",
-                            },
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            gap: 1,
                         }}
                     >
-                        <Typography variant="body2" fontWeight="bold">
-                            {isGeneratingPDF
-                                ? "Generating PDF..."
-                                : "Download PDF"}
-                        </Typography>
-                    </Button>
+                        <Button
+                            onClick={() =>
+                                router.get(
+                                    route(
+                                        "admin.carelog.newborn.details.show",
+                                        care_log.id
+                                    )
+                                )
+                            }
+                            disabled={isGeneratingPDF}
+                            size="small"
+                            variant="contained"
+                            sx={{
+                                background: isGeneratingPDF
+                                    ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
+                                    : "linear-gradient(45deg, #2196f3 30%, #64b5f6 90%)",
+                                "&:hover": {
+                                    background: isGeneratingPDF
+                                        ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
+                                        : "linear-gradient(45deg, #1976d2 30%, #42a5f5 90%)",
+                                },
+                            }}
+                        >
+                            <Typography variant="body2" fontWeight="bold">
+                                Preview
+                            </Typography>
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            startIcon={<DownloadIcon />}
+                            onClick={handleGeneratePDF}
+                            disabled={isGeneratingPDF}
+                            size="small"
+                        >
+                            <Typography variant="body2" fontWeight="bold">
+                                {isGeneratingPDF ? "Generating..." : "Download"}
+                            </Typography>
+                        </Button>
+                    </Box>
                 </Box>
                 <Alert severity="info" sx={{ mb: 1 }}>
-                    Logged by: {care_log.caregiver_display_name || "N/A"}
+                    Logged by: {care_log.caregiver_display_name || "-"}
                 </Alert>
 
                 {/* Basic Information */}
@@ -307,7 +331,10 @@ function AdminNewbornCareLogDetails() {
                                 >
                                     Baby Name
                                 </Typography>
-                                <Typography variant="h6" fontWeight="medium">
+                                <Typography
+                                    variant="subtitle1"
+                                    fontWeight="medium"
+                                >
                                     {care_log.first_name}{" "}
                                     {care_log.last_name || ""}
                                 </Typography>
@@ -425,7 +452,7 @@ function AdminNewbornCareLogDetails() {
                                             ? `${value} ${
                                                   row.amount_unit || "ml"
                                               }`
-                                            : "N/A",
+                                            : "-",
                                 },
                                 { key: "notes", label: "Notes" },
                             ],
@@ -629,19 +656,19 @@ function AdminNewbornCareLogDetails() {
                                             ? `${value}°${
                                                   row.temperature_unit || "C"
                                               }`
-                                            : "N/A",
+                                            : "-",
                                 },
                                 {
                                     key: "pulse_rate",
                                     label: "Pulse Rate",
                                     format: (value) =>
-                                        value ? `${value}/min` : "N/A",
+                                        value ? `${value}/min` : "-",
                                 },
                                 {
                                     key: "respiratory_rate",
                                     label: "Respiratory Rate",
                                     format: (value) =>
-                                        value ? `${value}/min` : "N/A",
+                                        value ? `${value}/min` : "-",
                                 },
                                 { key: "notes", label: "Notes" },
                             ],

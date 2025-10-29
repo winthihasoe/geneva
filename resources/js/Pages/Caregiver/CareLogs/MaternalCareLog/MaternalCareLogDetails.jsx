@@ -262,7 +262,7 @@ const MaternalCareLogDetails = () => {
         });
 
     const formatTime = (timeString) => {
-        if (!timeString) return "N/A";
+        if (!timeString) return "-";
         return new Date(`2000-01-01T${timeString}`).toLocaleTimeString(
             "en-US",
             {
@@ -340,7 +340,7 @@ const MaternalCareLogDetails = () => {
                                                   row[column.key],
                                                   row
                                               )
-                                            : row[column.key] || "N/A"}
+                                            : row[column.key] || "-"}
                                     </Typography>
                                 </Box>
                             ))}
@@ -376,7 +376,7 @@ const MaternalCareLogDetails = () => {
                                                   row[column.key],
                                                   row
                                               )
-                                            : row[column.key] || "N/A"}
+                                            : row[column.key] || "-"}
                                     </TableCell>
                                 ))}
                             </TableRow>
@@ -396,9 +396,9 @@ const MaternalCareLogDetails = () => {
 
     return (
         <AppLayout>
-            <Container maxWidth="lg" sx={{ py: 4 }}>
+            <Container maxWidth="lg" sx={{ pt: 2, pb: 4 }}>
                 <Typography
-                    variant="h4"
+                    variant="h5"
                     textAlign={"center"}
                     fontWeight="bold"
                     color="primary"
@@ -420,7 +420,6 @@ const MaternalCareLogDetails = () => {
                             display: "flex",
                             justifyContent: "space-between",
                             alignItems: "center",
-                            my: 3,
                             gap: 2,
                         }}
                     >
@@ -458,7 +457,7 @@ const MaternalCareLogDetails = () => {
                             disabled={isGeneratingPDF}
                             size="small"
                         >
-                            <Typography variant="body2" fontWeight="bold">
+                            <Typography fontSize={13} fontWeight="bold">
                                 {isGeneratingPDF
                                     ? "Generating ..."
                                     : "Download"}
@@ -483,7 +482,7 @@ const MaternalCareLogDetails = () => {
                             >
                                 <PregnantIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Basic Information
                             </Typography>
                         </Box>
@@ -495,7 +494,10 @@ const MaternalCareLogDetails = () => {
                                 >
                                     Client Name
                                 </Typography>
-                                <Typography variant="h6" fontWeight="medium">
+                                <Typography
+                                    variant="subtitle1"
+                                    fontWeight="medium"
+                                >
                                     {care_log.first_name}{" "}
                                     {care_log.last_name || ""}
                                 </Typography>
@@ -562,7 +564,7 @@ const MaternalCareLogDetails = () => {
                             >
                                 <HygieneIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Hygiene & Grooming
                             </Typography>
                         </Box>
@@ -657,7 +659,7 @@ const MaternalCareLogDetails = () => {
                             >
                                 <MedicationIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Medication Administration
                             </Typography>
                         </Box>
@@ -695,7 +697,7 @@ const MaternalCareLogDetails = () => {
                             >
                                 <VitalIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Vital Signs
                             </Typography>
                         </Box>
@@ -713,7 +715,7 @@ const MaternalCareLogDetails = () => {
                                     format: (value, row) =>
                                         value && row.diastolic_pressure
                                             ? `${value}/${row.diastolic_pressure} mmHg`
-                                            : "N/A",
+                                            : "-",
                                 },
                                 {
                                     key: "temperature",
@@ -723,25 +725,25 @@ const MaternalCareLogDetails = () => {
                                             ? `${value}°${
                                                   row.temperature_unit || "C"
                                               }`
-                                            : "N/A",
+                                            : "-",
                                 },
                                 {
                                     key: "pulse_rate",
                                     label: "Pulse Rate",
                                     format: (value) =>
-                                        value ? `${value}/min` : "N/A",
+                                        value ? `${value}/min` : "-",
                                 },
                                 {
                                     key: "respiratory_rate",
                                     label: "Respiratory Rate",
                                     format: (value) =>
-                                        value ? `${value}/min` : "N/A",
+                                        value ? `${value}/min` : "-",
                                 },
                                 {
                                     key: "spo2",
                                     label: "SpO2",
                                     format: (value) =>
-                                        value ? `${value}%` : "N/A",
+                                        value ? `${value}%` : "-",
                                 },
                                 { key: "notes", label: "Notes" },
                             ],
@@ -766,7 +768,7 @@ const MaternalCareLogDetails = () => {
                             >
                                 <VitalIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Blood Glucose Records
                             </Typography>
                         </Box>
@@ -782,7 +784,7 @@ const MaternalCareLogDetails = () => {
                                     key: "glucose_level",
                                     label: "Glucose Level",
                                     format: (value) =>
-                                        value ? `${value} mg/dL` : "N/A",
+                                        value ? `${value} mg/dL` : "-",
                                 },
                                 { key: "timing", label: "Timing" },
                                 { key: "notes", label: "Notes" },
@@ -808,7 +810,7 @@ const MaternalCareLogDetails = () => {
                             >
                                 <MobilityIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Mobility & Exercise
                             </Typography>
                         </Box>
@@ -848,7 +850,7 @@ const MaternalCareLogDetails = () => {
                             >
                                 <IntakeIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Food Diary
                             </Typography>
                         </Box>
@@ -874,9 +876,9 @@ const MaternalCareLogDetails = () => {
                                                 ? items
                                                       .filter(Boolean)
                                                       .join(", ")
-                                                : "N/A";
+                                                : "-";
                                         } catch {
-                                            return "N/A";
+                                            return "-";
                                         }
                                     },
                                 },
@@ -888,7 +890,7 @@ const MaternalCareLogDetails = () => {
                                             ? `${value} ${
                                                   row.amount_unit || ""
                                               }`
-                                            : "N/A",
+                                            : "-",
                                 },
                                 {
                                     key: "assistance_needed",
@@ -918,7 +920,7 @@ const MaternalCareLogDetails = () => {
                             >
                                 <OutputIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Urinary & Bowel Health Records
                             </Typography>
                         </Box>
@@ -981,7 +983,7 @@ const MaternalCareLogDetails = () => {
                             >
                                 <ActivityIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Activities & Social Interaction
                             </Typography>
                         </Box>
@@ -1018,7 +1020,7 @@ const MaternalCareLogDetails = () => {
                             >
                                 <SleepIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Sleep & Rest Tracking
                             </Typography>
                         </Box>
@@ -1056,7 +1058,7 @@ const MaternalCareLogDetails = () => {
                             >
                                 <PregnantIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Fetal Health Monitoring
                             </Typography>
                         </Box>
@@ -1102,7 +1104,7 @@ const MaternalCareLogDetails = () => {
                                 >
                                     <EmotionalIcon />
                                 </Avatar>
-                                <Typography variant="h5" fontWeight="bold">
+                                <Typography variant="h6" fontWeight="bold">
                                     Emotional & Behavioral Records
                                 </Typography>
                             </Box>
@@ -1165,7 +1167,7 @@ const MaternalCareLogDetails = () => {
                             >
                                 <EmergencyIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Accident & Emergency Situations
                             </Typography>
                         </Box>
@@ -1208,7 +1210,7 @@ const MaternalCareLogDetails = () => {
                             >
                                 <HouseholdIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Household Work by Caregiver
                             </Typography>
                         </Box>
@@ -1245,7 +1247,7 @@ const MaternalCareLogDetails = () => {
                             >
                                 <SupplyIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Requested Supplies
                             </Typography>
                         </Box>
@@ -1266,7 +1268,7 @@ const MaternalCareLogDetails = () => {
                 {care_log.additional_notes && (
                     <Card sx={{ mb: 3 }}>
                         <CardContent>
-                            <Typography variant="h5" fontWeight="bold" mb={2}>
+                            <Typography variant="h6" fontWeight="bold" mb={2}>
                                 Additional Notes
                             </Typography>
                             <Alert severity="info" sx={{ fontSize: "1rem" }}>
@@ -1279,7 +1281,7 @@ const MaternalCareLogDetails = () => {
                 {/* Signatures */}
                 <Card>
                     <CardContent>
-                        <Typography variant="h5" fontWeight="bold" mb={3}>
+                        <Typography variant="h6" fontWeight="bold" mb={3}>
                             Signatures & Comments
                         </Typography>
                         <Grid container spacing={3}>

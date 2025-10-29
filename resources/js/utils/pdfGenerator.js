@@ -201,7 +201,7 @@ export const generateCareLogPDF = async (formData) => {
                 // Prepare cell lines
                 const cellLines = row.map((cell, cellIndex) =>
                     pdf.splitTextToSize(
-                        cell || "N/A",
+                        cell || "-",
                         columnWidths[cellIndex] - 6
                     )
                 );
@@ -393,48 +393,48 @@ export const generateCareLogPDF = async (formData) => {
                     switch (type) {
                         case "feeding":
                             return [
-                                item.time || "N/A",
-                                item.type || "N/A",
+                                item.time || "-",
+                                item.type || "-",
                                 item.amount
                                     ? `${item.amount} ${
                                           item.amount_unit || "ml"
                                       }`
-                                    : "N/A",
+                                    : "-",
                                 item.notes || "None",
                             ];
                         case "diaper":
                             return [
-                                item.time || "N/A",
-                                item.content || "N/A",
+                                item.time || "-",
+                                item.content || "-",
                                 item.notes || "None",
                             ];
                         case "sleep":
                             return [
-                                item.timeStarted || "N/A",
-                                item.timeEnded || "N/A",
-                                item.duration || "N/A",
+                                item.timeStarted || "-",
+                                item.timeEnded || "-",
+                                item.duration || "-",
                                 item.notes || "None",
                             ];
                         case "activities":
                             return [
-                                item.time || "N/A",
-                                item.activity || "N/A",
-                                item.duration || "N/A",
+                                item.time || "-",
+                                item.activity || "-",
+                                item.duration || "-",
                                 item.details || "None",
                             ];
                         case "hygiene":
                             return [
-                                item.time || "N/A",
-                                item.activity || "N/A",
-                                item.products || "N/A",
+                                item.time || "-",
+                                item.activity || "-",
+                                item.products || "-",
                                 item.notes || "None",
                             ];
                         case "supplies":
                             return [
-                                item.item || "N/A",
-                                item.quantity || "N/A",
-                                item.purpose || "N/A",
-                                item.priority || "N/A",
+                                item.item || "-",
+                                item.quantity || "-",
+                                item.purpose || "-",
+                                item.priority || "-",
                             ];
                         default:
                             return [];
@@ -527,20 +527,20 @@ export const generateCareLogPDF = async (formData) => {
         ) {
             const vitalData = formData.vitalSigns.times
                 .map((time, index) => [
-                    time || "N/A",
+                    time || "-",
                     formData.vitalSigns.temperature[index]
                         ? `${formData.vitalSigns.temperature[index]}°${
                               formData.vitalSigns.temperatureUnit[index] || "C"
                           }`
-                        : "N/A",
+                        : "-",
                     formData.vitalSigns.pulseRate[index]
                         ? `${formData.vitalSigns.pulseRate[index]}/min`
-                        : "N/A",
+                        : "-",
                     formData.vitalSigns.respiratoryRate[index]
                         ? `${formData.vitalSigns.respiratoryRate[index]}/min`
-                        : "N/A",
+                        : "-",
                 ])
-                .filter((row) => row.some((cell) => cell !== "N/A"));
+                .filter((row) => row.some((cell) => cell !== "-"));
 
             if (vitalData.length > 0) {
                 addTable(

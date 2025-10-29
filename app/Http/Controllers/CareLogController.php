@@ -1541,12 +1541,32 @@ class CareLogController extends Controller
             'careLogData' => $careLogData
         ]);
     }
+    
+    // Admin Care Log Details Preview Methods
+    public function adminShowNewbornCareLogDetails($id)
+    {
+        $careLogData = $this->getAdminCareLogData($id, 'newborn');
+        
+        return Inertia::render('Caregiver/CareLogs/NewbornCareLog/ShowNewbornCareLogDetails', [ // Shared same file as caregiver
+            'careLogData' => $careLogData
+        ]);
+    }
 
     public function adminMaternalCareLogDetails($id)
     {
         $careLogData = $this->getAdminCareLogData($id, 'maternal');
         
         return Inertia::render('Admin/CareLogs/AdminMaternalCareLogDetails', [
+            'careLogData' => $careLogData
+        ]);
+    }
+    
+    // Admin Maternal Care Log Details Preview Methods
+    public function adminShowMaternalCareLogDetails($id)
+    {
+        $careLogData = $this->getAdminCareLogData($id, 'maternal');
+        
+        return Inertia::render('Caregiver/CareLogs/MaternalCareLog/ShowMaternalCareLogDetails', [
             'careLogData' => $careLogData
         ]);
     }
@@ -1565,6 +1585,15 @@ class CareLogController extends Controller
         $careLogData = $this->getAdminCareLogData($id, 'elder');
         
         return Inertia::render('Admin/CareLogs/AdminElderCareLogDetails', [
+            'careLogData' => $careLogData
+        ]);
+    }
+   
+    public function adminShowElderCareLogDetails($id)
+    {
+        $careLogData = $this->getAdminCareLogData($id, 'elder');
+
+        return Inertia::render('Caregiver/CareLogs/ElderCareLog/ShowElderCareLogDetails', [
             'careLogData' => $careLogData
         ]);
     }

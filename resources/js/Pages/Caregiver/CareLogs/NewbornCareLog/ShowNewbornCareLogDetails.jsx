@@ -95,7 +95,7 @@ const TableSection = ({ columns, rows, emptyMessage }) => (
 );
 
 const formatTime = (timeString) => {
-    if (!timeString) return "N/A";
+    if (!timeString) return "-";
     return new Date(`2000-01-01T${timeString}`).toLocaleTimeString("en-US", {
         hour: "numeric",
         minute: "2-digit",
@@ -104,7 +104,7 @@ const formatTime = (timeString) => {
 };
 
 const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
+    if (!dateString) return "-";
     return new Date(dateString).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
@@ -131,47 +131,47 @@ const ShowNewbornCareLogDetails = () => {
     // Table data helpers
     const feedingRows = (feeding_records || []).map((item) => [
         formatTime(item.feeding_time),
-        item.feeding_type || "N/A",
-        item.amount ? `${item.amount} ${item.amount_unit || "ml"}` : "N/A",
-        item.notes || "N/A",
+        item.feeding_type || "-",
+        item.amount ? `${item.amount} ${item.amount_unit || "ml"}` : "-",
+        item.notes || "-",
     ]);
     const diaperRows = (diaper_changes || []).map((item) => [
         formatTime(item.change_time),
-        item.diaper_content || "N/A",
-        item.notes || "N/A",
+        item.diaper_content || "-",
+        item.notes || "-",
     ]);
     const sleepRows = (sleep_records || []).map((item) => [
         formatTime(item.sleep_start_time),
         formatTime(item.sleep_end_time),
-        item.duration || "N/A",
-        item.notes || "N/A",
+        item.duration || "-",
+        item.notes || "-",
     ]);
     const activityRows = (activity_records || []).map((item) => [
         formatTime(item.activity_time),
-        item.activity_type || "N/A",
-        item.duration || "N/A",
-        item.notes || "N/A",
+        item.activity_type || "-",
+        item.duration || "-",
+        item.notes || "-",
     ]);
     const hygieneRows = (hygiene_records || []).map((item) => [
         formatTime(item.hygiene_time),
-        item.hygiene_activity || "N/A",
-        item.products_used || "N/A",
-        item.notes || "N/A",
+        item.hygiene_activity || "-",
+        item.products_used || "-",
+        item.notes || "-",
     ]);
     const vitalRows = (vital_signs || []).map((item) => [
         formatTime(item.measurement_time),
         item.temperature
             ? `${item.temperature}°${item.temperature_unit || "C"}`
-            : "N/A",
-        item.pulse_rate ? `${item.pulse_rate}/min` : "N/A",
-        item.respiratory_rate ? `${item.respiratory_rate}/min` : "N/A",
-        item.notes || "N/A",
+            : "-",
+        item.pulse_rate ? `${item.pulse_rate}/min` : "-",
+        item.respiratory_rate ? `${item.respiratory_rate}/min` : "-",
+        item.notes || "-",
     ]);
     const supplyRows = (supply_requests || []).map((item) => [
-        item.item || "N/A",
-        item.quantity || "N/A",
-        item.purpose || "N/A",
-        item.priority || "N/A",
+        item.item || "-",
+        item.quantity || "-",
+        item.purpose || "-",
+        item.priority || "-",
     ]);
 
     // Basic Info
@@ -181,18 +181,18 @@ const ShowNewbornCareLogDetails = () => {
             value: `${care_log?.first_name || ""} ${care_log?.last_name || ""}`,
         },
         { label: "Date", value: formatDate(care_log?.care_date) },
-        { label: "Age", value: care_log?.age_display || "N/A" },
+        { label: "Age", value: care_log?.age_display || "-" },
         {
             label: "Weight",
-            value: care_log?.weight_kg ? `${care_log.weight_kg} kg` : "N/A",
+            value: care_log?.weight_kg ? `${care_log.weight_kg} kg` : "-",
         },
         {
             label: "Height",
-            value: care_log?.height_cm ? `${care_log.height_cm} cm` : "N/A",
+            value: care_log?.height_cm ? `${care_log.height_cm} cm` : "-",
         },
         {
             label: "Care Type",
-            value: care_log?.care_type || "N/A",
+            value: care_log?.care_type || "-",
         },
     ];
 

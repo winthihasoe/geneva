@@ -189,7 +189,7 @@ export const generateElderlyCareLogPDF = async (formData) => {
                 // Prepare cell lines
                 const cellLines = row.map((cell, cellIndex) =>
                     pdf.splitTextToSize(
-                        cell || "N/A",
+                        cell || "-",
                         columnWidths[cellIndex] - 6
                     )
                 );
@@ -423,96 +423,96 @@ export const generateElderlyCareLogPDF = async (formData) => {
                     switch (type) {
                         case "hygiene":
                             return [
-                                item.time || "N/A",
-                                item.activity || "N/A",
+                                item.time || "-",
+                                item.activity || "-",
                                 item.notes || "None",
                             ];
 
                         case "medication":
                             return [
-                                item.time || "N/A",
-                                item.medication || "N/A",
-                                item.dosage || "N/A",
-                                item.route || "N/A",
+                                item.time || "-",
+                                item.medication || "-",
+                                item.dosage || "-",
+                                item.route || "-",
                                 item.notes || "None",
                             ];
 
                         case "glucose":
                             return [
-                                item.measurement_time || "N/A",
-                                item.glucose_level || "N/A",
-                                item.timing || "N/A",
+                                item.measurement_time || "-",
+                                item.glucose_level || "-",
+                                item.timing || "-",
                                 item.note || "None",
                             ];
 
                         case "intake":
                             return [
-                                item.meal_type || "N/A",
-                                item.meal_time || "N/A",
+                                item.meal_type || "-",
+                                item.meal_time || "-",
                                 Array.isArray(item.food_items) &&
                                 item.food_items.length > 0
                                     ? item.food_items.join(", ")
-                                    : "N/A",
-                                item.amount || "N/A",
+                                    : "-",
+                                item.amount || "-",
                                 item.assistance_needed ? "Yes" : "No",
                                 item.intake_notes || "None",
                             ];
                         case "output":
                             return [
-                                item.output_time || "N/A",
-                                item.urine_volume || "N/A",
-                                item.urine_color || "N/A",
-                                item.bowel_movement || "N/A",
+                                item.output_time || "-",
+                                item.urine_volume || "-",
+                                item.urine_color || "-",
+                                item.bowel_movement || "-",
                                 item.bowel_consistency || "None",
                                 item.output_notes || "None",
                             ];
 
                         case "sleep":
                             return [
-                                item.type || "N/A",
-                                item.time || "N/A",
-                                item.duration || "N/A",
-                                item.quality || "N/A",
+                                item.type || "-",
+                                item.time || "-",
+                                item.duration || "-",
+                                item.quality || "-",
                                 item.notes || "None",
                             ];
                         case "mobility":
                             return [
-                                item.time || "N/A",
-                                item.duration || "N/A",
-                                item.activity || "N/A",
+                                item.time || "-",
+                                item.duration || "-",
+                                item.activity || "-",
                                 item.notes || "None",
                             ];
 
                         case "activities":
                             return [
-                                item.activity || "N/A",
-                                item.time || "N/A",
-                                item.duration || "N/A",
+                                item.activity || "-",
+                                item.time || "-",
+                                item.duration || "-",
                                 item.details || "None",
                             ];
 
                         case "accidents":
                             return [
-                                item.time || "N/A",
-                                item.description || "N/A",
-                                item.severity || "N/A",
+                                item.time || "-",
+                                item.description || "-",
+                                item.severity || "-",
                                 item.action || "None",
                             ];
 
                         case "household":
                             return [
-                                item.task || "N/A",
-                                item.time || "N/A",
-                                item.duration || "N/A",
+                                item.task || "-",
+                                item.time || "-",
+                                item.duration || "-",
                                 item.notes || "None",
                             ];
 
                         case "supplies":
                             return [
-                                item.item || "N/A",
-                                item.quantity || "N/A",
-                                item.purpose || "N/A",
-                                item.priority || "N/A",
+                                item.item || "-",
+                                item.quantity || "-",
+                                item.purpose || "-",
+                                item.priority || "-",
                             ];
                         default:
                             return [];
@@ -602,26 +602,26 @@ export const generateElderlyCareLogPDF = async (formData) => {
         ) {
             const vitalData = formData.vitalSigns.times
                 .map((time, index) => [
-                    time || "N/A",
+                    time || "-",
                     formData.vitalSigns.temperature[index]
                         ? `${formData.vitalSigns.temperature[index]} ${
                               formData.vitalSigns.temperatureUnit[index] || "C"
                           }`
-                        : "N/A",
+                        : "-",
                     formData.vitalSigns.pulseRate[index]
                         ? `${formData.vitalSigns.pulseRate[index]}/min`
-                        : "N/A",
+                        : "-",
                     formData.vitalSigns.respiratoryRate[index]
                         ? `${formData.vitalSigns.respiratoryRate[index]}/min`
-                        : "N/A",
+                        : "-",
                     formData.vitalSigns.bloodPressureSystolic[index]
                         ? `${formData.vitalSigns.bloodPressureSystolic[index]}/${formData.vitalSigns.bloodPressureDiastolic[index]} mmHg`
-                        : "N/A",
+                        : "-",
                     formData.vitalSigns.spo2[index]
                         ? `${formData.vitalSigns.spo2[index]}%`
-                        : "N/A",
+                        : "-",
                 ])
-                .filter((row) => row.some((cell) => cell !== "N/A"));
+                .filter((row) => row.some((cell) => cell !== "-"));
 
             if (vitalData.length > 0) {
                 addTable(
@@ -776,7 +776,7 @@ export const generateElderlyCareLogPDF = async (formData) => {
                 formData.behavioralConcerns || "None reported"
             }`
         );
-        addText(`Action Taken: ${formData.emotionalActionTaken || "N/A"}`);
+        addText(`Action Taken: ${formData.emotionalActionTaken || "-"}`);
         currentY += 5; // Add space
 
         // Accident & Emergency Situations

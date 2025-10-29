@@ -256,7 +256,7 @@ const ElderlyCareLogDetails = () => {
     };
 
     const formatTime = (timeString) => {
-        if (!timeString) return "N/A";
+        if (!timeString) return "-";
 
         // Handle datetime strings
         if (timeString.includes(" ")) {
@@ -348,7 +348,7 @@ const ElderlyCareLogDetails = () => {
                                                   row[column.key],
                                                   row
                                               )
-                                            : row[column.key] || "N/A"}
+                                            : row[column.key] || "-"}
                                     </Typography>
                                 </Box>
                             ))}
@@ -384,7 +384,7 @@ const ElderlyCareLogDetails = () => {
                                                   row[column.key],
                                                   row
                                               )
-                                            : row[column.key] || "N/A"}
+                                            : row[column.key] || "-"}
                                     </TableCell>
                                 ))}
                             </TableRow>
@@ -416,9 +416,9 @@ const ElderlyCareLogDetails = () => {
 
     return (
         <AppLayout>
-            <Container maxWidth="lg" sx={{ py: 4 }}>
+            <Container maxWidth="lg" sx={{ pt: 2, pb: 4 }}>
                 <Typography
-                    variant="h4"
+                    variant="h5"
                     textAlign={"center"}
                     fontWeight="bold"
                     color="primary"
@@ -431,7 +431,6 @@ const ElderlyCareLogDetails = () => {
                         justifyContent: "space-between",
                         alignItems: "center",
                         my: 3,
-                        gap: 2,
                     }}
                 >
                     <BackButton />
@@ -440,8 +439,7 @@ const ElderlyCareLogDetails = () => {
                             display: "flex",
                             justifyContent: "center",
                             alignItems: "center",
-                            my: 3,
-                            gap: 2,
+                            gap: 1,
                         }}
                     >
                         <Button
@@ -478,7 +476,7 @@ const ElderlyCareLogDetails = () => {
                             disabled={isGeneratingPDF}
                             size="small"
                         >
-                            <Typography variant="body2" fontWeight="bold">
+                            <Typography fontSize={13} fontWeight="bold">
                                 {isGeneratingPDF ? "Generating..." : "Download"}
                             </Typography>
                         </Button>
@@ -501,8 +499,8 @@ const ElderlyCareLogDetails = () => {
                             >
                                 <ElderlyIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
-                                Basic Information
+                            <Typography variant="h6" fontWeight="bold">
+                                Patient Information
                             </Typography>
                         </Box>
 
@@ -514,7 +512,10 @@ const ElderlyCareLogDetails = () => {
                                 >
                                     Client Name
                                 </Typography>
-                                <Typography variant="h6" fontWeight="medium">
+                                <Typography
+                                    variant="subtitle1"
+                                    fontWeight="medium"
+                                >
                                     {care_log.first_name}{" "}
                                     {care_log.last_name || ""}
                                 </Typography>
@@ -556,7 +557,7 @@ const ElderlyCareLogDetails = () => {
                                         : "Not recorded"}
                                 </Typography>
                             </Grid>
-                            <Grid item size={{ xs: 6, md: 6 }}>
+                            <Grid item size={{ xs: 12, md: 6 }}>
                                 <Typography
                                     variant="subtitle2"
                                     color="textSecondary"
@@ -575,20 +576,6 @@ const ElderlyCareLogDetails = () => {
                                         {formatDate(care_log.care_date)}
                                     </Typography>
                                 </Box>
-                            </Grid>
-                            <Grid item size={{ xs: 6, md: 6 }}>
-                                <Typography
-                                    variant="subtitle2"
-                                    color="textSecondary"
-                                >
-                                    Care Type
-                                </Typography>
-                                <Chip
-                                    label={care_log.care_type}
-                                    color="secondary"
-                                    size="small"
-                                    icon={<ElderlyIcon />}
-                                />
                             </Grid>
                         </Grid>
                     </CardContent>
@@ -610,7 +597,7 @@ const ElderlyCareLogDetails = () => {
                             >
                                 <HygieneIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Hygiene & Grooming
                             </Typography>
                         </Box>
@@ -706,7 +693,7 @@ const ElderlyCareLogDetails = () => {
                             >
                                 <MedicationIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Medication Administration
                             </Typography>
                         </Box>
@@ -745,7 +732,7 @@ const ElderlyCareLogDetails = () => {
                             >
                                 <VitalIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Vital Signs
                             </Typography>
                         </Box>
@@ -764,7 +751,7 @@ const ElderlyCareLogDetails = () => {
                                     format: (value, row) =>
                                         value && row.diastolic_pressure
                                             ? `${value}/${row.diastolic_pressure} mmHg`
-                                            : "N/A",
+                                            : "-",
                                 },
                                 {
                                     key: "temperature",
@@ -774,25 +761,25 @@ const ElderlyCareLogDetails = () => {
                                             ? `${value}°${
                                                   row.temperature_unit || "C"
                                               }`
-                                            : "N/A",
+                                            : "-",
                                 },
                                 {
                                     key: "pulse_rate",
                                     label: "Pulse Rate",
                                     format: (value) =>
-                                        value ? `${value}/min` : "N/A",
+                                        value ? `${value}/min` : "-",
                                 },
                                 {
                                     key: "respiratory_rate",
                                     label: "Respiratory Rate",
                                     format: (value) =>
-                                        value ? `${value}/min` : "N/A",
+                                        value ? `${value}/min` : "-",
                                 },
                                 {
                                     key: "spo2",
                                     label: "SpO2",
                                     format: (value) =>
-                                        value ? `${value}%` : "N/A",
+                                        value ? `${value}%` : "-",
                                 },
                                 { key: "notes", label: "Notes" },
                             ],
@@ -838,7 +825,7 @@ const ElderlyCareLogDetails = () => {
                                         key: "glucose_level",
                                         label: "Glucose Level",
                                         format: (value) =>
-                                            value ? `${value} mg/dL` : "N/A",
+                                            value ? `${value} mg/dL` : "-",
                                     },
                                     { key: "timing", label: "Timing" },
                                     { key: "notes", label: "Notes" },
@@ -865,7 +852,7 @@ const ElderlyCareLogDetails = () => {
                             >
                                 <MobilityIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Mobility & Exercise
                             </Typography>
                         </Box>
@@ -910,7 +897,7 @@ const ElderlyCareLogDetails = () => {
                                 >
                                     <IntakeIcon />
                                 </Avatar>
-                                <Typography variant="h5" fontWeight="bold">
+                                <Typography variant="h6" fontWeight="bold">
                                     Intake Records
                                 </Typography>
                             </Box>
@@ -937,9 +924,9 @@ const ElderlyCareLogDetails = () => {
                                                     ? items
                                                           .filter(Boolean)
                                                           .join(", ")
-                                                    : "N/A";
+                                                    : "-";
                                             } catch {
-                                                return "N/A";
+                                                return "-";
                                             }
                                         },
                                     },
@@ -951,7 +938,7 @@ const ElderlyCareLogDetails = () => {
                                                 ? `${value} ${
                                                       row.amount_unit || ""
                                                   }`
-                                                : "N/A",
+                                                : "-",
                                     },
                                     {
                                         key: "assistance_needed",
@@ -987,7 +974,7 @@ const ElderlyCareLogDetails = () => {
                                 >
                                     <OutputIcon />
                                 </Avatar>
-                                <Typography variant="h5" fontWeight="bold">
+                                <Typography variant="h6" fontWeight="bold">
                                     Output Records
                                 </Typography>
                             </Box>
@@ -1009,7 +996,7 @@ const ElderlyCareLogDetails = () => {
                                                       row.urine_volume_unit ||
                                                       ""
                                                   }`
-                                                : "N/A",
+                                                : "-",
                                     },
                                     {
                                         key: "urine_color",
@@ -1120,7 +1107,7 @@ const ElderlyCareLogDetails = () => {
                             >
                                 <ActivityIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Activities & Social Interaction
                             </Typography>
                         </Box>
@@ -1158,7 +1145,7 @@ const ElderlyCareLogDetails = () => {
                             >
                                 <SleepIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Sleep & Rest Tracking
                             </Typography>
                         </Box>
@@ -1210,7 +1197,7 @@ const ElderlyCareLogDetails = () => {
                                 >
                                     <EmotionalIcon />
                                 </Avatar>
-                                <Typography variant="h5" fontWeight="bold">
+                                <Typography variant="h6" fontWeight="bold">
                                     Emotional & Behavioral Observation
                                 </Typography>
                             </Box>
@@ -1322,7 +1309,7 @@ const ElderlyCareLogDetails = () => {
                             >
                                 <HouseholdIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Household Work by Caregiver
                             </Typography>
                         </Box>
@@ -1360,7 +1347,7 @@ const ElderlyCareLogDetails = () => {
                             >
                                 <SupplyIcon />
                             </Avatar>
-                            <Typography variant="h5" fontWeight="bold">
+                            <Typography variant="h6" fontWeight="bold">
                                 Requested Supplies
                             </Typography>
                         </Box>
@@ -1395,7 +1382,7 @@ const ElderlyCareLogDetails = () => {
                 {/* Signatures */}
                 <Card>
                     <CardContent>
-                        <Typography variant="h5" fontWeight="bold" mb={3}>
+                        <Typography variant="h6" fontWeight="bold" mb={3}>
                             Signatures & Comments
                         </Typography>
 
