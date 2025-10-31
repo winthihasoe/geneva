@@ -8,11 +8,12 @@ function AssessmentCenter() {
             <Container maxWidth="lg" sx={{ padding: 0 }}>
                 <Grid2
                     container
+                    columnSpacing={10}
+                    rowSpacing={2}
                     sx={{
                         alignItems: "center",
                         justifyContent: "center",
                         flexWrap: "wrap-reverse",
-                        gap: 10,
                     }}
                 >
                     <Grid2
@@ -32,30 +33,43 @@ function AssessmentCenter() {
                     >
                         <Typography
                             variant="h4"
-                            fontFamily={"Righteous"}
-                            fontWeight={500}
                             gutterBottom
-                            textAlign={{ xs: "center", md: "right" }}
-                            maxWidth={400}
+                            sx={{
+                                fontSize: {
+                                    xs: "1.5rem",
+                                    sm: "2rem",
+                                    md: "2.5rem",
+                                },
+                                fontFamily: "Righteous",
+                                fontWeight: 500,
+                                maxWidth: 400,
+                                textAlign: { xs: "center", md: "right" },
+                            }}
                         >
                             Assess Your Skills
                             <br /> Get Certified by
                         </Typography>
                         <Typography
                             variant="h3"
-                            fontFamily={"Righteous"}
-                            fontWeight={500}
                             gutterBottom
-                            textAlign={{ xs: "center", md: "right" }}
-                            color="primary.main"
-                            maxWidth={400}
+                            sx={{
+                                fontSize: {
+                                    xs: "1.5rem",
+                                    sm: "2rem",
+                                    md: "2.5rem",
+                                },
+                                fontFamily: "Righteous",
+                                fontWeight: 500,
+                                maxWidth: 400,
+                                textAlign: { xs: "center", md: "right" },
+                                color: "primary.main",
+                            }}
                         >
                             Hearty Aid
                             <br />
                             Assessment Center
                         </Typography>
                         <Button
-                            size="large"
                             variant="contained"
                             color="secondary"
                             onClick={() => router.get(route("assessment.show"))}

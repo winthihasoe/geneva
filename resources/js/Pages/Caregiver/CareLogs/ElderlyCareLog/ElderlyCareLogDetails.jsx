@@ -417,70 +417,59 @@ const ElderlyCareLogDetails = () => {
     return (
         <AppLayout>
             <Container maxWidth="lg" sx={{ pt: 2, pb: 4 }}>
-                <Typography
-                    variant="h5"
-                    textAlign={"center"}
-                    fontWeight="bold"
-                    color="primary"
-                >
+                <Box mb={2}>
+                    <BackButton label="Back to Care Logs" />
+                </Box>
+                <Typography variant="h5" fontWeight="bold" color="primary">
                     Elderly Care Log Details
                 </Typography>
                 <Box
                     sx={{
                         display: "flex",
-                        justifyContent: "space-between",
+                        justifyContent: "flex-end",
                         alignItems: "center",
                         my: 3,
+                        gap: 1,
                     }}
                 >
-                    <BackButton />
-                    <Box
-                        sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            gap: 1,
-                        }}
-                    >
-                        <Button
-                            size="small"
-                            variant="contained"
-                            onClick={() =>
-                                router.get(
-                                    route(
-                                        "cg.carelog.elder.details.show",
-                                        care_log.id
-                                    )
+                    <Button
+                        size="small"
+                        variant="contained"
+                        onClick={() =>
+                            router.get(
+                                route(
+                                    "cg.carelog.elder.details.show",
+                                    care_log.id
                                 )
-                            }
-                            sx={{
+                            )
+                        }
+                        sx={{
+                            background: isGeneratingPDF
+                                ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
+                                : "linear-gradient(45deg, #7b1fa2 30%, #ba68c8 90%)",
+                            "&:hover": {
                                 background: isGeneratingPDF
                                     ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
-                                    : "linear-gradient(45deg, #7b1fa2 30%, #ba68c8 90%)",
-                                "&:hover": {
-                                    background: isGeneratingPDF
-                                        ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
-                                        : "linear-gradient(45deg, #6a1b9a 30%, #ab47bc 90%)",
-                                },
-                            }}
-                            startIcon={<CalendarIcon />}
-                        >
-                            <Typography variant="body2" fontWeight="bold">
-                                Preview
-                            </Typography>
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            startIcon={<DownloadIcon />}
-                            onClick={handleGeneratePDF}
-                            disabled={isGeneratingPDF}
-                            size="small"
-                        >
-                            <Typography fontSize={13} fontWeight="bold">
-                                {isGeneratingPDF ? "Generating..." : "Download"}
-                            </Typography>
-                        </Button>
-                    </Box>
+                                    : "linear-gradient(45deg, #6a1b9a 30%, #ab47bc 90%)",
+                            },
+                        }}
+                        startIcon={<CalendarIcon />}
+                    >
+                        <Typography variant="body2" fontWeight="bold">
+                            Preview
+                        </Typography>
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        startIcon={<DownloadIcon />}
+                        onClick={handleGeneratePDF}
+                        disabled={isGeneratingPDF}
+                        size="small"
+                    >
+                        <Typography fontSize={13} fontWeight="bold">
+                            {isGeneratingPDF ? "Generating..." : "Download"}
+                        </Typography>
+                    </Button>
                 </Box>
 
                 {/* Basic Information */}

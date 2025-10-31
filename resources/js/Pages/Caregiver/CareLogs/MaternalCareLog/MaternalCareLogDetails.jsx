@@ -397,75 +397,60 @@ const MaternalCareLogDetails = () => {
     return (
         <AppLayout>
             <Container maxWidth="lg" sx={{ pt: 2, pb: 4 }}>
-                <Typography
-                    variant="h5"
-                    textAlign={"center"}
-                    fontWeight="bold"
-                    color="primary"
-                >
+                <Box mb={2}>
+                    <BackButton label="Back to Care Logs" />
+                </Box>
+                <Typography variant="h5" fontWeight="bold" color="primary">
                     Maternal Care Log Details
                 </Typography>
                 <Box
                     sx={{
                         display: "flex",
-                        justifyContent: "space-between",
+                        justifyContent: "flex-end",
                         alignItems: "center",
                         my: 3,
-                        gap: 2,
+                        gap: 1,
                     }}
                 >
-                    <BackButton />
-                    <Box
-                        sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            gap: 2,
-                        }}
-                    >
-                        <Button
-                            variant="contained"
-                            startIcon={<CalendarIcon />}
-                            onClick={() =>
-                                router.get(
-                                    route(
-                                        "cg.carelog.maternal.details.show",
-                                        care_log.id
-                                    )
+                    <Button
+                        variant="contained"
+                        startIcon={<CalendarIcon />}
+                        onClick={() =>
+                            router.get(
+                                route(
+                                    "cg.carelog.maternal.details.show",
+                                    care_log.id
                                 )
-                            }
-                            size="small"
-                            sx={{
+                            )
+                        }
+                        size="small"
+                        sx={{
+                            background: isGeneratingPDF
+                                ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
+                                : "linear-gradient(45deg, #7b1fa2 30%, #ba68c8 90%)",
+                            "&:hover": {
                                 background: isGeneratingPDF
                                     ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
-                                    : "linear-gradient(45deg, #7b1fa2 30%, #ba68c8 90%)",
-                                "&:hover": {
-                                    background: isGeneratingPDF
-                                        ? "linear-gradient(45deg, #9e9e9e 30%, #bdbdbd 90%)"
-                                        : "linear-gradient(45deg, #6a1b9a 30%, #ab47bc 90%)",
-                                },
-                            }}
-                        >
-                            <Typography variant="body2" fontWeight="bold">
-                                Preview
-                            </Typography>
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            startIcon={<DownloadIcon />}
-                            onClick={handleGeneratePDF}
-                            disabled={isGeneratingPDF}
-                            size="small"
-                        >
-                            <Typography fontSize={13} fontWeight="bold">
-                                {isGeneratingPDF
-                                    ? "Generating ..."
-                                    : "Download"}
-                            </Typography>
-                        </Button>
-                    </Box>
+                                    : "linear-gradient(45deg, #6a1b9a 30%, #ab47bc 90%)",
+                            },
+                        }}
+                    >
+                        <Typography variant="body2" fontWeight="bold">
+                            Preview
+                        </Typography>
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        startIcon={<DownloadIcon />}
+                        onClick={handleGeneratePDF}
+                        disabled={isGeneratingPDF}
+                        size="small"
+                    >
+                        <Typography fontSize={13} fontWeight="bold">
+                            {isGeneratingPDF ? "Generating ..." : "Download"}
+                        </Typography>
+                    </Button>
                 </Box>
-
                 {/* Basic Information */}
                 <Card sx={{ mb: 3 }}>
                     <CardContent>
@@ -547,7 +532,6 @@ const MaternalCareLogDetails = () => {
                         </Grid>
                     </CardContent>
                 </Card>
-
                 {/* Hygiene Records */}
                 <Card sx={{ mb: 3 }}>
                     <CardContent>
@@ -642,7 +626,6 @@ const MaternalCareLogDetails = () => {
                             })()}
                     </CardContent>
                 </Card>
-
                 {/* Medication Records */}
                 <Card sx={{ mb: 3 }}>
                     <CardContent>
@@ -680,7 +663,6 @@ const MaternalCareLogDetails = () => {
                         )}
                     </CardContent>
                 </Card>
-
                 {/* Vital Signs */}
                 <Card sx={{ mb: 3 }}>
                     <CardContent>
@@ -751,7 +733,6 @@ const MaternalCareLogDetails = () => {
                         )}
                     </CardContent>
                 </Card>
-
                 {/* Blood Glucose Records */}
                 <Card sx={{ mb: 3 }}>
                     <CardContent>
@@ -793,7 +774,6 @@ const MaternalCareLogDetails = () => {
                         )}
                     </CardContent>
                 </Card>
-
                 {/* Mobility & Exercise */}
                 <Card sx={{ mb: 3 }}>
                     <CardContent>
@@ -833,7 +813,6 @@ const MaternalCareLogDetails = () => {
                         )}
                     </CardContent>
                 </Card>
-
                 {/* Intake Records */}
                 <Card sx={{ mb: 3 }}>
                     <CardContent>
@@ -903,7 +882,6 @@ const MaternalCareLogDetails = () => {
                         )}
                     </CardContent>
                 </Card>
-
                 {/* Output Records */}
                 <Card sx={{ mb: 3 }}>
                     <CardContent>
@@ -966,7 +944,6 @@ const MaternalCareLogDetails = () => {
                         )}
                     </CardContent>
                 </Card>
-
                 {/* Activities */}
                 <Card sx={{ mb: 3 }}>
                     <CardContent>
@@ -1003,7 +980,6 @@ const MaternalCareLogDetails = () => {
                         )}
                     </CardContent>
                 </Card>
-
                 {/* Sleep Records */}
                 <Card sx={{ mb: 3 }}>
                     <CardContent>
@@ -1041,7 +1017,6 @@ const MaternalCareLogDetails = () => {
                         )}
                     </CardContent>
                 </Card>
-
                 {/* Fetal Health */}
                 <Card sx={{ mb: 3 }}>
                     <CardContent>
@@ -1083,7 +1058,6 @@ const MaternalCareLogDetails = () => {
                         </Typography>
                     </CardContent>
                 </Card>
-
                 {/* Emotional & Behavioral Observation */}
                 {emotion_behavior && (
                     <Card sx={{ mb: 3 }}>
@@ -1150,7 +1124,6 @@ const MaternalCareLogDetails = () => {
                         </CardContent>
                     </Card>
                 )}
-
                 {/* Accident & Emergency */}
                 <Card sx={{ mb: 3 }}>
                     <CardContent>
@@ -1193,7 +1166,6 @@ const MaternalCareLogDetails = () => {
                         )}
                     </CardContent>
                 </Card>
-
                 {/* Household Work */}
                 <Card sx={{ mb: 3 }}>
                     <CardContent>
@@ -1230,7 +1202,6 @@ const MaternalCareLogDetails = () => {
                         )}
                     </CardContent>
                 </Card>
-
                 {/* Requested Supplies */}
                 <Card sx={{ mb: 3 }}>
                     <CardContent>
@@ -1263,7 +1234,6 @@ const MaternalCareLogDetails = () => {
                         )}
                     </CardContent>
                 </Card>
-
                 {/* Additional Notes */}
                 {care_log.additional_notes && (
                     <Card sx={{ mb: 3 }}>
@@ -1277,7 +1247,6 @@ const MaternalCareLogDetails = () => {
                         </CardContent>
                     </Card>
                 )}
-
                 {/* Signatures */}
                 <Card>
                     <CardContent>

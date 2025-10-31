@@ -126,9 +126,9 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
         <Box
             sx={{
                 maxWidth: 500,
-                border: "4px solid",
+                border: { xs: "none", sm: "4px solid" },
                 borderColor: "primary.main",
-                p: { xs: 2, sm: 3, md: 4 },
+                px: { xs: 2, sm: 3, md: 4 },
                 borderRadius: 10,
                 mb: 5,
             }}
@@ -136,11 +136,12 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
             <form onSubmit={handleSubmit}>
                 <Typography
                     variant="h5"
+                    sx={{ fontSize: { xs: "1.2rem", sm: "2rem" } }}
                     textAlign="center"
                     color="primary.main"
                     mb={3}
                 >
-                    Submit your CV to Hearty Aid
+                    Submit your CV to <br /> <b>Hearty Aid</b>
                 </Typography>
                 <Box
                     sx={{
@@ -150,6 +151,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                 >
                     <Label>Name as in Passport</Label>
                     <TextField
+                        variant="standard"
                         size="small"
                         value={data.name}
                         onChange={handleChange}
@@ -173,6 +175,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                 >
                     <Label>Date of birth</Label>
                     <TextField
+                        variant="standard"
                         size="small"
                         value={data.date_of_birth}
                         onChange={handleChange}
@@ -231,6 +234,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                     >
                         <Label>Height</Label>
                         <TextField
+                            variant="standard"
                             size="small"
                             type="number"
                             value={data.height ?? ""}
@@ -261,6 +265,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                     >
                         <Label>Weight</Label>
                         <TextField
+                            variant="standard"
                             size="small"
                             type="number"
                             value={data.weight ?? ""}
@@ -288,6 +293,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                 >
                     <Label>Nationality</Label>
                     <TextField
+                        variant="standard"
                         size="small"
                         value={data.nationality}
                         onChange={handleChange}
@@ -311,6 +317,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                 >
                     <Label>Religion</Label>
                     <TextField
+                        variant="standard"
                         size="small"
                         value={data.religion}
                         onChange={handleChange}
@@ -334,6 +341,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                 >
                     <Label>Phone number</Label>
                     <TextField
+                        variant="standard"
                         size="small"
                         value={data.phone}
                         onChange={handleChange}
@@ -357,6 +365,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                 >
                     <Label>Email</Label>
                     <TextField
+                        variant="standard"
                         type="email"
                         size="small"
                         value={data.email}
@@ -380,6 +389,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                 >
                     <Label>Line ID</Label>
                     <TextField
+                        variant="standard"
                         size="small"
                         value={data.line}
                         onChange={handleChange}
@@ -402,6 +412,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                 >
                     <Label>Current address</Label>
                     <TextField
+                        variant="standard"
                         size="small"
                         value={data.current_address}
                         onChange={handleChange}
@@ -426,6 +437,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                 >
                     <Label>Describe your experience</Label>
                     <TextField
+                        variant="standard"
                         size="small"
                         value={data.experience}
                         onChange={handleChange}
@@ -451,6 +463,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                 >
                     <Label>Passport</Label>
                     <TextField
+                        variant="standard"
                         type="file"
                         inputProps={{ accept: "image/*" }}
                         name="passport"
@@ -478,6 +491,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                 >
                     <Label>Visa stamp</Label>
                     <TextField
+                        variant="standard"
                         type="file"
                         inputProps={{ accept: "image/*" }}
                         name="visa"
@@ -505,6 +519,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                 >
                     <Label>Certificate</Label>
                     <TextField
+                        variant="standard"
                         type="file"
                         inputProps={{ accept: "image/*", multiple: true }}
                         name="certificates"
@@ -549,6 +564,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                 >
                     <Label>What languages can you speak?</Label>
                     <TextField
+                        variant="standard"
                         size="small"
                         value={data.language}
                         onChange={handleChange}
@@ -578,6 +594,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         Certificate/Diploma/Degree award date and school name
                     </Label>
                     <TextField
+                        variant="standard"
                         size="small"
                         value={data.certificate_details}
                         onChange={handleChange}
@@ -595,14 +612,15 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                     )}
                 </Box>
 
-                <TinyText>
+                <Typography sx={{ fontSize: "0.7rem" }} textAlign={"center"}>
                     You need to fill phone number and email or Line id carefully
                     for interview.
-                </TinyText>
+                </Typography>
                 <Box textAlign={"center"} my={3}>
                     <Button
                         variant="contained"
                         type="submit"
+                        size="small"
                         sx={{ borderRadius: 20, width: 150 }}
                     >
                         <Typography sx={{ fontSize: 18 }}>Submit</Typography>

@@ -1,18 +1,19 @@
 import { Box, Container, Grid2, Typography } from "@mui/material";
 import React from "react";
 import ContactForm from "../Forms/ContactForm";
+import { router } from "@inertiajs/react";
 
 function ContactUsSection() {
     return (
         <Container maxWidth="lg" sx={{ padding: 0, py: 5 }}>
             <Grid2 container spacing={2} justifyContent="center">
-                <Grid2 item size={{ xs: 12, sm: 6 }} sx={{ px: 1 }}>
+                <Grid2 item size={{ xs: 12, sm: 10, md: 6 }} sx={{ px: 1 }}>
                     <ContactForm />
                 </Grid2>
                 <Grid2
                     item
-                    size={{ xs: 10, sm: 5 }}
-                    sx={{ display: "flex", justifyContent: "center", m: 1 }}
+                    size={{ xs: 10, sm: 12, md: 6 }}
+                    sx={{ display: "flex", justifyContent: "center" }}
                 >
                     <Box
                         sx={{
@@ -30,17 +31,26 @@ function ContactUsSection() {
                             variant="h3"
                             fontFamily={"Righteous"}
                             fontWeight={500}
-                            gutterBottom
+                            sx={{
+                                fontSize: {
+                                    xs: "1.7rem",
+                                    sm: "2.5rem",
+                                    md: "3rem",
+                                },
+                            }}
                         >
                             Hiring A Nanny or A Caregiver
                         </Typography>
                         <Typography
-                            textAlign={"center"}
                             variant="h6"
-                            fontFamily={"Righteous"}
-                            fontWeight={500}
-                            color="primary.main"
-                            gutterBottom
+                            sx={{
+                                cursor: "pointer",
+                                fontFamily: "Righteous",
+                                textAlign: "center",
+                                fontWeight: 500,
+                                color: "primary.main",
+                            }}
+                            onClick={() => router.get(route("how.it.works"))}
                         >
                             How it works?
                         </Typography>

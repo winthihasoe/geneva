@@ -14,7 +14,13 @@ function OurPopularCourses({ courses }) {
             >
                 {/* Title  */}
 
-                <Typography variant="h3" textAlign="center">
+                <Typography
+                    variant="h3"
+                    sx={{
+                        fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" },
+                    }}
+                    textAlign="center"
+                >
                     Our Popular Courses
                 </Typography>
 
@@ -78,7 +84,8 @@ function OurPopularCourses({ courses }) {
                                 alignItems: "center",
                                 justifyContent: "center",
                                 gap: 2,
-                                p: 2,
+                                px: { xs: 0, md: 2 },
+                                py: 2,
                             }}
                         >
                             {courses.map((course, index) => (

@@ -45,13 +45,14 @@ function ContactForm() {
                     sx={{
                         bgcolor: "primary.main",
                         px: 3,
+                        py: 2,
                         mx: { xs: 2, sm: 4, md: 9 },
                         mb: { xs: 1, sm: 3 },
                         borderRadius: 5,
                         fontFamily: "Abhaya Libre",
                         color: "white",
                         fontWeight: "bold",
-                        fontSize: 30,
+                        fontSize: { xs: "1.5rem", sm: "1.8rem", md: "2rem" },
                     }}
                 >
                     Get in Touch Here
@@ -71,9 +72,9 @@ function ContactForm() {
                             Name
                         </Typography>
                         <TextField
+                            variant="standard"
                             fullWidth
                             size="small"
-                            variant="outlined"
                             margin="normal"
                             value={data.name}
                             onChange={(e) => setData("name", e.target.value)}
@@ -95,9 +96,9 @@ function ContactForm() {
                             Email
                         </Typography>
                         <TextField
+                            variant="standard"
                             fullWidth
                             size="small"
-                            variant="outlined"
                             margin="normal"
                             required
                             value={data.email}
@@ -119,9 +120,9 @@ function ContactForm() {
                             Phone Number
                         </Typography>
                         <TextField
+                            variant="standard"
                             fullWidth
                             size="small"
-                            variant="outlined"
                             margin="normal"
                             value={data.phone_number}
                             onChange={(e) =>
@@ -175,7 +176,7 @@ function ContactForm() {
                             disabled={processing}
                             sx={{ borderRadius: 20, px: 3 }}
                         >
-                            <Typography variant="riH6">SUBMIT</Typography>
+                            <Typography variant="subtitle2">SUBMIT</Typography>
                         </Button>
                     </Box>
                 </Box>

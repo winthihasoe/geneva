@@ -175,22 +175,15 @@ const MyCareLogs = () => {
                     maxWidth="sm"
                     fullWidth
                 >
-                    <DialogTitle>
-                        <Box
-                            sx={{
-                                display: "flex",
-                                alignItems: "center",
-                            }}
-                        >
-                            <Typography variant="h6" fontWeight="bold">
-                                Choose Care Log Type
-                            </Typography>
-                        </Box>
+                    <DialogTitle sx={{ p: 1.5 }}>
+                        <Typography variant="h6" fontWeight="bold">
+                            Choose Care Log Type
+                        </Typography>
                     </DialogTitle>
 
-                    <DialogContent sx={{ pt: 1 }}>
+                    <DialogContent sx={{ p: 1.5 }}>
                         <Typography
-                            variant="body1"
+                            variant="body2"
                             color="text.secondary"
                             sx={{ mb: 3 }}
                         >
@@ -227,15 +220,15 @@ const MyCareLogs = () => {
                                         sx={{
                                             display: "flex",
                                             alignItems: "flex-start",
-                                            gap: 2,
+                                            gap: 1,
                                         }}
                                     >
                                         <Avatar
                                             sx={{
                                                 bgcolor: "#FCE4EC",
                                                 color: "#E91E63",
-                                                width: 50,
-                                                height: 50,
+                                                width: 30,
+                                                height: 30,
                                             }}
                                         >
                                             <ChildCareIcon
@@ -244,7 +237,7 @@ const MyCareLogs = () => {
                                         </Avatar>
                                         <Box sx={{ flex: 1 }}>
                                             <Typography
-                                                variant="h6"
+                                                variant="subtitle1"
                                                 fontWeight="bold"
                                                 mb={0.5}
                                             >
@@ -292,15 +285,15 @@ const MyCareLogs = () => {
                                         sx={{
                                             display: "flex",
                                             alignItems: "flex-start",
-                                            gap: 2,
+                                            gap: 1,
                                         }}
                                     >
                                         <Avatar
                                             sx={{
                                                 bgcolor: "#F3E5F5",
                                                 color: "#9C27B0",
-                                                width: 50,
-                                                height: 50,
+                                                width: 30,
+                                                height: 30,
                                             }}
                                         >
                                             <PregnantIcon
@@ -309,7 +302,7 @@ const MyCareLogs = () => {
                                         </Avatar>
                                         <Box sx={{ flex: 1 }}>
                                             <Typography
-                                                variant="h6"
+                                                variant="subtitle1"
                                                 fontWeight="bold"
                                                 mb={0.5}
                                             >
@@ -357,15 +350,15 @@ const MyCareLogs = () => {
                                         sx={{
                                             display: "flex",
                                             alignItems: "flex-start",
-                                            gap: 2,
+                                            gap: 1,
                                         }}
                                     >
                                         <Avatar
                                             sx={{
                                                 bgcolor: "#ECEFF1",
                                                 color: "#607D8B",
-                                                width: 50,
-                                                height: 50,
+                                                width: 30,
+                                                height: 30,
                                             }}
                                         >
                                             <ElderlyIcon
@@ -374,7 +367,7 @@ const MyCareLogs = () => {
                                         </Avatar>
                                         <Box sx={{ flex: 1 }}>
                                             <Typography
-                                                variant="h6"
+                                                variant="subtitle1"
                                                 fontWeight="bold"
                                                 mb={0.5}
                                             >
@@ -403,7 +396,6 @@ const MyCareLogs = () => {
                     <DialogActions sx={{ p: 2 }}>
                         <Button
                             onClick={() => setShowCareTypeDialog(false)}
-                            variant="outlined"
                             startIcon={<CloseIcon />}
                             size="small"
                         >

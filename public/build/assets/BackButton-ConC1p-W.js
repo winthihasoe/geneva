@@ -1,1 +1,0 @@
-import{j as t,y as r}from"./app-BQIolCtw.js";import{A as i}from"./ArrowCircleLeftOutlined-C5o5Klqx.js";import{I as s}from"./IconButton-DyQy1bkz.js";function l({route:o=null}){const n=()=>{o?r.visit(o):window.history.back()};return t.jsx(s,{sx:{mr:1},onClick:n,children:t.jsx(i,{})})}export{l as B};

@@ -9,11 +9,15 @@ function BlogSection() {
                 <Grid2
                     container
                     spacing={2}
-                    sx={{ display: "flex", alignItems: "center" }}
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}
                 >
                     <Grid2
                         item
-                        size={{ xs: 12, sm: 6, md: 5 }}
+                        size={{ xs: 12, sm: 12, md: 5 }}
                         sx={{
                             display: "flex",
                             justifyContent: "center",
@@ -60,7 +64,7 @@ function BlogSection() {
                                     Baby & Maternal Health
                                 </Typography>
                                 <Typography variant="body2">
-                                    Nurture every stage of motherhood — from
+                                    Nurture every stage of motherhood from
                                     pregnancy to newborn care.{" "}
                                     <b>
                                         Discover baby health tips, feeding
@@ -88,7 +92,7 @@ function BlogSection() {
                     </Grid2>
                     <Grid2
                         item
-                        size={{ xs: 12, sm: 6, md: 6 }}
+                        size={{ xs: 12, sm: 10, md: 6 }}
                         sx={{
                             display: "flex",
                             flexDirection: "column",
@@ -111,17 +115,24 @@ function BlogSection() {
                                 sx={{
                                     display: "flex",
                                     flexDirection: "column",
-                                    gap: 2,
+                                    gap: 1,
                                     mt: 2,
                                     width: { xs: "100%", sm: "60%" },
                                 }}
                             >
                                 <Typography
                                     variant="h4"
-                                    fontFamily={"Righteous"}
-                                    fontWeight={500}
-                                    color="white"
-                                    textAlign={"center"}
+                                    sx={{
+                                        fontSize: {
+                                            xs: "1.5rem",
+                                            sm: "2rem",
+                                            md: "2.5rem",
+                                        },
+                                        fontWeight: 500,
+                                        color: "white",
+                                        textAlign: "center",
+                                        fontFamily: "Righteous",
+                                    }}
                                 >
                                     Elder Health
                                 </Typography>
@@ -184,10 +195,17 @@ function BlogSection() {
                             >
                                 <Typography
                                     variant="h4"
-                                    fontFamily={"Righteous"}
-                                    fontWeight={500}
-                                    color="white"
-                                    textAlign={"center"}
+                                    sx={{
+                                        fontSize: {
+                                            xs: "1.5rem",
+                                            sm: "2rem",
+                                            md: "2.5rem",
+                                        },
+                                        fontWeight: 500,
+                                        color: "white",
+                                        textAlign: "center",
+                                        fontFamily: "Righteous",
+                                    }}
                                 >
                                     First Aid & <br />
                                     Emergency Care

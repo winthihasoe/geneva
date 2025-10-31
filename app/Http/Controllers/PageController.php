@@ -13,7 +13,7 @@ class PageController extends Controller
    {
       $caregivers = CV::where('is_approved', true)
       ->inRandomOrder()
-      ->take(10)
+      ->take(24)
       ->select('id','nickname', 'newborn_care_level','nanny_care_level', 'level', 'date_of_birth', 'nationality', 'ha_id', 'profile_photo', 'status', 'services')
       ->get();
 

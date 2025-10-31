@@ -12,26 +12,28 @@ function Hero() {
                         alignItems: "center",
                         display: "flex",
                         flexWrap: "wrap-reverse",
+                        justifyContent: "center",
                     }}
                 >
                     {/* Image Section */}
                     <Grid2
                         item
-                        size={{ xs: 12, sm: 6 }}
+                        size={{ xs: 12, sm: 10, md: 6 }}
                         sx={{
                             display: "flex",
                             flexDirection: "row",
                             justifyContent: "center",
                             gap: { xs: 1, sm: 2 },
-                            py: { xs: 4, sm: 8 },
+                            pt: { xs: 0, sm: 0, md: 8 },
+                            pb: 8,
+                            px: 1,
                         }}
                     >
                         {/* Maternal Care  */}
                         <Box
                             sx={{
                                 width: { xs: 120, sm: 163 },
-                                height: { xs: 350, sm: 400 },
-
+                                height: { xs: 280, sm: 400 },
                                 display: "flex",
                                 flexDirection: "column",
                                 gap: 2,
@@ -53,6 +55,9 @@ function Hero() {
                                 fontWeight={500}
                                 color="white"
                                 textAlign={"center"}
+                                sx={{
+                                    fontSize: { xs: "1.2rem", sm: "1.6rem" },
+                                }}
                             >
                                 Maternal <br />
                                 Care
@@ -63,7 +68,7 @@ function Hero() {
                         <Box
                             sx={{
                                 width: { xs: 120, sm: 163 },
-                                height: { xs: 350, sm: 400 },
+                                height: { xs: 280, sm: 400 },
                                 display: "flex",
                                 marginTop: 5,
                                 flexDirection: "column",
@@ -86,6 +91,9 @@ function Hero() {
                                 fontWeight={500}
                                 color="white"
                                 textAlign={"center"}
+                                sx={{
+                                    fontSize: { xs: "1.2rem", sm: "1.6rem" },
+                                }}
                             >
                                 Nanny <br />
                                 Care
@@ -94,7 +102,7 @@ function Hero() {
                         <Box
                             sx={{
                                 width: { xs: 120, sm: 163 },
-                                height: { xs: 350, sm: 400 },
+                                height: { xs: 280, sm: 400 },
                                 display: "flex",
                                 flexDirection: "column",
                                 gap: 2,
@@ -116,6 +124,9 @@ function Hero() {
                                 fontWeight={500}
                                 color="white"
                                 textAlign={"center"}
+                                sx={{
+                                    fontSize: { xs: "1.2rem", sm: "1.6rem" },
+                                }}
                             >
                                 Senior <br />
                                 Care
@@ -125,20 +136,23 @@ function Hero() {
                     {/* Text ... */}
                     <Grid2
                         item
-                        size={{ xs: 12, sm: 5 }}
+                        size={{ xs: 12, sm: 10, md: 6 }}
                         sx={{
                             display: "flex",
                             flexDirection: "column",
                             gap: 3,
-                            p: { xs: 4, sm: 6, md: 5 },
+                            px: { xs: 2, sm: 6, md: 5 },
+                            py: { xs: 4, sm: 8 },
+                            maxWidth: { xs: 450, sm: 600 },
                         }}
                     >
                         <Box>
                             <Typography variant="body2" color="white">
-                                Not Just Care. A Plan Made Just for You.
+                                Not Just Care.
+                                <br />A Plan Made Just for You.
                             </Typography>
                             <Typography
-                                variant="h2"
+                                variant="h3"
                                 fontFamily={"Righteous"}
                                 fontWeight={500}
                                 color="white"

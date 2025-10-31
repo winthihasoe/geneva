@@ -1254,6 +1254,7 @@ const MaternalCareLogs = ({ caregiverName, lastCareLog }) => {
                                         "linear-gradient(45deg, #d81b60 30%, #f48fb1 90%)",
                                 },
                             }}
+                            size="small"
                         >
                             Continue
                         </Button>

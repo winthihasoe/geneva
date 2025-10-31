@@ -40,28 +40,53 @@ const steps = [
 function HowItWorks() {
     return (
         <AppLayout>
-            <Container maxWidth="md" sx={{ py: 6 }}>
-                <Typography
-                    variant="h3"
-                    component="h1"
-                    mb={5}
-                    textAlign="center"
-                    fontFamily="Righteous"
-                >
-                    How It Works
-                </Typography>
+            <Container maxWidth="md" sx={{ pt: 3, pb: 6 }}>
+                <Box sx={{ position: "relative", mb: { xs: 5, sm: 7 } }}>
+                    <Typography
+                        variant="h3"
+                        component="h1"
+                        textAlign="center"
+                        fontFamily="Righteous"
+                        sx={{
+                            fontSize: {
+                                xs: "2rem",
+                                sm: "2.1rem",
+                                md: "2.2rem",
+                            },
+                        }}
+                    >
+                        How It Works
+                    </Typography>
+                    <Box
+                        sx={{
+                            backgroundImage: 'url("/images/underline.png")',
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "contain",
+                            width: 80,
+                            height: 20,
+                            position: "absolute",
+                            bottom: -15,
+                            right: "calc(50% - 70px)",
+                        }}
+                    />
+                </Box>
                 {steps.map((step, idx) => (
                     <Grid2
                         container
                         spacing={4}
-                        alignItems="center"
+                        alignItems="flex-start"
                         key={step.title}
                         sx={{
                             mb: 5,
-                            flexDirection: { xs: "column", md: "row" },
+                            flexDirection: {
+                                xs: "column",
+                                sm: "row",
+                                md: "row",
+                            },
                         }}
                     >
-                        <Grid2 item size={{ xs: 12, md: 4 }}>
+                        <Grid2 item size={{ xs: 12, sm: 4, md: 4 }}>
                             <Box
                                 component="img"
                                 src={step.image}
@@ -75,7 +100,7 @@ function HowItWorks() {
                                 }}
                             />
                         </Grid2>
-                        <Grid2 item size={{ xs: 12, md: 8 }}>
+                        <Grid2 item size={{ xs: 12, sm: 8, md: 8 }}>
                             <Typography
                                 variant="h5"
                                 fontFamily={"Righteous"}
@@ -86,12 +111,20 @@ function HowItWorks() {
                                 py={1}
                                 px={2}
                                 borderRadius={2}
+                                sx={{
+                                    fontSize: {
+                                        xs: "1.3rem",
+                                        sm: "1.5rem",
+                                        md: "1.8rem",
+                                    },
+                                }}
                             >
                                 {`${idx + 1}. ${step.title}`}
                             </Typography>
                             <Typography
                                 variant="body1"
                                 mb={step.showButton ? 3 : 0}
+                                sx={{ fontSize: { xs: "0.8rem", md: "1rem" } }}
                             >
                                 {step.description}
                             </Typography>

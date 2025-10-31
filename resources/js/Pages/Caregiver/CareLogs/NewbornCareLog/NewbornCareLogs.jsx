@@ -1380,6 +1380,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                                         "linear-gradient(45deg, #1565c0 30%, #42a5f5 90%)",
                                 },
                             }}
+                            size="small"
                         >
                             Continue
                         </Button>

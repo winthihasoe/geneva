@@ -1861,6 +1861,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                                         "linear-gradient(45deg, #6a1b9a 30%, #ab47bc 90%)",
                                 },
                             }}
+                            size="small"
                         >
                             Continue
                         </Button>

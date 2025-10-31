@@ -128,7 +128,7 @@ function CaregiverCardMini({ cv }) {
             {/* Name and Content Section */}
             <Box
                 sx={{
-                    width: "159px",
+                    width: 150,
                     flexShrink: 0,
                     borderRadius: "10px",
                     backgroundColor: "primary.main",
@@ -152,6 +152,8 @@ function CaregiverCardMini({ cv }) {
                         whiteSpace: "nowrap",
                         width: "100%",
                         maxWidth: "100%",
+                        fontSize: "1rem",
+                        fontWeight: 800,
                     }}
                 >
                     {cv?.nickname || "Caregiver Name"}
@@ -192,7 +194,7 @@ function CaregiverCardMini({ cv }) {
                     color="white"
                     textAlign="center"
                     sx={{
-                        fontSize: "0.8rem",
+                        fontSize: "0.7rem",
                         minHeight: "1.2rem", // Ensure consistent height even if empty
                     }}
                 >
