@@ -1,0 +1,1 @@
+import{g as t}from"./getThemeProps-BPUpLcWJ.js";import{f}from"./app-C05Om5IP.js";function i({props:o,name:m,defaultTheme:s,themeId:r}){let e=f(s);return r&&(e=e[r]||e),t({theme:e,name:m,props:o})}export{i as u};

@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 
 export default function ForgotPassword({ status }) {
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, setError } = useForm({
         email: "",
     });
 
@@ -95,11 +95,13 @@ export default function ForgotPassword({ status }) {
                                         type="email"
                                         name="email"
                                         value={data.email}
-                                        onChange={(e) =>
-                                            setData("email", e.target.value)
-                                        }
+                                        onChange={(e) => {
+                                            setData("email", e.target.value);
+                                            setError("email", null);
+                                        }}
                                         fullWidth
                                         placeholder="Enter your email"
+                                        variant="standard"
                                     />
                                     {errors && (
                                         <Typography fontSize={12} color="error">
@@ -110,7 +112,11 @@ export default function ForgotPassword({ status }) {
 
                                 <Box textAlign={"center"} mt={3}>
                                     <Button
-                                        disabled={processing || !data.email}
+                                        disabled={
+                                            processing ||
+                                            !data.email ||
+                                            errors.email
+                                        }
                                         variant="contained"
                                         type="submit"
                                     >

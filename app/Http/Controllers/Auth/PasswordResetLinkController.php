@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -39,6 +40,27 @@ class PasswordResetLinkController extends Controller
 
         if (!$user) {
             return back()->withErrors(['email' => 'No account found for this email.']);
+        }
+
+        // Get expire time from config
+        $expireMinutes = config('auth.passwords.users.expire', 60);
+
+
+        // Check if a token already exists and is not expired
+        $existingToken = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->first();
+
+        if ($existingToken) {
+            $created = Carbon::parse($existingToken->created_at);
+            if ($created->addMinutes($expireMinutes)->isFuture()) {
+                return back()->withErrors(['email' => 'Please check your email inbox for the reset link.']);
+            } else {
+                // Token expired, delete it
+                DB::table('password_reset_tokens')
+                    ->where('email', $request->email)
+                    ->delete();
+            }
         }
 
         $token = Str::random(60);
