@@ -29,7 +29,7 @@ const SleepSection = ({
     const sleepIssuesOptions = [
         "None",
         "Restlessness",
-        "Frequent Walking",
+        "Frequent Waking",
         "Difficulty Falling Asleep",
     ];
 
