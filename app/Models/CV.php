@@ -143,6 +143,7 @@ class CV extends Model
         static::creating(function ($model) {
             // Generate a unique ha_id for the new CV record
              \Log::info('Generating ha_id for new CV');
+
             $model->ha_id = self::generateHaId();
 
             // Ensure the slug is unique
@@ -156,8 +157,11 @@ class CV extends Model
         // Get the current month and year in MMYY format
         $prefix = now()->format('my'); // 'my' generates 'MMYY' format
         \Log::info('generateHaId: prefix', ['prefix' => $prefix]);
+
         // Find the last ha_id for the current month and year
+        // Use lockForUpdate to prevent race conditions
         $lastHaId = self::where('ha_id', 'like', "{$prefix}%")
+            ->lockForUpdate()
             ->orderBy('ha_id', 'desc')
             ->first();
         \Log::info('generateHaId: lastHaId', ['lastHaId' => $lastHaId ? $lastHaId->ha_id : null]);

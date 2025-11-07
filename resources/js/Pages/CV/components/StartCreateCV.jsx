@@ -53,7 +53,7 @@ function StartCreateCV() {
                 return (
                     data.height &&
                     data.weight &&
-                    data.nationality &&
+                    (data.nationality || data.other_nationality) &&
                     data.religion &&
                     data.profile_photo &&
                     data.marital_status &&
@@ -70,7 +70,11 @@ function StartCreateCV() {
                 // Certificate step - might be optional
                 return true;
             case 5:
-                return data.phone && data.language && data.language.length > 0;
+                return (
+                    data.emergency_contact &&
+                    data.language &&
+                    data.language.length > 0
+                );
             case 6:
                 return data.services && data.services.length > 0;
             case 7:

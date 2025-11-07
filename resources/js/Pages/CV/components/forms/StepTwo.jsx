@@ -99,7 +99,14 @@ const StepTwo = () => {
                     <RadioGroup
                         row
                         value={data.nationality}
-                        onChange={handleChange("nationality")}
+                        onChange={(e) => {
+                            handleChange("nationality")(e);
+                            if (e.target.value) {
+                                handleChange("other_nationality")({
+                                    target: { value: "" },
+                                });
+                            }
+                        }}
                     >
                         {nationalityOptions.map((option) => (
                             <FormControlLabel
@@ -119,7 +126,15 @@ const StepTwo = () => {
                     <Typography>Other nationality</Typography>
                     <TextField
                         size="small"
-                        onChange={handleChange("other_nationality")}
+                        value={data.other_nationality ?? ""}
+                        onChange={(e) => {
+                            handleChange("other_nationality")(e);
+                            if (e.target.value) {
+                                handleChange("nationality")({
+                                    target: { value: "" },
+                                });
+                            }
+                        }}
                     />
                 </Box>
             </Box>

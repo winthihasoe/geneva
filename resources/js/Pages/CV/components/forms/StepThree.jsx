@@ -306,6 +306,84 @@ const StepThree = ({ oldPassport, oldVisaStamp }) => {
                     mx: "auto",
                 }}
             >
+                {/* Passport First Page Photo */}
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        width: { xs: 140, sm: 170, md: 200 },
+                    }}
+                >
+                    <Typography variant="body1" fontWeight="bold" mb={2}>
+                        Passport First Page
+                    </Typography>
+
+                    {(data.passport && data.passport !== "") || oldPassport ? (
+                        <img
+                            src={
+                                passportPreview ? passportPreview : oldPassport
+                            }
+                            alt="Passport First Page"
+                            style={{
+                                width: "140px",
+                                height: "130px",
+                                border: "2px solid #1c90a9",
+                                borderRadius: "16px",
+                                objectFit: "cover",
+                                objectPosition: "center",
+                                margin: "auto",
+                            }}
+                        />
+                    ) : (
+                        <Box
+                            sx={{
+                                width: "140px",
+                                height: "130px",
+                                border: "2px solid gray",
+                                borderRadius: 3,
+                                margin: "auto",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                backgroundColor: "grey.50",
+                            }}
+                        >
+                            <Typography variant="body2" color="text.secondary">
+                                No photo
+                            </Typography>
+                        </Box>
+                    )}
+                    <Button
+                        variant="outlined"
+                        sx={{ my: 2 }}
+                        size="small"
+                        component="label"
+                        disabled={passportUploading}
+                    >
+                        <input
+                            type="file"
+                            accept=".jpg, .jpeg, .png, .heic"
+                            onChange={handlePassportChange}
+                            hidden
+                        />
+                        <Typography fontSize={12} textAlign="center">
+                            Choose
+                        </Typography>
+                    </Button>
+
+                    {passportUploading && (
+                        <Box sx={{ width: "140px", mt: 2 }}>
+                            <LinearProgress />
+                            <Typography
+                                fontSize={12}
+                                sx={{ textAlign: "center", mt: 1 }}
+                            >
+                                Compressing...
+                            </Typography>
+                        </Box>
+                    )}
+                </Box>
                 {/* Visa Stamp Photo */}
                 <Box
                     sx={{
@@ -377,85 +455,6 @@ const StepThree = ({ oldPassport, oldVisaStamp }) => {
                     </Button>
 
                     {visaStampUploading && (
-                        <Box sx={{ width: "140px", mt: 2 }}>
-                            <LinearProgress />
-                            <Typography
-                                fontSize={12}
-                                sx={{ textAlign: "center", mt: 1 }}
-                            >
-                                Compressing...
-                            </Typography>
-                        </Box>
-                    )}
-                </Box>
-
-                {/* Passport First Page Photo */}
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        width: { xs: 140, sm: 170, md: 200 },
-                    }}
-                >
-                    <Typography variant="body1" fontWeight="bold" mb={2}>
-                        Passport First Page
-                    </Typography>
-
-                    {(data.passport && data.passport !== "") || oldPassport ? (
-                        <img
-                            src={
-                                passportPreview ? passportPreview : oldPassport
-                            }
-                            alt="Passport First Page"
-                            style={{
-                                width: "140px",
-                                height: "130px",
-                                border: "2px solid #1c90a9",
-                                borderRadius: "16px",
-                                objectFit: "cover",
-                                objectPosition: "center",
-                                margin: "auto",
-                            }}
-                        />
-                    ) : (
-                        <Box
-                            sx={{
-                                width: "140px",
-                                height: "130px",
-                                border: "2px solid gray",
-                                borderRadius: 3,
-                                margin: "auto",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                backgroundColor: "grey.50",
-                            }}
-                        >
-                            <Typography variant="body2" color="text.secondary">
-                                No photo
-                            </Typography>
-                        </Box>
-                    )}
-                    <Button
-                        variant="outlined"
-                        sx={{ my: 2 }}
-                        size="small"
-                        component="label"
-                        disabled={passportUploading}
-                    >
-                        <input
-                            type="file"
-                            accept=".jpg, .jpeg, .png, .heic"
-                            onChange={handlePassportChange}
-                            hidden
-                        />
-                        <Typography fontSize={12} textAlign="center">
-                            Choose
-                        </Typography>
-                    </Button>
-
-                    {passportUploading && (
                         <Box sx={{ width: "140px", mt: 2 }}>
                             <LinearProgress />
                             <Typography

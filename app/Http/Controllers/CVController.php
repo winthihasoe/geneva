@@ -432,7 +432,7 @@ class CVController extends Controller
                     //
                 ],
                 5 => [
-                    'language' => 'nullable|array|min:1',
+                    //
                 ],
                 6 => [
                     //

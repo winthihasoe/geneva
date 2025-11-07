@@ -5,7 +5,7 @@ import Subtitle from "@/Components/Typo/Subtitle";
 import TinyText from "@/Components/Typo/TinyText";
 import CvContext from "@/Context/CvContext";
 
-const PersonalIDUploadForm = ({ oldId, oldFamilyRecord, oldRefLetter }) => {
+const PersonalIDUploadForm = ({ oldId, oldFamilyRecord }) => {
     const { data, setData } = useContext(CvContext);
     const [idPreview, setidPreview] = useState(
         oldId
@@ -22,6 +22,8 @@ const PersonalIDUploadForm = ({ oldId, oldFamilyRecord, oldRefLetter }) => {
             ? `/storage/${data.family_member_record}`
             : null
     );
+
+    console.log("id preview", idPreview);
 
     const [idUploading, setIdUploading] = useState(false);
     const [familyRecordUploading, setFamilyRecordUploading] = useState(false);
@@ -207,9 +209,11 @@ const PersonalIDUploadForm = ({ oldId, oldFamilyRecord, oldRefLetter }) => {
                         Citizenship Certificate
                     </Typography>
 
-                    {idPreview ? (
+                    {(data.citizenship_certificate &&
+                        data.citizenship_certificate !== "") ||
+                    oldId ? (
                         <img
-                            src={idPreview}
+                            src={idPreview ? idPreview : oldId}
                             style={{
                                 width: "140px",
                                 height: "130px",
@@ -222,16 +226,22 @@ const PersonalIDUploadForm = ({ oldId, oldFamilyRecord, oldRefLetter }) => {
                         />
                     ) : (
                         <Box
-                            style={{
+                            sx={{
                                 width: "140px",
                                 height: "130px",
-                                border: "2px solid #1c90a9",
-                                borderRadius: "16px",
-                                objectFit: "cover",
-                                objectPosition: "center",
+                                border: "2px solid gray",
+                                borderRadius: 3,
                                 margin: "auto",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                backgroundColor: "grey.50",
                             }}
-                        />
+                        >
+                            <Typography variant="body2" color="text.secondary">
+                                No photo
+                            </Typography>
+                        </Box>
                     )}
                     {idUploading && (
                         <Box sx={{ width: "100px", mb: 1 }}>
@@ -282,9 +292,15 @@ const PersonalIDUploadForm = ({ oldId, oldFamilyRecord, oldRefLetter }) => {
                         Family Member Record
                     </Typography>
 
-                    {familyRecordPreview ? (
+                    {(data.family_member_record &&
+                        data.family_member_record !== "") ||
+                    oldFamilyRecord ? (
                         <img
-                            src={familyRecordPreview}
+                            src={
+                                familyRecordPreview
+                                    ? familyRecordPreview
+                                    : oldFamilyRecord
+                            }
                             style={{
                                 width: "140px",
                                 height: "130px",
@@ -297,16 +313,22 @@ const PersonalIDUploadForm = ({ oldId, oldFamilyRecord, oldRefLetter }) => {
                         />
                     ) : (
                         <Box
-                            style={{
+                            sx={{
                                 width: "140px",
                                 height: "130px",
-                                border: "2px solid #1c90a9",
-                                borderRadius: "16px",
-                                objectFit: "cover",
-                                objectPosition: "center",
+                                border: "2px solid gray",
+                                borderRadius: 3,
                                 margin: "auto",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                backgroundColor: "grey.50",
                             }}
-                        />
+                        >
+                            <Typography variant="body2" color="text.secondary">
+                                No photo
+                            </Typography>
+                        </Box>
                     )}
                     {familyRecordUploading && (
                         <Box sx={{ width: "100px", mb: 1 }}>
