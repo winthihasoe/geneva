@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { usePage } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import {
     Container,
     Typography,
@@ -445,7 +445,14 @@ const AdminElderlyCareLogDetails = () => {
                     >
                         <Button
                             variant="contained"
-                            onClick={handleGeneratePDF}
+                            onClick={() =>
+                                router.get(
+                                    route(
+                                        "admin.carelog.elderly.details.show",
+                                        care_log.id
+                                    )
+                                )
+                            }
                             disabled={isGeneratingPDF}
                             size="small"
                             sx={{

@@ -1580,20 +1580,13 @@ class CareLogController extends Controller
         ]);
     }
 
-    public function adminElderCareLogDetails($id)
-    {
-        $careLogData = $this->getAdminCareLogData($id, 'elder');
-        
-        return Inertia::render('Admin/CareLogs/AdminElderCareLogDetails', [
-            'careLogData' => $careLogData
-        ]);
-    }
+
    
-    public function adminShowElderCareLogDetails($id)
+    public function adminShowElderlyCareLogDetails($id)
     {
         $careLogData = $this->getAdminCareLogData($id, 'elder');
 
-        return Inertia::render('Caregiver/CareLogs/ElderCareLog/ShowElderCareLogDetails', [
+        return Inertia::render('Caregiver/CareLogs/ElderlyCareLog/ShowElderlyCareLogDetails', [
             'careLogData' => $careLogData
         ]);
     }
