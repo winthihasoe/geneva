@@ -111,28 +111,40 @@ function ServiceTable({ service }) {
                                     />
                                 </Box>
                             </TableCell>
-                            {packages[0]?.durations.map((duration, index) => (
-                                <TableCell
-                                    align="center"
-                                    key={index}
-                                    sx={{ borderBottom: "none" }}
-                                >
-                                    <Typography
-                                        fontFamily={"Livvic"}
-                                        fontSize={{ xs: 13, sm: 16, md: 19 }}
+                            {packages[0]?.durations
+                                .filter(
+                                    (duration) => duration.duration !== "Yearly"
+                                )
+                                .map((duration, index) => (
+                                    <TableCell
+                                        align="center"
+                                        key={index}
+                                        sx={{ borderBottom: "none" }}
                                     >
-                                        {duration.duration}
-                                    </Typography>
-                                    <Typography
-                                        fontFamily={"Livvic"}
-                                        fontSize={{ xs: 10, sm: 13, md: 15 }}
-                                        fontWeight={400}
-                                        sx={{ color: "grey" }}
-                                    >
-                                        {duration.replacement_policy}
-                                    </Typography>
-                                </TableCell>
-                            ))}
+                                        <Typography
+                                            fontFamily={"Livvic"}
+                                            fontSize={{
+                                                xs: 13,
+                                                sm: 16,
+                                                md: 19,
+                                            }}
+                                        >
+                                            {duration.duration}
+                                        </Typography>
+                                        <Typography
+                                            fontFamily={"Livvic"}
+                                            fontSize={{
+                                                xs: 10,
+                                                sm: 13,
+                                                md: 15,
+                                            }}
+                                            fontWeight={400}
+                                            sx={{ color: "grey" }}
+                                        >
+                                            {duration.replacement_policy}
+                                        </Typography>
+                                    </TableCell>
+                                ))}
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -160,31 +172,42 @@ function ServiceTable({ service }) {
                                             >
                                                 {salary.role}
                                             </TableCell>
-                                            {pkg.durations.map(
-                                                (duration, durationIndex) => (
-                                                    <TableCell
-                                                        key={durationIndex}
-                                                        align="center"
-                                                        sx={{
-                                                            fontWeight: "bold",
-                                                            fontFamily:
-                                                                "Madimi One",
-                                                            color: "primary.main",
-                                                            borderBottom:
-                                                                "none",
-                                                        }}
-                                                    >
-                                                        {duration.salaries.find(
-                                                            (s) =>
-                                                                s.role ===
-                                                                salary.role
-                                                        )?.amount || "N/A"}{" "}
-                                                        THB <br />
-                                                        {durationIndex !== 0 &&
-                                                            "/ Month"}
-                                                    </TableCell>
+                                            {pkg.durations
+                                                .filter(
+                                                    (duration) =>
+                                                        duration.duration !==
+                                                        "Yearly"
                                                 )
-                                            )}
+                                                .map(
+                                                    (
+                                                        duration,
+                                                        durationIndex
+                                                    ) => (
+                                                        <TableCell
+                                                            key={durationIndex}
+                                                            align="center"
+                                                            sx={{
+                                                                fontWeight:
+                                                                    "bold",
+                                                                fontFamily:
+                                                                    "Madimi One",
+                                                                color: "primary.main",
+                                                                borderBottom:
+                                                                    "none",
+                                                            }}
+                                                        >
+                                                            {duration.salaries.find(
+                                                                (s) =>
+                                                                    s.role ===
+                                                                    salary.role
+                                                            )?.amount ||
+                                                                "N/A"}{" "}
+                                                            THB <br />
+                                                            {durationIndex !==
+                                                                0 && "/ Month"}
+                                                        </TableCell>
+                                                    )
+                                                )}
                                         </TableRow>
                                     )
                                 )}
@@ -208,8 +231,12 @@ function ServiceTable({ service }) {
                                             (One time)
                                         </span>
                                     </TableCell>
-                                    {pkg.durations.map(
-                                        (duration, durationIndex) => (
+                                    {pkg.durations
+                                        .filter(
+                                            (duration) =>
+                                                duration.duration !== "Yearly"
+                                        )
+                                        .map((duration, durationIndex) => (
                                             <TableCell
                                                 key={durationIndex}
                                                 align="center"
@@ -224,8 +251,7 @@ function ServiceTable({ service }) {
                                                     ?.fee || "N/A"}{" "}
                                                 THB
                                             </TableCell>
-                                        )
-                                    )}
+                                        ))}
                                 </TableRow>
                             </React.Fragment>
                         ))}

@@ -194,11 +194,11 @@ function CaregiverCardMini({ cv }) {
                     color="white"
                     textAlign="center"
                     sx={{
-                        fontSize: "0.7rem",
+                        fontSize: "0.6rem",
                         minHeight: "1.2rem", // Ensure consistent height even if empty
                     }}
                 >
-                    12,000 - 16,000 THB
+                    Starting from 16,000 THB
                 </Typography>
 
                 {/* Review Stars - coming soon*/}

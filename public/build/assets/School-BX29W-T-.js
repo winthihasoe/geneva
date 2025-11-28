@@ -1,1 +1,0 @@
-import{j as o}from"./app-H1tM0PA6.js";import{c as t}from"./createSvgIcon-D4aKF2d1.js";const s=t(o.jsx("path",{d:"M5 13.18v4L12 21l7-3.82v-4L12 17zM12 3 1 9l11 6 9-4.91V17h2V9z"}),"School");export{s as S};

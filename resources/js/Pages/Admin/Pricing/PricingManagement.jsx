@@ -14,6 +14,7 @@ import {
     DialogActions,
     TextField,
     Container,
+    Alert,
 } from "@mui/material";
 import React, { useState } from "react";
 
@@ -401,7 +402,7 @@ function PricingManagement({ services }) {
                     onEditTitle={handleEditTitle}
                     onDeleteTitle={handleDeleteTitle}
                 />
-                <PlanTable
+                {/* <PlanTable
                     title="Yearly Plan"
                     data={yearlyData}
                     onEdit={(row, type, valueType) =>
@@ -409,7 +410,7 @@ function PricingManagement({ services }) {
                     }
                     onEditTitle={handleEditTitle}
                     onDeleteTitle={handleDeleteTitle}
-                />
+                /> */}
                 {/* Edit Title Dialog */}
                 <Dialog
                     open={editTitleOpen}
@@ -553,12 +554,21 @@ function PricingManagement({ services }) {
                 <Dialog open={confirmOpen} onClose={handleCancelDelete}>
                     <DialogTitle>Confirm Delete</DialogTitle>
                     <DialogContent>
-                        <Typography>
+                        <Typography variant="body1">
                             Are you sure you want to delete this service?
                         </Typography>
+                        <Alert severity="error" sx={{ mt: 2 }}>
+                            This action cannot be undone. All associated
+                            packages, durations, salaries, and service fees will
+                            be permanently deleted.
+                        </Alert>
                     </DialogContent>
                     <DialogActions sx={{ p: 3 }}>
-                        <Button size="small" onClick={handleCancelDelete}>
+                        <Button
+                            size="small"
+                            onClick={handleCancelDelete}
+                            variant="contained"
+                        >
                             Cancel
                         </Button>
                         <Button

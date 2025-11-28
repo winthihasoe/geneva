@@ -333,9 +333,9 @@ function StepOneMC() {
                                 <MenuItem value={9}>9 months</MenuItem>
                                 <MenuItem value={10}>10 months</MenuItem>
                                 <MenuItem value={11}>11 months</MenuItem>
-                                <MenuItem value={12}>
+                                {/* <MenuItem value={12}>
                                     12 months (1 year)
-                                </MenuItem>
+                                </MenuItem> */}
                             </Select>
                         </FormControl>
                     </Box>
