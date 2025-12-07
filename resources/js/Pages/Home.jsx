@@ -13,13 +13,12 @@ function Home({ caregivers, courses }) {
 
     return (
         <AppLayout>
-            <Head title="Home" />
             <Hero />
             <CVdisplay CVs={CVs} />
-            <OurPopularCourses courses={courses} />
-            <AssessmentCenter />
+            {/* <OurPopularCourses courses={courses} /> */}
+            {/* <AssessmentCenter /> */}
             <BlogSection />
-            <ContactUsSection />
+            {/* <ContactUsSection /> */}
         </AppLayout>
     );
 }

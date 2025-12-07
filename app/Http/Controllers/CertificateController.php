@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Certificate;
+use App\Models\CV;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -105,5 +106,43 @@ class CertificateController extends Controller
         }
 
         return back()->with('success', "Certificate deleted!");
+    }
+
+    // Admin create certificate for caregiver's CV
+    public function adminStoreCertificate(Request $request, $cvId)
+    {
+        $cv = CV::find($cvId);
+
+        if(is_null($cv))
+        {
+            return back()->with('error', 'Please create CV first.');
+        }
+        
+        // Validate the form data
+        $validatedData = $request->validate([
+            'qualification_type' => 'required|string|max:255',
+            'training_center_name' => 'required|string|max:255',
+            'course' => 'nullable|string|max:255',
+            'start_date' => 'required|date|before_or_equal:today',
+            'duration' => 'required|integer|min:1|max:50',
+            'certificate_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10048', // Image validation
+        ]);
+
+        if($cv) {
+            $validatedData['cv_id'] = $cvId;
+            // Handle the certificate image upload
+            if ($request->hasFile('certificateImage')) {
+                $imagePath = $request->file('certificateImage')->store('photos/certificates', 'public');
+                $validatedData['certificate_photo'] = $imagePath;
+            }
+    
+            // Save the certificate data
+            Certificate::create($validatedData);
+    
+            // Redirect back with a success message
+            return redirect()->back()->with('success', 'Certificate saved successfully!');
+        }
+
+        return back()->with('error', 'Something went wrong.');
     }
 }

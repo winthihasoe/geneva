@@ -33,7 +33,7 @@ function Hero() {
                         <Box
                             sx={{
                                 width: { xs: 120, sm: 163 },
-                                height: { xs: 280, sm: 400 },
+                                height: { xs: 280, sm: 350 },
                                 display: "flex",
                                 flexDirection: "column",
                                 gap: 2,
@@ -51,7 +51,7 @@ function Hero() {
                             />
                             <Typography
                                 variant="h5"
-                                fontFamily={"Righteous"}
+                                fontFamily={"Roboto Slab"}
                                 fontWeight={500}
                                 color="white"
                                 textAlign={"center"}
@@ -68,9 +68,9 @@ function Hero() {
                         <Box
                             sx={{
                                 width: { xs: 120, sm: 163 },
-                                height: { xs: 280, sm: 400 },
+                                height: { xs: 280, sm: 350 },
                                 display: "flex",
-                                marginTop: 5,
+
                                 flexDirection: "column",
                                 gap: 2,
                             }}
@@ -87,7 +87,7 @@ function Hero() {
                             />
                             <Typography
                                 variant="h5"
-                                fontFamily={"Righteous"}
+                                fontFamily={"Roboto Slab"}
                                 fontWeight={500}
                                 color="white"
                                 textAlign={"center"}
@@ -102,7 +102,7 @@ function Hero() {
                         <Box
                             sx={{
                                 width: { xs: 120, sm: 163 },
-                                height: { xs: 280, sm: 400 },
+                                height: { xs: 280, sm: 350 },
                                 display: "flex",
                                 flexDirection: "column",
                                 gap: 2,
@@ -120,7 +120,7 @@ function Hero() {
                             />
                             <Typography
                                 variant="h5"
-                                fontFamily={"Righteous"}
+                                fontFamily={"Roboto Slab"}
                                 fontWeight={500}
                                 color="white"
                                 textAlign={"center"}
@@ -128,7 +128,7 @@ function Hero() {
                                     fontSize: { xs: "1.2rem", sm: "1.6rem" },
                                 }}
                             >
-                                Senior <br />
+                                Elderly <br />
                                 Care
                             </Typography>
                         </Box>
@@ -152,12 +152,13 @@ function Hero() {
                                 <br />A Plan Made Just for You.
                             </Typography>
                             <Typography
-                                variant="h3"
-                                fontFamily={"Righteous"}
+                                variant="h4"
+                                fontFamily={"Roboto Slab"}
                                 fontWeight={500}
                                 color="white"
                             >
-                                We are committed to Quality Care
+                                We are committed to
+                                <br /> Quality Care
                             </Typography>
                         </Box>
                         <Box>
@@ -167,26 +168,7 @@ function Hero() {
                                 unique needs.”
                             </Typography>
                         </Box>
-                        <Box>
-                            <Button
-                                size="large"
-                                variant="contained"
-                                color="secondary"
-                                onClick={() => router.get(route("care.start"))}
-                            >
-                                Get Care Now
-                            </Button>
-                            <Button
-                                size="small"
-                                onClick={() =>
-                                    router.get(route("how.it.works"))
-                                }
-                            >
-                                <Typography variant="body1" color="white">
-                                    <i>How It Works?</i>
-                                </Typography>
-                            </Button>
-                        </Box>
+
                         <Box>
                             <Typography variant="body2" color="white" mb={2}>
                                 We understand your unique needs through our

@@ -85,7 +85,7 @@ const ElderCare = ({ data, setData, setComplete }) => {
                             endAdornment: <Typography>years</Typography>,
                         }}
                     />
-                    <TinyText>Only number</TinyText>
+                    <TinyText>Only number (eg. 85)</TinyText>
                 </Box>
             </Box>
 

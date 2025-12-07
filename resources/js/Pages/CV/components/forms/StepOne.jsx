@@ -99,7 +99,7 @@ const StepOne = () => {
                 }}
             >
                 <Typography variant="subtitle1" fontWeight="bold">
-                    Name (as in Passport)
+                    Name in English
                 </Typography>
                 <TextField
                     size="small"
@@ -107,7 +107,7 @@ const StepOne = () => {
                     onChange={handleChange("full_name")}
                     sx={{ flexGrow: 1 }}
                     fullWidth
-                    placeholder="Enter your name"
+                    placeholder="Enter caregiver's name"
                 />
             </Box>
             <Box
@@ -117,7 +117,7 @@ const StepOne = () => {
                 }}
             >
                 <Typography variant="subtitle1" fontWeight="bold">
-                    Nickname (English name)
+                    Nickname (English name) (optional)
                 </Typography>
                 <TextField
                     size="small"

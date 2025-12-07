@@ -12,6 +12,7 @@ function Footer() {
         Instagram: "/images/social/instagram.png",
         LINE: "/images/social/line.png",
         TikTok: "/images/social/tiktok.png",
+        Viber: "/images/social/viber.png",
     };
 
     return (
@@ -27,12 +28,17 @@ function Footer() {
                 >
                     <Grid2
                         size={{ xs: 12, sm: 6, md: 5 }}
-                        sx={{ display: "flex", gap: 2, alignItems: "center" }}
+                        sx={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 2,
+                            alignItems: "center",
+                        }}
                     >
                         <img
                             src={logo}
-                            alt="Hearty Aid Logo"
-                            style={{ width: 60, height: 60 }}
+                            alt="Geneva Logo"
+                            style={{ width: 80, height: "auto" }}
                         />
                         <Box>
                             <Typography
@@ -40,18 +46,26 @@ function Footer() {
                                 color="primary"
                                 gutterBottom
                             >
-                                Address: 41 Homeplace office building, Thong Lo
-                                13 Alley, Klongtan Nua, Watthana, Bangkok 10110
+                                Mandalay Address: Kharmar Thi Road, North
+                                Okkala, Yangon.
                             </Typography>
                             <Typography
                                 variant="body2"
                                 color="primary"
                                 gutterBottom
                             >
-                                Phone : +66620908578
+                                Yangon Address: 65st, 33st, Chan Aye Tharsan
+                                Twp, Mandalay.
+                            </Typography>
+                            <Typography
+                                variant="body2"
+                                color="primary"
+                                gutterBottom
+                            >
+                                Phone : 09970006670 | 09980160003
                             </Typography>
                             <Typography variant="body2" color="primary">
-                                Email: heartyaidbkk@gmail.com
+                                genevacaregivertraining@gmail.com
                             </Typography>
                         </Box>
                     </Grid2>
@@ -119,7 +133,7 @@ function Footer() {
                             color="primary"
                             gutterBottom
                         >
-                            Copy Right <strong>@ 2024 Heartyaid Co.,ltd</strong>
+                            Copy Right <strong>@ 2025 Geneva Co.,ltd</strong>
                         </Typography>
                         <Typography
                             variant="body2"

@@ -80,8 +80,11 @@ function EditApprove({ cv }) {
                                 variant="outlined"
                                 color="error"
                                 sx={{ borderRadius: 20, minWidth: 120 }}
+                                size="small"
                             >
-                                <Typography fontSize={14}>Unapprove</Typography>
+                                <Typography fontSize={"0.8rem"}>
+                                    Unapprove
+                                </Typography>
                             </Button>
                         ) : (
                             <Button
@@ -89,8 +92,12 @@ function EditApprove({ cv }) {
                                 onClick={handleOpen}
                                 variant="contained"
                                 color="success"
+                                size="small"
                             >
-                                <Typography fontWeight="bold" fontSize={14}>
+                                <Typography
+                                    fontWeight="bold"
+                                    fontSize={"0.8rem"}
+                                >
                                     Approve
                                 </Typography>
                             </Button>

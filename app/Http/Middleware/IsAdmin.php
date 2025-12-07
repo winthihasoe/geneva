@@ -22,6 +22,6 @@ class IsAdmin
         }
 
         // If the user is not a caregiver, redirect back with a message
-        return redirect()->back()->with('error', 'You are not an Admin');
+        return redirect('/')->with('error', 'You are not an Admin');
     }
 }

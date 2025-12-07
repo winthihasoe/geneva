@@ -1,6 +1,6 @@
 import NoData from "@/Components/util/NoData";
-import { Head } from "@inertiajs/react";
-import React, { useState } from "react";
+import { Head, router, useForm } from "@inertiajs/react";
+import React, { useState, useEffect } from "react";
 import {
     Box,
     Typography,
@@ -29,6 +29,9 @@ import FormText from "@/Components/Typo/FormText";
 import OldCV from "./components/OldCV";
 import ChangeCircleRoundedIcon from "@mui/icons-material/ChangeCircleRounded";
 import EditCVstatus from "./components/EditCVstatus";
+import CreateCertificate from "./components/CreateCertificate";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import Compressor from "compressorjs";
 
 const AdminSingleCV = ({ cv }) => {
     const renderStars = (count) => {
@@ -42,25 +45,141 @@ const AdminSingleCV = ({ cv }) => {
 
     const [newCV, setNewCV] = useState(true);
 
+    // For Certificate form
+    const [isAdding, setIsAdding] = useState(false);
+    const [preview, setPreview] = useState(null);
+    const { data, setData, post, processing, errors, setError } = useForm({
+        qualification_type: "",
+        training_center_name: "",
+        course: "",
+        start_date: "",
+        duration: "",
+        certificate_photo: null,
+    });
+
+    // Function to handle image compression and resizing
+    const resizeImage = (file) => {
+        return new Promise((resolve, reject) => {
+            new Compressor(file, {
+                quality: 0.6, // Adjust the quality (0 to 1) for compression level
+                maxWidth: 600, // Max width in pixels
+                success: (compressedResult) => {
+                    resolve(compressedResult);
+                },
+                error: (err) => {
+                    console.error("Image compression error:", err);
+                    reject(err);
+                },
+            });
+        });
+    };
+
+    // Handle form data change, including file input
+    const handleChange = async (e) => {
+        const { name, value, type, files } = e.target;
+        if (type === "file" && files[0]) {
+            try {
+                const resizedImage = await resizeImage(files[0]); // Resize the selected file
+                setData((prevData) => ({
+                    ...prevData,
+                    certificateImage: resizedImage, // Store the resized file
+                }));
+                const previewUrl = URL.createObjectURL(files[0]);
+                setPreview(previewUrl);
+            } catch (error) {
+                console.error("Failed to resize image:", error);
+            }
+        } else {
+            setData((prevData) => ({
+                ...prevData,
+                [name]: value,
+            }));
+        }
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        // Validate the qualification_type field
+        if (!data.qualification_type) {
+            setError("qualification_type", "Qualification type is required.");
+            return;
+        }
+        const formData = new FormData();
+
+        // Append form fields
+        formData.append("training_center_name", data.training_center_name);
+        formData.append("course", data.course);
+        formData.append("start_date", data.start_date);
+        formData.append("duration", data.duration);
+
+        // Append the compressed image if it exists
+        if (data.certificate_photo) {
+            formData.append(
+                "certificate_photo",
+                data.certificate_photo,
+                data.certificate_photo.name
+            );
+        }
+
+        // Submit using Inertia's post method
+        post(route("admin.certificate.store", cv.id), {
+            data: formData,
+            forceFormData: true, // Required by Inertia for FormData submissions
+            onSuccess: () => {
+                console.log("Certificate saved successfully!");
+                setIsAdding(false); // Close the form after successful submission
+            },
+            onError: (errors) => {
+                console.error("Error saving certificate:", errors);
+                setError(errors);
+            },
+        });
+    };
+
+    // to clear certificate form if isAdding state changed
+    useEffect(() => {
+        setData({
+            training_center_name: "",
+            start_date: "",
+            duration: "",
+            certificateImage: null,
+        });
+    }, [isAdding]);
+
     return (
         <AdminLayout>
             <Head title="Single CV" />
             <Container maxWidth="lg" sx={{ pb: 3, px: 0 }}>
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                     <BackButton />
-                    <Button sx={{ gap: 1 }} onClick={() => setNewCV(!newCV)}>
-                        <Typography
-                            fontSize={{
-                                xs: 12,
-                                sm: 13,
-                                md: 15,
-                            }}
-                            fontWeight={600}
+                    <Box>
+                        <Button
+                            sx={{ gap: 1 }}
+                            onClick={() => setNewCV(!newCV)}
                         >
-                            Change layout{" "}
-                        </Typography>
-                        <ChangeCircleRoundedIcon />
-                    </Button>
+                            <Typography
+                                fontSize={{
+                                    xs: 12,
+                                    sm: 13,
+                                    md: 15,
+                                }}
+                                fontWeight={600}
+                            >
+                                Change layout{" "}
+                            </Typography>
+                            <ChangeCircleRoundedIcon />
+                        </Button>
+                        <Button
+                            variant="contained"
+                            size="small"
+                            sx={{ fontSize: "0.8rem" }}
+                            onClick={() =>
+                                router.get(route("admin.cv.edit", cv.id))
+                            }
+                        >
+                            Edit CV
+                        </Button>
+                    </Box>
                 </Box>
                 <Box position={"relative"}>
                     {cv == null && (
@@ -96,7 +215,7 @@ const AdminSingleCV = ({ cv }) => {
                 </Alert>
 
                 {/* Certificates  */}
-                <Box>
+                <Box textAlign={"center"}>
                     <TitleCenter>Certificates</TitleCenter>
                     {cv.certificates && cv.certificates?.length > 0 ? (
                         <Certificates certificates={cv.certificates} />
@@ -105,10 +224,36 @@ const AdminSingleCV = ({ cv }) => {
                             No certificates available.
                         </Typography>
                     )}
+                    <Button
+                        variant="contained"
+                        startIcon={<AddCircleOutlineIcon />}
+                        onClick={() => setIsAdding(!isAdding)}
+                        size="small"
+                    >
+                        {isAdding ? "Cancel" : "Add New"}
+                    </Button>
+                    {isAdding && (
+                        <Box
+                            sx={{
+                                display: "flex",
+
+                                justifyContent: "center",
+                                my: 3,
+                            }}
+                        >
+                            <CreateCertificate
+                                data={data}
+                                handleChange={handleChange}
+                                handleSubmit={handleSubmit}
+                                errors={errors}
+                                preview={preview}
+                                setPreview={setPreview}
+                            />
+                        </Box>
+                    )}
                 </Box>
 
                 <Divider sx={{ my: 2 }} />
-                {/* Experiences  */}
 
                 <TitleCenter>Documents</TitleCenter>
 
@@ -122,12 +267,6 @@ const AdminSingleCV = ({ cv }) => {
                         mb: 4,
                     }}
                 >
-                    <PassportDisplay
-                        passport={cv.passport}
-                        passport_number={cv.passport_number}
-                        passport_type={cv.passport_type}
-                        visa_type={cv.visa_type}
-                    />
                     <CitenzenshipID
                         citizenship_certificate={cv.citizenship_certificate}
                     />
@@ -149,15 +288,6 @@ const AdminSingleCV = ({ cv }) => {
                     >
                         <Card sx={{ width: 250 }}>
                             <CardContent>
-                                <Subtitle>Gender of patient:</Subtitle>
-                                <FormText>
-                                    {cv.gender_of_patient || "N/A"}
-                                </FormText>
-                            </CardContent>
-                        </Card>
-
-                        <Card sx={{ width: 250 }}>
-                            <CardContent>
                                 <Subtitle>Type of Care:</Subtitle>
                                 <FormText>
                                     {cv.services.length > 0
@@ -167,7 +297,7 @@ const AdminSingleCV = ({ cv }) => {
                             </CardContent>
                         </Card>
 
-                        <Card sx={{ width: 250 }}>
+                        {/* <Card sx={{ width: 250 }}>
                             <CardContent>
                                 <Subtitle>Type of Baby Handled:</Subtitle>
                                 <FormText>
@@ -176,9 +306,9 @@ const AdminSingleCV = ({ cv }) => {
                                         : "N/A"}
                                 </FormText>
                             </CardContent>
-                        </Card>
+                        </Card> */}
 
-                        <Card sx={{ width: 250 }}>
+                        {/* <Card sx={{ width: 250 }}>
                             <CardContent>
                                 <Subtitle>Type of Patient Handled:</Subtitle>
                                 <FormText>
@@ -189,9 +319,9 @@ const AdminSingleCV = ({ cv }) => {
                                         : "N/A"}
                                 </FormText>
                             </CardContent>
-                        </Card>
+                        </Card> */}
 
-                        <Card sx={{ width: 250 }}>
+                        {/* <Card sx={{ width: 250 }}>
                             <CardContent>
                                 <Subtitle>Current location:</Subtitle>
                                 <FormText>
@@ -203,7 +333,7 @@ const AdminSingleCV = ({ cv }) => {
                                     {cv?.worked_in_thailand || "N/A"}
                                 </Subtitle>
                             </CardContent>
-                        </Card>
+                        </Card> */}
                         <Card sx={{ width: 250 }}>
                             <CardContent>
                                 <FormText>
@@ -220,12 +350,12 @@ const AdminSingleCV = ({ cv }) => {
                             </CardContent>
                         </Card>
 
-                        <Card sx={{ width: 250 }}>
+                        {/* <Card sx={{ width: 250 }}>
                             <CardContent>
                                 <Subtitle>Service area:</Subtitle>
                                 <FormText>{cv?.service_area || "N/A"}</FormText>
                             </CardContent>
-                        </Card>
+                        </Card> */}
                     </Box>
                 </Box>
 
@@ -302,46 +432,12 @@ const AdminSingleCV = ({ cv }) => {
                     <Card sx={{ width: 250 }}>
                         <CardContent>
                             <Subtitle>Contact:</Subtitle>
+                            <FormText>Phone: {cv?.phone || "N/A"}</FormText>
+                            <Subtitle>Emergency Contact:</Subtitle>
                             <FormText>
                                 Phone: {cv?.emergency_contact || "N/A"}
                             </FormText>
                             <FormText>Email: {cv?.email || "N/A"}</FormText>
-                            <FormText>Line ID: {cv?.line || "N/A"}</FormText>
-                        </CardContent>
-                    </Card>
-
-                    {/* Language  */}
-                    <Card sx={{ width: 250 }}>
-                        <CardContent>
-                            <Subtitle>Language spoken:</Subtitle>
-
-                            {cv?.language.map((lang, index) => {
-                                // Split language and number
-                                const [language, level] = lang.split(" ");
-                                const starCount = parseInt(level, 10);
-
-                                return (
-                                    <Box
-                                        key={index}
-                                        display="flex"
-                                        flexWrap={"wrap"}
-                                    >
-                                        <Typography
-                                            fontSize={{
-                                                xs: 12,
-                                                sm: 13,
-                                                md: 15,
-                                            }}
-                                        >
-                                            • {language}
-                                        </Typography>
-
-                                        <Box display="flex" pl={1}>
-                                            {renderStars(starCount)}
-                                        </Box>
-                                    </Box>
-                                );
-                            })}
                         </CardContent>
                     </Card>
 
@@ -359,17 +455,6 @@ const AdminSingleCV = ({ cv }) => {
                             </FormText>
                         </CardContent>
                     </Card>
-
-                    <Card sx={{ width: 250 }}>
-                        <CardContent>
-                            <Subtitle>
-                                Wear glasses: {cv?.wears_glasses || "N/A"}
-                            </Subtitle>
-                            <Subtitle>
-                                Tattoo: {cv?.has_tattoo || "N/A"}
-                            </Subtitle>
-                        </CardContent>
-                    </Card>
                 </Box>
 
                 <Divider sx={{ my: 3 }} />
@@ -384,14 +469,14 @@ const AdminSingleCV = ({ cv }) => {
                     <Grid2 size={{ xs: 12, sm: 6 }}>
                         <Card sx={{ mb: 3 }}>
                             <CardContent>
-                                <EditLevel cv={cv} />
+                                {/* <EditLevel cv={cv} /> */}
+                                <EditApprove cv={cv} />
                             </CardContent>
                         </Card>
                     </Grid2>
                     <Grid2 size={{ xs: 12, sm: 6 }}>
                         <Card sx={{ mb: 3 }}>
                             <CardContent>
-                                <EditApprove cv={cv} />
                                 <EditCVstatus cv={cv} />
                             </CardContent>
                         </Card>

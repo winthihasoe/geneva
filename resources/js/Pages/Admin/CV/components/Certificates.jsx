@@ -6,7 +6,6 @@ import React from "react";
 function Certificates({ certificates }) {
     return (
         <Box my={4}>
-            <TitleCenter>Certificates</TitleCenter>
             <Box
                 sx={{
                     display: "flex",

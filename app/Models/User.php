@@ -62,4 +62,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Interview::class);
     }
+
+    public function isAdmin()
+    {
+        return $this->is_admin == 1;
+    }
 }

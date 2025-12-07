@@ -14,7 +14,7 @@ class CV extends Model
     protected $fillable = [
         'user_id',
         'slug',
-        'ha_id',
+        'geneva_id',
     
         // Personal Info
         'full_name',
@@ -141,50 +141,50 @@ class CV extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            // Generate a unique ha_id for the new CV record
-             \Log::info('Generating ha_id for new CV');
+            // Generate a unique geneva_id for the new CV record
+             \Log::info('Generating geneva_id for new CV');
 
-            $model->ha_id = self::generateHaId();
+             // Ensure the slug is unique
+             $model->slug = Str::uuid()->toString();
 
-            // Ensure the slug is unique
-            $model->slug = Str::uuid()->toString();
+             $model->geneva_id = self::generateGenevaId();
         });
     }
 
-    // The generateHaId method remains the same as previously defined
-    private static function generateHaId()
+    // The generateGenevaId method remains the same as previously defined
+    public static function generateGenevaId()
     {
         // Get the current month and year in MMYY format
-        $prefix = now()->format('my'); // 'my' generates 'MMYY' format
-        \Log::info('generateHaId: prefix', ['prefix' => $prefix]);
+        $prefix = now()->format('ym'); // 'my' generates 'MMYY' format
+        \Log::info('generateGenevaId: prefix', ['prefix' => $prefix]);
 
-        // Find the last ha_id for the current month and year
+        // Find the last geneva_id for the current month and year
         // Use lockForUpdate to prevent race conditions
-        $lastHaId = self::where('ha_id', 'like', "{$prefix}%")
+        $lastGenevaId = self::where('geneva_id', 'like', "{$prefix}%")
             ->lockForUpdate()
-            ->orderBy('ha_id', 'desc')
+            ->orderBy('geneva_id', 'desc')
             ->first();
-        \Log::info('generateHaId: lastHaId', ['lastHaId' => $lastHaId ? $lastHaId->ha_id : null]);
+        \Log::info('generateGenevaId: lastGenevaId', ['lastGenevaId' => $lastGenevaId ? $lastGenevaId->geneva_id : null]);
 
         // Determine the serial number
-        if ($lastHaId) {
+        if ($lastGenevaId) {
             // Extract the numeric part after the prefix and increment it
-            $lastSerial = (int) substr($lastHaId->ha_id, 4); // Get the serial part
+            $lastSerial = (int) substr($lastGenevaId->geneva_id, 4); // Get the serial part
             $newSerial = str_pad($lastSerial + 1, 2, '0', STR_PAD_LEFT);
-            \Log::info('generateHaId: lastSerial and newSerial', [
+            \Log::info('generateGenevaId: lastSerial and newSerial', [
                 'lastSerial' => $lastSerial,
                 'newSerial' => $newSerial
             ]);
         } else {
             // Start from 01 if no record exists for the current month and year
             $newSerial = '01';
-            \Log::info('generateHaId: No previous ha_id, starting at 01');
+            \Log::info('generateGenevaId: No previous geneva_id, starting at 01');
         }
 
         // Combine the prefix and the serial
-        $haId = $prefix . $newSerial;
-        \Log::info('generateHaId: generated ha_id', ['ha_id' => $haId]);
-        return $haId;
+        $genevaId = $prefix . $newSerial;
+        \Log::info('generateGenevaId: generated geneva_id', ['geneva_id' => $genevaId]);
+        return $genevaId;
     }
 
     public function user()

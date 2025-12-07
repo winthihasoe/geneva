@@ -18,7 +18,8 @@ export const CvProvider = ({
 }) => {
     // Merge `initialData` with default values
     const [data, setData] = useState({
-        ha_id: initialData.ha_id || "",
+        cv_id: initialData.id || null,
+        geneva_id: initialData.geneva_id || "",
         // Personal Info
         full_name: initialData.full_name || "",
         nickname: initialData.nickname || "",
@@ -157,29 +158,6 @@ export const CvProvider = ({
         });
     };
 
-    // const handleNext = async () => {
-    //     try {
-    //         setData((prevData) => ({
-    //             ...prevData,
-    //             current_step: prevData.current_step + 1,
-    //         }));
-
-    //         // Mark the step as completed
-    //         markStepAsCompleted(data.current_step);
-    //         window.scrollTo({ top: 0, behavior: "smooth" });
-    //     } catch (error) {
-    //         console.error("Save failed. Please try again.");
-    //     }
-    // };
-
-    // const handleBack = () => {
-    //     setData((prevData) => ({
-    //         ...prevData,
-    //         current_step: prevData.current_step - 1,
-    //     }));
-    //     window.scrollTo({ top: 0, behavior: "smooth" });
-    // };
-
     const savePhoto = async () => {
         try {
             let payload;
@@ -200,9 +178,13 @@ export const CvProvider = ({
                 }
             }
             // Send the request using Axios
-            const response = await axios.post(route("cv.store"), payload, {
-                headers: { "Content-Type": "multipart/form-data" },
-            });
+            const response = await axios.post(
+                route("admin.cv.store"),
+                payload,
+                {
+                    headers: { "Content-Type": "multipart/form-data" },
+                }
+            );
 
             setResponseMessage(response.data.message);
             setTimeout(() => setResponseMessage(""), 2000); // Clear the message after 2 seconds
@@ -212,27 +194,6 @@ export const CvProvider = ({
                 error.response?.data?.message || "Failed to save data."
             );
             setTimeout(() => setResponseMessage(""), 2000); // Clear the message after 2 seconds
-        }
-    };
-
-    // Old save function
-    const saveDataVeryOld = async () => {
-        try {
-            // Send the request using Axios
-
-            const response = await axios.post(route("cv.store"), data);
-
-            setResponseMessage(response.data.message);
-            setError(null);
-            setTimeout(() => setResponseMessage(""), 2000); // Clear the message after 2 seconds
-            return response.data.status; // Return success status
-        } catch (error) {
-            console.error("Error saving data:", error);
-            setResponseMessage(
-                error.response?.data?.message || "Failed to save data."
-            );
-            setError(error.response.data.error);
-            setTimeout(() => setResponseMessage(""), 4000); // Clear the message after 4 seconds
         }
     };
 
@@ -277,10 +238,17 @@ export const CvProvider = ({
                 headers["Content-Type"] = "application/json";
             }
 
-            const response = await axios.post(route("cv.store"), payload, {
-                headers,
-            });
-
+            const response = await axios.post(
+                route("admin.cv.store"),
+                payload,
+                {
+                    headers,
+                }
+            );
+            setData((prevData) => ({
+                ...prevData,
+                cv_id: response.data.id,
+            }));
             setResponseMessage(response.data.message);
             setError(null);
             setTimeout(() => setResponseMessage(""), 2000); // Clear the message after 2 seconds
@@ -292,75 +260,6 @@ export const CvProvider = ({
             );
             setError(error.response?.data?.error);
             setTimeout(() => setResponseMessage(""), 4000); // Clear the message after 4 seconds
-        }
-    };
-
-    const saveDataOld = async (currentStep = 1) => {
-        try {
-            let payload;
-            let headers = {};
-
-            // Check if any data field is a Blob (indicating a file upload)
-            const containsFile = Object.values(data).some(
-                (value) => value instanceof Blob || value instanceof File
-            );
-
-            if (containsFile) {
-                // Use FormData if there's at least one file in `data`
-                payload = new FormData();
-
-                // Add current step
-                payload.append("current_step", currentStep);
-
-                for (const key in data) {
-                    if (
-                        data[key] instanceof Blob ||
-                        data[key] instanceof File
-                    ) {
-                        // Append Blob/File with its original filename
-                        payload.append(
-                            key,
-                            data[key],
-                            data[key].name || "file"
-                        );
-                    } else if (data[key] !== null && data[key] !== undefined) {
-                        // Append other data as strings
-                        if (Array.isArray(data[key])) {
-                            payload.append(key, JSON.stringify(data[key]));
-                        } else {
-                            payload.append(key, data[key]);
-                        }
-                    }
-                }
-                headers["Content-Type"] = "multipart/form-data";
-            } else {
-                // Use regular JSON payload if no files
-                payload = {
-                    ...data,
-                    current_step: currentStep,
-                };
-                headers["Content-Type"] = "application/json";
-            }
-
-            // Send the request using Axios
-            const response = await axios.post(route("cv.store"), payload, {
-                headers,
-            });
-
-            setResponseMessage(response.data.message);
-            setError(null);
-            setTimeout(() => setResponseMessage(""), 3000);
-
-            return true; // Return success
-        } catch (error) {
-            console.error("Error saving data:", error);
-            setResponseMessage(
-                error.response?.data?.message || "Failed to save data."
-            );
-            setError(error.response?.data?.error);
-            setTimeout(() => setResponseMessage(""), 5000);
-
-            return false; // Return failure
         }
     };
 

@@ -1,0 +1,1 @@
+import{j as r}from"./app-CFecpSl-.js";import{T as e}from"./Typography-CO19FrG3.js";function n({children:t,textAlign:o="left"}){return r.jsx(e,{textAlign:o,fontSize:11,gutterBottom:!0,children:t})}export{n as T};

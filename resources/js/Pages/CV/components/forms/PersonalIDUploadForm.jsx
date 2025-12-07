@@ -206,7 +206,7 @@ const PersonalIDUploadForm = ({ oldId, oldFamilyRecord }) => {
                     }}
                 >
                     <Typography variant="body1" fontWeight="bold" mb={2}>
-                        Citizenship Certificate
+                        National Identification
                     </Typography>
 
                     {(data.citizenship_certificate &&

@@ -1,4 +1,10 @@
-import { Box, Button, Grid, IconButton, Typography } from "@mui/material";
+import {
+    Box,
+    Button,
+    Grid2 as Grid,
+    IconButton,
+    Typography,
+} from "@mui/material";
 import React, { useState } from "react";
 import { router } from "@inertiajs/react";
 import AgeCalculator from "@/Components/util/AgeCalculator";
@@ -28,22 +34,17 @@ export default function ResumeToApproveCard({ resume }) {
 
             <Typography
                 fontWeight={600}
+                fontFamily={"Roboto Slab"}
                 gutterBottom
                 variant="h6"
                 textAlign="center"
             >
                 {resume.full_name}
             </Typography>
-            <Typography
-                fontSize={{ xs: 12, sm: 13, md: 14 }}
-                textAlign="center"
-                color="text.secondary"
-            >
-                Nickname: <strong>{resume.nickname}</strong>
-            </Typography>
+
             {/* Middle line  */}
-            <Grid container justifyContent="space-between" p={1}>
-                <Grid item xs={6}>
+            <Grid container justifyContent="space-between" p={1} spacing={2}>
+                <Grid item size={6}>
                     <Box
                         sx={{
                             display: "flex",
@@ -51,7 +52,7 @@ export default function ResumeToApproveCard({ resume }) {
                         }}
                     >
                         <Typography fontSize={11}>
-                            ID: <strong>{resume.ha_id}</strong>
+                            ID: <strong>{resume.geneva_id}</strong>
                         </Typography>
                         <Typography fontSize={11}>
                             Age:{" "}
@@ -85,8 +86,9 @@ export default function ResumeToApproveCard({ resume }) {
                             color="primary"
                             onClick={handleOpen}
                             size="small"
+                            sx={{ fontSize: "0.7rem" }}
                         >
-                            <Typography variant="body2">Approve</Typography>
+                            Approve
                         </Button>
                         <Button
                             variant="contained"
@@ -95,12 +97,13 @@ export default function ResumeToApproveCard({ resume }) {
                             onClick={() =>
                                 router.get(route("admin.cv.single", resume.id))
                             }
+                            sx={{ fontSize: "0.7rem" }}
                         >
-                            <Typography variant="body2">Detail</Typography>
+                            Detail
                         </Button>
                     </Box>
                 </Grid>
-                <Grid item xs={5}>
+                <Grid item size={6}>
                     {resume.profile_photo ? (
                         <img
                             src={`/storage/${resume.profile_photo}`}

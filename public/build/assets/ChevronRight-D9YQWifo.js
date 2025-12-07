@@ -1,1 +1,0 @@
-import{j as t}from"./app-DC_3ITO1.js";import{c as o}from"./createSvgIcon-3Dggr9Ky.js";const s=o(t.jsx("path",{d:"M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"}),"ChevronLeft"),a=o(t.jsx("path",{d:"M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"}),"ChevronRight");export{a as C,s as a};

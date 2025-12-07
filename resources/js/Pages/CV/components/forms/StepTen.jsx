@@ -39,7 +39,7 @@ const StepTen = () => {
     return (
         <Box sx={{ mb: 3, maxWidth: 400, margin: "0 auto" }}>
             <Typography variant="h6" mb={2}>
-                Your Medical History{" "}
+                Medical History
             </Typography>
             <Typography variant="body2" color="textSecondary" mb={3}>
                 Past and existing illnesses (including chronic ailments and

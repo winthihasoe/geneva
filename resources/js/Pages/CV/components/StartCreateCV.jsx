@@ -24,17 +24,34 @@ import StepEight from "./forms/StepEight";
 import StepNine from "./forms/StepNine";
 import StepTen from "./forms/StepTen";
 import StepEleven from "./forms/StepEleven";
-import { Check, ChevronLeft, ChevronRight } from "@mui/icons-material";
 import StepTwelve from "./forms/StepTwelve";
-import StepThirteen from "./forms/StepThirteen";
+import { Check, ChevronLeft, ChevronRight } from "@mui/icons-material";
+import { useEffect } from "react";
 
 function StartCreateCV() {
     const { data, setData, saveData, responseMessage, handleStep } =
         useContext(CvContext);
 
-    const totalSteps = 13;
+    const totalSteps = 12;
     const step = data.current_step || 1;
     const [isLoading, setIsLoading] = useState(false);
+
+    // Prevent page reload/refresh until final step
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            // Only prevent if not on the final step
+            if (step < totalSteps) {
+                e.preventDefault();
+                e.returnValue = ""; // Required for Chrome
+            }
+        };
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+    }, [step, totalSteps]);
 
     // Calculate progress percentage
     const progress = (step / totalSteps) * 100;
@@ -43,38 +60,23 @@ function StartCreateCV() {
     const validateStep = () => {
         switch (step) {
             case 1:
-                return (
-                    data.full_name &&
-                    data.nickname &&
-                    data.date_of_birth &&
-                    data.gender
-                );
+                return data.full_name && data.date_of_birth && data.gender;
             case 2:
                 return (
                     data.height &&
                     data.weight &&
-                    (data.nationality || data.other_nationality) &&
                     data.religion &&
                     data.profile_photo &&
                     data.marital_status &&
                     data.current_address
                 );
             case 3:
-                return (
-                    data.passport &&
-                    data.passport_number &&
-                    data.visa_type &&
-                    data.passport_expiry_date
-                );
+                return true;
             case 4:
                 // Certificate step - might be optional
                 return true;
             case 5:
-                return (
-                    data.emergency_contact &&
-                    data.language &&
-                    data.language.length > 0
-                );
+                return data.phone;
             case 6:
                 return data.services && data.services.length > 0;
             case 7:
@@ -88,9 +90,8 @@ function StartCreateCV() {
             case 10:
                 // Medical conditions step
                 return true;
+
             case 12:
-                return data.agree_to_terms;
-            case 13:
                 return data.training_or_assessment;
             default:
                 return true;
@@ -124,7 +125,7 @@ function StartCreateCV() {
         } else if (step === totalSteps) {
             // Final step - redirect to finish page
             await saveData();
-            window.location.href = route("cv.finish");
+            window.location.href = route("admin.cv.finish");
         } else {
             console.warn("Invalid step:", step);
         }
@@ -142,8 +143,10 @@ function StartCreateCV() {
         }
     };
 
+    console.log("cv data", data);
+
     return (
-        <Container maxWidth="lg">
+        <Container maxWidth="lg" sx={{ minHeight: "80vh" }}>
             <Box sx={{ maxWidth: 800, margin: "20px auto 10px auto" }}>
                 <Box
                     sx={{
@@ -215,33 +218,6 @@ function StartCreateCV() {
                             }}
                         />
                     </Box>
-
-                    {/* Mini step indicators */}
-                    {/* <Box
-                        sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            mt: 1,
-                        }}
-                    >
-                        {Array.from({ length: totalSteps }, (_, index) => (
-                            <Box
-                                key={index}
-                                sx={{
-                                    width: 8,
-                                    height: 8,
-                                    borderRadius: "50%",
-                                    backgroundColor:
-                                        index < step ? "grey.500" : "grey.200",
-                                    transition: "all 0.3s ease",
-                                    transform:
-                                        index + 1 === step
-                                            ? "scale(1.2)"
-                                            : "scale(1)",
-                                }}
-                            />
-                        ))}
-                    </Box> */}
                 </Box>
                 {/* Response message  */}
                 <Box sx={{ height: "5px" }}>
@@ -273,7 +249,15 @@ function StartCreateCV() {
                 </Box>
             </Box>
 
-            <Box sx={{ px: 1, pt: 2, pb: 3, maxWidth: 800, margin: "auto" }}>
+            <Box
+                sx={{
+                    px: 1,
+                    pt: 2,
+                    pb: 3,
+                    maxWidth: 800,
+                    margin: "auto",
+                }}
+            >
                 {/* Form components */}
                 {step === 1 && <StepOne />}
                 {step === 2 && <StepTwo />}
@@ -287,7 +271,6 @@ function StartCreateCV() {
                 {step === 10 && <StepTen />}
                 {step === 11 && <StepEleven />}
                 {step === 12 && <StepTwelve />}
-                {step === 13 && <StepThirteen />}
 
                 {/* Next and Previous buttons - Hidden for steps 4 and 7 */}
                 {step !== 4 && step !== 7 && (

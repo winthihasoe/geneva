@@ -182,112 +182,15 @@ const Navbar = () => {
                                     display: "flex",
                                     alignItems: "center",
                                     cursor: "pointer",
-                                    py: 1,
                                 }}
                                 onClick={() => router.get("/")}
                             >
                                 <img
                                     src={logo}
-                                    alt="Hearty Aid Logo"
-                                    style={{ width: 60, height: 60 }}
+                                    alt="Geneva Logo"
+                                    style={{ width: 80, height: "auto" }}
                                 />
                             </Box>
-
-                            {/* Auth buttons and admin/caregiver buttons */}
-                            {/* Get into the Caregiver site */}
-                            {user && user.is_caregiver && (
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    sx={{
-                                        borderRadius: 20,
-                                        px: 2,
-                                        display: { xs: "none", md: "flex" },
-                                    }}
-                                    size="small"
-                                    onClick={() =>
-                                        router.get(route("cg.dashboard"))
-                                    }
-                                >
-                                    <Typography fontSize={13}>
-                                        Account
-                                    </Typography>
-                                </Button>
-                            )}
-                            {user && user.is_employer && (
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    sx={{
-                                        borderRadius: 20,
-                                        px: 2,
-                                        display: { xs: "none", md: "flex" },
-                                    }}
-                                    size="small"
-                                    onClick={() =>
-                                        router.get(route("employer.dashboard"))
-                                    }
-                                >
-                                    <Typography fontSize={13}>
-                                        Account
-                                    </Typography>
-                                </Button>
-                            )}
-
-                            {/* Get into the Admin site */}
-                            {user && user.is_admin && (
-                                <Button
-                                    variant="contained"
-                                    sx={{
-                                        borderRadius: 20,
-                                        px: 2,
-                                        display: { xs: "none", md: "flex" },
-                                    }}
-                                    size="small"
-                                    onClick={() =>
-                                        router.get(route("admin.dashboard"))
-                                    }
-                                >
-                                    <Typography fontSize={13}>Admin</Typography>
-                                </Button>
-                            )}
-
-                            {!user ? (
-                                <Box
-                                    sx={{
-                                        display: { xs: "none", md: "flex" },
-                                        gap: 1,
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    <Button
-                                        variant="contained"
-                                        sx={{ borderRadius: 20, px: 2 }}
-                                        size="small"
-                                        onClick={() =>
-                                            router.get(route("login"))
-                                        }
-                                    >
-                                        <Typography fontSize={13}>
-                                            Log in
-                                        </Typography>
-                                    </Button>
-                                    <Button
-                                        variant="contained"
-                                        sx={{ borderRadius: 20, px: 2 }}
-                                        size="small"
-                                        onClick={() =>
-                                            router.get(route("signup"))
-                                        }
-                                    >
-                                        <Typography fontSize={13}>
-                                            Sign up
-                                        </Typography>
-                                    </Button>
-                                </Box>
-                            ) : (
-                                ""
-                            )}
                         </Box>
 
                         {/* Right side - Menu items for md and larger screens */}
@@ -305,9 +208,9 @@ const Navbar = () => {
                             >
                                 <Typography
                                     variant="h6"
-                                    fontSize={18}
+                                    fontSize={"1rem"}
                                     fontWeight={500}
-                                    fontFamily={"Righteous"}
+                                    fontFamily={"Roboto Slab"}
                                 >
                                     Pricing
                                 </Typography>
@@ -360,9 +263,9 @@ const Navbar = () => {
                             >
                                 <Typography
                                     variant="h6"
-                                    fontSize={18}
+                                    fontSize={"1rem"}
                                     fontWeight={500}
-                                    fontFamily={"Righteous"}
+                                    fontFamily={"Roboto Slab"}
                                 >
                                     About Us
                                 </Typography>
@@ -413,9 +316,9 @@ const Navbar = () => {
                             >
                                 <Typography
                                     variant="h6"
-                                    fontSize={18}
+                                    fontSize={"1rem"}
                                     fontWeight={500}
-                                    fontFamily={"Righteous"}
+                                    fontFamily={"Roboto Slab"}
                                 >
                                     Contact Us
                                 </Typography>
@@ -462,14 +365,104 @@ const Navbar = () => {
                             >
                                 <Typography
                                     variant="h6"
-                                    fontSize={18}
+                                    fontSize={"1rem"}
                                     fontWeight={500}
-                                    fontFamily={"Righteous"}
+                                    fontFamily={"Roboto Slab"}
                                 >
                                     Join Our Team
                                 </Typography>
                             </Button>
                         </Box>
+
+                        {/* Auth buttons and admin/caregiver buttons */}
+                        {/* Get into the Caregiver site */}
+                        {user && user.is_caregiver && (
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                sx={{
+                                    borderRadius: 20,
+                                    px: 2,
+                                    display: { xs: "none", md: "flex" },
+                                }}
+                                size="small"
+                                onClick={() =>
+                                    router.get(route("cg.dashboard"))
+                                }
+                            >
+                                <Typography fontSize={13}>Account</Typography>
+                            </Button>
+                        )}
+                        {user && user.is_employer && (
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                sx={{
+                                    borderRadius: 20,
+                                    px: 2,
+                                    display: { xs: "none", md: "flex" },
+                                }}
+                                size="small"
+                                onClick={() =>
+                                    router.get(route("employer.dashboard"))
+                                }
+                            >
+                                <Typography fontSize={13}>Account</Typography>
+                            </Button>
+                        )}
+
+                        {/* Get into the Admin site */}
+                        {user && user.is_admin && (
+                            <Button
+                                variant="contained"
+                                sx={{
+                                    borderRadius: 20,
+                                    px: 2,
+                                    display: { xs: "none", md: "flex" },
+                                }}
+                                size="small"
+                                onClick={() =>
+                                    router.get(route("admin.dashboard"))
+                                }
+                            >
+                                <Typography fontSize={13}>Admin</Typography>
+                            </Button>
+                        )}
+
+                        {!user ? (
+                            <Box
+                                sx={{
+                                    display: { xs: "none", md: "flex" },
+                                    gap: 1,
+                                    alignItems: "center",
+                                }}
+                            >
+                                <Button
+                                    variant="contained"
+                                    size="small"
+                                    sx={{
+                                        fontSize: "0.8rem",
+                                        fontWeight: "bold",
+                                    }}
+                                    onClick={() => router.get(route("login"))}
+                                >
+                                    Log in
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    size="small"
+                                    sx={{
+                                        fontSize: "0.8rem",
+                                        fontWeight: "bold",
+                                    }}
+                                    onClick={() => router.get(route("signup"))}
+                                >
+                                    Sign up
+                                </Button>
+                            </Box>
+                        ) : (
+                            ""
+                        )}
 
                         {/* Hamburger Menu Icon for sm screens */}
                         <IconButton
@@ -677,16 +670,17 @@ const Navbar = () => {
                                 <ListItem sx={{ mt: 2 }}>
                                     <Button
                                         variant="contained"
-                                        sx={{ borderRadius: 10 }}
                                         size="small"
                                         onClick={() =>
                                             router.get(route("login"))
                                         }
+                                        sx={{
+                                            fontSize: "0.8rem",
+                                            fontWeight: "bold",
+                                        }}
                                         fullWidth
                                     >
-                                        <Typography fontSize={13}>
-                                            Log in
-                                        </Typography>
+                                        Log in
                                     </Button>
                                 </ListItem>
                                 <ListItem>
@@ -694,17 +688,17 @@ const Navbar = () => {
 
                                     <Button
                                         variant="contained"
-                                        color="secondary"
-                                        sx={{ borderRadius: 10 }}
+                                        sx={{
+                                            fontSize: "0.8rem",
+                                            fontWeight: "bold",
+                                        }}
                                         size="small"
                                         onClick={() =>
                                             router.get(route("signup"))
                                         }
                                         fullWidth
                                     >
-                                        <Typography fontSize={13}>
-                                            Sign up
-                                        </Typography>
+                                        Sign up
                                     </Button>
                                 </ListItem>
                             </>

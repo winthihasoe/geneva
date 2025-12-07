@@ -42,14 +42,14 @@ function Dashboard({
             bgColor: "#E3F2FD",
             route: "admin.job.apply",
         },
-        {
-            title: "Total Care Logs",
-            value: totalCareLogs,
-            icon: <AssignmentIcon sx={{ fontSize: 40 }} />,
-            color: "#FF9800",
-            bgColor: "#FFF3E0",
-            route: "admin.care.logs",
-        },
+        // {
+        //     title: "Total Care Logs",
+        //     value: totalCareLogs,
+        //     icon: <AssignmentIcon sx={{ fontSize: 40 }} />,
+        //     color: "#FF9800",
+        //     bgColor: "#FFF3E0",
+        //     route: "admin.care.logs",
+        // },
         {
             title: "Messages",
             value: totalContactMessages,
@@ -58,14 +58,14 @@ function Dashboard({
             bgColor: "#F3E5F5",
             route: "admin.messages",
         },
-        {
-            title: "Total Patients",
-            value: totalPatients,
-            icon: <PersonIcon sx={{ fontSize: 40 }} />,
-            color: "#FF9800",
-            bgColor: "#FFF3E0",
-            route: "admin.patients",
-        },
+        // {
+        //     title: "Total Patients",
+        //     value: totalPatients,
+        //     icon: <PersonIcon sx={{ fontSize: 40 }} />,
+        //     color: "#FF9800",
+        //     bgColor: "#FFF3E0",
+        //     route: "admin.patients",
+        // },
     ];
 
     return (
@@ -176,7 +176,7 @@ function Dashboard({
                                         </Typography>
                                     </Box>
                                 </Grid2>
-                                <Grid2 size={6}>
+                                {/* <Grid2 size={6}>
                                     <Box
                                         sx={{
                                             p: 2,
@@ -196,7 +196,7 @@ function Dashboard({
                                             View Care Logs
                                         </Typography>
                                     </Box>
-                                </Grid2>
+                                </Grid2> */}
                             </Grid2>
                         </Paper>
                     </Grid2>

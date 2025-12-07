@@ -32,11 +32,11 @@ function CVdisplay({ CVs }) {
                                 sm: "1.9rem",
                                 md: "2.2rem",
                             },
-                            fontFamily: "Righteous",
+                            fontFamily: "Roboto Slab",
                             mb: 2,
                         }}
                     >
-                        Welcome to Hearty Aid
+                        Geneva Caregiver Service
                     </Typography>
                     <Typography
                         sx={{
@@ -58,7 +58,7 @@ function CVdisplay({ CVs }) {
                         overflow: "visible",
                     }}
                 >
-                    <Box
+                    {/* <Box
                         sx={{
                             backgroundImage: "url(/images/pointing-arrow.png)",
                             backgroundSize: "cover",
@@ -69,7 +69,7 @@ function CVdisplay({ CVs }) {
                             width: { xs: 30 },
                             height: { xs: 30 },
                         }}
-                    />
+                    /> */}
                     <Button
                         onClick={() => router.get(route("job.apply"))}
                         size="medium"

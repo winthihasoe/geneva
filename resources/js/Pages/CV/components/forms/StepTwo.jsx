@@ -11,16 +11,6 @@ import {
 import CvContext from "@/Context/CvContext";
 import ProfileUploadForm from "./ProfileUploadForm";
 
-const nationalityOptions = [
-    "Thailand",
-    "Myanmar",
-    "Laos",
-    "Indonesian",
-    "Filipino",
-    "Indian",
-    "Sri Lanka",
-];
-
 const religions = [
     "Buddhism",
     "Christianity",
@@ -62,7 +52,7 @@ const StepTwo = () => {
                     fullWidth
                 />
                 <Typography variant="body2" mt={1} color="textSecondary">
-                    Can't input decimal (point).
+                    Can't input decimal (e.g. 145).
                 </Typography>
             </Box>
             <Box
@@ -86,57 +76,8 @@ const StepTwo = () => {
                     fullWidth
                 />
                 <Typography variant="body2" mt={1} color="textSecondary">
-                    Can input decimal (point).
+                    Can input decimal (e.g. 60.5).
                 </Typography>
-            </Box>
-
-            {/* Nationality  */}
-            <Box>
-                <Typography variant="subtitle1" fontWeight="bold">
-                    Nationality
-                </Typography>
-                <FormControl component="fieldset">
-                    <RadioGroup
-                        row
-                        value={data.nationality}
-                        onChange={(e) => {
-                            handleChange("nationality")(e);
-                            if (e.target.value) {
-                                handleChange("other_nationality")({
-                                    target: { value: "" },
-                                });
-                            }
-                        }}
-                    >
-                        {nationalityOptions.map((option) => (
-                            <FormControlLabel
-                                key={option}
-                                value={option}
-                                control={<Radio />}
-                                label={
-                                    <Typography fontSize={12}>
-                                        {option}
-                                    </Typography>
-                                }
-                            />
-                        ))}
-                    </RadioGroup>
-                </FormControl>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <Typography>Other nationality</Typography>
-                    <TextField
-                        size="small"
-                        value={data.other_nationality ?? ""}
-                        onChange={(e) => {
-                            handleChange("other_nationality")(e);
-                            if (e.target.value) {
-                                handleChange("nationality")({
-                                    target: { value: "" },
-                                });
-                            }
-                        }}
-                    />
-                </Box>
             </Box>
 
             {/* Religion  */}

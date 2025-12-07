@@ -45,13 +45,14 @@ function SignUp() {
         <AppLayout>
             <Head title="Sign Up" />
             <Container maxWidth="lg">
+                {/* Title  */}
                 <Typography
                     variant="h4"
                     sx={{
                         my: 3,
                         fontWeight: 500,
                         textAlign: "center",
-                        fontFamily: "Righteous",
+                        fontFamily: "Roboto Slab, serif",
                     }}
                 >
                     Sign Up for Free
@@ -105,7 +106,7 @@ function SignUp() {
                         >
                             <Typography
                                 textAlign={"center"}
-                                fontFamily={"Righteous"}
+                                fontFamily={"Roboto Slab, serif"}
                                 fontWeight={500}
                                 color={
                                     data.is_employer === true
@@ -166,7 +167,7 @@ function SignUp() {
                         >
                             <Typography
                                 textAlign={"center"}
-                                fontFamily={"Righteous"}
+                                fontFamily={"Roboto Slab, serif"}
                                 fontWeight={500}
                                 color={
                                     data.is_caregiver === true
@@ -212,8 +213,8 @@ function SignUp() {
                                 sx={{
                                     border: {
                                         xs: "none",
-                                        sm: "2px solid #21875C",
-                                        md: "2px solid #21875C",
+                                        sm: "2px solid #875cd1",
+                                        md: "2px solid #875cd1",
                                     },
                                     borderRadius: 4,
                                     bgcolor: "white",
@@ -337,7 +338,7 @@ function SignUp() {
                                     >
                                         <Typography
                                             variant="h6"
-                                            fontFamily={"Righteous"}
+                                            fontFamily={"Roboto Slab, serif"}
                                             fontWeight={500}
                                             fontSize={20}
                                         >
@@ -352,11 +353,11 @@ function SignUp() {
                             sx={{ display: "flex", alignItems: "center" }}
                         >
                             <img
-                                src="/images/courses/ads.png"
+                                src="/images/register/two-caregivers.png"
                                 alt="Caregiver Photo"
                                 style={{
                                     width: "100%",
-                                    height: "100%",
+                                    height: "auto",
                                     objectFit: "cover",
                                 }}
                             />
@@ -378,11 +379,11 @@ function SignUp() {
                             sx={{ display: "flex", alignItems: "center" }}
                         >
                             <img
-                                src="/images/pricing/super_nanny.png"
+                                src="/images/register/three-caregivers.png"
                                 alt="Caregiver Photo"
                                 style={{
                                     width: "100%",
-                                    height: "70%",
+                                    height: "auto",
                                     objectFit: "cover",
                                 }}
                             />
@@ -394,8 +395,8 @@ function SignUp() {
                                 sx={{
                                     border: {
                                         xs: "none",
-                                        sm: "2px solid #21875C",
-                                        md: "2px solid #21875C",
+                                        sm: "2px solid #875cd1",
+                                        md: "2px solid #875cd1",
                                     },
                                     borderRadius: 4,
                                     bgcolor: "white",
@@ -519,7 +520,7 @@ function SignUp() {
                                     >
                                         <Typography
                                             variant="h6"
-                                            fontFamily={"Righteous"}
+                                            fontFamily={"Roboto Slab, serif"}
                                             fontWeight={500}
                                             fontSize={20}
                                         >

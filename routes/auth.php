@@ -19,6 +19,9 @@ Route::middleware('guest')->group(function () {
     Route::get('signup/verify-otp', [RegisteredUserController::class, 'showVerifyOtp'])->name('signup.verifyOTP');
     Route::post('signup/verify-otp', [RegisteredUserController::class, 'verifyOtp'])->name('signup.OTP.verify');
     
+    Route::post('sign-up/resend-otp', [RegisteredUserController::class, 'resendOtp'])
+        ->name('signup.resend.otp');
+        
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
                 ->name('login');
 

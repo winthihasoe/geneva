@@ -77,7 +77,7 @@ function CVdetail({ cv }) {
                                 fontSize={{ xs: 10, sm: 14, md: 16 }}
                                 fontWeight={600}
                             >
-                                ID <span>{cv.ha_id}</span>
+                                ID - <span>{cv.geneva_id}</span>
                             </Typography>
                         </Box>
                     </Grid2>
@@ -92,10 +92,12 @@ function CVdetail({ cv }) {
                             <Typography
                                 fontSize={{ xs: 25, sm: 35, md: 50 }}
                                 fontWeight="bold"
-                                mb={{ xs: 1, sm: 2, mb: 3 }}
+                                mt={{ xs: 2, sm: 0 }}
+                                mb={{ xs: 1, sm: 2, md: 3 }}
                                 noWrap
+                                fontFamily={"Roboto Slab"}
                             >
-                                {cv.nickname.toUpperCase()}
+                                {cv.full_name.toUpperCase()}
                             </Typography>
 
                             <Box
@@ -148,75 +150,53 @@ function CVdetail({ cv }) {
                             <Grid2
                                 container
                                 sx={{
-                                    bgcolor: "#cfefe0",
+                                    bgcolor: "#f1e9ffff",
                                     p: { xs: 0.3, sm: 1, md: 2 },
                                     columnGap: 0.5,
                                 }}
                             >
                                 <Grid2 size={5}>
                                     <ResumeText>
-                                        AGE:{" "}
+                                        Age:{" "}
                                         <AgeCalculator
                                             date={cv?.date_of_birth}
                                         />{" "}
                                         YEARS
                                     </ResumeText>
                                     <ResumeText>
-                                        GENDER:{" "}
+                                        Gender:{" "}
                                         {cv?.gender == "Male" ? "M" : "F"}
                                     </ResumeText>
                                     <ResumeText>
-                                        HEIGHT: {cv?.height}
-                                        CM
+                                        Height: {cv?.height} CM
+                                    </ResumeText>
+                                </Grid2>
+                                <Grid2 size={5}>
+                                    <ResumeText>
+                                        Marital Status: {cv?.marital_status}
                                     </ResumeText>
                                     <ResumeText>
-                                        WEIGHT: {cv?.weight}
+                                        Religion: {cv?.religion}
+                                    </ResumeText>
+                                    <ResumeText>
+                                        Weight: {cv?.weight}
                                         KG
                                     </ResumeText>
                                 </Grid2>
-                                <Grid2 size={5}>
-                                    <ResumeText>
-                                        MARITAL STATUS: {cv?.marital_status}
-                                    </ResumeText>
-                                    <ResumeText>
-                                        RELIGION: {cv?.religion}
-                                    </ResumeText>
-                                    <ResumeText>
-                                        NATIONALITY: {cv?.nationality}
-                                    </ResumeText>
-                                </Grid2>
                             </Grid2>
-                            <Grid2
-                                container
+                            <Box
                                 sx={{
-                                    bgcolor: "gray.100",
                                     p: { xs: 0.3, sm: 1, md: 2 },
                                 }}
-                                spacing={1}
                             >
-                                <Grid2 size={5}>
-                                    <Typography
-                                        fontSize={{
-                                            xs: 12,
-                                            sm: 13,
-                                            md: 15,
-                                        }}
-                                    >
-                                        📞 +66 82 902 1957
-                                    </Typography>
-                                </Grid2>
-                                <Grid2 size={6}>
-                                    <Typography
-                                        fontSize={{
-                                            xs: 12,
-                                            sm: 13,
-                                            md: 15,
-                                        }}
-                                    >
-                                        📧 heartyaidbkk@gmail.com
-                                    </Typography>
-                                </Grid2>
-                            </Grid2>
+                                <Typography
+                                    fontWeight={"bold"}
+                                    letterSpacing={1}
+                                    fontSize={{ xs: 10, sm: 13, md: 15 }}
+                                >
+                                    Hotline: 📞 09970006670 | 09980160003
+                                </Typography>
+                            </Box>
                         </Box>
                     </Grid2>
                 </Grid2>
@@ -401,7 +381,7 @@ function CVdetail({ cv }) {
 
                 <Box
                     sx={{
-                        bgcolor: "#bdf5dc",
+                        bgcolor: "#f1e9ff",
                         m: { xs: 1, sm: 2, md: 3 },
                         p: { xs: 1, sm: 2, md: 3 },
                         borderRadius: { xs: 3, sm: 5, md: 10 },
@@ -428,7 +408,7 @@ function CVdetail({ cv }) {
                                         fontSize: { xs: 11, sm: 14, md: 16 },
                                     }}
                                 >
-                                    ADVANCED CAREGIVER
+                                    CAREGIVER
                                 </Typography>
                                 <Box
                                     sx={{
@@ -443,7 +423,7 @@ function CVdetail({ cv }) {
                                 >
                                     <img
                                         src="/images/heart.png"
-                                        alt="Hearty Aid Logo"
+                                        alt="Heart Logo"
                                         style={{ width: "100%" }}
                                     />
                                 </Box>
@@ -532,17 +512,13 @@ function CVdetail({ cv }) {
                 <Box
                     sx={{
                         top: 5,
-                        right: 5,
+                        right: 8,
                         position: "absolute",
                         display: "flex",
                         justifyContent: "flex-end",
                     }}
                 >
-                    <img
-                        src={logo}
-                        alt="Hearty Aid Logo"
-                        style={{ width: "8%" }}
-                    />
+                    <img src={logo} alt="Geneva Logo" style={{ width: "8%" }} />
                 </Box>
             </Box>
         </Box>

@@ -15,6 +15,7 @@ import React from "react";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import BlockIcon from "@mui/icons-material/Block";
 import WorkIcon from "@mui/icons-material/Work";
+import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 
 function EditCVstatus({ cv }) {
     const { data, setData, post, processing } = useForm({
@@ -44,6 +45,11 @@ function EditCVstatus({ cv }) {
             label: "Occupied",
             color: "warning",
             icon: <WorkIcon fontSize="small" />,
+        },
+        Resigned: {
+            label: "Resigned",
+            color: "error",
+            icon: <DoDisturbOnIcon fontSize="small" />,
         },
         Blacklisted: {
             label: "Blacklisted",
@@ -112,6 +118,12 @@ function EditCVstatus({ cv }) {
                         <span>Occupied</span>
                     </Stack>
                 </MenuItem>
+                <MenuItem value="Resigned">
+                    <Stack direction="row" alignItems="center" gap={1}>
+                        <DoDisturbOnIcon color="error" fontSize="small" />
+                        <span>Resigned</span>
+                    </Stack>
+                </MenuItem>
                 <MenuItem value="Blacklisted">
                     <Stack direction="row" alignItems="center" gap={1}>
                         <BlockIcon color="error" fontSize="small" />
@@ -125,7 +137,13 @@ function EditCVstatus({ cv }) {
                     color="primary"
                     onClick={handleSave}
                     disabled={processing || !data.status}
-                    sx={{ borderRadius: 20, minWidth: 120, fontWeight: "bold" }}
+                    sx={{
+                        borderRadius: 20,
+                        minWidth: 120,
+                        fontWeight: "bold",
+                        fontSize: "0.8rem",
+                    }}
+                    size="small"
                 >
                     Save
                 </Button>

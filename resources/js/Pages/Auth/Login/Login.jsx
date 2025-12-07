@@ -31,7 +31,7 @@ function Login() {
                 <Typography
                     sx={{
                         textAlign: "center",
-                        fontFamily: "Righteous",
+                        fontFamily: "Roboto Slab",
                         fontWeight: 500,
                         mt: 5,
                     }}
@@ -57,7 +57,7 @@ function Login() {
                         sx={{ display: "flex", alignItems: "center" }}
                     >
                         <img
-                            src="/images/pricing/nanny.png"
+                            src="/images/register/two-caregivers.png"
                             alt="Caregiver Photo"
                             style={{
                                 width: "100%",
@@ -73,8 +73,8 @@ function Login() {
                             sx={{
                                 border: {
                                     xs: "none",
-                                    sm: "2px solid #21875C",
-                                    md: "2px solid #21875C",
+                                    sm: "2px solid #875cd1",
+                                    md: "2px solid #875cd1",
                                 },
                                 borderRadius: 5,
                                 bgcolor: "white",
@@ -158,9 +158,9 @@ function Login() {
                                 >
                                     <Typography
                                         variant="h6"
-                                        fontFamily={"Righteous"}
+                                        fontFamily={"Roboto Slab"}
                                         fontWeight={500}
-                                        fontSize={20}
+                                        fontSize={"1rem"}
                                     >
                                         SUBMIT
                                     </Typography>

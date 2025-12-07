@@ -1,121 +1,78 @@
 import React, { useContext } from "react";
 import {
     Box,
-    Card,
-    CardContent,
+    Checkbox,
+    Divider,
+    FormControlLabel,
     Typography,
-    Button,
-    Grid2,
 } from "@mui/material";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import Subtitle from "@/Components/Typo/Subtitle";
 import CvContext from "@/Context/CvContext";
+import FormText from "@/Components/Typo/FormText";
 
-const options = [
-    {
-        key: "training",
-        title: "10-Day Training Program",
-        subtitle:
-            "You attend our 10-day training program via online and practical sessions.",
-    },
-    {
-        key: "assessment",
-        title: "Skill Assessment Test",
-        subtitle:
-            "Hearty Aid Supervisors will test your caregiving skill and knowledge. After that Admin will approve CV.",
-    },
+const Terms = [
+    "1. Accuracy of Information: You represent and warrant that all information provided is true, accurate, and complete to the best of your knowledge.",
+    "2. Commitment to Services: You agree to perform the duties and services as outlined in this submission in a manner consistent with your representations.",
+    "3. Permission for Marketing Use: You grant Hearty Aid Co., Ltd. the irrevocable right to use your profile and information provided on this website for marketing purposes and to disclose such information to clients who engage Hearty Aid Healthcare Services.",
+    "4. Service Fee Deduction: You consent to a monthly deduction of 15% from your salary by Hearty Aid Co., Ltd. as payment for service fees. Additionally, you acknowledge that your monthly salary may vary based on adjustments to the service fees received from clients.",
+    "5. Responsibility and Conduct: You accept full responsibility for the safety and well-being of the clients, including elderly and pediatric individuals, under your care. You agree to refrain from theft, disrespect, or any unlawful conduct while providing care or residing in the client’s home.",
 ];
 
-function StepThirteen() {
+const StepThirteen = () => {
     const { data, setData } = useContext(CvContext);
-
-    const handleChoose = (key) => {
-        setData((prev) => ({
-            ...prev,
-            training_or_assessment: key,
+    const handleCheckboxChange = (field) => (event) => {
+        setData((prevData) => ({
+            ...prevData,
+            [field]: event.target.checked, // Update the field with the checked value
         }));
     };
 
     return (
-        <Box sx={{ mt: 2 }}>
-            <Typography variant="h6" textAlign="center" sx={{ mb: 3 }}>
-                Please choose one option to continue
+        <Box sx={{ mb: 3, maxWidth: 600, margin: "0 auto" }}>
+            <Typography variant="subtitle1" mb={2} fontWeight={"bold"}>
+                By submitting this CV form, you hereby acknowledge, agree, and
+                consent to the following terms:
             </Typography>
-            <Grid2
-                container
-                spacing={2}
-                justifyContent="center"
-                alignItems="stretch"
-            >
-                {options.map((option) => {
-                    const isSelected =
-                        data.training_or_assessment === option.key;
-                    return (
-                        <Grid2
-                            item
-                            size={{ xs: 12, sm: 6, md: 5 }}
-                            key={option.key}
-                            sx={{ display: "flex" }}
-                        >
-                            <Card
-                                variant={isSelected ? "outlined" : "elevation"}
-                                sx={{
-                                    flex: 1,
-                                    borderColor: isSelected
-                                        ? "primary.main"
-                                        : "grey.200",
-                                    boxShadow: isSelected ? 4 : 1,
-                                    bgcolor: isSelected
-                                        ? "grey.50"
-                                        : "background.paper",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    justifyContent: "space-between",
-                                    minHeight: 180,
-                                }}
-                            >
-                                <CardContent>
-                                    <Typography
-                                        variant="h6"
-                                        textAlign={"center"}
-                                        color="primary"
-                                        sx={{ mb: 1, fontWeight: 600 }}
-                                    >
-                                        {option.title}
-                                    </Typography>
-                                    <Typography
-                                        variant="body2"
-                                        color="text.secondary"
-                                        sx={{ mb: 2 }}
-                                    >
-                                        {option.subtitle}
-                                    </Typography>
-                                </CardContent>
-                                <Box sx={{ p: 2, pt: 0 }}>
-                                    <Button
-                                        variant={
-                                            isSelected
-                                                ? "contained"
-                                                : "outlined"
-                                        }
-                                        color="secondary"
-                                        fullWidth
-                                        onClick={() => handleChoose(option.key)}
-                                        startIcon={
-                                            isSelected ? (
-                                                <CheckCircleIcon />
-                                            ) : null
-                                        }
-                                    >
-                                        {isSelected ? "Choosed" : "Choose"}
-                                    </Button>
-                                </Box>
-                            </Card>
-                        </Grid2>
-                    );
-                })}
-            </Grid2>
+
+            {Terms.map((term, index) => (
+                <Typography variant="body2" mb={2} key={index}>
+                    {term}
+                </Typography>
+            ))}
+
+            <Divider sx={{ my: 2 }} />
+
+            <FormControlLabel
+                control={
+                    <Checkbox
+                        checked={data.agree_to_terms}
+                        onChange={handleCheckboxChange("agree_to_terms")}
+                        sx={{
+                            alignSelf: "flex-start", // Aligns the checkbox to the top of the text
+                            paddingTop: 0, // Removes extra space if needed
+                        }}
+                        size="small"
+                    />
+                }
+                label={
+                    <Typography
+                        fontSize={{ xs: 11, sm: 13, md: 14 }}
+                        sx={{ textAlign: "justify" }}
+                    >
+                        I agree to these terms with full understanding of their
+                        implications. I confirm that I am entering into this
+                        agreement voluntarily, in a clear and sound state of
+                        mind, free from any external persuasion, coercion, or
+                        misunderstanding.
+                    </Typography>
+                }
+                sx={{
+                    alignItems: "flex-start",
+                    my: 2,
+                }}
+            />
         </Box>
     );
-}
+};
 
 export default StepThirteen;

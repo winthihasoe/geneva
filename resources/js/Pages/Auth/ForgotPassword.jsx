@@ -67,8 +67,8 @@ export default function ForgotPassword({ status }) {
                             sx={{
                                 border: {
                                     xs: "none",
-                                    sm: "2px solid #21875C",
-                                    md: "2px solid #21875C",
+                                    sm: "2px solid #875cd1",
+                                    md: "2px solid #875cd1",
                                 },
                                 borderRadius: 5,
                                 bgcolor: "white",
@@ -77,7 +77,11 @@ export default function ForgotPassword({ status }) {
                                 boxShadow: 1,
                             }}
                         >
-                            <Typography variant="h6" mb={2}>
+                            <Typography
+                                fontFamily={"Roboto Slab"}
+                                variant="h6"
+                                mb={2}
+                            >
                                 Forgot password?
                             </Typography>
                             <Typography variant="body2">

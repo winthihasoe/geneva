@@ -22,7 +22,7 @@ const steps = [
     "Job Preference",
 ];
 
-function StartCreateCV() {
+function StartCreateCVOld() {
     const { data, completedSteps, responseMessage, handleStep } =
         useContext(CvContext);
 
@@ -106,4 +106,4 @@ function StartCreateCV() {
     );
 }
 
-export default StartCreateCV;
+export default StartCreateCVOld;

@@ -4,7 +4,7 @@ import React from "react";
 
 function BlogSection() {
     return (
-        <Box sx={{ bgcolor: "secondary.main", py: 7 }}>
+        <Box sx={{ bgcolor: "white", py: 7 }}>
             <Container maxWidth="lg">
                 <Grid2
                     container
@@ -124,14 +124,13 @@ function BlogSection() {
                                     variant="h4"
                                     sx={{
                                         fontSize: {
-                                            xs: "1.5rem",
+                                            xs: "1rem",
                                             sm: "2rem",
-                                            md: "2.5rem",
                                         },
                                         fontWeight: 500,
-                                        color: "white",
+                                        // color: "white",
                                         textAlign: "center",
-                                        fontFamily: "Righteous",
+                                        fontFamily: "Roboto Slab",
                                     }}
                                 >
                                     Elder Health
@@ -197,14 +196,13 @@ function BlogSection() {
                                     variant="h4"
                                     sx={{
                                         fontSize: {
-                                            xs: "1.5rem",
+                                            xs: "1rem",
                                             sm: "2rem",
-                                            md: "2.5rem",
                                         },
                                         fontWeight: 500,
-                                        color: "white",
+                                        // color: "white",
                                         textAlign: "center",
-                                        fontFamily: "Righteous",
+                                        fontFamily: "Roboto Slab",
                                     }}
                                 >
                                     First Aid & <br />

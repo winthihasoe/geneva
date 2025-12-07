@@ -37,16 +37,7 @@ function AdminResumeTable({ resumes }) {
                                 Gender
                             </Typography>
                         </TableCell>
-                        <TableCell>
-                            <Typography fontWeight="bold" color={"#fff"}>
-                                Height
-                            </Typography>
-                        </TableCell>
-                        <TableCell>
-                            <Typography fontWeight="bold" color={"#fff"}>
-                                Weight
-                            </Typography>
-                        </TableCell>
+
                         <TableCell>
                             <Typography fontWeight="bold" color={"#fff"}>
                                 Level
@@ -59,11 +50,6 @@ function AdminResumeTable({ resumes }) {
                                 color={"#fff"}
                             >
                                 Contact
-                            </Typography>
-                        </TableCell>
-                        <TableCell>
-                            <Typography fontWeight="bold" color={"#fff"}>
-                                Status
                             </Typography>
                         </TableCell>
                     </TableRow>
@@ -90,18 +76,7 @@ function AdminResumeTable({ resumes }) {
                                     {resume.gender || "N/A"}
                                 </Typography>
                             </TableCell>
-                            <TableCell>
-                                {resume.height
-                                    ? parseFloat(resume.height).toFixed(1)
-                                    : "N/A"}{" "}
-                                cm
-                            </TableCell>
-                            <TableCell>
-                                {resume.weight
-                                    ? parseFloat(resume.weight).toFixed(1)
-                                    : "N/A"}{" "}
-                                kg
-                            </TableCell>
+
                             <TableCell>
                                 <Typography fontSize={13} color={"primary"}>
                                     {resume.level || "N/A"}
@@ -113,17 +88,8 @@ function AdminResumeTable({ resumes }) {
                                     color={"primary"}
                                     textAlign={"center"}
                                 >
-                                    {resume.emergency_contact || "N/A"}
+                                    {resume.phone || "N/A"}
                                 </Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Box display={"flex"} justifyContent={"center"}>
-                                    <ShowActiveOrOffline
-                                        lastActiveAt={
-                                            resume.user?.last_active_at
-                                        }
-                                    />
-                                </Box>
                             </TableCell>
                         </TableRow>
                     ))}

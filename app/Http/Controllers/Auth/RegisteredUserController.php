@@ -59,12 +59,12 @@ class RegisteredUserController extends Controller
 
             // Prepare email body
             $body = [
-                'FromEmail' => "accountsupport@heartyaid.com",
-                'FromName' => "Hearty Aid",
-                'Subject' => "Confirm Your Email to Start with Hearty Aid – OTP Enclosed",
-                'MJ-TemplateID' => 6433123,
+                'FromEmail' => "noreply@genevacaregiver.com",
+                'FromName' => "Geneva",
+                'Subject' => "Confirm Your Email to Start with Geneva – OTP Enclosed",
+                'MJ-TemplateID' => 7558060,
                 'MJ-TemplateLanguage' => true,
-                'Vars' => ["otp" => $otp],
+                'Vars' => ["name" => $request->name, "otp" => $otp],
                 'Recipients' => [['Email' => $request->email]]
             ];
             // Send OTP email
@@ -74,6 +74,7 @@ class RegisteredUserController extends Controller
             return redirect()->route('signup.verifyOTP')->with('success', "OTP is sent to your email.");
         }catch (\Exception $e) {
             // Handle errors in sending email
+            \Log::error('OTP send error: ' . $e->getMessage());
             return back()->with('error', 'Please Try again!');
         }
     }
@@ -102,7 +103,7 @@ class RegisteredUserController extends Controller
 
         // Check if cache exists and retrieve OTP
         if (!$cachedData || $cachedData['otp'] != $request->OTP) {
-            return back()->withErrors(['OTP' => 'OTP code expired or invalid.'])->withInput();
+            return back()->with('error', 'OTP code expired or invalid.');
         }
 
         // Create the user from cached data
@@ -123,6 +124,49 @@ class RegisteredUserController extends Controller
 
     
         return redirect()->route('home')->with('success', 'Welcome to Hearty Aid.');
+    }
+
+    public function resendOtp(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        // Check if there's existing cached data for this email
+        $cacheKey = 'user_registration_' . $request->email;
+        $cachedData = Cache::get($cacheKey);
+
+        if (!$cachedData) {
+            return back()->withErrors(['email' => 'No registration data found for this email. Please start registration again.']);
+        }
+
+        // Generate a new OTP
+        $otp = random_int(100000, 999999);
+
+        // Update the cached data with new OTP
+        $cachedData['otp'] = $otp;
+        Cache::put($cacheKey, $cachedData, now()->addMinutes(10));
+       
+        try {
+            // Prepare email body
+            $body = [
+                'FromEmail' => "noreply@genevacaregiver.com",
+                'FromName' => "Geneva",
+                'Subject' => "Confirm Your Email to Start with Geneva – OTP Enclosed",
+                'MJ-TemplateID' => 7558060,
+                'MJ-TemplateLanguage' => true,
+                'Vars' => ["name" => $cachedData['name'], "otp" => $otp],
+                'Recipients' => [['Email' => $request->email]]
+            ];
+
+            // Send OTP email
+            $mj = Mailjet::getClient();
+            $response = $mj->post(Resources::$Email, ['body' => $body]);
+
+            return back()->with('success', 'New OTP has been sent to your email.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to send OTP. Please try again.');
+        }
     }
 
 }

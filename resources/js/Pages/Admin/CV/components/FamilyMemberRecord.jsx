@@ -38,7 +38,7 @@ function FamilyMemberRecord({ family_member_record }) {
                         }}
                     >
                         <Typography textAlign={"center"} fontFamily={"Karma"}>
-                            Don't have Citizenship ID.
+                            Don't have Record.
                         </Typography>
                     </Box>
                 )}

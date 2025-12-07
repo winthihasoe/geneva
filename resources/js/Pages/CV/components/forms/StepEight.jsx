@@ -25,7 +25,7 @@ function StepEight() {
     };
 
     return (
-        <Box sx={{ minHeight: "50vh", margin: "auto", maxWidth: 400 }}>
+        <Box sx={{ margin: "auto", maxWidth: 400, mb: 5 }}>
             <Typography variant="h6" sx={{ mb: 2 }}>
                 Job Preferences
             </Typography>
@@ -57,48 +57,6 @@ function StepEight() {
                     />
                 ))}
             </FormGroup>
-
-            {/* Maid service as separate boolean field */}
-            <FormGroup sx={{ mb: 3, px: 2 }}>
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            checked={data.maid_service || false}
-                            onChange={handleMaidServiceChange}
-                        />
-                    }
-                    label={
-                        <Typography fontSize={12}>+ Maid service</Typography>
-                    }
-                />
-                <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mt: 1 }}
-                >
-                    If you can do household works while taking care of patient
-                    or baby, you will get extra fees around 1,500 – 2,000
-                    THB/Month
-                </Typography>
-            </FormGroup>
-
-            <Box
-                sx={{
-                    border: "3px solid ",
-                    borderColor: "secondary.main",
-                    p: 2,
-                    mb: 3,
-                    maxWidth: 500,
-                    margin: "auto",
-                    borderRadius: 2,
-                }}
-            >
-                <Typography fontSize={14} fontWeight="bold">
-                    Hearty Aid will deduct a 15% service fee from your salary
-                    each month or each day, depending on your payment schedule,
-                    for the entire duration of your employment
-                </Typography>
-            </Box>
         </Box>
     );
 }

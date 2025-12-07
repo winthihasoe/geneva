@@ -208,11 +208,11 @@ export default function AdminLayout({ children }) {
                         sx={{
                             cursor: "pointer",
                             fontWeight: 500,
-                            fontFamily: "Abril Fatface",
+                            fontFamily: "Roboto Slab, serif",
                             flexGrow: 1,
                         }}
                     >
-                        Hearty Aid
+                        Geneva
                     </Typography>
                     <Typography variant="body2">Light</Typography>
                     <Switch

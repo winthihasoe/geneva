@@ -33,31 +33,31 @@ export const AdminSidebarData = [
         icon: <EventAvailableRoundedIcon />,
         link: "/admin/care-plans",
     },
-    {
-        title: "Care Logs 📝",
-        icon: <AssignmentIcon color="primary" />,
-        link: "/admin/care-logs",
-    },
+    // {
+    //     title: "Care Logs 📝",
+    //     icon: <AssignmentIcon color="primary" />,
+    //     link: "/admin/care-logs",
+    // },
     {
         title: "Job Apply",
         icon: <WorkHistoryRoundedIcon />,
         link: "/admin/job-applies",
     },
-    {
-        title: "Interview",
-        icon: <CoPresentIcon />,
-        link: "/admin/interviews",
-    },
+    // {
+    //     title: "Interview",
+    //     icon: <CoPresentIcon />,
+    //     link: "/admin/interviews",
+    // },
     {
         title: "Training Course",
         icon: <SchoolIcon />,
         link: "/admin/training-courses",
     },
-    {
-        title: "Patient",
-        icon: <AccessibleIcon />,
-        link: "/admin/patients",
-    },
+    // {
+    //     title: "Patient",
+    //     icon: <AccessibleIcon />,
+    //     link: "/admin/patients",
+    // },
 
     // {
     //     title: "Shop management",
@@ -69,21 +69,21 @@ export const AdminSidebarData = [
     //     icon: <PeopleRoundedIcon />,
     //     link: "/admin/users",
     // },
-    {
-        title: "Blog management",
-        icon: <NewspaperRoundedIcon />,
-        link: "/admin/blogs",
-    },
-    {
-        title: "Skill Assessment",
-        icon: <SportsHandballRoundedIcon />,
-        link: "/admin/skill-assessment-submissions",
-    },
-    {
-        title: "Pricing management",
-        icon: <MonetizationOnRoundedIcon />,
-        link: "/admin/pricing-management",
-    },
+    // {
+    //     title: "Blog management",
+    //     icon: <NewspaperRoundedIcon />,
+    //     link: "/admin/blogs",
+    // },
+    // {
+    //     title: "Skill Assessment",
+    //     icon: <SportsHandballRoundedIcon />,
+    //     link: "/admin/skill-assessment-submissions",
+    // },
+    // {
+    //     title: "Pricing management",
+    //     icon: <MonetizationOnRoundedIcon />,
+    //     link: "/admin/pricing-management",
+    // },
     {
         title: "Social Media",
         icon: <FacebookRoundedIcon />,

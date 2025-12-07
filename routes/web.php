@@ -197,6 +197,14 @@ Route::middleware(['auth', 'is.caregiver'])->group(function () {
 
 Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    
+    // Admin Create CV for caregiver
+    Route::get('cv/create', [CVController::class, 'adminCreateCV'])->name('admin.cv.create');
+    Route::post('cv/create', [CVController::class, 'adminStoreCV'])->name('admin.cv.store');
+    Route::get('cv/finish', [CVController::class, 'adminFinishCV'])->name('admin.cv.finish');
+    
+    Route::get('cv/edit/{cvId}', [CVController::class, 'adminEditCV'])->name('admin.cv.edit');
+    // See all CV
     Route::get('/cv', [CVController::class, 'adminCVs'])->name('admin.cv.all');
     Route::get('/cv/{cvId}', [CVController::class, 'adminSingleCV'])->name('admin.cv.single');
 
@@ -210,6 +218,11 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     // Update CV level
     Route::post('cv/{id}/update-level', [CVController::class, 'updateLevel'])->name('cv.update.level');
     Route::post('cv/{id}/update-status', [CVController::class, 'updateStatus'])->name('cv.update.status');
+
+    // Added Certificate by admin
+    Route::post('cv/{id}/certificate', [CertificateController::class, 'adminStoreCertificate'])->name('admin.certificate.store');
+    Route::put('certificates,/{certId}', [CertificateController::class, 'update'])->name('admin.certificate.update');
+    Route::delete('certificates/{certId}', [CertificateController::class, 'delete'])->name('admin.certificate.delete');
 
     // Create CV experience
     Route::post('cv/{id}/experience', [ExperienceController::class, 'adminStoreExperience'])->name('admin.experience.store');

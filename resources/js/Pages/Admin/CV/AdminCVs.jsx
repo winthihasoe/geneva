@@ -46,15 +46,33 @@ export default function AdminCVs({
         <AdminLayout>
             <Head title="Resumes" />
             <Container maxWidth="lg" sx={{ pb: 4, px: { xs: 0 } }}>
-                <Typography
-                    variant="h4"
-                    color="primary"
-                    fontWeight="bold"
-                    mb={2}
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        flexWrap: "wrap",
+                        gap: 2,
+                        mb: 3,
+                    }}
                 >
-                    Resumes
-                </Typography>
-
+                    <Typography
+                        variant="h4"
+                        color="primary"
+                        fontWeight="bold"
+                        mb={2}
+                    >
+                        CV
+                    </Typography>
+                    <Button
+                        size="small"
+                        variant="contained"
+                        sx={{ fontSize: "0.9rem" }}
+                        onClick={() => router.get(route("admin.cv.create"))}
+                    >
+                        Create CV
+                    </Button>
+                </Box>
                 {/* Resume list */}
 
                 <Box

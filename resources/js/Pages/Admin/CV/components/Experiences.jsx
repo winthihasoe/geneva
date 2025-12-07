@@ -113,7 +113,8 @@ function Experiences({ experiences: initialExperiences, cvId }) {
                     <Button
                         onClick={() => setIsAdding(true)}
                         variant="contained"
-                        sx={{ borderRadius: 20 }}
+                        sx={{ borderRadius: 20, fontSize: "0.8rem" }}
+                        size="small"
                     >
                         Add new experience
                     </Button>
@@ -171,7 +172,8 @@ function Experiences({ experiences: initialExperiences, cvId }) {
                         <Button
                             onClick={saveOrder}
                             variant="contained"
-                            sx={{ borderRadius: 20 }}
+                            sx={{ borderRadius: 20, fontSize: "0.8rem" }}
+                            size="small"
                         >
                             Save Order
                         </Button>

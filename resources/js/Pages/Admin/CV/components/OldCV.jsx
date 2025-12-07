@@ -29,7 +29,7 @@ function OldCV({ cv }) {
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    bgcolor: "#cfefe0",
+                    bgcolor: "#e6d8fdff",
                     overflow: "hidden",
                     position: "relative",
                 }}
@@ -38,7 +38,7 @@ function OldCV({ cv }) {
                 <Box
                     sx={{
                         width: { xs: "100%", sm: "90%" },
-                        bgcolor: "#85e1ba",
+                        bgcolor: "#937ac0ff",
                         height: 300,
                         position: "absolute",
                         top: 0,
@@ -82,25 +82,30 @@ function OldCV({ cv }) {
                                     md: "80%",
                                 },
                                 p: { xs: 1, sm: 2 },
-                                bgcolor: "#85e1ba",
+                                bgcolor: "#875cd1",
                             }}
                         >
                             <Typography
                                 fontSize={{
-                                    xs: 13,
+                                    xs: 12,
                                     sm: 15,
                                     md: 20,
                                 }}
                                 fontWeight={600}
+                                color="#fff"
                             >
                                 PERSONAL DETAILS
                             </Typography>
                             <Divider sx={{ my: 1 }} />
-                            <Box mt={1}>
-                                <Typography fontFamily={"Kavoon"} mb={1}>
-                                    ID{" "}
+                            <Box mt={1} color={"#fff"}>
+                                <Typography
+                                    fontFamily={"Roboto Slab"}
+                                    mb={1}
+                                    variant="caption"
+                                >
+                                    ID -
                                     <span style={{ fontSize: 14 }}>
-                                        {cv.ha_id}
+                                        {cv.geneva_id}
                                     </span>
                                 </Typography>
                                 <Typography
@@ -114,17 +119,7 @@ function OldCV({ cv }) {
                                     <strong>Date of Birth:</strong>{" "}
                                     {cv.date_of_birth}
                                 </Typography>
-                                <Typography
-                                    fontSize={{
-                                        xs: 12,
-                                        sm: 13,
-                                        md: 15,
-                                    }}
-                                    mb={1}
-                                >
-                                    <strong>Nationality:</strong>{" "}
-                                    {cv.nationality}
-                                </Typography>
+
                                 <Typography
                                     fontSize={{
                                         xs: 12,
@@ -172,17 +167,6 @@ function OldCV({ cv }) {
                         >
                             <Typography
                                 fontSize={{
-                                    xs: 13,
-                                    sm: 15,
-                                    md: 20,
-                                }}
-                                fontWeight={600}
-                            >
-                                EDUCATION
-                            </Typography>
-                            <Divider sx={{ my: 1 }} />
-                            <Typography
-                                fontSize={{
                                     xs: 12,
                                     sm: 13,
                                     md: 15,
@@ -206,7 +190,7 @@ function OldCV({ cv }) {
                             {cv.certificates && cv.certificates?.length > 0 ? (
                                 <>
                                     <Typography fontWeight={600}>
-                                        RELEVANT COURSES
+                                        RELEVANT QUALIFICATIONS
                                     </Typography>
                                     <Divider sx={{ my: 1 }} />
                                     <Box>
@@ -237,7 +221,7 @@ function OldCV({ cv }) {
                             ) : (
                                 <Box>
                                     <Typography fontWeight={600}>
-                                        RELEVANT COURSES
+                                        RELEVANT QUALIFICATIONS
                                     </Typography>
                                     <Divider sx={{ my: 1 }} />
 
@@ -253,39 +237,6 @@ function OldCV({ cv }) {
                                     </Typography>
                                 </Box>
                             )}
-
-                            <Divider sx={{ my: 3 }} />
-
-                            <Typography fontWeight={600}>LANGUAGES</Typography>
-                            <Box my={1}>
-                                {cv?.language.map((lang, index) => {
-                                    // Split language and number
-                                    const [language, level] = lang.split(" ");
-                                    const starCount = parseInt(level, 10);
-
-                                    return (
-                                        <Box
-                                            key={index}
-                                            display="flex"
-                                            flexWrap={"wrap"}
-                                        >
-                                            <Typography
-                                                fontSize={{
-                                                    xs: 12,
-                                                    sm: 13,
-                                                    md: 15,
-                                                }}
-                                            >
-                                                • {language}
-                                            </Typography>
-
-                                            <Box display="flex" pl={1}>
-                                                {renderStars(starCount)}
-                                            </Box>
-                                        </Box>
-                                    );
-                                })}
-                            </Box>
                         </Box>
                     </Box>
                 </Box>
@@ -296,9 +247,9 @@ function OldCV({ cv }) {
                     variant="h3"
                     fontSize={{ xs: 22, sm: 35, md: 45 }}
                     fontWeight="bold"
-                    color="primary"
+                    color="secondary.main"
                 >
-                    {cv.nickname.toUpperCase()}
+                    {cv.full_name.toUpperCase()}
                 </Typography>
                 <Box mb={1}>
                     {/* Showing Newborn care Level  */}
@@ -354,35 +305,32 @@ function OldCV({ cv }) {
                     <Box display="flex" flexDirection="column" gap={0.5}>
                         <Typography
                             fontSize={{
-                                xs: 12,
+                                xs: 10,
                                 sm: 13,
                                 md: 15,
                             }}
                         >
-                            📞 +66 82 902 1957
+                            📞 09970006670 | 09980160003
                         </Typography>
+
                         <Typography
                             fontSize={{
-                                xs: 12,
+                                xs: 10,
                                 sm: 13,
                                 md: 15,
                             }}
-                        >
-                            📧 heartyaidbkk@gmail.com
-                        </Typography>
-                        <Typography
-                            fontSize={{
-                                xs: 12,
-                                sm: 13,
-                                md: 15,
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 0.5,
                             }}
                         >
                             <img
-                                src="/images/social/line.png"
-                                style={{ width: 12, height: 12 }}
-                                alt="Line"
-                            />{" "}
-                            heartyaidbkk
+                                src="/images/social/viber.png"
+                                style={{ width: 24, height: 24 }}
+                                alt="Viber"
+                            />
+                            09970006670
                         </Typography>
                     </Box>
                 </Box>
@@ -390,14 +338,15 @@ function OldCV({ cv }) {
                     variant="h6"
                     fontSize={{ xs: 13, sm: 15, md: 18 }}
                     fontWeight="bold"
-                    bgcolor={"#85e1ba"}
+                    bgcolor={"#875cd1"}
                     display={"inline-block"}
                     p={1}
+                    color="#fff"
                 >
                     WORK EXPERIENCES
                 </Typography>
                 <Box sx={{ my: 2, pl: { xs: 0, sm: 2 } }}>
-                    {cv?.newborn_experience_years !== "None" && (
+                    {cv?.newborn_experience_years && (
                         <Typography
                             mb={1}
                             fontSize={{ xs: 13, sm: 15, md: 17 }}
@@ -415,7 +364,7 @@ function OldCV({ cv }) {
                             {cv?.newborn_experience_years}
                         </Typography>
                     )}
-                    {cv?.nanny_experience_years !== "None" && (
+                    {cv?.nanny_experience_years && (
                         <Typography
                             mb={1}
                             fontSize={{ xs: 13, sm: 15, md: 17 }}
@@ -433,7 +382,7 @@ function OldCV({ cv }) {
                             {cv?.nanny_experience_years}
                         </Typography>
                     )}
-                    {cv?.elder_experience_years !== "None" && (
+                    {cv?.elder_experience_years && (
                         <Typography
                             mb={1}
                             fontSize={{ xs: 13, sm: 15, md: 17 }}
@@ -501,9 +450,11 @@ function OldCV({ cv }) {
                     <Typography
                         variant="h6"
                         fontWeight="bold"
-                        bgcolor={"#85e1ba"}
+                        bgcolor={"#875cd1"}
+                        color={"#fff"}
                         display={"inline-block"}
-                        p={1}
+                        py={1}
+                        px={2}
                         mb={2}
                         fontSize={{ xs: 13, sm: 15, md: 20 }}
                     >
@@ -586,7 +537,7 @@ function OldCV({ cv }) {
                     justifyContent: "flex-end",
                 }}
             >
-                <img src={logo} alt="Hearty Aid Logo" style={{ width: "8%" }} />
+                <img src={logo} alt="Geneva Logo" style={{ width: "10%" }} />
             </Box>
         </Grid2>
     );

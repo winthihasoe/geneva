@@ -126,7 +126,7 @@ function CgDashboard({ hasCv, approvedCV }) {
     return (
         <AppLayout>
             <Head title="Caregiver Dashboard" />
-            <Container maxWidth="lg" sx={{ py: 4 }}>
+            <Container maxWidth="lg" sx={{ py: 4, minHeight: "70vh" }}>
                 {/* Header with Logout Button */}
                 <Paper
                     sx={{
@@ -208,7 +208,7 @@ function CgDashboard({ hasCv, approvedCV }) {
                 </Paper>
 
                 {/* CV Status */}
-                <Box sx={{ mb: 4, textAlign: "center" }}>
+                {/* <Box sx={{ mb: 4, textAlign: "center" }}>
                     {approvedCV ? (
                         <Chip
                             label="CV Approved ✓"
@@ -224,20 +224,20 @@ function CgDashboard({ hasCv, approvedCV }) {
                             sx={{ fontSize: "1rem", px: 2, py: 1 }}
                         />
                     )}
-                </Box>
+                </Box> */}
 
                 {/* Profile Management Section */}
-                <Typography
+                {/* <Typography
                     variant="h5"
                     fontWeight="bold"
                     mb={3}
                     color="primary"
                 >
                     Profile Management
-                </Typography>
+                </Typography> */}
 
-                <Grid2 container spacing={3} mb={5}>
-                    {/* Create/Edit CV Card */}
+                {/* <Grid2 container spacing={3} mb={5}>
+                 
                     <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
                         <Card
                             sx={{
@@ -288,7 +288,7 @@ function CgDashboard({ hasCv, approvedCV }) {
                         </Card>
                     </Grid2>
 
-                    {/* Other Menu Items */}
+                
                     {Menus.map((item, index) => (
                         <Grid2 key={index} size={{ xs: 12, sm: 6, md: 3 }}>
                             <Card
@@ -328,20 +328,19 @@ function CgDashboard({ hasCv, approvedCV }) {
                             </Card>
                         </Grid2>
                     ))}
-                </Grid2>
+                </Grid2> */}
 
                 {/* My Care Section */}
-                <Typography
+                {/* <Typography
                     variant="h5"
                     fontWeight="bold"
                     mb={3}
                     color="primary"
                 >
                     My Care Services
-                </Typography>
+                </Typography> */}
 
-                <Grid2 container spacing={3} mb={4}>
-                    {/* Care Logs Section with Sub-types */}
+                {/* <Grid2 container spacing={3} mb={4}>
                     <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
                         <Card
                             sx={{
@@ -382,7 +381,6 @@ function CgDashboard({ hasCv, approvedCV }) {
                                     </Typography>
                                 </Box>
 
-                                {/* Care Log Types */}
                                 <Box
                                     sx={{
                                         display: "flex",
@@ -463,7 +461,6 @@ function CgDashboard({ hasCv, approvedCV }) {
                             </CardContent>
                         </Card>
                     </Grid2>
-                    {/* Add this after the Care Logs card and before MyCares.map */}
                     <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
                         <Card
                             sx={{
@@ -567,10 +564,10 @@ function CgDashboard({ hasCv, approvedCV }) {
                             </Card>
                         </Grid2>
                     ))}
-                </Grid2>
+                </Grid2> */}
 
                 {/* Contact Admin Notice */}
-                {approvedCV && (
+                {/* {approvedCV && (
                     <Paper
                         sx={{
                             p: 3,
@@ -601,10 +598,10 @@ function CgDashboard({ hasCv, approvedCV }) {
                             Contact Admin
                         </Button>
                     </Paper>
-                )}
+                )} */}
 
                 {/* Logout Confirmation Dialog */}
-                <Dialog
+                {/* <Dialog
                     open={logoutDialogOpen}
                     onClose={handleLogoutCancel}
                     aria-labelledby="logout-dialog-title"
@@ -632,7 +629,7 @@ function CgDashboard({ hasCv, approvedCV }) {
                             Logout
                         </Button>
                     </DialogActions>
-                </Dialog>
+                </Dialog> */}
             </Container>
         </AppLayout>
     );

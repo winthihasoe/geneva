@@ -2,7 +2,7 @@ import { createTheme } from "@mui/material";
 
 const lightTheme = createTheme({
     typography: {
-        fontFamily: "Poppins, sans-serif",
+        fontFamily: "Lato, sans-serif",
         h1: {
             fontSize: "56px",
             fontWeight: 700,
@@ -47,10 +47,10 @@ const lightTheme = createTheme({
     palette: {
         mode: "light",
         primary: {
-            main: "#21875C",
+            main: "#875cd1",
         },
         secondary: {
-            main: "#FFC547",
+            main: "#a72a29",
         },
         // Add gray color palette
         gray: {
@@ -142,20 +142,20 @@ const lightTheme = createTheme({
             styleOverrides: {
                 root: {
                     textTransform: "none", // Disable uppercase transformation
-                    fontFamily: "Poppin, sans-serif",
+                    fontFamily: "Lato, sans-serif",
                     borderRadius: "30px",
                     // Default typography variant "p" styles
                     fontSize: "16px",
                     fontWeight: 600,
-                    lineHeight: "24px",
+                    lineHeight: "20px",
                     padding: "12px 24px",
                 },
                 // Size variants
                 sizeSmall: {
-                    fontSize: "14px",
+                    fontSize: "12px",
                     fontWeight: 600,
                     lineHeight: "20px",
-                    padding: "8px 16px",
+                    padding: "5px 14px",
                     borderRadius: "25px",
                 },
                 sizeMedium: {
@@ -174,46 +174,46 @@ const lightTheme = createTheme({
                 },
                 // Primary button styles
                 containedPrimary: {
-                    backgroundColor: "#21875C",
+                    backgroundColor: "#875cd1",
                     color: "#ffffff",
                     "&:hover": {
-                        backgroundColor: "#1a6b47", // Darker shade for hover
+                        backgroundColor: "#6b4bb3", // Darker shade for hover
                     },
                 },
                 outlinedPrimary: {
-                    borderColor: "#21875C",
-                    color: "#21875C",
+                    borderColor: "#875cd1",
+                    color: "#875cd1",
                     "&:hover": {
-                        borderColor: "#1a6b47",
-                        backgroundColor: "rgba(33, 135, 92, 0.04)",
+                        borderColor: "#6b4bb3",
+                        backgroundColor: "rgba(135, 92, 209, 0.04)",
                     },
                 },
                 textPrimary: {
-                    color: "#21875C",
+                    color: "#875cd1",
                     "&:hover": {
-                        backgroundColor: "rgba(33, 135, 92, 0.04)",
+                        backgroundColor: "rgba(135, 92, 209, 0.04)",
                     },
                 },
                 // Secondary button styles
                 containedSecondary: {
-                    backgroundColor: "#FFC547",
-                    color: "#000000",
+                    backgroundColor: "#a72a29",
+                    color: "#ffffff",
                     "&:hover": {
-                        backgroundColor: "#e6b03f", // Darker shade for hover
+                        backgroundColor: "#6b4bb3", // Darker shade for hover
                     },
                 },
                 outlinedSecondary: {
-                    borderColor: "#FFC547",
-                    color: "#FFC547",
+                    borderColor: "#a72a29",
+                    color: "#a72a29",
                     "&:hover": {
-                        borderColor: "#e6b03f",
-                        backgroundColor: "rgba(255, 197, 71, 0.04)",
+                        borderColor: "#6b4bb3",
+                        backgroundColor: "rgba(135, 92, 209, 0.04)",
                     },
                 },
                 textSecondary: {
-                    color: "#FFC547",
+                    color: "#a72a29",
                     "&:hover": {
-                        backgroundColor: "rgba(255, 197, 71, 0.04)",
+                        backgroundColor: "rgba(135, 92, 209, 0.04)",
                     },
                 },
             },
@@ -225,7 +225,7 @@ const lightTheme = createTheme({
                     // Customize tabs container (optional)
                 },
                 indicator: {
-                    backgroundColor: "#1c90a9", // Indicator color
+                    backgroundColor: "#875cd1", // Indicator color
                 },
             },
         },
@@ -239,7 +239,7 @@ const lightTheme = createTheme({
                     padding: "0 24px", // Adjust tab padding
                     "&.Mui-selected": {
                         color: "#fff", // Selected tab text color
-                        backgroundColor: "#1c90a9", // Selected tab background color
+                        backgroundColor: "#875cd1", // Selected tab background color
                         border: "none",
                     },
                 },
@@ -250,7 +250,7 @@ const lightTheme = createTheme({
 
 const darkTheme = createTheme({
     typography: {
-        fontFamily: "Poppin, sans-serif",
+        fontFamily: "Lato, sans-serif",
         allVariants: {
             color: "#ffffff", // Default text color
         },
@@ -293,10 +293,10 @@ const darkTheme = createTheme({
     palette: {
         mode: "dark",
         primary: {
-            main: "#21875C",
+            main: "#875cd1",
         },
         secondary: {
-            main: "#FFC547",
+            main: "#a72a29",
         },
         // Add gray color palette for dark theme
         gray: {
@@ -337,7 +337,7 @@ const darkTheme = createTheme({
             styleOverrides: {
                 root: {
                     textTransform: "none",
-                    fontFamily: "Poppin, sans-serif",
+                    fontFamily: "Lato, sans-serif",
                     borderRadius: "30px",
                     fontSize: "16px",
                     fontWeight: 600,
@@ -374,38 +374,38 @@ const darkTheme = createTheme({
                     },
                 },
                 outlinedPrimary: {
-                    borderColor: "#21875C",
-                    color: "#21875C",
+                    borderColor: "#875cd1",
+                    color: "#875cd1",
                     "&:hover": {
-                        borderColor: "#1a6b47",
-                        backgroundColor: "rgba(33, 135, 92, 0.04)",
+                        borderColor: "#6b4bb3",
+                        backgroundColor: "rgba(135, 92, 209, 0.04)",
                     },
                 },
                 textPrimary: {
-                    color: "#21875C",
+                    color: "#875cd1",
                     "&:hover": {
-                        backgroundColor: "rgba(33, 135, 92, 0.04)",
+                        backgroundColor: "rgba(135, 92, 209, 0.04)",
                     },
                 },
                 containedSecondary: {
-                    backgroundColor: "#FFC547",
-                    color: "#000000",
+                    backgroundColor: "#a72a29",
+                    color: "#ffffff",
                     "&:hover": {
-                        backgroundColor: "#e6b03f",
+                        backgroundColor: "#6b4bb3",
                     },
                 },
                 outlinedSecondary: {
-                    borderColor: "#FFC547",
-                    color: "#FFC547",
+                    borderColor: "#a72a29",
+                    color: "#a72a29",
                     "&:hover": {
-                        borderColor: "#e6b03f",
-                        backgroundColor: "rgba(255, 197, 71, 0.04)",
+                        borderColor: "#6b4bb3",
+                        backgroundColor: "rgba(135, 92, 209, 0.04)",
                     },
                 },
                 textSecondary: {
-                    color: "#FFC547",
+                    color: "#a72a29",
                     "&:hover": {
-                        backgroundColor: "rgba(255, 197, 71, 0.04)",
+                        backgroundColor: "rgba(135, 92, 209, 0.04)",
                     },
                 },
             },

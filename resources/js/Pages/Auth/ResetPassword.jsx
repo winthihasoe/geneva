@@ -81,8 +81,8 @@ export default function ResetPassword({ token, email }) {
                             sx={{
                                 border: {
                                     xs: "none",
-                                    sm: "2px solid #21875C",
-                                    md: "2px solid #21875C",
+                                    sm: "2px solid #875cd1",
+                                    md: "2px solid #875cd1",
                                 },
                                 borderRadius: 5,
                                 bgcolor: "white",
