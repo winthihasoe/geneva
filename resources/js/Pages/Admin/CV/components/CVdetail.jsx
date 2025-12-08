@@ -68,7 +68,7 @@ function CVdetail({ cv }) {
                                         objectFit: "cover",
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
-                                        backgroundColor: "orange",
+                                        backgroundColor: "gray",
                                     }}
                                 />
                             </Box>

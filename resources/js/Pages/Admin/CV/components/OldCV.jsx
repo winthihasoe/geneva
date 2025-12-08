@@ -70,7 +70,7 @@ function OldCV({ cv }) {
                                     objectFit: "cover",
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "center",
-                                    backgroundColor: "orange",
+                                    backgroundColor: "gray",
                                 }}
                             />
                         </Box>
@@ -245,14 +245,15 @@ function OldCV({ cv }) {
             <Grid2 size={7} sx={{ p: { xs: 1, sm: 3, md: 4 } }}>
                 <Typography
                     variant="h3"
-                    fontSize={{ xs: 22, sm: 35, md: 45 }}
+                    fontSize={{ xs: 22, sm: 35, md: 40 }}
                     fontWeight="bold"
+                    fontFamily={"Roboto Slab"}
                     color="secondary.main"
                 >
                     {cv.full_name.toUpperCase()}
                 </Typography>
-                <Box mb={1}>
-                    {/* Showing Newborn care Level  */}
+                {/* <Box mb={1}>
+                   
                     <Typography
                         fontSize={{ xs: 10, sm: 20, md: 23 }}
                         variant="h6"
@@ -261,7 +262,7 @@ function OldCV({ cv }) {
                         {cv?.newborn_care_level?.toUpperCase()}
                     </Typography>
 
-                    {/* Showing Nanny care Level  */}
+                 
                     <Typography
                         fontSize={{ xs: 10, sm: 20, md: 23 }}
                         variant="h6"
@@ -269,7 +270,7 @@ function OldCV({ cv }) {
                     >
                         {cv?.nanny_care_level?.toUpperCase()}
                     </Typography>
-                    {/* Showing Elder care level  */}
+                    
                     <Typography
                         fontSize={{ xs: 10, sm: 20, md: 23 }}
                         variant="h6"
@@ -277,10 +278,10 @@ function OldCV({ cv }) {
                     >
                         {cv?.level?.toUpperCase()}
                     </Typography>
-                </Box>
-                <LongText fontSize={{ xs: 12, sm: 14, md: 15 }} limit={150}>
+                </Box> */}
+                {/* <LongText fontSize={{ xs: 12, sm: 14, md: 15 }} limit={150}>
                     {cv.introduction}
-                </LongText>
+                </LongText> */}
 
                 {/* Contact Information */}
                 <Box
@@ -291,8 +292,7 @@ function OldCV({ cv }) {
                         borderTop: "2px solid",
                         borderBottom: "2px solid",
                         borderColor: "primary.main",
-                        py: 2,
-                        mt: 2,
+                        py: 1,
                     }}
                 >
                     <Typography

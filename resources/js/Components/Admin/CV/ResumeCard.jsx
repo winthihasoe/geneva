@@ -25,7 +25,7 @@ export default function ResumeCard({ resume }) {
     return (
         <Card
             sx={{
-                width: { xs: 140, sm: 200, md: 300 },
+                width: { xs: 140, sm: 160, md: 180 },
                 height: "100%",
                 borderRadius: 3,
                 boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
