@@ -1,0 +1,1 @@
+import{j as r}from"./app-BpZUTEvi.js";import{T as e}from"./Typography-_MS8rZNM.js";function n({children:t,textAlign:o="left"}){return r.jsx(e,{textAlign:o,fontSize:11,gutterBottom:!0,children:t})}export{n as T};

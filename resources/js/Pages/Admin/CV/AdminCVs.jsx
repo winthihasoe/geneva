@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 
-export default function AdminCVs({ cvs }) {
+export default function AdminCVs({ cvs, cvCount }) {
     const handlePageChange = (event, value) => {
         router.get(route("admin.cv.all"), { page: value });
     };
@@ -82,7 +82,7 @@ export default function AdminCVs({ cvs }) {
                             alignItems: "center",
                         }}
                     >
-                        <Subtitle>CV list</Subtitle>
+                        <Subtitle>Total CV</Subtitle>
                         <Box
                             sx={{
                                 bgcolor: "red",
@@ -96,7 +96,7 @@ export default function AdminCVs({ cvs }) {
                             }}
                         >
                             <Typography fontSize={11} color={"#fff"}>
-                                {cvs.length || 0}
+                                {cvCount || 0}
                             </Typography>
                         </Box>
                     </Box>
