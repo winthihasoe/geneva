@@ -11,10 +11,10 @@ class PageController extends Controller
 {
    public function index ()
    {
-      $caregivers = CV::where('is_approved', true)
+      $caregivers = CV::whereNotIn('status', ['Leave', 'Resigned', 'Blacklisted'])
       ->inRandomOrder()
       ->take(24)
-      ->select('id','nickname', 'newborn_care_level','nanny_care_level', 'level', 'date_of_birth', 'nationality', 'geneva_id', 'profile_photo', 'status', 'services')
+      ->select('id','full_name', 'newborn_care_level','nanny_care_level', 'level', 'date_of_birth', 'nationality', 'geneva_id', 'profile_photo', 'status', 'services')
       ->get();
 
      // Fetch 2 featured training courses

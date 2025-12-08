@@ -36,16 +36,15 @@ function Success() {
                         }}
                     >
                         <Typography
-                            fontFamily={"Londrina Solid"}
+                            fontFamily={"Roboto Slab"}
                             fontSize={{ xs: 26, sm: 32, md: 35 }}
                             color="primary"
                             textAlign={"center"}
                             mb={1}
                         >
-                            "Your application is submitted to Hearty Aid !”
+                            "Your application is submitted to Geneva!”
                         </Typography>
                         <Typography
-                            fontFamily={"Kufam"}
                             fontSize={{ xs: 11, sm: 13, md: 13 }}
                             textAlign={"center"}
                             mb={2}
@@ -58,7 +57,10 @@ function Success() {
                             sx={{ borderRadius: 20, width: 100 }}
                             onClick={() => router.get(route("home"))}
                         >
-                            <Typography fontFamily={"Kufam"} fontSize={17}>
+                            <Typography
+                                fontFamily={"Roboto Slab"}
+                                fontSize={17}
+                            >
                                 Home
                             </Typography>
                         </Button>

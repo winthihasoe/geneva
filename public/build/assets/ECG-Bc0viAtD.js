@@ -1,0 +1,1 @@
+import{j as t}from"./app-O3GhzCpQ.js";import{B as e}from"./Box-BuLVA_Wr.js";function m({top:s=null,right:o=null,left:l=null,bottom:n=null}){return t.jsx(e,{sx:{display:{xs:"none",sm:"none",md:"flex"},position:"absolute",top:{top:s},right:{right:o},left:{left:l},bottom:{bottom:n}},children:t.jsx("img",{src:"/images/ecg.png",alt:"star",style:{width:75}})})}export{m as E};

@@ -126,22 +126,25 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
         <Box
             sx={{
                 maxWidth: 500,
-                border: { xs: "none", sm: "4px solid" },
-                borderColor: "primary.main",
+                boxShadow: 3,
                 px: { xs: 2, sm: 3, md: 4 },
-                borderRadius: 10,
+                borderRadius: 3,
                 mb: 5,
+                py: 3,
             }}
         >
             <form onSubmit={handleSubmit}>
                 <Typography
                     variant="h5"
-                    sx={{ fontSize: { xs: "1.2rem", sm: "2rem" } }}
+                    sx={{
+                        fontSize: { xs: "1.2rem", sm: "2rem" },
+                        fontFamily: "Roboto Slab",
+                    }}
                     textAlign="center"
                     color="primary.main"
                     mb={3}
                 >
-                    Submit your CV to <br /> <b>Hearty Aid</b>
+                    Join Our <b>Geneva</b> Caregiver Team
                 </Typography>
                 <Box
                     sx={{
@@ -149,7 +152,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Label>Name as in Passport</Label>
+                    <Label>နာမည်</Label>
                     <TextField
                         variant="standard"
                         size="small"
@@ -173,7 +176,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Label>Date of birth</Label>
+                    <Label>မွေးနေ့</Label>
                     <TextField
                         variant="standard"
                         size="small"
@@ -198,7 +201,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                     }}
                     required
                 >
-                    <Label>Gender</Label>
+                    <Label>ကျား/မ</Label>
 
                     <RadioGroup
                         row
@@ -209,12 +212,12 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         <FormControlLabel
                             value="Male"
                             control={<Radio />}
-                            label="Male"
+                            label="ကျား"
                         />
                         <FormControlLabel
                             value="Female"
                             control={<Radio />}
-                            label="Female"
+                            label="မ"
                         />
                     </RadioGroup>
                     {errors.gender && (
@@ -232,20 +235,15 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                             gap: 2,
                         }}
                     >
-                        <Label>Height</Label>
+                        <Label>အရပ်အမြင့်</Label>
                         <TextField
                             variant="standard"
                             size="small"
-                            type="number"
                             value={data.height ?? ""}
-                            inputProps={{ min: 0 }}
                             onChange={handleChange}
-                            InputProps={{
-                                endAdornment: <Typography>cm</Typography>,
-                            }}
                             name="height"
                             required
-                            placeholder="160"
+                            placeholder="ပေ သို့မဟုတ် cm ဖြင့် ဖြည့်ပါ"
                         />
                         {errors.height && (
                             <Typography color="error" variant="caption">
@@ -263,20 +261,15 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                             mb: 1,
                         }}
                     >
-                        <Label>Weight</Label>
+                        <Label>ကိုယ်အလေးချိန်</Label>
                         <TextField
                             variant="standard"
                             size="small"
-                            type="number"
                             value={data.weight ?? ""}
-                            inputProps={{ min: 0 }}
                             onChange={handleChange}
                             name="weight"
-                            InputProps={{
-                                endAdornment: <Typography>kg</Typography>,
-                            }}
                             required
-                            placeholder="70"
+                            placeholder="Kg သို့မဟုတ် lb ဖြင့် ဖြည့်ပါ"
                         />
                         {errors.weight && (
                             <Typography color="error" variant="caption">
@@ -291,21 +284,21 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Label>Nationality</Label>
+                    <Label>လူမျိုး</Label>
                     <TextField
                         variant="standard"
                         size="small"
-                        value={data.nationality}
+                        value={data.ethnicity ?? ""}
                         onChange={handleChange}
-                        name="nationality"
+                        name="ethnicity"
                         sx={{ flexGrow: 1 }}
                         fullWidth
                         required
-                        placeholder="Enter nationality"
+                        placeholder="Enter ethnicity"
                     />
-                    {errors.nationality && (
+                    {errors.ethnicity && (
                         <Typography color="error" variant="caption">
-                            {errors.nationality}
+                            {errors.ethnicity}
                         </Typography>
                     )}
                 </Box>
@@ -315,11 +308,11 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Label>Religion</Label>
+                    <Label>ကိုးကွယ်သည့် ဘာသာ</Label>
                     <TextField
                         variant="standard"
                         size="small"
-                        value={data.religion}
+                        value={data.religion ?? ""}
                         onChange={handleChange}
                         name="religion"
                         sx={{ flexGrow: 1 }}
@@ -339,7 +332,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Label>Phone number</Label>
+                    <Label>ဖုန်းနံပါတ်</Label>
                     <TextField
                         variant="standard"
                         size="small"
@@ -363,7 +356,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Label>Email</Label>
+                    <Label>Email ရှိပါက - </Label>
                     <TextField
                         variant="standard"
                         type="email"
@@ -387,20 +380,20 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Label>Line ID</Label>
+                    <Label>Viber နံပါတ်ရှိပါက - </Label>
                     <TextField
                         variant="standard"
                         size="small"
-                        value={data.line}
+                        value={data.viber ?? ""}
                         onChange={handleChange}
-                        name="line"
+                        name="viber"
                         sx={{ flexGrow: 1 }}
                         fullWidth
-                        placeholder="Enter your Line ID"
+                        placeholder="Enter your Viber No."
                     />
-                    {errors.line && (
+                    {errors.viber && (
                         <Typography color="error" variant="caption">
-                            {errors.line}
+                            {errors.viber}
                         </Typography>
                     )}
                 </Box>
@@ -410,11 +403,11 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Label>Current address</Label>
+                    <Label>လက်ရှိနေရပ်လိပ်စာ</Label>
                     <TextField
                         variant="standard"
                         size="small"
-                        value={data.current_address}
+                        value={data.current_address ?? ""}
                         onChange={handleChange}
                         name="current_address"
                         sx={{ flexGrow: 1 }}
@@ -435,11 +428,11 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Label>Describe your experience</Label>
+                    <Label>လုပ်ငန်းအတွေ့အကြုံအကြောင်းဖေါ်ပြပါ</Label>
                     <TextField
                         variant="standard"
                         size="small"
-                        value={data.experience}
+                        value={data.experience ?? ""}
                         onChange={handleChange}
                         name="experience"
                         sx={{ flexGrow: 1 }}
@@ -461,25 +454,26 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Label>Passport</Label>
+                    <Label>
+                        မိမိရရှိခဲ့သော Degree / Diploma / certificate
+                        အကြောင်းဖေါ်ပြပါ
+                    </Label>
                     <TextField
                         variant="standard"
-                        type="file"
-                        inputProps={{ accept: "image/*" }}
-                        name="passport"
+                        size="small"
+                        value={data.certificate_details ?? ""}
                         onChange={handleChange}
+                        name="certificate_details"
+                        sx={{ flexGrow: 1 }}
                         fullWidth
+                        multiline
+                        required
+                        placeholder="Enter your qualification"
                     />
-                    {previews.passport && (
-                        <img
-                            src={previews.passport}
-                            alt="Passport Preview"
-                            style={{
-                                marginTop: "10px",
-                                width: "100%",
-                                borderRadius: "8px",
-                            }}
-                        />
+                    {errors.certificate_details && (
+                        <Typography color="error" variant="caption">
+                            {errors.certificate_details}
+                        </Typography>
                     )}
                 </Box>
 
@@ -489,35 +483,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         gap: 2,
                     }}
                 >
-                    <Label>Visa stamp</Label>
-                    <TextField
-                        variant="standard"
-                        type="file"
-                        inputProps={{ accept: "image/*" }}
-                        name="visa"
-                        onChange={handleChange}
-                        fullWidth
-                    />
-                    {previews.visa && (
-                        <img
-                            src={previews.visa}
-                            alt="Visa Preview"
-                            style={{
-                                marginTop: "10px",
-                                width: "100%",
-                                borderRadius: "8px",
-                            }}
-                        />
-                    )}
-                </Box>
-
-                <Box
-                    sx={{
-                        mb: 3,
-                        gap: 2,
-                    }}
-                >
-                    <Label>Certificate</Label>
+                    <Label>ရရှိထားသော Certificate တင်ရန်</Label>
                     <TextField
                         variant="standard"
                         type="file"
@@ -551,70 +517,12 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                     </Box>
                 </Box>
 
-                <TinyText>
-                    Please upload your passport photo, certificate files, and
-                    visa (if applicable).{" "}
-                    <strong>This will increase the chance of interview.</strong>
-                </TinyText>
-                <Box
-                    sx={{
-                        my: 3,
-                        gap: 2,
-                    }}
+                <Typography
+                    sx={{ fontSize: "0.7rem", lineHeight: 2 }}
+                    textAlign={"center"}
                 >
-                    <Label>What languages can you speak?</Label>
-                    <TextField
-                        variant="standard"
-                        size="small"
-                        value={data.language}
-                        onChange={handleChange}
-                        name="language"
-                        sx={{ flexGrow: 1 }}
-                        fullWidth
-                        multiline
-                        required
-                        placeholder="e.g. English, Burmese, Thai, etc."
-                    />
-                    <TinyText>
-                        You can describe languages separating with comma.
-                    </TinyText>
-                    {errors.language && (
-                        <Typography color="error" variant="caption">
-                            {errors.language}
-                        </Typography>
-                    )}
-                </Box>
-                <Box
-                    sx={{
-                        mb: 3,
-                        gap: 2,
-                    }}
-                >
-                    <Label>
-                        Certificate/Diploma/Degree award date and school name
-                    </Label>
-                    <TextField
-                        variant="standard"
-                        size="small"
-                        value={data.certificate_details}
-                        onChange={handleChange}
-                        name="certificate_details"
-                        sx={{ flexGrow: 1 }}
-                        fullWidth
-                        multiline
-                        required
-                        placeholder="Enter your qualification"
-                    />
-                    {errors.certificate_details && (
-                        <Typography color="error" variant="caption">
-                            {errors.certificate_details}
-                        </Typography>
-                    )}
-                </Box>
-
-                <Typography sx={{ fontSize: "0.7rem" }} textAlign={"center"}>
-                    You need to fill phone number and email or Line id carefully
-                    for interview.
+                    ဖုန်းနံပါတ်ကိုမှန်ကန်အောင်ဖြည့်စွက်ခြင်းဖြင့် Geneva မှ
+                    အင်တာဗျူးရန် ဆက်သွယ်မည်ဖြစ်ပါသည်။
                 </Typography>
                 <Box textAlign={"center"} my={3}>
                     <Button
@@ -623,7 +531,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         size="small"
                         sx={{ borderRadius: 20, width: 150 }}
                     >
-                        <Typography sx={{ fontSize: 18 }}>Submit</Typography>
+                        <Typography sx={{ fontSize: 14 }}>တင်မည်</Typography>
                     </Button>
                 </Box>
             </form>

@@ -49,7 +49,7 @@ function EditLevel({ cv }) {
             <Divider sx={{ my: 2 }} />
 
             <Stack spacing={3}>
-                <Box>
+                {/* <Box>
                     <Stack direction="row" alignItems="center" gap={1} mb={1}>
                         <BabyIcon color="primary" />
                         <Typography variant="body1" fontWeight="bold">
@@ -68,16 +68,16 @@ function EditLevel({ cv }) {
                         <MenuItem value="">
                             <em>Select Level</em>
                         </MenuItem>
-                        <MenuItem value="Newborn Nanny">Newborn Nanny</MenuItem>
+                        <MenuItem value="Newborn Nanny">Skilled Nanny</MenuItem>
                         <MenuItem value="Super Newborn Nanny">
-                            Super Newborn Nanny
+                            Advanced Nanny
                         </MenuItem>
                     </Select>
-                </Box>
+                </Box> */}
 
                 <Box>
                     <Stack direction="row" alignItems="center" gap={1} mb={1}>
-                        <ChildCareIcon color="secondary" />
+                        <BabyIcon color="secondary" />
                         <Typography variant="body1" fontWeight="bold">
                             Nanny Care Level
                         </Typography>
@@ -94,15 +94,21 @@ function EditLevel({ cv }) {
                         <MenuItem value="">
                             <em>Select Level</em>
                         </MenuItem>
-                        <MenuItem value="Nanny">Nanny</MenuItem>
-                        <MenuItem value="Super Nanny">Super Nanny</MenuItem>
+                        <MenuItem value="Skilled Nanny">Skilled Nanny</MenuItem>
+                        <MenuItem value="Advanced Nanny">
+                            Advanced Nanny
+                        </MenuItem>
                     </Select>
                 </Box>
 
                 <Box>
                     <Stack direction="row" alignItems="center" gap={1} mb={1}>
                         <ElderlyIcon sx={{ color: "#f57c00" }} />
-                        <Typography variant="body1" fontWeight="bold">
+                        <Typography
+                            variant="body1"
+                            fontWeight="bold"
+                            fontFamily={"Roboto Slab"}
+                        >
                             Caregiver Level
                         </Typography>
                     </Stack>
@@ -118,7 +124,9 @@ function EditLevel({ cv }) {
                         <MenuItem value="">
                             <em>Select Level</em>
                         </MenuItem>
-                        <MenuItem value="Caregiver">Caregiver</MenuItem>
+                        <MenuItem value="Skilled Caregiver">
+                            Skilled Caregiver
+                        </MenuItem>
                         <MenuItem value="Advanced Caregiver">
                             Advanced Caregiver
                         </MenuItem>

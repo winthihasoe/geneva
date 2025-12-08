@@ -1,5 +1,5 @@
 import AdminResumeTable from "@/Components/Admin/CV/AdminResumeTable";
-import ResumeToApproveCard from "@/Components/Admin/CV/ResumeToApproveCard";
+import ResumeToApproveCard from "@/Components/Admin/CV/ResumeCard";
 import ResumeText from "@/Components/Typo/ResumeText";
 import Subtitle from "@/Components/Typo/Subtitle";
 import Title from "@/Components/Typo/Title";

@@ -109,13 +109,14 @@ function Hero() {
                             }}
                         >
                             <img
-                                src="/images/explore/elder-care.jpg"
+                                src="/images/register/two-caregivers.png"
                                 alt="elder care"
                                 style={{
                                     width: "100%",
                                     height: "100%",
                                     objectFit: "cover",
                                     borderRadius: 100,
+                                    backgroundColor: "white",
                                 }}
                             />
                             <Typography

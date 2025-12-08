@@ -24,17 +24,16 @@ class JobApplyController extends Controller
                 'name' => 'required|string|max:255',
                 'date_of_birth' => 'required|date',
                 'gender' => 'required|string|max:10',
-                'height' => 'required|numeric',
-                'weight' => 'required|numeric',
-                'nationality' => 'required|string|max:100',
+                'height' => 'required',
+                'weight' => 'required',
+                'ethnicity' => 'required|string|max:100',
                 'religion' => 'required|string|max:100',
                 'phone' => 'required|string|max:20',
                 'email' => 'nullable|email|max:255',
-                'line' => 'nullable|string|max:255',
-                'current_address' => 'required|string|max:255',
+                'viber' => 'nullable|string|max:20',
+                'current_address' => 'required|string|max:500',
                 'experience' => 'required|string|max:1000',
                 'certificate_details' => 'required|string|max:1000',
-                'language' => 'required|string|max:255',
                 'passport' => 'nullable|file|mimes:jpeg,png,jpg|max:10048',
                 'visa' => 'nullable|file|mimes:jpeg,png,jpg|max:10048',
                 'certificates.*' => 'required|file|mimes:jpeg,png,jpg|max:10048',
@@ -53,7 +52,7 @@ class JobApplyController extends Controller
             $certificatePaths = [];
             if ($request->hasFile('certificates')) {
                 foreach ($request->file('certificates') as $certificate) {
-                    $certificatePaths[] = $certificate->store('certificates', 'public');
+                    $certificatePaths[] = $certificate->store('jobApply/certificates', 'public');
                 }
             }
     
@@ -64,14 +63,13 @@ class JobApplyController extends Controller
                 'gender' => $validatedData['gender'],
                 'height' => $validatedData['height'],
                 'weight' => $validatedData['weight'],
-                'nationality' => $validatedData['nationality'],
+                'ethnicity' => $validatedData['ethnicity'],
                 'religion' => $validatedData['religion'],
                 'phone' => $validatedData['phone'],
                 'email' => $validatedData['email'],
-                'line' => $validatedData['line'],
+                'viber' => $validatedData['viber'],
                 'current_address' => $validatedData['current_address'],
                 'experience' => $validatedData['experience'],
-                'language' => $validatedData['language'],
                 'passport' => $passportPath,
                 'visa' => $visaPath,
                 'certificates' => $certificatePaths,
@@ -84,10 +82,10 @@ class JobApplyController extends Controller
                 $mj = Mailjet::getClient();
 
                 $body = [
-                    'FromEmail' => "noreply@heartyaid.com",
-                    'FromName' => "Hearty Aid",
+                    'FromEmail' => "noreply@genevacaregiver.com",
+                    'FromName' => "Geneva",
                     'Subject' => "A new CV is received.",
-                    'MJ-TemplateID' => 6500192,
+                    'MJ-TemplateID' => 7562532,
                     'MJ-TemplateLanguage' => true,
                     'Vars' => [
                         // personal info
@@ -96,21 +94,21 @@ class JobApplyController extends Controller
                         "gender" => $newCV->gender ?? '',
                         "height" => $newCV->height ?? '',
                         "weight" => $newCV->weight ?? '',
-                        "nationality" => $newCV->nationality ?? '',
+                        "ethnicity" => $newCV->ethnicity ?? '',
                         "religion" => $newCV->religion ?? '',
                         "language" => $newCV->language ?? '',
                         
                         // Contact info
                         "phone" => $newCV->phone ?? '',
                         "email" => $newCV->email ?? '',
-                        "line" => $newCV->line ?? '',
+                        "viber" => $newCV->viber ?? '',
                         "current_address" => $newCV->current_address ?? '',
                        
                         // Contact info 
                         "certificate_details" => $newCV->certificate_details,
                         "experience" => $newCV->experience,
                     ],
-                    'Recipients' => [['Email' => 'heartyaidbkk@gmail.com']]
+                    'Recipients' => [['Email' => 'genevacaregivertraining@gmail.com']]
                 ];
 
                 // Send email

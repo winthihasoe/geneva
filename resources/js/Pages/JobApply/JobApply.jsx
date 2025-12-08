@@ -14,10 +14,10 @@ function JobApply() {
         gender: "",
         height: "",
         weight: "",
-        nationality: "",
+        ethnicity: "",
         religion: "",
         email: "",
-        line: "",
+        viber: "",
         current_address: "",
         experience: "",
         language: "",
@@ -60,9 +60,6 @@ function JobApply() {
                         handleSubmit={handleSubmit}
                         errors={errors}
                     />
-                    <Noodle bottom={100} left={150} />
-                    <ThreeLeaves top={100} right={100} />
-                    <Noodle top={170} right={135} />
                 </Grid2>
             </Grid2>
         </AppLayout>

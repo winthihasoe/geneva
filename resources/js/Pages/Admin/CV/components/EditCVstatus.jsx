@@ -16,7 +16,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import BlockIcon from "@mui/icons-material/Block";
 import WorkIcon from "@mui/icons-material/Work";
 import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
-
+import LocalAirportIcon from "@mui/icons-material/LocalAirport";
 function EditCVstatus({ cv }) {
     const { data, setData, post, processing } = useForm({
         status: cv?.status || "",
@@ -45,6 +45,11 @@ function EditCVstatus({ cv }) {
             label: "Occupied",
             color: "warning",
             icon: <WorkIcon fontSize="small" />,
+        },
+        Leave: {
+            label: "Leave",
+            color: "warning",
+            icon: <LocalAirportIcon fontSize="small" />,
         },
         Resigned: {
             label: "Resigned",
@@ -75,7 +80,15 @@ function EditCVstatus({ cv }) {
                 bgcolor: "#f9f9f9",
             }}
         >
-            <TitleCenter>Edit CV Status</TitleCenter>
+            <Typography
+                variant="h6"
+                fontWeight="bold"
+                fontFamily={"Roboto Slab"}
+                textAlign={"center"}
+                mb={2}
+            >
+                Edit Caregiver Status
+            </Typography>
             <Stack spacing={2} alignItems="center" sx={{ mb: 2 }}>
                 <Chip
                     icon={currentStatus.icon}
@@ -87,7 +100,11 @@ function EditCVstatus({ cv }) {
                 <Subtitle>Current Status: {currentStatus.label}</Subtitle>
             </Stack>
 
-            <Typography variant="body1" sx={{ mt: 2, mb: 1 }}>
+            <Typography
+                variant="body1"
+                fontFamily={"Roboto Slab"}
+                sx={{ mt: 2, mb: 1 }}
+            >
                 Select New Status
             </Typography>
             <Select
@@ -116,6 +133,12 @@ function EditCVstatus({ cv }) {
                     <Stack direction="row" alignItems="center" gap={1}>
                         <WorkIcon color="warning" fontSize="small" />
                         <span>Occupied</span>
+                    </Stack>
+                </MenuItem>
+                <MenuItem value="Leave">
+                    <Stack direction="row" alignItems="center" gap={1}>
+                        <LocalAirportIcon color="warning" fontSize="small" />
+                        <span>Leave</span>
                     </Stack>
                 </MenuItem>
                 <MenuItem value="Resigned">

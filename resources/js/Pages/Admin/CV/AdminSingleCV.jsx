@@ -199,15 +199,7 @@ const AdminSingleCV = ({ cv }) => {
                     {cv !== null && newCV === true && <CVdetail cv={cv} />}
                 </Box>
                 <Divider sx={{ my: 3 }} />
-                {cv.is_approved ? (
-                    <Alert severity="success" sx={{ mb: 2 }}>
-                        This caregiver's CV has been approved.
-                    </Alert>
-                ) : (
-                    <Alert severity="warning" sx={{ mb: 2 }}>
-                        This caregiver's CV is not yet approved.
-                    </Alert>
-                )}
+
                 <Alert severity="info" sx={{ mb: 3 }}>
                     Below are more details of the caregiver's CV including
                     certificates, documents, job preferences, medical history,
@@ -466,14 +458,14 @@ const AdminSingleCV = ({ cv }) => {
 
                 {/* Edit caregiver level and approved status  */}
                 <Grid2 container sx={{ my: 5 }} spacing={3}>
-                    <Grid2 size={{ xs: 12, sm: 6 }}>
+                    {/* <Grid2 size={{ xs: 12, sm: 6 }}>
                         <Card sx={{ mb: 3 }}>
                             <CardContent>
-                                {/* <EditLevel cv={cv} /> */}
+                                <EditLevel cv={cv} />
                                 <EditApprove cv={cv} />
                             </CardContent>
                         </Card>
-                    </Grid2>
+                    </Grid2> */}
                     <Grid2 size={{ xs: 12, sm: 6 }}>
                         <Card sx={{ mb: 3 }}>
                             <CardContent>

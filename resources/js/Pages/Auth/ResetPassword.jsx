@@ -60,11 +60,11 @@ export default function ResetPassword({ token, email }) {
                         sx={{ display: "flex", alignItems: "center" }}
                     >
                         <img
-                            src="/images/pricing/senior_care.png"
+                            src="/images/register/three-caregivers.png"
                             alt="Caregiver Photo"
                             style={{
                                 width: "100%",
-                                height: "100%",
+                                height: "auto",
                                 objectFit: "cover",
                             }}
                         />
@@ -91,9 +91,9 @@ export default function ResetPassword({ token, email }) {
                             }}
                         >
                             <Typography
-                                fontSize={18}
+                                fontSize={20}
                                 mb={2}
-                                fontFamily={"Livvic"}
+                                fontFamily={"Roboto Slab"}
                                 fontWeight={"bold"}
                             >
                                 Reset Password

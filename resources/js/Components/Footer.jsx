@@ -46,23 +46,24 @@ function Footer() {
                                 color="primary"
                                 gutterBottom
                             >
-                                Mandalay Address: Kharmar Thi Road, North
+                                <b>Mandalay Address:</b> 65st, 33st, Chan Aye
+                                Tharsan Twp, Mandalay.
+                            </Typography>
+                            <Typography
+                                variant="body2"
+                                color="primary"
+                                gutterBottom
+                            >
+                                <b>Yangon Address:</b> Kharmar Thi Road, North
                                 Okkala, Yangon.
                             </Typography>
+
                             <Typography
                                 variant="body2"
                                 color="primary"
                                 gutterBottom
                             >
-                                Yangon Address: 65st, 33st, Chan Aye Tharsan
-                                Twp, Mandalay.
-                            </Typography>
-                            <Typography
-                                variant="body2"
-                                color="primary"
-                                gutterBottom
-                            >
-                                Phone : 09970006670 | 09980160003
+                                <b>Phone:</b> 09970006670 | 09980160003
                             </Typography>
                             <Typography variant="body2" color="primary">
                                 genevacaregivertraining@gmail.com

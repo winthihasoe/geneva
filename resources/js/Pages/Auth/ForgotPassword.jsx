@@ -46,7 +46,7 @@ export default function ForgotPassword({ status }) {
                         sx={{ display: "flex", alignItems: "center" }}
                     >
                         <img
-                            src="/images/pricing/super_nanny.png"
+                            src="/images/register/two-caregivers.png"
                             alt="Caregiver Photo"
                             style={{
                                 width: "100%",

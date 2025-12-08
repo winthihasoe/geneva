@@ -4,6 +4,8 @@ import StarIcon from "@mui/icons-material/Star";
 import AgeCalculator from "../util/AgeCalculator";
 
 function CaregiverCardMini({ cv }) {
+    console.log("cv", cv);
+
     // Demo rating data - replace with actual data later
     const demoRating = 5; // Example: 4.5 out of 5 stars
 
@@ -27,11 +29,9 @@ function CaregiverCardMini({ cv }) {
     const getServiceType = (services) => {
         if (!services || !Array.isArray(services)) return "";
 
-        const hasElderCare =
-            services.includes("Elder care") ||
-            services.includes("Elder + Maid");
+        const hasElderCare = services.includes("Elder Care");
         const hasNewbornCare =
-            services.includes("Newborn care") ||
+            services.includes("Newborn & Baby Care") ||
             services.includes("Nanny + Maid");
 
         if (hasElderCare && hasNewbornCare) {
@@ -100,30 +100,56 @@ function CaregiverCardMini({ cv }) {
                 </Box>
             )} */}
             {/* Caregiver Photo Section */}
-            <Box
-                sx={{
-                    display: "inline-flex",
-                    flexDirection: "column",
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                    borderRadius: 2,
-                    overflow: "hidden",
-                    backgroundColor: "#FFF",
-                    boxShadow: "4px 4px 4px 0 rgba(0, 0, 0, 0.25)",
-                    flex: 1,
-                }}
-            >
-                <img
-                    src={`/storage/${cv?.profile_photo}`}
-                    alt="Caretiver photo"
-                    style={{
-                        objectFit: "cover",
+            {cv.profile_photo ? (
+                <Box
+                    sx={{
+                        display: "inline-flex",
+                        flexDirection: "column",
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                        borderRadius: 2,
+                        overflow: "hidden",
+                        backgroundColor: "#FFF",
+                        boxShadow: "4px 4px 4px 0 rgba(0, 0, 0, 0.25)",
+                        flex: 1,
+                    }}
+                >
+                    <img
+                        src={`/storage/${cv?.profile_photo}`}
+                        alt="Caregiver photo"
+                        style={{
+                            objectFit: "cover",
+                            width: "100%",
+                            height: "100%",
+                            backgroundColor: "white",
+                        }}
+                    />
+                </Box>
+            ) : (
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
                         width: "100%",
                         height: "100%",
-                        backgroundColor: "white",
+                        background:
+                            "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                        borderRadius: "12px 12px 0 0",
                     }}
-                />
-            </Box>
+                >
+                    <img
+                        src={`/images/register/three-caregivers.png`}
+                        alt="Caregiver photo"
+                        style={{
+                            objectFit: "cover",
+                            width: "100%",
+                            height: "100%",
+                            backgroundColor: "white",
+                        }}
+                    />
+                </Box>
+            )}
 
             {/* Name and Content Section */}
             <Box
@@ -154,9 +180,10 @@ function CaregiverCardMini({ cv }) {
                         maxWidth: "100%",
                         fontSize: "1rem",
                         fontWeight: 800,
+                        fontFamily: "Roboto Slab",
                     }}
                 >
-                    {cv?.nickname || "Caregiver Name"}
+                    {cv?.full_name || "Caregiver Name"}
                 </Typography>
 
                 {/* Age Section */}
@@ -178,7 +205,7 @@ function CaregiverCardMini({ cv }) {
                 <Typography
                     variant="body2"
                     fontWeight={600}
-                    color="secondary"
+                    color="white"
                     textAlign="center"
                     sx={{
                         fontSize: "0.8rem",
@@ -186,19 +213,6 @@ function CaregiverCardMini({ cv }) {
                     }}
                 >
                     {getServiceType(cv?.services)}
-                </Typography>
-
-                <Typography
-                    variant="body2"
-                    fontWeight={600}
-                    color="white"
-                    textAlign="center"
-                    sx={{
-                        fontSize: "0.6rem",
-                        minHeight: "1.2rem", // Ensure consistent height even if empty
-                    }}
-                >
-                    Starting from 16,000 THB
                 </Typography>
 
                 {/* Review Stars - coming soon*/}

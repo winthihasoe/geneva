@@ -119,8 +119,12 @@ const PhotoUploadField = ({ oldPhoto }) => {
             )}
 
             {!hasPhoto && !uploading && (
-                <Button variant="outlined" component="label">
-                    Add your photo
+                <Button
+                    variant="outlined"
+                    component="label"
+                    sx={{ fontSize: 12, px: 2, py: 1 }}
+                >
+                    Add photo
                     <input
                         type="file"
                         accept=".jpg, .jpeg, .png, .heic"

@@ -43,7 +43,7 @@ export default function CVcard({ resume }) {
                         }}
                     >
                         <Typography fontSize={11}>
-                            ID: <strong>{resume.ha_id}</strong>
+                            ID: <strong>{resume.geneva_id}</strong>
                         </Typography>
                         <Typography fontSize={11}>
                             Age:{" "}

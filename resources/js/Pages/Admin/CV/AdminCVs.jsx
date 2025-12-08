@@ -1,8 +1,6 @@
 import AdminResumeTable from "@/Components/Admin/CV/AdminResumeTable";
-import ResumeToApproveCard from "@/Components/Admin/CV/ResumeToApproveCard";
-import ResumeText from "@/Components/Typo/ResumeText";
+import ResumeCard from "@/Components/Admin/CV/ResumeCard";
 import Subtitle from "@/Components/Typo/Subtitle";
-import Title from "@/Components/Typo/Title";
 import NoData from "@/Components/util/NoData";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { Head, router } from "@inertiajs/react";
@@ -18,13 +16,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 
-export default function AdminCVs({
-    resumes,
-    resumeNeedToApprove,
-    resumeCount,
-}) {
-    const ResumeNeedToApprove = Object.values(resumeNeedToApprove);
-    const needToApproveResumeCount = ResumeNeedToApprove.length;
+export default function AdminCVs({ cvs }) {
     const handlePageChange = (event, value) => {
         router.get(route("admin.cv.all"), { page: value });
     };
@@ -90,7 +82,7 @@ export default function AdminCVs({
                             alignItems: "center",
                         }}
                     >
-                        <Subtitle>Approved Resume list</Subtitle>
+                        <Subtitle>CV list</Subtitle>
                         <Box
                             sx={{
                                 bgcolor: "red",
@@ -104,7 +96,7 @@ export default function AdminCVs({
                             }}
                         >
                             <Typography fontSize={11} color={"#fff"}>
-                                {resumeCount || 0}
+                                {cvs.length || 0}
                             </Typography>
                         </Box>
                     </Box>
@@ -120,7 +112,7 @@ export default function AdminCVs({
                     </form>
                 </Box>
 
-                {resumes.data.length > 0 ? (
+                {/* {resumes.data.length > 0 ? (
                     <>
                         <AdminResumeTable resumes={resumes.data} />
                         <Box
@@ -152,57 +144,42 @@ export default function AdminCVs({
                     </>
                 ) : (
                     <NoData />
-                )}
+                )} */}
 
-                <Divider sx={{ my: 3 }} />
-
-                <Box
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                    }}
-                >
-                    <Subtitle>To approve</Subtitle>
-                    <Box
-                        sx={{
-                            bgcolor: "red",
-                            width: 30,
-                            height: 30,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderRadius: "50%",
-                            display: "flex",
-                            mb: 1,
-                        }}
-                    >
-                        <Typography fontSize={11} color={"#fff"}>
-                            {ResumeNeedToApprove.length || 0}
-                        </Typography>
-                    </Box>
-                </Box>
-
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        justifyContent: "center",
-                        columnGap: 2,
-                        rowGap: 1,
-                        mb: 3,
-                        mt: 2,
-                    }}
-                >
-                    {ResumeNeedToApprove.length > 0 ? (
-                        ResumeNeedToApprove.map((resume) => (
-                            <ResumeToApproveCard
-                                key={resume.id}
-                                resume={resume}
+                {cvs?.data.length > 0 ? (
+                    <>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                flexWrap: "wrap",
+                                justifyContent: "center",
+                                columnGap: 1,
+                                rowGap: 1,
+                                mb: 3,
+                                mt: 2,
+                            }}
+                        >
+                            {cvs?.data.map((cv) => (
+                                <ResumeCard key={cv.id} resume={cv} />
+                            ))}
+                        </Box>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                my: 3,
+                            }}
+                        >
+                            <Pagination
+                                count={cvs.last_page}
+                                page={cvs.current_page}
+                                onChange={handlePageChange}
                             />
-                        ))
-                    ) : (
-                        <NoData />
-                    )}
-                </Box>
+                        </Box>
+                    </>
+                ) : (
+                    <NoData />
+                )}
             </Container>
         </AdminLayout>
     );

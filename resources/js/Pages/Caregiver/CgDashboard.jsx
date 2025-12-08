@@ -601,7 +601,7 @@ function CgDashboard({ hasCv, approvedCV }) {
                 )} */}
 
                 {/* Logout Confirmation Dialog */}
-                {/* <Dialog
+                <Dialog
                     open={logoutDialogOpen}
                     onClose={handleLogoutCancel}
                     aria-labelledby="logout-dialog-title"
@@ -629,7 +629,7 @@ function CgDashboard({ hasCv, approvedCV }) {
                             Logout
                         </Button>
                     </DialogActions>
-                </Dialog> */}
+                </Dialog>
             </Container>
         </AppLayout>
     );

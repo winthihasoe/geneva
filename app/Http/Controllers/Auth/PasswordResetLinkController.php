@@ -76,10 +76,10 @@ class PasswordResetLinkController extends Controller
         $mj = Mailjet::getClient();
 
         $body = [
-            'FromEmail' => "accountsupport@heartyaid.com",
-            'FromName' => "Hearty Aid",
-            'Subject' => "Password Reset Link for Hearty Aid Account",
-            'MJ-TemplateID' => 6435164,
+            'FromEmail' => "noreply@genevacaregiver.com",
+            'FromName' => "Geneva Caregiver",
+            'Subject' => "Password Reset Link for Geneva Caregiver Account",
+            'MJ-TemplateID' => 7560903,
             'MJ-TemplateLanguage' => true,
             'Vars' => ["reset_link" => $resetLink],
             'Recipients' => [['Email' => $user->email]]

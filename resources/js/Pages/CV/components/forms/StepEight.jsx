@@ -2,8 +2,12 @@ import CvContext from "@/Context/CvContext";
 import {
     Box,
     Checkbox,
+    Divider,
+    FormControl,
     FormControlLabel,
     FormGroup,
+    Radio,
+    RadioGroup,
     Typography,
 } from "@mui/material";
 import React, { useContext } from "react";
@@ -43,6 +47,7 @@ function StepEight() {
                     />
                 ))}
             </FormGroup>
+
             <FormGroup row sx={{ mb: 3, px: 2 }}>
                 {["Day duty", "Night duty"].map((duty, index) => (
                     <FormControlLabel
@@ -57,6 +62,36 @@ function StepEight() {
                     />
                 ))}
             </FormGroup>
+
+            <Divider sx={{ my: 2 }} />
+
+            <FormControl
+                component="fieldset"
+                sx={{
+                    mb: 3,
+                }}
+            >
+                <Typography variant="subtitle1" fontWeight="bold">
+                    Choose Service Area
+                </Typography>
+
+                <RadioGroup
+                    row
+                    value={data.service_area}
+                    onChange={handleChange("service_area")}
+                >
+                    <FormControlLabel
+                        value="Yangon"
+                        control={<Radio />}
+                        label="Yangon"
+                    />
+                    <FormControlLabel
+                        value="Mandalay"
+                        control={<Radio />}
+                        label="Mandalay"
+                    />
+                </RadioGroup>
+            </FormControl>
         </Box>
     );
 }

@@ -16,6 +16,8 @@ class JobApply extends Model
         'height',
         'weight',
         'nationality',
+        'ethnicity',
+        'viber',
         'religion',
         'phone',
         'email',

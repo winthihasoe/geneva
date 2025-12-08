@@ -21,21 +21,21 @@ function SingleJobApply({ apply }) {
             <Box
                 sx={{
                     maxWidth: 450,
-                    border: { xs: "none", sm: "4px solid" },
-                    borderColor: { xs: "", sm: "primary.main" },
+                    boxShadow: 3,
                     p: { xs: 2, sm: 3, md: 4 },
-                    borderRadius: 10,
+                    borderRadius: 2,
                     margin: "auto",
+                    my: 2,
                 }}
             >
                 <Typography
                     sx={{
                         textAlign: "center",
-                        fontFamily: "Abhaya Libre",
+                        fontFamily: "Roboto Slab",
                         fontSize: { xs: 25, sm: 20, md: 25 },
                         fontWeight: "bold",
                         color: "primary.main",
-                        mb: 2,
+                        mb: 3,
                     }}
                 >
                     Job Application Details
@@ -44,13 +44,15 @@ function SingleJobApply({ apply }) {
                 {/* Display Name */}
                 <Box sx={{ mb: 3 }}>
                     <Subtitle>Name as per Passport</Subtitle>
-                    <Typography>{apply.name || "N/A"}</Typography>
+                    <Typography variant="body2">
+                        {apply.name || "N/A"}
+                    </Typography>
                 </Box>
 
                 {/* Display Date of Birth */}
                 <Box sx={{ mb: 3 }}>
                     <Subtitle>Date of Birth</Subtitle>
-                    <Typography>
+                    <Typography variant="body2">
                         {apply.date_of_birth || "N/A"} (
                         <AgeCalculator date={apply?.date_of_birth} /> yrs)
                     </Typography>
@@ -59,13 +61,15 @@ function SingleJobApply({ apply }) {
                 {/* Display Gender */}
                 <Box sx={{ mb: 3 }}>
                     <Subtitle>Gender</Subtitle>
-                    <Typography>{apply.gender || "N/A"}</Typography>
+                    <Typography variant="body2">
+                        {apply.gender || "N/A"}
+                    </Typography>
                 </Box>
 
                 {/* Display Height */}
                 <Box sx={{ mb: 3 }}>
                     <Subtitle>Height</Subtitle>
-                    <Typography>
+                    <Typography variant="body2">
                         {apply.height ? `${apply.height} cm` : "N/A"}
                     </Typography>
                 </Box>
@@ -73,55 +77,69 @@ function SingleJobApply({ apply }) {
                 {/* Display Weight */}
                 <Box sx={{ mb: 3 }}>
                     <Subtitle>Weight</Subtitle>
-                    <Typography>
+                    <Typography variant="body2">
                         {apply.weight ? `${apply.weight} kg` : "N/A"}
                     </Typography>
                 </Box>
 
-                {/* Display Nationality */}
+                {/* Display Race */}
                 <Box sx={{ mb: 3 }}>
-                    <Subtitle>Nationality</Subtitle>
-                    <Typography>{apply.nationality || "N/A"}</Typography>
+                    <Subtitle>Race</Subtitle>
+                    <Typography variant="body2">
+                        {apply.ethnicity || "N/A"}
+                    </Typography>
                 </Box>
 
                 {/* Display Religion */}
                 <Box sx={{ mb: 3 }}>
                     <Subtitle>Religion</Subtitle>
-                    <Typography>{apply.religion || "N/A"}</Typography>
+                    <Typography variant="body2">
+                        {apply.religion || "N/A"}
+                    </Typography>
                 </Box>
 
                 {/* Display Phone */}
                 <Box sx={{ mb: 3 }}>
                     <Subtitle>Phone Number</Subtitle>
-                    <Typography>{apply.phone || "N/A"}</Typography>
+                    <Typography variant="body2">
+                        {apply.phone || "N/A"}
+                    </Typography>
                 </Box>
 
                 {/* Display Email */}
                 <Box sx={{ mb: 3 }}>
                     <Subtitle>Email</Subtitle>
-                    <Typography>{apply.email || "N/A"}</Typography>
+                    <Typography variant="body2">
+                        {apply.email || "N/A"}
+                    </Typography>
                 </Box>
 
-                {/* Display Line */}
+                {/* Display Viber */}
                 <Box sx={{ mb: 3 }}>
-                    <Subtitle>Line ID</Subtitle>
-                    <Typography>{apply.line || "N/A"}</Typography>
+                    <Subtitle>Viber</Subtitle>
+                    <Typography variant="body2">
+                        {apply.viber || "N/A"}
+                    </Typography>
                 </Box>
 
                 {/* Display Current Address */}
                 <Box sx={{ mb: 3 }}>
                     <Subtitle>Current Address</Subtitle>
-                    <Typography>{apply.current_address || "N/A"}</Typography>
+                    <Typography variant="body2">
+                        {apply.current_address || "N/A"}
+                    </Typography>
                 </Box>
 
                 {/* Display Experience */}
                 <Box sx={{ mb: 3 }}>
                     <Subtitle>Experience</Subtitle>
-                    <Typography>{apply.experience || "N/A"}</Typography>
+                    <Typography variant="body2">
+                        {apply.experience || "N/A"}
+                    </Typography>
                 </Box>
 
                 {/* Display Passport */}
-                <Box sx={{ mb: 3 }}>
+                {/* <Box sx={{ mb: 3 }}>
                     <Subtitle>Passport</Subtitle>
                     {apply.passport ? (
                         <Box
@@ -143,10 +161,10 @@ function SingleJobApply({ apply }) {
                     ) : (
                         <Typography>No Passport Uploaded</Typography>
                     )}
-                </Box>
+                </Box> */}
 
                 {/* Display Visa */}
-                <Box sx={{ mb: 3 }}>
+                {/* <Box sx={{ mb: 3 }}>
                     <Subtitle>Visa</Subtitle>
                     {apply.visa ? (
                         <Box
@@ -168,7 +186,7 @@ function SingleJobApply({ apply }) {
                     ) : (
                         <Typography>No Visa Uploaded</Typography>
                     )}
-                </Box>
+                </Box> */}
 
                 {/* Display Certificates */}
                 <Box sx={{ mb: 3 }}>
@@ -209,10 +227,10 @@ function SingleJobApply({ apply }) {
                 </Box>
 
                 {/* Display Language */}
-                <Box sx={{ mb: 3 }}>
+                {/* <Box sx={{ mb: 3 }}>
                     <Subtitle>Languages</Subtitle>
                     <Typography>{apply.language || "N/A"}</Typography>
-                </Box>
+                </Box> */}
 
                 {/* Display Certificate Details */}
                 <Box sx={{ mb: 3 }}>
