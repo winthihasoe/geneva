@@ -200,7 +200,7 @@ const Navbar = () => {
                                 gap: 2,
                             }}
                         >
-                            <Button
+                            {/* <Button
                                 onClick={(e) =>
                                     handleMenuOpen(e, setAnchorElPricing)
                                 }
@@ -214,7 +214,7 @@ const Navbar = () => {
                                 >
                                     Pricing
                                 </Typography>
-                            </Button>
+                            </Button> */}
                             <Menu
                                 anchorEl={anchorElPricing}
                                 open={Boolean(anchorElPricing)}
@@ -255,7 +255,7 @@ const Navbar = () => {
                                     </MenuItem>
                                 ))}
                             </Menu>
-                            <Button
+                            {/* <Button
                                 onClick={(e) =>
                                     handleMenuOpen(e, setAnchorElAbout)
                                 }
@@ -269,7 +269,7 @@ const Navbar = () => {
                                 >
                                     About Us
                                 </Typography>
-                            </Button>
+                            </Button> */}
                             <Menu
                                 anchorEl={anchorElAbout}
                                 open={Boolean(anchorElAbout)}
@@ -308,7 +308,7 @@ const Navbar = () => {
                                 ))}
                             </Menu>
 
-                            <Button
+                            {/* <Button
                                 onClick={(e) =>
                                     handleMenuOpen(e, setAnchorElContact)
                                 }
@@ -322,7 +322,7 @@ const Navbar = () => {
                                 >
                                     Contact Us
                                 </Typography>
-                            </Button>
+                            </Button> */}
                             <Menu
                                 anchorEl={anchorElContact}
                                 open={Boolean(anchorElContact)}
@@ -360,7 +360,7 @@ const Navbar = () => {
                                     </MenuItem>
                                 ))}
                             </Menu>
-                            <Button
+                            {/* <Button
                                 onClick={() => router.get(route("job.apply"))}
                             >
                                 <Typography
@@ -371,63 +371,75 @@ const Navbar = () => {
                                 >
                                     Join Our Team
                                 </Typography>
-                            </Button>
+                            </Button> */}
                         </Box>
 
                         {/* Auth buttons and admin/caregiver buttons */}
                         {/* Get into the Caregiver site */}
-                        {user && user.is_caregiver && (
-                            <Button
-                                variant="contained"
-                                color="secondary"
-                                sx={{
-                                    borderRadius: 20,
-                                    px: 2,
-                                    display: { xs: "none", md: "flex" },
-                                }}
-                                size="small"
-                                onClick={() =>
-                                    router.get(route("cg.dashboard"))
-                                }
-                            >
-                                <Typography fontSize={13}>Account</Typography>
-                            </Button>
-                        )}
-                        {user && user.is_employer && (
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                sx={{
-                                    borderRadius: 20,
-                                    px: 2,
-                                    display: { xs: "none", md: "flex" },
-                                }}
-                                size="small"
-                                onClick={() =>
-                                    router.get(route("employer.dashboard"))
-                                }
-                            >
-                                <Typography fontSize={13}>Account</Typography>
-                            </Button>
-                        )}
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
+                            }}
+                        >
+                            {user && user.is_caregiver && (
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    sx={{
+                                        borderRadius: 20,
+                                        px: 2,
+                                        display: { xs: "none", md: "flex" },
+                                    }}
+                                    size="small"
+                                    onClick={() =>
+                                        router.get(route("cg.dashboard"))
+                                    }
+                                >
+                                    <Typography fontSize={13}>
+                                        Account
+                                    </Typography>
+                                </Button>
+                            )}
+                            {user && user.is_employer && (
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    sx={{
+                                        borderRadius: 20,
+                                        px: 2,
+                                        display: { xs: "none", md: "flex" },
+                                    }}
+                                    size="small"
+                                    onClick={() =>
+                                        router.get(route("employer.dashboard"))
+                                    }
+                                >
+                                    <Typography fontSize={13}>
+                                        Account
+                                    </Typography>
+                                </Button>
+                            )}
 
-                        {/* Get into the Admin site */}
-                        {user && user.is_admin && (
-                            <Button
-                                variant="contained"
-                                sx={{
-                                    borderRadius: 20,
-                                    px: 2,
-                                    display: { xs: "none", md: "flex" },
-                                }}
-                                size="small"
-                                onClick={() =>
-                                    router.get(route("admin.dashboard"))
-                                }
-                            >
-                                <Typography fontSize={13}>Admin</Typography>
-                            </Button>
-                        )}
+                            {/* Get into the Admin site */}
+                            {user && user.is_admin && (
+                                <Button
+                                    variant="contained"
+                                    sx={{
+                                        borderRadius: 20,
+                                        px: 2,
+                                        display: { xs: "none", md: "flex" },
+                                    }}
+                                    size="small"
+                                    onClick={() =>
+                                        router.get(route("admin.dashboard"))
+                                    }
+                                >
+                                    <Typography fontSize={13}>Admin</Typography>
+                                </Button>
+                            )}
+                        </Box>
 
                         {!user ? (
                             <Box
