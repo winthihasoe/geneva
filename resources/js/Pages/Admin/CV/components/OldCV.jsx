@@ -59,13 +59,14 @@ function OldCV({ cv }) {
                                     sm: "90%",
                                     md: "70%",
                                 },
+                                height: { xs: 180, sm: 250, md: 300 },
                             }}
                         >
                             <img
                                 src={`/storage/${cv.profile_photo}`}
                                 alt="Profile"
                                 style={{
-                                    height: 250,
+                                    height: "100%",
                                     width: "100%",
                                     objectFit: "cover",
                                     backgroundRepeat: "no-repeat",
@@ -85,71 +86,28 @@ function OldCV({ cv }) {
                                 bgcolor: "#875cd1",
                             }}
                         >
-                            <Typography
-                                fontSize={{
-                                    xs: 12,
-                                    sm: 15,
-                                    md: 20,
-                                }}
-                                fontWeight={600}
-                                color="#fff"
-                            >
+                            <Typography sx={styles.sectionTitle} color="#fff">
                                 PERSONAL DETAILS
                             </Typography>
                             <Divider sx={{ my: 1 }} />
                             <Box mt={1} color={"#fff"}>
-                                <Typography
-                                    fontFamily={"Roboto Slab"}
-                                    mb={1}
-                                    variant="caption"
-                                >
-                                    ID -
-                                    <span style={{ fontSize: 14 }}>
-                                        {cv.geneva_id}
-                                    </span>
+                                <Typography sx={styles.sectionText}>
+                                    ID -{cv.geneva_id}
                                 </Typography>
-                                <Typography
-                                    fontSize={{
-                                        xs: 12,
-                                        sm: 13,
-                                        md: 15,
-                                    }}
-                                    mb={1}
-                                >
+                                <Typography sx={styles.sectionText}>
                                     <strong>Date of Birth:</strong>{" "}
                                     {cv.date_of_birth}
                                 </Typography>
 
-                                <Typography
-                                    fontSize={{
-                                        xs: 12,
-                                        sm: 13,
-                                        md: 15,
-                                    }}
-                                    mb={1}
-                                >
+                                <Typography sx={styles.sectionText}>
                                     <strong>Marital Status:</strong>{" "}
                                     {cv.marital_status}
                                 </Typography>
 
-                                <Typography
-                                    fontSize={{
-                                        xs: 12,
-                                        sm: 13,
-                                        md: 15,
-                                    }}
-                                    mb={1}
-                                >
+                                <Typography sx={styles.sectionText}>
                                     <strong>Religion:</strong> {cv.religion}
                                 </Typography>
-                                <Typography
-                                    fontSize={{
-                                        xs: 12,
-                                        sm: 13,
-                                        md: 15,
-                                    }}
-                                    mb={1}
-                                >
+                                <Typography sx={styles.sectionText}>
                                     <strong>Weight & Height:</strong> <br />
                                     {cv.weight} kg | {cv.height} cm
                                 </Typography>
@@ -165,31 +123,10 @@ function OldCV({ cv }) {
                                 p: { xs: 1, sm: 2 },
                             }}
                         >
-                            <Typography
-                                fontSize={{
-                                    xs: 12,
-                                    sm: 13,
-                                    md: 15,
-                                }}
-                                mb={2}
-                            >
-                                {cv.education_level}
-                            </Typography>
-                            <Typography
-                                fontSize={{
-                                    xs: 12,
-                                    sm: 13,
-                                    md: 15,
-                                }}
-                                mb={3}
-                            >
-                                {cv.caregiver_qualification}
-                            </Typography>
-
                             {/* Relevant course  */}
                             {cv.certificates && cv.certificates?.length > 0 ? (
                                 <>
-                                    <Typography fontWeight={600}>
+                                    <Typography sx={styles.sectionTitle}>
                                         RELEVANT QUALIFICATIONS
                                     </Typography>
                                     <Divider sx={{ my: 1 }} />
@@ -198,11 +135,7 @@ function OldCV({ cv }) {
                                             cv?.certificates.length > 0 &&
                                             cv.certificates.map((cert) => (
                                                 <Typography
-                                                    fontSize={{
-                                                        xs: 8,
-                                                        sm: 12,
-                                                        md: 15,
-                                                    }}
+                                                    sx={styles.sectionText}
                                                     key={cert.id}
                                                 >
                                                     {cert.qualification_type
@@ -220,19 +153,12 @@ function OldCV({ cv }) {
                                 </>
                             ) : (
                                 <Box>
-                                    <Typography fontWeight={600}>
+                                    <Typography sx={styles.sectionTitle}>
                                         RELEVANT QUALIFICATIONS
                                     </Typography>
                                     <Divider sx={{ my: 1 }} />
 
-                                    <Typography
-                                        fontSize={{
-                                            xs: 12,
-                                            sm: 13,
-                                            md: 15,
-                                        }}
-                                        mb={1}
-                                    >
+                                    <Typography sx={styles.sectionText}>
                                         {cv.caregiver_qualification}
                                     </Typography>
                                 </Box>
@@ -245,10 +171,13 @@ function OldCV({ cv }) {
             <Grid2 size={7} sx={{ p: { xs: 1, sm: 3, md: 4 } }}>
                 <Typography
                     variant="h3"
-                    fontSize={{ xs: 22, sm: 35, md: 40 }}
+                    fontSize={{ xs: 17, sm: 30, md: 35 }}
+                    lineHeight={1.1}
                     fontWeight="bold"
                     fontFamily={"Roboto Slab"}
                     color="secondary.main"
+                    mt={3}
+                    mb={2}
                 >
                     {cv.full_name.toUpperCase()}
                 </Typography>
@@ -295,35 +224,21 @@ function OldCV({ cv }) {
                         py: 1,
                     }}
                 >
-                    <Typography
-                        fontSize={{ xs: 13, sm: 15, md: 20 }}
-                        variant="h6"
-                        fontWeight="bold"
-                    >
-                        CONTACT
-                    </Typography>
+                    <Typography sx={styles.sectionTitle}>CONTACT</Typography>
                     <Box display="flex" flexDirection="column" gap={0.5}>
-                        <Typography
-                            fontSize={{
-                                xs: 10,
-                                sm: 13,
-                                md: 15,
-                            }}
-                        >
+                        <Typography sx={styles.sectionText}>
                             📞 09970006670 | 09980160003
                         </Typography>
 
                         <Typography
-                            fontSize={{
-                                xs: 10,
-                                sm: 13,
-                                md: 15,
-                            }}
-                            sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 0.5,
-                            }}
+                            sx={[
+                                styles.sectionText,
+                                {
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 0.5,
+                                },
+                            ]}
                         >
                             <img
                                 src="/images/social/viber.png"
@@ -335,9 +250,7 @@ function OldCV({ cv }) {
                     </Box>
                 </Box>
                 <Typography
-                    variant="h6"
-                    fontSize={{ xs: 13, sm: 15, md: 18 }}
-                    fontWeight="bold"
+                    sx={styles.sectionTitle}
                     bgcolor={"#875cd1"}
                     display={"inline-block"}
                     p={1}
@@ -347,9 +260,12 @@ function OldCV({ cv }) {
                 </Typography>
                 <Box sx={{ my: 2, pl: { xs: 0, sm: 2 } }}>
                     {cv?.newborn_experience_years && (
-                        <Typography
-                            mb={1}
-                            fontSize={{ xs: 13, sm: 15, md: 17 }}
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "flex-start",
+                                gap: 0.5,
+                            }}
                         >
                             <img
                                 src="/images/green_mark.png"
@@ -359,15 +275,20 @@ function OldCV({ cv }) {
                                     marginRight: "3px",
                                 }}
                                 alt="mark"
-                            />{" "}
-                            <strong>Newborn care experience:</strong>{" "}
-                            {cv?.newborn_experience_years}
-                        </Typography>
+                            />
+                            <Typography sx={styles.sectionText}>
+                                <strong>Newborn care experience:</strong>{" "}
+                                {cv?.newborn_experience_years}
+                            </Typography>
+                        </Box>
                     )}
                     {cv?.nanny_experience_years && (
-                        <Typography
-                            mb={1}
-                            fontSize={{ xs: 13, sm: 15, md: 17 }}
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "flex-start",
+                                gap: 0.5,
+                            }}
                         >
                             <img
                                 src="/images/green_mark.png"
@@ -377,15 +298,20 @@ function OldCV({ cv }) {
                                     marginRight: "3px",
                                 }}
                                 alt="mark"
-                            />{" "}
-                            <strong>Nanny care experience:</strong>{" "}
-                            {cv?.nanny_experience_years}
-                        </Typography>
+                            />
+                            <Typography sx={styles.sectionText}>
+                                <strong>Nanny care experience:</strong>{" "}
+                                {cv?.nanny_experience_years}
+                            </Typography>
+                        </Box>
                     )}
                     {cv?.elder_experience_years && (
-                        <Typography
-                            mb={1}
-                            fontSize={{ xs: 13, sm: 15, md: 17 }}
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "flex-start",
+                                gap: 0.5,
+                            }}
                         >
                             <img
                                 src="/images/green_mark.png"
@@ -395,47 +321,11 @@ function OldCV({ cv }) {
                                     marginRight: "3px",
                                 }}
                                 alt="mark"
-                            />{" "}
-                            <strong>Elder care experience:</strong>{" "}
-                            {cv?.elder_experience_years}
-                        </Typography>
-                    )}
-                    {cv?.experiences &&
-                        cv?.experiences.length > 0 &&
-                        cv.experiences
-                            .sort((a, b) => {
-                                if (a.order === b.order) {
-                                    // Secondary sort by `id` if `order` is the same
-                                    return a.id - b.id;
-                                }
-                                return a.order - b.order; // Primary sort by `order`
-                            })
-                            .map((exp) => (
-                                <Typography
-                                    fontSize={{
-                                        xs: 13,
-                                        sm: 16,
-                                        md: 18,
-                                    }}
-                                    fontFamily={"Mali"}
-                                    key={exp.id}
-                                >
-                                    {exp.experience}
-                                </Typography>
-                            ))}
-                    {cv?.detail_experience && (
-                        <Box sx={{ my: 2 }}>
-                            <LongText
-                                fontSize={{
-                                    xs: 13,
-                                    sm: 16,
-                                    md: 18,
-                                }}
-                                limit={200}
-                                fontFamily={"Mali"}
-                            >
-                                {cv?.detail_experience}
-                            </LongText>
+                            />
+                            <Typography sx={styles.sectionText}>
+                                <strong>Elder care experience:</strong>{" "}
+                                {cv?.elder_experience_years}
+                            </Typography>
                         </Box>
                     )}
                 </Box>
@@ -448,15 +338,12 @@ function OldCV({ cv }) {
                     }}
                 >
                     <Typography
-                        variant="h6"
-                        fontWeight="bold"
+                        sx={styles.sectionTitle}
                         bgcolor={"#875cd1"}
                         color={"#fff"}
                         display={"inline-block"}
                         py={1}
                         px={2}
-                        mb={2}
-                        fontSize={{ xs: 13, sm: 15, md: 20 }}
                     >
                         SKILLS
                     </Typography>
@@ -464,7 +351,6 @@ function OldCV({ cv }) {
                         sx={{
                             display: "flex",
                             flexDirection: "column",
-                            rowGap: 2,
                         }}
                     >
                         {cv?.nursing_skills_for_child?.length > 0 && (
@@ -472,26 +358,29 @@ function OldCV({ cv }) {
                                 <Subtitle>Baby care</Subtitle>
                                 {cv?.nursing_skills_for_child.map(
                                     (skill, index) => (
-                                        <Typography
+                                        <Box
                                             key={index}
-                                            gutterBottom
-                                            fontSize={{
-                                                xs: 12,
-                                                sm: 14,
-                                                md: 16,
+                                            sx={{
+                                                display: "flex",
+                                                alignItems: "flex-start",
+                                                gap: 0.5,
+                                                mb: 0.5,
                                             }}
                                         >
                                             <img
                                                 src="/images/green_mark.png"
                                                 style={{
-                                                    width: 15,
-                                                    height: 15,
-                                                    marginRight: "3px",
+                                                    width: 13,
+                                                    height: 13,
+                                                    marginRight: "2px",
+                                                    marginTop: "5px",
                                                 }}
-                                                alt="Line"
-                                            />{" "}
-                                            {skill}
-                                        </Typography>
+                                                alt="mark"
+                                            />
+                                            <Typography sx={styles.sectionText}>
+                                                {skill}
+                                            </Typography>
+                                        </Box>
                                     )
                                 )}
                             </Box>
@@ -501,26 +390,29 @@ function OldCV({ cv }) {
                                 <Subtitle>Elder care</Subtitle>
                                 {cv?.nursing_skills_for_elder.map(
                                     (skill, index) => (
-                                        <Typography
+                                        <Box
                                             key={index}
-                                            mb={1}
-                                            fontSize={{
-                                                xs: 12,
-                                                sm: 14,
-                                                md: 17,
+                                            sx={{
+                                                display: "flex",
+                                                alignItems: "flex-start",
+                                                gap: 0.5,
+                                                mb: 0.5,
                                             }}
                                         >
                                             <img
                                                 src="/images/green_mark.png"
                                                 style={{
-                                                    width: 15,
-                                                    height: 15,
-                                                    marginRight: "3px",
+                                                    width: 13,
+                                                    height: 13,
+                                                    marginRight: "2px",
+                                                    marginTop: "၂px",
                                                 }}
-                                                alt="Line"
-                                            />{" "}
-                                            {skill}
-                                        </Typography>
+                                                alt="mark"
+                                            />
+                                            <Typography sx={styles.sectionText}>
+                                                {skill}
+                                            </Typography>
+                                        </Box>
                                     )
                                 )}
                             </Box>
@@ -544,3 +436,22 @@ function OldCV({ cv }) {
 }
 
 export default OldCV;
+
+const styles = {
+    sectionTitle: {
+        fontSize: {
+            xs: 11,
+            sm: 15,
+            md: 20,
+        },
+        fontWeight: 600,
+        fontFamily: "Roboto Slab",
+    },
+    sectionText: {
+        fontSize: {
+            xs: 10,
+            sm: 13,
+            md: 16,
+        },
+    },
+};

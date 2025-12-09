@@ -64,8 +64,8 @@ function CaregiverCardMini({ cv }) {
     return (
         <Box
             sx={{
-                width: { xs: 150, sm: 200 },
-                height: { xs: 250, sm: 300 },
+                width: { xs: 150, sm: 200, md: 220 },
+                height: { xs: 250, sm: 300, md: 330 },
                 flexShrink: 0,
                 display: "flex",
                 flexDirection: "column",
@@ -154,7 +154,7 @@ function CaregiverCardMini({ cv }) {
             {/* Name and Content Section */}
             <Box
                 sx={{
-                    width: 150,
+                    width: 140,
                     flexShrink: 0,
                     borderRadius: "10px",
                     backgroundColor: "primary.main",

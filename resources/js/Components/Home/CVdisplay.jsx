@@ -79,25 +79,20 @@ function CVdisplay({ CVs }) {
                         Apply Job
                     </Button>
                 </Box>
-                <Grid2 container sx={{ justifyContent: "center" }} spacing={2}>
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: 2,
+                        overflowX: "auto",
+                    }}
+                >
                     {CVs && CVs.length > 0 ? (
-                        CVs.map((cv, index) => (
-                            <Grid2
-                                key={index}
-                                item
-                                size={{ xs: 6, sm: 4, md: 3 }}
-                                sx={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                }}
-                            >
-                                <CaregiverCardMini cv={cv} />
-                            </Grid2>
-                        ))
+                        CVs.map((cv, index) => <CaregiverCardMini cv={cv} />)
                     ) : (
                         <NoData />
                     )}
-                </Grid2>
+                </Box>
             </Box>
         </Container>
     );

@@ -74,8 +74,7 @@ function CVdetail({ cv }) {
                             </Box>
                             <Typography
                                 textAlign={"center"}
-                                fontSize={{ xs: 10, sm: 14, md: 16 }}
-                                fontWeight={600}
+                                sx={styles.sectionText}
                             >
                                 ID - <span>{cv.geneva_id}</span>
                             </Typography>
@@ -90,12 +89,14 @@ function CVdetail({ cv }) {
                             }}
                         >
                             <Typography
-                                fontSize={{ xs: 25, sm: 35, md: 50 }}
+                                variant="h3"
+                                fontSize={{ xs: 17, sm: 30, md: 35 }}
+                                lineHeight={1.1}
                                 fontWeight="bold"
-                                mt={{ xs: 2, sm: 0 }}
-                                mb={{ xs: 1, sm: 2, md: 3 }}
-                                noWrap
                                 fontFamily={"Roboto Slab"}
+                                color="secondary.main"
+                                mt={3}
+                                mb={1}
                             >
                                 {cv.full_name.toUpperCase()}
                             </Typography>
@@ -109,12 +110,10 @@ function CVdetail({ cv }) {
                                 }}
                             >
                                 <Typography
-                                    sx={{
-                                        color: "primary.main",
-                                        fontWeight: "bold",
-                                        mr: 1,
-                                        fontSize: { xs: 13, sm: 15, md: 17 },
-                                    }}
+                                    sx={[
+                                        styles.sectionTitle,
+                                        { color: "primary.main", mr: 1 },
+                                    ]}
                                 >
                                     PROFILE
                                 </Typography>
@@ -156,32 +155,32 @@ function CVdetail({ cv }) {
                                 }}
                             >
                                 <Grid2 size={5}>
-                                    <ResumeText>
+                                    <Typography sx={styles.sectionText}>
                                         Age:{" "}
                                         <AgeCalculator
                                             date={cv?.date_of_birth}
                                         />{" "}
                                         YEARS
-                                    </ResumeText>
-                                    <ResumeText>
+                                    </Typography>
+                                    <Typography sx={styles.sectionText}>
                                         Gender:{" "}
                                         {cv?.gender == "Male" ? "M" : "F"}
-                                    </ResumeText>
-                                    <ResumeText>
+                                    </Typography>
+                                    <Typography sx={styles.sectionText}>
                                         Height: {cv?.height} CM
-                                    </ResumeText>
+                                    </Typography>
                                 </Grid2>
                                 <Grid2 size={5}>
-                                    <ResumeText>
+                                    <Typography sx={styles.sectionText}>
                                         Marital Status: {cv?.marital_status}
-                                    </ResumeText>
-                                    <ResumeText>
+                                    </Typography>
+                                    <Typography sx={styles.sectionText}>
                                         Religion: {cv?.religion}
-                                    </ResumeText>
-                                    <ResumeText>
+                                    </Typography>
+                                    <Typography sx={styles.sectionText}>
                                         Weight: {cv?.weight}
                                         KG
-                                    </ResumeText>
+                                    </Typography>
                                 </Grid2>
                             </Grid2>
                             <Box
@@ -190,9 +189,8 @@ function CVdetail({ cv }) {
                                 }}
                             >
                                 <Typography
-                                    fontWeight={"bold"}
+                                    sx={styles.sectionText}
                                     letterSpacing={1}
-                                    fontSize={{ xs: 10, sm: 13, md: 15 }}
                                 >
                                     Hotline: 📞 09970006670 | 09980160003
                                 </Typography>
@@ -214,12 +212,10 @@ function CVdetail({ cv }) {
                             }}
                         >
                             <Typography
-                                sx={{
-                                    color: "primary.main",
-                                    fontWeight: "bold",
-                                    mr: 1,
-                                    fontSize: { xs: 10, sm: 15, md: 17 },
-                                }}
+                                sx={[
+                                    styles.sectionTitle,
+                                    { color: "primary.main", mr: 1 },
+                                ]}
                             >
                                 QUALIFICATION
                             </Typography>
@@ -258,11 +254,7 @@ function CVdetail({ cv }) {
                                         cv?.certificates.length > 0 &&
                                         cv.certificates.map((cert) => (
                                             <Typography
-                                                fontSize={{
-                                                    xs: 8,
-                                                    sm: 12,
-                                                    md: 15,
-                                                }}
+                                                sx={styles.sectionText}
                                                 key={cert.id}
                                             >
                                                 {cert.qualification_type
@@ -301,12 +293,10 @@ function CVdetail({ cv }) {
                             }}
                         >
                             <Typography
-                                sx={{
-                                    color: "primary.main",
-                                    fontWeight: "bold",
-                                    mr: 1,
-                                    fontSize: { xs: 9, sm: 15, md: 17 },
-                                }}
+                                sx={[
+                                    styles.sectionTitle,
+                                    { color: "primary.main", mr: 1 },
+                                ]}
                             >
                                 WORK_EXPERIENCE
                             </Typography>
@@ -349,9 +339,12 @@ function CVdetail({ cv }) {
                                         return a.order - b.order; // Primary sort by `order`
                                     })
                                     .map((exp) => (
-                                        <ResumeItalic key={exp.id}>
+                                        <Typography
+                                            key={exp.id}
+                                            sx={styles.sectionText}
+                                        >
                                             {exp.experience}
-                                        </ResumeItalic>
+                                        </Typography>
                                     ))}
                         </Box>
                     </Grid2>
@@ -401,12 +394,10 @@ function CVdetail({ cv }) {
                         >
                             <Box sx={{ display: "flex", alignItems: "center" }}>
                                 <Typography
-                                    sx={{
-                                        color: "primary.main",
-                                        fontWeight: "bold",
-                                        mr: 0.5,
-                                        fontSize: { xs: 11, sm: 14, md: 16 },
-                                    }}
+                                    sx={[
+                                        styles.sectionTitle,
+                                        { color: "primary.main", mr: 1 },
+                                    ]}
                                 >
                                     CAREGIVER
                                 </Typography>
@@ -432,7 +423,11 @@ function CVdetail({ cv }) {
                             <Box sx={{ ml: 1 }}>
                                 {cv?.nursing_skills_for_elder.map(
                                     (skill, index) => (
-                                        <ResumeItalic key={index}>
+                                        <Typography
+                                            sx={styles.sectionText}
+                                            key={index}
+                                            mb={0.5}
+                                        >
                                             <img
                                                 src="/images/dot.png"
                                                 style={{
@@ -443,7 +438,7 @@ function CVdetail({ cv }) {
                                                 alt="Dot"
                                             />{" "}
                                             {skill}
-                                        </ResumeItalic>
+                                        </Typography>
                                     )
                                 )}
                             </Box>
@@ -460,12 +455,10 @@ function CVdetail({ cv }) {
                         >
                             <Box sx={{ display: "flex", alignItems: "center" }}>
                                 <Typography
-                                    sx={{
-                                        color: "primary.main",
-                                        fontWeight: "bold",
-                                        mr: 1,
-                                        fontSize: { xs: 11, sm: 14, md: 16 },
-                                    }}
+                                    sx={[
+                                        styles.sectionTitle,
+                                        { color: "primary.main", mr: 1 },
+                                    ]}
                                 >
                                     NEWBORN NANNY
                                 </Typography>
@@ -491,7 +484,11 @@ function CVdetail({ cv }) {
                             <Box sx={{ ml: 1 }}>
                                 {cv?.nursing_skills_for_child.map(
                                     (skill, index) => (
-                                        <ResumeItalic key={index}>
+                                        <Typography
+                                            sx={styles.sectionText}
+                                            mb={0.5}
+                                            key={index}
+                                        >
                                             <img
                                                 src="/images/dot.png"
                                                 style={{
@@ -502,7 +499,7 @@ function CVdetail({ cv }) {
                                                 alt="Line"
                                             />{" "}
                                             {skill}
-                                        </ResumeItalic>
+                                        </Typography>
                                     )
                                 )}
                             </Box>
@@ -526,3 +523,23 @@ function CVdetail({ cv }) {
 }
 
 export default CVdetail;
+
+const styles = {
+    sectionTitle: {
+        fontSize: {
+            xs: 11,
+            sm: 15,
+            md: 20,
+        },
+        fontWeight: 600,
+        fontFamily: "Roboto Slab",
+    },
+    sectionText: {
+        fontSize: {
+            xs: 8,
+            sm: 12,
+            md: 15,
+        },
+        fontWeight: 400,
+    },
+};

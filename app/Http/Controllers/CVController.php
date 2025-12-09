@@ -461,7 +461,7 @@ class CVController extends Controller
         // $resumeNeedToApprove = CV::with('user')->where('is_approved', false)->orderBy('id', 'desc')->get();
         // $resumes = CV::with('user')->where('is_approved', true)->orderBy('id', 'desc')->paginate(10);
         $cvCount = CV::count();
-        $cvs = CV::orderBy('id', 'desc')->with('user')->paginate(5);
+        $cvs = CV::orderBy('id', 'desc')->with('user')->paginate(20);
         return Inertia::render('Admin/CV/AdminCVs', [
             'cvs' => $cvs,
             'cvCount' => $cvCount,
