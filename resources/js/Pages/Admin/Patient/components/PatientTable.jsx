@@ -36,16 +36,6 @@ function PatientTable({ patients }) {
                                 Gender
                             </Typography>
                         </TableCell>
-                        <TableCell>
-                            <Typography fontWeight="bold" color={"#fff"}>
-                                Height
-                            </Typography>
-                        </TableCell>
-                        <TableCell>
-                            <Typography fontWeight="bold" color={"#fff"}>
-                                Weight
-                            </Typography>
-                        </TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -72,18 +62,6 @@ function PatientTable({ patients }) {
                                 <Typography fontSize={13} color={"grey.600"}>
                                     {pt.gender || "N/A"}
                                 </Typography>
-                            </TableCell>
-                            <TableCell>
-                                {pt.height_cm
-                                    ? parseFloat(pt.height_cm).toFixed(0) +
-                                      " cm"
-                                    : "N/A"}{" "}
-                            </TableCell>
-                            <TableCell>
-                                {pt.weight_kg
-                                    ? parseFloat(pt.weight_kg).toFixed(1) +
-                                      " kg"
-                                    : "N/A"}{" "}
                             </TableCell>
                         </TableRow>
                     ))}

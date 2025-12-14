@@ -12,7 +12,10 @@ function CVSearchResult({ searchTerm, searchResults }) {
             <Head title="Search Result" />
             <Container maxWidth="md">
                 <Box sx={{ my: 3 }}>
-                    <Typography variant="h6">
+                    <Typography
+                        variant="subtitle1"
+                        sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
+                    >
                         <BackButton /> Search Results for "{searchTerm}"
                     </Typography>
                 </Box>

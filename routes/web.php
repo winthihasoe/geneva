@@ -10,13 +10,16 @@ use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\CgDashboardController;
 use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\CVController;
+use App\Http\Controllers\DiscountCardController;
 use App\Http\Controllers\EmployerDashboardController;
 use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\JobApplyController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\PatientCaregiverAssignmentController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PhoneVerificationController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SocialMediaController;
@@ -98,6 +101,12 @@ Route::get('/coming-soon', [PageController::class, 'comingSoon'])->name('coming.
 // Route::get('elder-health/elder-health-blogs/nutrition', [BlogController::class, 'nutrition'])->name('blog.elder.health.nutrition');
 // Route::get('elder-health/elder-health-blogs/dental-health', [BlogController::class, 'dentalHealth'])->name('blog.elder.health.dental');
 // Route::get('elder-health/elder-health-blogs/drug-medication', [BlogController::class, 'drug'])->name('blog.elder.health.drug');
+
+// Review Caregiver links
+Route::get('/review/{patient}/{caregiver}', [ReviewController::class, 'show'])->name('review.show');
+Route::post('/review', [ReviewController::class, 'store'])->name('review.store');
+// if successful review submission, generate discount card and show success page
+Route::get('/success/{cardNo}', [ReviewController::class, 'reviewSuccess'])->name('review.success');
 
 // Show Single Blog
 Route::get('blog/single-blog/{slug}', [BlogController::class, 'showSingleBlog'])->name('blog.single');
@@ -237,6 +246,10 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::post('patients/{patientId}', [CarePlanPhotoController::class, 'uploadPhotos'])->name('admin.carePlan.photo.upload');
     Route::delete('care-plans-photos/{id}', [CarePlanPhotoController::class, 'deleteCarePlanPhoto'])->name('care.plan.delete');
 
+    // Assign Caregiver to Patient
+    Route::post('/admin/patient/caregiver/assign', [PatientCaregiverAssignmentController::class, 'assign'])->name('admin.patient.caregiver.assign');
+    Route::put('/admin/patient/caregiver/end/{id}', [PatientCaregiverAssignmentController::class, 'end'])->name('admin.patient.caregiver.end');
+
     // Care plans
     Route::get('/care-plans', [CarePlanController::class, 'adminCarePlans'])->name('admin.care.plans');
     Route::get('/care-plans/{id}', [CarePlanController::class, 'adminSingleCarePlan'])->name('admin.care.plan.detail');
@@ -320,6 +333,15 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::put('social-media/{id}', [SocialMediaController::class, 'update'])->name('admin.social_media.update');
     Route::delete('social-media/{id}', [SocialMediaController::class, 'destroy'])->name('admin.social_media.delete');
     
+    // ---- Reviews Management ----
+    Route::get('review-management', [ReviewController::class, 'adminReviews'])->name('admin.reviews');
+    
+    // ---- Discount Card Management ----
+    Route::get('/discount-cards', [DiscountCardController::class, 'index'])->name('admin.discount.index');
+    Route::post('/discount-cards', [DiscountCardController::class, 'store'])->name('admin.discount.store');
+    Route::get('/discount-cards/{id}', [DiscountCardController::class, 'show'])->name('admin.discount.show');
+    Route::put('/discount-cards/{id}', [DiscountCardController::class, 'update'])->name('admin.discount.update');
+    Route::delete('/discount-cards/{id}', [DiscountCardController::class, 'destroy'])->name('admin.discount.destroy');
     // ---- contact message ----
     Route::get('contact-message', [ContactMessageController::class, 'contactMessage'])->name('admin.messages');
     Route::get('contact-message/{id}', [ContactMessageController::class, 'adminSingleMessage'])->name('admin.single.message');

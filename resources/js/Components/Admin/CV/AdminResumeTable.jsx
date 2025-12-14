@@ -14,6 +14,7 @@ import React from "react";
 import { router } from "@inertiajs/react";
 import AgeCalculator from "@/Components/util/AgeCalculator";
 import ShowActiveOrOffline from "@/Components/util/ShowActiveOrOffline";
+import MaleRoundedIcon from "@mui/icons-material/MaleRounded";
 
 function AdminResumeTable({ resumes }) {
     return (
@@ -22,25 +23,23 @@ function AdminResumeTable({ resumes }) {
                 <TableHead sx={{ bgcolor: "primary.main" }}>
                     <TableRow>
                         <TableCell>
-                            <Typography fontWeight="bold" color={"#fff"}>
+                            <Typography
+                                fontWeight="bold"
+                                fontSize={"0.8rem"}
+                                color={"#fff"}
+                            >
                                 Name
                             </Typography>
                         </TableCell>
 
                         <TableCell>
-                            <Typography fontWeight="bold" color={"#fff"}>
-                                Age
-                            </Typography>
-                        </TableCell>
-                        <TableCell>
-                            <Typography fontWeight="bold" color={"#fff"}>
-                                Gender
-                            </Typography>
-                        </TableCell>
-
-                        <TableCell>
-                            <Typography fontWeight="bold" color={"#fff"}>
-                                Level
+                            <Typography
+                                textAlign={"center"}
+                                fontWeight="bold"
+                                color={"#fff"}
+                                fontSize={"0.8rem"}
+                            >
+                                Status
                             </Typography>
                         </TableCell>
                         <TableCell>
@@ -48,8 +47,14 @@ function AdminResumeTable({ resumes }) {
                                 textAlign={"center"}
                                 fontWeight="bold"
                                 color={"#fff"}
+                                fontSize={"0.8rem"}
                             >
                                 Contact
+                            </Typography>
+                        </TableCell>
+                        <TableCell>
+                            <Typography fontSize={"0.8rem"} color={"#fff"}>
+                                <MaleRoundedIcon fontSize="small" />
                             </Typography>
                         </TableCell>
                     </TableRow>
@@ -64,31 +69,38 @@ function AdminResumeTable({ resumes }) {
                             sx={{ cursor: "pointer" }}
                         >
                             <TableCell>
-                                <Typography fontSize={13} fontWeight={"bold"}>
+                                <Typography
+                                    fontSize={"0.7rem"}
+                                    fontWeight={"bold"}
+                                >
                                     {resume.full_name || "N/A"}
-                                </Typography>
-                            </TableCell>
-                            <TableCell>
-                                <AgeCalculator date={resume.date_of_birth} />
-                            </TableCell>
-                            <TableCell>
-                                <Typography fontSize={13} color={"grey.600"}>
-                                    {resume.gender || "N/A"}
                                 </Typography>
                             </TableCell>
 
                             <TableCell>
-                                <Typography fontSize={13} color={"primary"}>
-                                    {resume.level || "N/A"}
+                                <Typography
+                                    fontSize={"0.7rem"}
+                                    color="text.secondary"
+                                >
+                                    {resume.status}
+                                </Typography>
+                            </TableCell>
+
+                            <TableCell>
+                                <Typography
+                                    fontSize={"0.7rem"}
+                                    color={"primary"}
+                                    textAlign={"center"}
+                                >
+                                    {resume.phone || "-"}
                                 </Typography>
                             </TableCell>
                             <TableCell>
                                 <Typography
-                                    fontSize={13}
-                                    color={"primary"}
-                                    textAlign={"center"}
+                                    fontSize={"0.7rem"}
+                                    color={"grey.600"}
                                 >
-                                    {resume.phone || "N/A"}
+                                    {resume.gender == "Male" ? "M" : "F"}
                                 </Typography>
                             </TableCell>
                         </TableRow>

@@ -16,6 +16,8 @@ import SportsHandballRoundedIcon from "@mui/icons-material/SportsHandballRounded
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import MonetizationOnRoundedIcon from "@mui/icons-material/MonetizationOnRounded";
 import FacebookRoundedIcon from "@mui/icons-material/FacebookRounded";
+import RateReviewIcon from "@mui/icons-material/RateReview";
+import PaymentIcon from "@mui/icons-material/Payment";
 
 export const AdminSidebarData = [
     {
@@ -27,6 +29,11 @@ export const AdminSidebarData = [
         title: "CV",
         icon: <DescriptionRoundedIcon />,
         link: "/admin/cv",
+    },
+    {
+        title: "Patient",
+        icon: <AccessibleIcon />,
+        link: "/admin/patients",
     },
     {
         title: "Care Plan",
@@ -53,11 +60,6 @@ export const AdminSidebarData = [
         icon: <SchoolIcon />,
         link: "/admin/training-courses",
     },
-    // {
-    //     title: "Patient",
-    //     icon: <AccessibleIcon />,
-    //     link: "/admin/patients",
-    // },
 
     // {
     //     title: "Shop management",
@@ -88,6 +90,16 @@ export const AdminSidebarData = [
         title: "Social Media",
         icon: <FacebookRoundedIcon />,
         link: "/admin/social-media",
+    },
+    {
+        title: "Discount Management",
+        icon: <PaymentIcon />,
+        link: "/admin/discount-cards",
+    },
+    {
+        title: "Review Management",
+        icon: <RateReviewIcon />,
+        link: "/admin/review-management",
     },
     {
         title: "Contact message",

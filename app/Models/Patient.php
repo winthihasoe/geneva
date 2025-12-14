@@ -88,4 +88,15 @@ class Patient extends Model
     {
         return $this->hasMany(CarePlanPhoto::class);
     }
+
+    public function caregiverAssignments()
+    {
+        return $this->hasMany(PatientCaregiverAssignment::class);
+    }
+
+    public function currentCaregiver()
+    {
+        return $this->hasOne(PatientCaregiverAssignment::class)
+            ->whereNull('end_date');
+    }
 }

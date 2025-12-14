@@ -454,17 +454,35 @@ class CVController extends Controller
         ]);
     }
 
-     // Show all CV to admin
-    public function adminCVs ()
+    // Show all CV to admin
+    public function adminCVs (Request $request)
     {
        
         // $resumeNeedToApprove = CV::with('user')->where('is_approved', false)->orderBy('id', 'desc')->get();
         // $resumes = CV::with('user')->where('is_approved', true)->orderBy('id', 'desc')->paginate(10);
         $cvCount = CV::count();
-        $cvs = CV::orderBy('id', 'desc')->with('user')->paginate(20);
+
+        $query = CV::with('user')
+            ->with('reviews')
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews');
+        
+        // Apply status filter
+        if ($request->has('status') && $request->status != '') {
+            $query->where('status', $request->status);
+        }
+        
+        // Apply caregiver level filter (resume_level)
+        if ($request->has('service_area') && $request->service_area != '') {
+            $query->where('service_area', $request->service_area);
+        }
+        
+        $cvs = $query->orderBy('id', 'desc')->paginate(20);
+
         return Inertia::render('Admin/CV/AdminCVs', [
             'cvs' => $cvs,
             'cvCount' => $cvCount,
+            'filters' => $request->only(['status', 'service_area'])
         ]);
     }
 
@@ -510,6 +528,7 @@ class CVController extends Controller
             })
             ->orWhere('full_name', 'like', "%{$search}%")
             ->orWhere('nickname', 'like', "%{$search}%")
+            ->orWhere('geneva_id', $search)
             ->get();
 
         return Inertia::render('Admin/CV/CVSearchResult', [

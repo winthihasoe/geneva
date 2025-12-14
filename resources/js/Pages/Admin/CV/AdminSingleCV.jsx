@@ -43,7 +43,7 @@ const AdminSingleCV = ({ cv }) => {
         return stars;
     };
 
-    const [newCV, setNewCV] = useState(true);
+    const [newCV, setNewCV] = useState(false);
 
     // For Certificate form
     const [isAdding, setIsAdding] = useState(false);

@@ -201,4 +201,9 @@ class CV extends Model
     {
         return $this->hasMany(Experience::class, 'cv_id');
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'cv_id');
+    }
 }

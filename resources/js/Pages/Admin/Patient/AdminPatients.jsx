@@ -56,10 +56,11 @@ export default function AdminPatients({ patients, count }) {
                         }}
                     >
                         <Typography
-                            fontWeight="bold"
-                            color="primary"
-                            mb={1}
                             variant="h4"
+                            color="primary"
+                            fontFamily={"Roboto Slab"}
+                            fontWeight="bold"
+                            mb={2}
                         >
                             Patients
                         </Typography>
@@ -84,19 +85,19 @@ export default function AdminPatients({ patients, count }) {
                         onClick={() =>
                             router.get(route("admin.patient.create"))
                         }
+                        size="small"
                         variant="contained"
-                        sx={{ borderRadius: 20, mb: 3 }}
+                        sx={{
+                            borderRadius: 20,
+                            mb: 3,
+                            fontSize: { xs: "0.8rem", sm: "1rem" },
+                        }}
                     >
-                        <Typography
-                            fontFamily={"Abel"}
-                            fontSize={{ xs: "0.8rem", sm: "1rem" }}
-                        >
-                            Create Patient
-                        </Typography>
+                        Create Patient
                     </Button>
                 </Box>
 
-                {/* Resume list */}
+                {/* Patient list */}
 
                 <Box
                     sx={{

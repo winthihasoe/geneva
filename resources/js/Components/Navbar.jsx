@@ -522,7 +522,7 @@ const Navbar = () => {
 
                     <List>
                         {/* Pricing Section */}
-                        <ListItem
+                        {/* <ListItem
                             button
                             sx={{ cursor: "pointer" }}
                             onClick={() => handleToggle(setOpenPricing)}
@@ -564,10 +564,10 @@ const Navbar = () => {
                                 ))}
                             </List>
                         </Collapse>
-                        <Divider />
+                        <Divider /> */}
 
                         {/* About Us Section */}
-                        <ListItem
+                        {/* <ListItem
                             button
                             sx={{ cursor: "pointer" }}
                             onClick={() => handleToggle(setOpenAbout)}
@@ -601,10 +601,10 @@ const Navbar = () => {
                                 ))}
                             </List>
                         </Collapse>
-                        <Divider />
+                        <Divider /> */}
 
                         {/* Join Our Team Section */}
-                        <ListItem
+                        {/* <ListItem
                             button
                             sx={{ cursor: "pointer" }}
                             onClick={() => handleToggle(setOpenJoin)}
@@ -638,10 +638,10 @@ const Navbar = () => {
                                 ))}
                             </List>
                         </Collapse>
-                        <Divider />
+                        <Divider /> */}
 
                         {/* Contact Us Section */}
-                        <ListItem
+                        {/* <ListItem
                             button
                             sx={{ cursor: "pointer" }}
                             onClick={() => handleToggle(setOpenContact)}
@@ -675,7 +675,7 @@ const Navbar = () => {
                                 ))}
                             </List>
                         </Collapse>
-                        <Divider />
+                        <Divider /> */}
                         {/* Contact Us Section */}
                         {!user ? (
                             <>

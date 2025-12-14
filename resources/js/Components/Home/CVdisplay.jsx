@@ -83,6 +83,7 @@ function CVdisplay({ CVs }) {
                     sx={{
                         display: "flex",
                         flexWrap: "wrap",
+                        justifyContent: "center",
                         gap: 2,
                         overflowX: "auto",
                     }}

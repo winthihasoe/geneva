@@ -15,34 +15,31 @@ import ReusableModal from "@/Components/util/ReusableModal";
 import YesOrNoModal from "@/Components/util/YesOrNoModal";
 
 export default function ResumeCard({ resume }) {
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-    const handleApprove = () => {
-        router.put(route("admin.cv.approve", resume.id));
-        handleClose();
-    };
     return (
         <Card
             sx={{
-                width: { xs: 140, sm: 160, md: 180 },
+                width: { xs: 110, sm: 160, md: 180 },
                 height: "100%",
-                borderRadius: 3,
+                borderRadius: 2,
                 boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
                 transition: "all 0.3s ease",
                 "&:hover": {
                     transform: "translateY(-4px)",
                     boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
                 },
+                cursor: "pointer",
             }}
+            onClick={() =>
+                router.visit(route("admin.cv.single", { cvId: resume.id }))
+            }
         >
-            <CardMedia sx={{ height: { xs: 150, sm: 180 } }}>
+            <CardMedia sx={{ height: { xs: 90, sm: 130 } }}>
                 {resume.profile_photo ? (
                     <Box
                         sx={{
                             height: "100%",
                             overflow: "hidden",
-                            borderRadius: "12px 12px 0 0",
+                            borderRadius: "8px 8px 0 0",
                         }}
                     >
                         <img
@@ -65,7 +62,7 @@ export default function ResumeCard({ resume }) {
                             height: "100%",
                             background:
                                 "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                            borderRadius: "12px 12px 0 0",
+                            borderRadius: "8px 8px 0 0",
                         }}
                     >
                         <Typography
@@ -82,51 +79,34 @@ export default function ResumeCard({ resume }) {
             </CardMedia>
             <CardContent
                 sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 0.5,
+                    p: { xs: 0.5, sm: 2 },
                 }}
             >
                 <Typography
                     fontWeight={700}
                     fontFamily={"Roboto Slab"}
-                    fontSize={"1.1rem"}
+                    fontSize={{ xs: "0.7rem", sm: "1rem", md: "1.1rem" }}
                     sx={{
                         overflow: "hidden",
                         textOverflow: "ellipsis",
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
+                        whiteSpace: "nowrap",
                     }}
                 >
                     {resume.full_name}
                 </Typography>
 
-                <Typography fontSize={12} color="text.secondary">
+                <Typography
+                    fontSize={{ xs: "0.6rem", sm: "0.8rem", md: "1rem" }}
+                    color="text.secondary"
+                >
                     Age: <AgeCalculator date={resume.date_of_birth} /> yrs
                 </Typography>
-                <Typography fontSize={12} color="text.secondary">
-                    {resume.service_area || "Please update service area"}
-                </Typography>
-
-                <Button
-                    variant="contained"
-                    size="medium"
-                    onClick={() =>
-                        router.get(route("admin.cv.single", resume.id))
-                    }
-                    sx={{
-                        fontSize: "0.875rem",
-                        fontWeight: 600,
-                        textTransform: "none",
-                        borderRadius: 2,
-                        py: { xs: 0.5, sm: 1 },
-                        mt: "auto",
-                    }}
-                    fullWidth
+                <Typography
+                    fontSize={{ xs: "0.6rem", sm: "0.8rem", md: "1rem" }}
+                    color="text.secondary"
                 >
-                    Details
-                </Button>
+                    {resume.service_area || "Service area?"}
+                </Typography>
             </CardContent>
         </Card>
     );

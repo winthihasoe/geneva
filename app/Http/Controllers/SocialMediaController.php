@@ -29,7 +29,10 @@ class SocialMediaController extends Controller
         ]);
 
         SocialMedia::create($validated);
-
+        
+        // Clear cache when new social media is added
+        cache()->forget('social_media_links');
+        
         return redirect()->back()->with('success', 'Social media added successfully.');
     }
 
@@ -46,6 +49,8 @@ class SocialMediaController extends Controller
 
         $socialMedia = SocialMedia::findOrFail($id);
         $socialMedia->update($validated);
+        // If links are updated, clear the cache
+        cache()->forget('social_media_links');
 
         return redirect()->back()->with('success', 'Social media updated successfully.');
     }
@@ -55,6 +60,9 @@ class SocialMediaController extends Controller
     {
         $socialMedia = SocialMedia::findOrFail($id);
         $socialMedia->delete();
+
+        // Clear cache when social media is deleted
+        cache()->forget('social_media_links');
 
         return redirect()->back()->with('success', 'Social media deleted successfully.');
     }
