@@ -4,6 +4,7 @@ import {
     Button,
     FormControl,
     FormControlLabel,
+    Grid2,
     Radio,
     RadioGroup,
     TextField,
@@ -294,7 +295,7 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         sx={{ flexGrow: 1 }}
                         fullWidth
                         required
-                        placeholder="Enter ethnicity"
+                        placeholder="Enter Race"
                     />
                     {errors.ethnicity && (
                         <Typography color="error" variant="caption">
@@ -422,6 +423,179 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         </Typography>
                     )}
                 </Box>
+
+                <Box
+                    sx={{
+                        mb: 3,
+                        gap: 2,
+                    }}
+                >
+                    <Label>မှတ်ပုံတင် (အရှေ့မျက်နှာစာ)</Label>
+                    <TextField
+                        variant="standard"
+                        type="file"
+                        inputProps={{ accept: "image/*" }}
+                        name="passport"
+                        onChange={handleChange}
+                        fullWidth
+                    />
+                    {previews.passport && (
+                        <img
+                            src={previews.passport}
+                            alt="ID Preview"
+                            style={{
+                                marginTop: "10px",
+                                width: "100%",
+                                borderRadius: "8px",
+                            }}
+                        />
+                    )}
+                </Box>
+
+                <Box
+                    sx={{
+                        mb: 3,
+                        gap: 2,
+                    }}
+                >
+                    <Label>အိမ်ထောင်စုစာရင်း (အရှေ့စာမျက်နှာ)</Label>
+                    <TextField
+                        variant="standard"
+                        type="file"
+                        inputProps={{ accept: "image/*" }}
+                        name="visa"
+                        onChange={handleChange}
+                        fullWidth
+                    />
+                    {previews.visa && (
+                        <img
+                            src={previews.visa}
+                            alt="Family Member Record Preview"
+                            style={{
+                                marginTop: "10px",
+                                width: "100%",
+                                borderRadius: "8px",
+                            }}
+                        />
+                    )}
+                </Box>
+
+                <FormControl
+                    component="fieldset"
+                    sx={{
+                        mb: 3,
+                    }}
+                    required
+                >
+                    <Label>အလုပ်ဝင်ချင်သောမြို့ရွေးချယ်ပါ</Label>
+
+                    <RadioGroup
+                        row
+                        value={data.service_area}
+                        onChange={handleChange}
+                        name="service_area"
+                    >
+                        <FormControlLabel
+                            value="Mandalay"
+                            control={<Radio />}
+                            label="မန္တလေး"
+                        />
+                        <FormControlLabel
+                            value="Yangon"
+                            control={<Radio />}
+                            label="ရန်ကုန်"
+                        />
+                    </RadioGroup>
+                    {errors.service_area && (
+                        <Typography color="error" variant="caption">
+                            {errors.service_area}
+                        </Typography>
+                    )}
+                </FormControl>
+
+                {data.service_area === "Yangon" && (
+                    <Box sx={{ mb: 3 }}>
+                        <Label>အလုပ်လုပ်နိုင်သောမြို့နယ်များရွေးချယ်ပါ</Label>
+                        <Grid2 container spacing={1}>
+                            {[
+                                "တာမွေ",
+                                "သန်လျင်",
+                                "ဗဟန်း",
+                                "ကမာရွတ်",
+                                "လှိုင်",
+                                "မရမ်းကုန်း",
+                                "မင်္ဂလာဒုံ",
+                                "ရန်ကင်း",
+                                "လမ်းမတော်",
+                                "ဗိုလ်တစ်ထောင်",
+                                "ကျောက်တံတား",
+                                "ပန်းဘဲတန်း",
+                                "ဒလ",
+                                "လှိုင်သာယာ",
+                                "မြောက်ဥက္ကလာပ",
+                                "တောင်ဥက္ကလာပ",
+                                "အင်းစိန်",
+                                "ရွှေပြည်သာ",
+                                "ထန်းတပင်",
+                                "တွံတေး",
+                                "ကြည့်မြင်တိုင်",
+
+                                "လှည်းကူး",
+                                "အလုံ",
+                                "ကျောက်တန်း",
+                                "မှော်ဘီ",
+                                "ပုဇွန်တောင်",
+                                "ဒဂုံမြို့သစ်မြောက်ပိုင်း",
+                                "ဒဂုံမြို့သစ်တောင်ပိုင်း",
+                                "ဒဂုံ",
+                                "သင်္ကန်းကျွန်း",
+                            ].map((township) => (
+                                <Grid2 item size={6} key={township}>
+                                    <FormControlLabel
+                                        control={
+                                            <input
+                                                type="checkbox"
+                                                checked={
+                                                    data.available_townships?.includes(
+                                                        township
+                                                    ) || false
+                                                }
+                                                onChange={(e) => {
+                                                    const isChecked =
+                                                        e.target.checked;
+                                                    const currentTownships =
+                                                        data.available_townships ||
+                                                        [];
+                                                    setData({
+                                                        ...data,
+                                                        available_townships:
+                                                            isChecked
+                                                                ? [
+                                                                      ...currentTownships,
+                                                                      township,
+                                                                  ]
+                                                                : currentTownships.filter(
+                                                                      (t) =>
+                                                                          t !==
+                                                                          township
+                                                                  ),
+                                                    });
+                                                }}
+                                                style={{ marginRight: "8px" }}
+                                            />
+                                        }
+                                        label={township}
+                                    />
+                                </Grid2>
+                            ))}
+                        </Grid2>
+                        {errors.available_townships && (
+                            <Typography color="error" variant="caption">
+                                {errors.available_townships}
+                            </Typography>
+                        )}
+                    </Box>
+                )}
                 <Box
                     sx={{
                         mb: 3,
@@ -502,17 +676,62 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
                         }}
                     >
                         {previews.certificates.map((src, index) => (
-                            <img
+                            <Box
                                 key={index}
-                                src={src}
-                                alt={`Certificate Preview ${index + 1}`}
-                                style={{
+                                sx={{
+                                    position: "relative",
                                     width: "100px",
                                     height: "100px",
-                                    objectFit: "cover",
-                                    borderRadius: "8px",
                                 }}
-                            />
+                            >
+                                <img
+                                    src={src}
+                                    alt={`Certificate Preview ${index + 1}`}
+                                    style={{
+                                        width: "100%",
+                                        height: "100%",
+                                        objectFit: "cover",
+                                        borderRadius: "8px",
+                                    }}
+                                />
+                                <Button
+                                    onClick={() => {
+                                        const newCertificates =
+                                            data.certificates.filter(
+                                                (_, i) => i !== index
+                                            );
+                                        const newPreviews =
+                                            previews.certificates.filter(
+                                                (_, i) => i !== index
+                                            );
+                                        setData({
+                                            ...data,
+                                            certificates: newCertificates,
+                                        });
+                                        setPreviews((prev) => ({
+                                            ...prev,
+                                            certificates: newPreviews,
+                                        }));
+                                    }}
+                                    sx={{
+                                        position: "absolute",
+                                        top: "-8px",
+                                        right: "-8px",
+                                        minWidth: "24px",
+                                        width: "24px",
+                                        height: "24px",
+                                        borderRadius: "50%",
+                                        backgroundColor: "error.main",
+                                        color: "white",
+                                        padding: 0,
+                                        "&:hover": {
+                                            backgroundColor: "error.dark",
+                                        },
+                                    }}
+                                >
+                                    ✕
+                                </Button>
+                            </Box>
                         ))}
                     </Box>
                 </Box>

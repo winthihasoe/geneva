@@ -268,7 +268,8 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::get('job-applies', [JobApplyController::class, 'adminJobApplies'])->name('admin.job.apply');
     Route::get('job-applies/{id}', [JobApplyController::class, 'adminSingleJobApply'])->name('admin.job.apply.single');
     Route::get('job-search-result', [JobApplyController::class, 'adminSearchJobApply'])->name('admin.job.apply.search');
-
+    Route::put('/admin/job-applies/{id}/update-status', [JobApplyController::class, 'updateStatus'])->name('admin.job.apply.update.status');
+    
     // Interview when employer make appointment
     Route::get('interviews', [InterviewController::class, 'index'])->name('admin.interviews');
     Route::get('interviews/search-result', [InterviewController::class, 'adminSearchInterview'])->name('admin.interview.search');

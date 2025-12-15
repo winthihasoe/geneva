@@ -23,6 +23,9 @@ class JobApply extends Model
         'email',
         'line',
         'current_address',
+        'service_area',
+        'available_townships',
+        'status',
         'experience',
         'language',
         'passport', // Path to the uploaded passport file
@@ -33,5 +36,6 @@ class JobApply extends Model
 
     protected $casts = [
         'certificates' => 'array', // Automatically decode JSON into an array when accessed
+        'available_townships' => 'array',
     ];
 }

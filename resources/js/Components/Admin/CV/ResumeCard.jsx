@@ -18,7 +18,7 @@ export default function ResumeCard({ resume }) {
     return (
         <Card
             sx={{
-                width: { xs: 110, sm: 160, md: 180 },
+                width: { xs: 140, sm: 160, md: 180 },
                 height: "100%",
                 borderRadius: 2,
                 boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
@@ -33,7 +33,7 @@ export default function ResumeCard({ resume }) {
                 router.visit(route("admin.cv.single", { cvId: resume.id }))
             }
         >
-            <CardMedia sx={{ height: { xs: 90, sm: 130 } }}>
+            <CardMedia sx={{ height: { xs: 120, sm: 130 } }}>
                 {resume.profile_photo ? (
                     <Box
                         sx={{

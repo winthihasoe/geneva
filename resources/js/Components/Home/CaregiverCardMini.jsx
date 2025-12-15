@@ -4,8 +4,6 @@ import StarIcon from "@mui/icons-material/Star";
 import AgeCalculator from "../util/AgeCalculator";
 
 function CaregiverCardMini({ cv }) {
-    console.log("cv", cv);
-
     // Demo rating data - replace with actual data later
     const demoRating = 5; // Example: 4.5 out of 5 stars
 
@@ -178,7 +176,7 @@ function CaregiverCardMini({ cv }) {
                         whiteSpace: "nowrap",
                         width: "100%",
                         maxWidth: "100%",
-                        fontSize: "1rem",
+                        fontSize: "0.8rem",
                         fontWeight: 800,
                         fontFamily: "Roboto Slab",
                     }}
@@ -191,11 +189,7 @@ function CaregiverCardMini({ cv }) {
                     color="white"
                     textAlign="center"
                     sx={{
-                        fontSize: "0.7rem",
-                        display: "-webkit-box", // Required for line clamping
-                        WebkitBoxOrient: "vertical", // Required for line clamping
-                        overflow: "hidden", // Hide overflowing text
-                        WebkitLineClamp: 1, // Limit text to 2 lines
+                        fontSize: "0.6rem",
                     }}
                 >
                     <AgeCalculator date={cv?.date_of_birth} /> years old
@@ -208,7 +202,9 @@ function CaregiverCardMini({ cv }) {
                     color="white"
                     textAlign="center"
                     sx={{
-                        fontSize: "0.8rem",
+                        fontStyle: "italic",
+                        letterSpacing: 0.5,
+                        fontSize: "0.7rem",
                         minHeight: "1.2rem", // Ensure consistent height even if empty
                     }}
                 >

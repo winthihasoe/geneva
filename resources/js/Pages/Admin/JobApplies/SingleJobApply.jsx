@@ -1,18 +1,67 @@
 import BackButton from "@/Components/BackButton";
-import Subtitle from "@/Components/Typo/Subtitle";
 import AgeCalculator from "@/Components/util/AgeCalculator";
 import ImageDialog from "@/Components/util/ImageDialog";
 import AdminLayout from "@/Layouts/AdminLayout";
-import { Head } from "@inertiajs/react";
-import { Box, Container, Typography } from "@mui/material";
+import { Head, router } from "@inertiajs/react";
+import {
+    Box,
+    Typography,
+    FormControl,
+    Select,
+    MenuItem,
+    Button,
+    Chip,
+} from "@mui/material";
 import React, { useState } from "react";
 
 function SingleJobApply({ apply }) {
-    const [openImage, setOpenImage] = useState(false); // State for image modal
-    const handleOpenImage = () => setOpenImage(true); // Open image modal
-    const handleCloseImage = () => setOpenImage(false); // Close image modal
+    const [openImage, setOpenImage] = useState(false);
+    const handleOpenImage = () => setOpenImage(true);
+    const handleCloseImage = () => setOpenImage(false);
 
     const [selectedImage, setSelectedImage] = useState("");
+    const [status, setStatus] = useState(apply.status || "Pending");
+
+    const handleStatusUpdate = () => {
+        router.put(
+            route("admin.job.apply.update.status", apply.id),
+            { status },
+            {
+                preserveScroll: true,
+            }
+        );
+    };
+
+    const InfoRow = ({ label, value }) => (
+        <Box
+            sx={{
+                display: "flex",
+                mb: 2,
+                borderBottom: "1px solid #e0e0e0",
+                pb: 1,
+            }}
+        >
+            <Typography
+                sx={{
+                    fontSize: "0.875rem",
+                    fontWeight: 600,
+                    color: "text.secondary",
+                    minWidth: "140px",
+                }}
+            >
+                {label}:
+            </Typography>
+            <Typography
+                sx={{
+                    fontSize: "0.875rem",
+                    color: "text.primary",
+                    flex: 1,
+                }}
+            >
+                {value || "N/A"}
+            </Typography>
+        </Box>
+    );
 
     return (
         <AdminLayout>
@@ -20,19 +69,20 @@ function SingleJobApply({ apply }) {
             <BackButton />
             <Box
                 sx={{
-                    maxWidth: 450,
+                    maxWidth: 700,
                     boxShadow: 3,
                     p: { xs: 2, sm: 3, md: 4 },
                     borderRadius: 2,
                     margin: "auto",
                     my: 2,
+                    bgcolor: "background.paper",
                 }}
             >
                 <Typography
                     sx={{
                         textAlign: "center",
                         fontFamily: "Roboto Slab",
-                        fontSize: { xs: 25, sm: 20, md: 25 },
+                        fontSize: { xs: "1.25rem", sm: "1.5rem" },
                         fontWeight: "bold",
                         color: "primary.main",
                         mb: 3,
@@ -41,163 +91,317 @@ function SingleJobApply({ apply }) {
                     Job Application Details
                 </Typography>
 
-                {/* Display Name */}
-                <Box sx={{ mb: 3 }}>
-                    <Subtitle>Name as per Passport</Subtitle>
-                    <Typography variant="body2">
-                        {apply.name || "N/A"}
+                {/* Status Update Section */}
+                <Box
+                    sx={{
+                        mb: 4,
+                        p: 2,
+                        bgcolor: "grey.50",
+                        borderRadius: 2,
+                    }}
+                >
+                    <Typography
+                        sx={{
+                            fontSize: "0.875rem",
+                            fontWeight: 600,
+                            mb: 2,
+                            color: "text.secondary",
+                        }}
+                    >
+                        Application Status
                     </Typography>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            gap: 2,
+                            alignItems: "center",
+                            flexWrap: "wrap",
+                        }}
+                    >
+                        <FormControl size="small" sx={{ minWidth: 180 }}>
+                            <Select
+                                value={status}
+                                onChange={(e) => setStatus(e.target.value)}
+                            >
+                                <MenuItem value="Pending">Pending</MenuItem>
+                                <MenuItem value="Contacted">Contacted</MenuItem>
+                                <MenuItem value="Uncontactable">
+                                    Uncontactable
+                                </MenuItem>
+                                <MenuItem value="Refuse job">
+                                    Refuse Job
+                                </MenuItem>
+                            </Select>
+                        </FormControl>
+                        <Button
+                            variant="contained"
+                            size="small"
+                            onClick={handleStatusUpdate}
+                        >
+                            Save
+                        </Button>
+                    </Box>
                 </Box>
 
-                {/* Display Date of Birth */}
-                <Box sx={{ mb: 3 }}>
-                    <Subtitle>Date of Birth</Subtitle>
-                    <Typography variant="body2">
-                        {apply.date_of_birth || "N/A"} (
-                        <AgeCalculator date={apply?.date_of_birth} /> yrs)
-                    </Typography>
-                </Box>
+                {/* Personal Information */}
+                <Typography
+                    sx={{
+                        fontSize: "1rem",
+                        fontWeight: 600,
+                        mb: 2,
+                        color: "primary.main",
+                    }}
+                >
+                    Personal Information
+                </Typography>
 
-                {/* Display Gender */}
-                <Box sx={{ mb: 3 }}>
-                    <Subtitle>Gender</Subtitle>
-                    <Typography variant="body2">
-                        {apply.gender || "N/A"}
-                    </Typography>
-                </Box>
+                <InfoRow label="Name" value={apply.name} />
+                <InfoRow
+                    label="Date of Birth"
+                    value={apply.date_of_birth ? apply.date_of_birth : "N/A"}
+                />
+                <InfoRow label="Gender" value={apply.gender} />
+                <InfoRow
+                    label="Height"
+                    value={apply.height ? `${apply.height} cm` : null}
+                />
+                <InfoRow
+                    label="Weight"
+                    value={apply.weight ? `${apply.weight} kg` : null}
+                />
+                <InfoRow label="Race" value={apply.ethnicity} />
+                <InfoRow label="Religion" value={apply.religion} />
 
-                {/* Display Height */}
-                <Box sx={{ mb: 3 }}>
-                    <Subtitle>Height</Subtitle>
-                    <Typography variant="body2">
-                        {apply.height ? `${apply.height} cm` : "N/A"}
-                    </Typography>
-                </Box>
+                {/* Contact Information */}
+                <Typography
+                    sx={{
+                        fontSize: "1rem",
+                        fontWeight: 600,
+                        mb: 2,
+                        mt: 3,
+                        color: "primary.main",
+                    }}
+                >
+                    Contact Information
+                </Typography>
 
-                {/* Display Weight */}
-                <Box sx={{ mb: 3 }}>
-                    <Subtitle>Weight</Subtitle>
-                    <Typography variant="body2">
-                        {apply.weight ? `${apply.weight} kg` : "N/A"}
+                <Box
+                    sx={{
+                        display: "flex",
+                        mb: 2,
+                        borderBottom: "1px solid #e0e0e0",
+                        pb: 1,
+                    }}
+                >
+                    <Typography
+                        sx={{
+                            fontSize: "0.875rem",
+                            fontWeight: 600,
+                            color: "text.secondary",
+                            minWidth: "140px",
+                        }}
+                    >
+                        Phone Number:
                     </Typography>
-                </Box>
-
-                {/* Display Race */}
-                <Box sx={{ mb: 3 }}>
-                    <Subtitle>Race</Subtitle>
-                    <Typography variant="body2">
-                        {apply.ethnicity || "N/A"}
-                    </Typography>
-                </Box>
-
-                {/* Display Religion */}
-                <Box sx={{ mb: 3 }}>
-                    <Subtitle>Religion</Subtitle>
-                    <Typography variant="body2">
-                        {apply.religion || "N/A"}
-                    </Typography>
-                </Box>
-
-                {/* Display Phone */}
-                <Box sx={{ mb: 3 }}>
-                    <Subtitle>Phone Number</Subtitle>
-                    <Typography variant="body2">
+                    <Typography
+                        component="a"
+                        href={`tel:${apply.phone}`}
+                        sx={{
+                            fontSize: "0.875rem",
+                            color: "primary.main",
+                            flex: 1,
+                            textDecoration: "none",
+                            cursor: "pointer",
+                            "&:hover": {
+                                textDecoration: "underline",
+                            },
+                        }}
+                    >
                         {apply.phone || "N/A"}
                     </Typography>
                 </Box>
+                <InfoRow label="Email" value={apply.email} />
+                <InfoRow label="Viber" value={apply.viber} />
+                <InfoRow
+                    label="Current Address"
+                    value={apply.current_address}
+                />
 
-                {/* Display Email */}
+                {/* Service Area */}
+                <Typography
+                    sx={{
+                        fontSize: "1rem",
+                        fontWeight: 600,
+                        mb: 2,
+                        mt: 3,
+                        color: "primary.main",
+                    }}
+                >
+                    Service Preferences
+                </Typography>
+
+                <InfoRow label="Service Area" value={apply.service_area} />
+
+                {apply.available_townships &&
+                    apply.available_townships.length > 0 && (
+                        <Box sx={{ mb: 2 }}>
+                            <Typography
+                                sx={{
+                                    fontSize: "0.875rem",
+                                    fontWeight: 600,
+                                    color: "text.secondary",
+                                    mb: 1,
+                                }}
+                            >
+                                Available Townships:
+                            </Typography>
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    gap: 1,
+                                }}
+                            >
+                                {apply.available_townships.map(
+                                    (township, index) => (
+                                        <Chip
+                                            key={index}
+                                            label={township}
+                                            size="small"
+                                            variant="outlined"
+                                        />
+                                    )
+                                )}
+                            </Box>
+                        </Box>
+                    )}
+
+                {/* Professional Information */}
+                <Typography
+                    sx={{
+                        fontSize: "1rem",
+                        fontWeight: 600,
+                        mb: 2,
+                        mt: 3,
+                        color: "primary.main",
+                    }}
+                >
+                    Professional Information
+                </Typography>
+
+                <InfoRow label="Experience" value={apply.experience} />
+                <InfoRow
+                    label="Qualifications"
+                    value={apply.certificate_details}
+                />
+
+                {/* Documents */}
+                <Typography
+                    sx={{
+                        fontSize: "1rem",
+                        fontWeight: 600,
+                        mb: 2,
+                        mt: 3,
+                        color: "primary.main",
+                    }}
+                >
+                    Documents
+                </Typography>
+
+                {/* National ID */}
                 <Box sx={{ mb: 3 }}>
-                    <Subtitle>Email</Subtitle>
-                    <Typography variant="body2">
-                        {apply.email || "N/A"}
+                    <Typography
+                        sx={{
+                            fontSize: "0.875rem",
+                            fontWeight: 600,
+                            color: "text.secondary",
+                            mb: 1,
+                        }}
+                    >
+                        National ID
                     </Typography>
-                </Box>
-
-                {/* Display Viber */}
-                <Box sx={{ mb: 3 }}>
-                    <Subtitle>Viber</Subtitle>
-                    <Typography variant="body2">
-                        {apply.viber || "N/A"}
-                    </Typography>
-                </Box>
-
-                {/* Display Current Address */}
-                <Box sx={{ mb: 3 }}>
-                    <Subtitle>Current Address</Subtitle>
-                    <Typography variant="body2">
-                        {apply.current_address || "N/A"}
-                    </Typography>
-                </Box>
-
-                {/* Display Experience */}
-                <Box sx={{ mb: 3 }}>
-                    <Subtitle>Experience</Subtitle>
-                    <Typography variant="body2">
-                        {apply.experience || "N/A"}
-                    </Typography>
-                </Box>
-
-                {/* Display Passport */}
-                {/* <Box sx={{ mb: 3 }}>
-                    <Subtitle>Passport</Subtitle>
                     {apply.passport ? (
                         <Box
                             onClick={() => {
                                 setSelectedImage(apply.passport);
                                 handleOpenImage();
                             }}
+                            sx={{ cursor: "pointer" }}
                         >
                             <img
                                 src={`/storage/${apply.passport}`}
                                 alt="Passport"
                                 style={{
-                                    marginTop: "10px",
-                                    width: "100%",
+                                    width: "200px",
+                                    height: "auto",
                                     borderRadius: "8px",
+                                    border: "1px solid #e0e0e0",
                                 }}
                             />
                         </Box>
                     ) : (
-                        <Typography>No Passport Uploaded</Typography>
+                        <Typography sx={{ fontSize: "0.875rem" }}>
+                            No ID Uploaded
+                        </Typography>
                     )}
-                </Box> */}
+                </Box>
 
-                {/* Display Visa */}
-                {/* <Box sx={{ mb: 3 }}>
-                    <Subtitle>Visa</Subtitle>
+                {/* Family Member Record */}
+                <Box sx={{ mb: 3 }}>
+                    <Typography
+                        sx={{
+                            fontSize: "0.875rem",
+                            fontWeight: 600,
+                            color: "text.secondary",
+                            mb: 1,
+                        }}
+                    >
+                        Family Member Record
+                    </Typography>
                     {apply.visa ? (
                         <Box
                             onClick={() => {
                                 setSelectedImage(apply.visa);
                                 handleOpenImage();
                             }}
+                            sx={{ cursor: "pointer" }}
                         >
                             <img
                                 src={`/storage/${apply.visa}`}
                                 alt="Visa"
                                 style={{
-                                    marginTop: "10px",
-                                    width: "100%",
+                                    width: "200px",
+                                    height: "auto",
                                     borderRadius: "8px",
+                                    border: "1px solid #e0e0e0",
                                 }}
                             />
                         </Box>
                     ) : (
-                        <Typography>No Visa Uploaded</Typography>
+                        <Typography sx={{ fontSize: "0.875rem" }}>
+                            No Record Uploaded
+                        </Typography>
                     )}
-                </Box> */}
+                </Box>
 
-                {/* Display Certificates */}
+                {/* Certificates */}
                 <Box sx={{ mb: 3 }}>
-                    <Subtitle>Certificates</Subtitle>
+                    <Typography
+                        sx={{
+                            fontSize: "0.875rem",
+                            fontWeight: 600,
+                            color: "text.secondary",
+                            mb: 1,
+                        }}
+                    >
+                        Certificates
+                    </Typography>
                     {apply.certificates && apply.certificates.length > 0 ? (
                         <Box
                             sx={{
                                 display: "flex",
                                 flexWrap: "wrap",
-                                gap: "10px",
-                                marginTop: "10px",
+                                gap: 2,
                             }}
                         >
                             {apply.certificates.map((src, index) => (
@@ -207,40 +411,31 @@ function SingleJobApply({ apply }) {
                                         handleOpenImage();
                                     }}
                                     key={index}
+                                    sx={{ cursor: "pointer" }}
                                 >
                                     <img
                                         src={`/storage/${src}`}
                                         alt={`Certificate ${index + 1}`}
                                         style={{
-                                            width: "100px",
-                                            height: "100px",
+                                            width: "120px",
+                                            height: "120px",
                                             objectFit: "cover",
                                             borderRadius: "8px",
+                                            border: "1px solid #e0e0e0",
                                         }}
                                     />
                                 </Box>
                             ))}
                         </Box>
                     ) : (
-                        <Typography>No Certificates Uploaded</Typography>
+                        <Typography sx={{ fontSize: "0.875rem" }}>
+                            No Certificates Uploaded
+                        </Typography>
                     )}
-                </Box>
-
-                {/* Display Language */}
-                {/* <Box sx={{ mb: 3 }}>
-                    <Subtitle>Languages</Subtitle>
-                    <Typography>{apply.language || "N/A"}</Typography>
-                </Box> */}
-
-                {/* Display Certificate Details */}
-                <Box sx={{ mb: 3 }}>
-                    <Subtitle>Certificate/Diploma/Degree Details</Subtitle>
-                    <Typography>
-                        {apply.certificate_details || "N/A"}
-                    </Typography>
                 </Box>
             </Box>
             <BackButton />
+
             {/* Image Dialog */}
             <ImageDialog
                 open={openImage}

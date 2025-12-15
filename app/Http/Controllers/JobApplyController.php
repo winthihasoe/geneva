@@ -32,6 +32,9 @@ class JobApplyController extends Controller
                 'email' => 'nullable|email|max:255',
                 'viber' => 'nullable|string|max:20',
                 'current_address' => 'required|string|max:500',
+                'service_area' => 'required|string|max:255',
+                'available_townships' => 'nullable|array',
+                'available_townships.*' => 'string',
                 'experience' => 'required|string|max:1000',
                 'certificate_details' => 'required|string|max:1000',
                 'passport' => 'nullable|file|mimes:jpeg,png,jpg|max:10048',
@@ -40,12 +43,14 @@ class JobApplyController extends Controller
             ]);
     
               // Handle file uploads with null checks
+              // table column is passport but store National ID
             $passportPath = $request->hasFile('passport')
-            ? $request->file('passport')->store('passports', 'public')
+            ? $request->file('passport')->store('jobApply/id', 'public')
             : null;
 
+            // table column is visa but store Family Member record
             $visaPath = $request->hasFile('visa')
-                ? $request->file('visa')->store('visas', 'public')
+                ? $request->file('visa')->store('jobApply/familyMembers', 'public')
                 : null;
 
             // Save certificate files
@@ -69,6 +74,8 @@ class JobApplyController extends Controller
                 'email' => $validatedData['email'],
                 'viber' => $validatedData['viber'],
                 'current_address' => $validatedData['current_address'],
+                'service_area' => $validatedData['service_area'],
+                'available_townships' => $validatedData['available_townships'] ?? [],
                 'experience' => $validatedData['experience'],
                 'passport' => $passportPath,
                 'visa' => $visaPath,
@@ -103,7 +110,8 @@ class JobApplyController extends Controller
                         "email" => $newCV->email ?? '',
                         "viber" => $newCV->viber ?? '',
                         "current_address" => $newCV->current_address ?? '',
-                       
+                        "service_area" => $newCV->service_area ?? '',
+
                         // Contact info 
                         "certificate_details" => $newCV->certificate_details,
                         "experience" => $newCV->experience,
@@ -140,7 +148,7 @@ class JobApplyController extends Controller
     public function adminJobApplies()
     {
         return Inertia::render('Admin/JobApplies/JobApplies', [
-            'jobApplies' => JobApply::orderBy('id', 'desc')->paginate(10),
+            'jobApplies' => JobApply::orderBy('id', 'desc')->paginate(20),
             'count' => JobApply::count(),
         ]);
     }
@@ -166,6 +174,20 @@ class JobApplyController extends Controller
             'searchTerm' => $search,
             'searchResults' => $searchResults,
         ]);
+    }
+
+    // Update status of job apply
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:Pending,Contacted,Uncontactable,Refuse job',
+        ]);
+
+        $apply = JobApply::findOrFail($id);
+        $apply->status = $request->status;
+        $apply->save();
+
+        return back()->with('success', 'Status updated successfully.');
     }
 
 }

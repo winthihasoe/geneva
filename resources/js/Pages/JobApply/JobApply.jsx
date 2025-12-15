@@ -19,13 +19,17 @@ function JobApply() {
         email: "",
         viber: "",
         current_address: "",
+        service_area: "",
+        available_townships: [], // Multiple selection
         experience: "",
         language: "",
         certificate_details: "",
         certificates: [], // Multiple files
-        passport: null, // Single file
-        visa: null, // Single file
+        passport: null, // Identification file
+        visa: null, // Family membership file
     });
+
+    console.log("apply form data", data);
 
     const handleSubmit = (e) => {
         e.preventDefault();

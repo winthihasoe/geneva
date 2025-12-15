@@ -20,29 +20,31 @@ function AdminJobApplyTable({ applications }) {
                 <TableHead sx={{ bgcolor: "primary.main" }}>
                     <TableRow>
                         <TableCell>
-                            <Typography fontWeight="bold" color={"#fff"}>
+                            <Typography
+                                variant="body2"
+                                fontWeight="bold"
+                                color={"#fff"}
+                            >
                                 Name
                             </Typography>
                         </TableCell>
 
                         <TableCell>
-                            <Typography fontWeight="bold" color={"#fff"}>
-                                Age
-                            </Typography>
-                        </TableCell>
-                        <TableCell>
-                            <Typography fontWeight="bold" color={"#fff"}>
+                            <Typography
+                                variant="body2"
+                                fontWeight="bold"
+                                color={"#fff"}
+                            >
                                 Gender
                             </Typography>
                         </TableCell>
                         <TableCell>
-                            <Typography fontWeight="bold" color={"#fff"}>
-                                Height
-                            </Typography>
-                        </TableCell>
-                        <TableCell>
-                            <Typography fontWeight="bold" color={"#fff"}>
-                                Weight
+                            <Typography
+                                variant="body2"
+                                fontWeight="bold"
+                                color={"#fff"}
+                            >
+                                Status
                             </Typography>
                         </TableCell>
                     </TableRow>
@@ -59,30 +61,35 @@ function AdminJobApplyTable({ applications }) {
                             sx={{ cursor: "pointer" }}
                         >
                             <TableCell>
-                                <strong>{apply.name || "N/A"}</strong>
+                                <Typography variant="body2" fontSize={"0.8rem"}>
+                                    <strong>{apply.name || "N/A"}</strong>
+                                    <br />
+                                    <span
+                                        style={{
+                                            color: "gray",
+                                            fontSize: "0.7rem",
+                                        }}
+                                    >
+                                        <AgeCalculator
+                                            date={apply.date_of_birth}
+                                        />{" "}
+                                        yrs
+                                    </span>
+                                </Typography>
                             </TableCell>
+
                             <TableCell>
-                                <AgeCalculator date={apply.date_of_birth} />
-                            </TableCell>
-                            <TableCell>
-                                <Typography variant="body2" color={"grey.600"}>
+                                <Typography
+                                    variant="body2"
+                                    fontSize={"0.7rem"}
+                                    color={"grey.600"}
+                                >
                                     {apply.gender || "N/A"}
                                 </Typography>
                             </TableCell>
                             <TableCell>
-                                <Typography variant="body2">
-                                    {apply.height
-                                        ? parseFloat(apply.height).toFixed(1)
-                                        : "N/A"}
-                                    cm
-                                </Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Typography variant="body2">
-                                    {apply.weight
-                                        ? parseFloat(apply.weight).toFixed(1)
-                                        : "N/A"}
-                                    kg
+                                <Typography variant="body2" fontSize={"0.8rem"}>
+                                    {apply.status || "N/A"}
                                 </Typography>
                             </TableCell>
                         </TableRow>

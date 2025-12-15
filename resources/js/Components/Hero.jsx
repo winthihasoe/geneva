@@ -18,19 +18,19 @@ function Hero() {
                     {/* Image Section */}
                     <Grid2
                         item
-                        size={{ xs: 12, sm: 10, md: 6 }}
+                        size={{ xs: 12, sm: 10, md: 5 }}
                         sx={{
                             display: "flex",
                             flexDirection: "row",
                             justifyContent: "center",
-                            gap: { xs: 1, sm: 2 },
+                            gap: { xs: 1, sm: 3 },
                             pt: { xs: 0, sm: 0, md: 8 },
                             pb: 8,
                             px: 1,
                         }}
                     >
                         {/* Maternal Care  */}
-                        <Box
+                        {/* <Box
                             sx={{
                                 width: { xs: 120, sm: 163 },
                                 height: { xs: 280, sm: 350 },
@@ -62,13 +62,13 @@ function Hero() {
                                 Maternal <br />
                                 Care
                             </Typography>
-                        </Box>
+                        </Box> */}
 
                         {/* Baby care  */}
                         <Box
                             sx={{
-                                width: { xs: 120, sm: 163 },
-                                height: { xs: 280, sm: 350 },
+                                width: { xs: 130, sm: 163 },
+                                height: { xs: 300, sm: 350 },
                                 display: "flex",
 
                                 flexDirection: "column",
@@ -101,8 +101,8 @@ function Hero() {
                         </Box>
                         <Box
                             sx={{
-                                width: { xs: 120, sm: 163 },
-                                height: { xs: 280, sm: 350 },
+                                width: { xs: 130, sm: 163 },
+                                height: { xs: 300, sm: 350 },
                                 display: "flex",
                                 flexDirection: "column",
                                 gap: 2,
