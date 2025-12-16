@@ -143,41 +143,16 @@ export default function AdminCVs({
                         mb: { xs: 1, sm: 2, md: 3 },
                     }}
                 >
-                    <Typography
-                        variant="h4"
-                        color="primary"
-                        fontFamily={"Roboto Slab"}
-                        fontWeight="bold"
-                        mb={2}
-                    >
-                        CV
-                    </Typography>
-                    <Button
-                        size="small"
-                        variant="contained"
-                        sx={{ fontSize: "0.9rem" }}
-                        onClick={() => router.get(route("admin.cv.create"))}
-                    >
-                        Create CV
-                    </Button>
-                </Box>
-
-                {/* Total CV and Search  */}
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        justifyContent: "space-between",
-                        mb: 2,
-                    }}
-                >
-                    <Box
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                        }}
-                    >
-                        <Subtitle>Total CV</Subtitle>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                        <Typography
+                            variant="h4"
+                            color="primary"
+                            fontFamily={"Roboto Slab"}
+                            fontWeight="bold"
+                            mb={2}
+                        >
+                            CV
+                        </Typography>
                         <Box
                             sx={{
                                 bgcolor: "red",
@@ -195,6 +170,25 @@ export default function AdminCVs({
                             </Typography>
                         </Box>
                     </Box>
+                    <Button
+                        size="small"
+                        variant="contained"
+                        sx={{ fontSize: "0.9rem" }}
+                        onClick={() => router.get(route("admin.cv.create"))}
+                    >
+                        Create CV
+                    </Button>
+                </Box>
+
+                {/* Total CV and Search  */}
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        justifyContent: "flex-end",
+                        mb: 2,
+                    }}
+                >
                     <form onSubmit={handleSearchSubmit}>
                         <TextField
                             placeholder="Caregiver name"
@@ -216,21 +210,53 @@ export default function AdminCVs({
                         alignItems: "center",
                     }}
                 >
-                    <Button
-                        startIcon={<FilterListIcon />}
-                        endIcon={
-                            filterOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />
-                        }
-                        onClick={() => setFilterOpen(!filterOpen)}
-                        variant="outlined"
-                        size="small"
-                    >
-                        Filters{" "}
-                        {hasActiveFilters &&
-                            `(${
-                                Object.values(filters).filter(Boolean).length
-                            })`}
-                    </Button>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Button
+                            endIcon={
+                                filterOpen ? (
+                                    <ExpandLessIcon />
+                                ) : (
+                                    <ExpandMoreIcon />
+                                )
+                            }
+                            onClick={() => setFilterOpen(!filterOpen)}
+                            variant="outlined"
+                            size="small"
+                        >
+                            Filters{" "}
+                            {hasActiveFilters &&
+                                `(${
+                                    Object.values(filters).filter(Boolean)
+                                        .length
+                                })`}
+                        </Button>
+
+                        <Button
+                            variant={
+                                filters.service_area === "Mandalay"
+                                    ? "contained"
+                                    : "outlined"
+                            }
+                            size="small"
+                            onClick={() => handleServiceAreaClick("Mandalay")}
+                            sx={{ display: { xs: "none", sm: "flex" } }}
+                        >
+                            Mandalay
+                        </Button>
+
+                        <Button
+                            sx={{ display: { xs: "none", sm: "flex", ml: 1 } }}
+                            variant={
+                                filters.service_area === "Yangon"
+                                    ? "contained"
+                                    : "outlined"
+                            }
+                            size="small"
+                            onClick={() => handleServiceAreaClick("Yangon")}
+                        >
+                            Yangon
+                        </Button>
+                    </Box>
 
                     {/* View Toggle Buttons */}
                     <Box>
@@ -252,7 +278,7 @@ export default function AdminCVs({
                 </Box>
 
                 {/* Mandalay Yangon Buttons Filter  */}
-                <Box>
+                <Box sx={{ display: { xs: "flex", sm: "none" } }}>
                     <Button
                         variant={
                             filters.service_area === "Mandalay"
@@ -482,6 +508,7 @@ export default function AdminCVs({
                                                 sx={{
                                                     fontSize: "0.8rem",
                                                     fontWeight: "bold",
+                                                    width: "60%",
                                                 }}
                                             >
                                                 Name
@@ -491,6 +518,7 @@ export default function AdminCVs({
                                                 sx={{
                                                     fontSize: "0.8rem",
                                                     fontWeight: "bold",
+                                                    width: "10%",
                                                 }}
                                             >
                                                 Location
@@ -499,6 +527,7 @@ export default function AdminCVs({
                                                 sx={{
                                                     fontSize: "0.8rem",
                                                     fontWeight: "bold",
+                                                    width: "30%",
                                                 }}
                                             >
                                                 Phone
@@ -534,20 +563,22 @@ export default function AdminCVs({
                                                             sx={{
                                                                 fontSize: {
                                                                     xs: "0.7rem",
-                                                                    sm: "0.7rem",
-                                                                    md: "0.8rem",
+                                                                    sm: "0.8rem",
+                                                                    md: "0.9rem",
                                                                 },
                                                                 fontWeight: 500,
                                                             }}
                                                         >
                                                             {index + 1}.{" "}
-                                                            {cv.full_name}
+                                                            <b>
+                                                                {cv.full_name}
+                                                            </b>
                                                         </Typography>
                                                         <span
                                                             style={{
                                                                 color: "gray",
                                                                 fontSize:
-                                                                    "0.7rem",
+                                                                    "0.6rem",
                                                             }}
                                                         >
                                                             <AgeCalculator
@@ -611,7 +642,13 @@ export default function AdminCVs({
                                                         fontSize: "0.7rem",
                                                     }}
                                                 >
-                                                    {cv.service_area}
+                                                    {cv.service_area ==
+                                                    "Mandalay"
+                                                        ? "MDY"
+                                                        : cv.service_area ==
+                                                          "Yangon"
+                                                        ? "YGN"
+                                                        : cv.service_area}
                                                 </TableCell>
                                                 <TableCell
                                                     sx={{
