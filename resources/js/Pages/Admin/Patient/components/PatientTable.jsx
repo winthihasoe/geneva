@@ -28,12 +28,12 @@ function PatientTable({ patients }) {
 
                         <TableCell>
                             <Typography fontWeight="bold" color={"#fff"}>
-                                Age
+                                Service
                             </Typography>
                         </TableCell>
                         <TableCell>
                             <Typography fontWeight="bold" color={"#fff"}>
-                                Gender
+                                Location
                             </Typography>
                         </TableCell>
                     </TableRow>
@@ -48,19 +48,45 @@ function PatientTable({ patients }) {
                             sx={{ cursor: "pointer" }}
                         >
                             <TableCell>
-                                <Typography fontSize={13} fontWeight={"bold"}>
-                                    {pt.first_name ||
-                                        "" + " " + pt.last_name ||
-                                        "" ||
-                                        "N/A"}
+                                <Typography fontSize={13}>
+                                    {index + 1}.{" "}
+                                    <b>
+                                        {pt.first_name ||
+                                            "" + " " + pt.last_name ||
+                                            "" ||
+                                            "Patient Name?"}
+                                    </b>{" "}
+                                    <br />
+                                    <span
+                                        style={{
+                                            color: "gray",
+                                            fontSize: "0.7rem",
+                                        }}
+                                    >
+                                        {pt.date_of_birth ? (
+                                            <AgeCalculator
+                                                date={pt.date_of_birth}
+                                            />
+                                        ) : (
+                                            ""
+                                        )}{" "}
+                                        |{" "}
+                                        {pt.gender == "Male"
+                                            ? "M"
+                                            : pt.gender == "Female"
+                                            ? "F"
+                                            : "Gender?"}
+                                    </span>
                                 </Typography>
                             </TableCell>
-                            <TableCell>
-                                <AgeCalculator date={pt.date_of_birth || ""} />
-                            </TableCell>
+                            <TableCell>{pt.type}</TableCell>
                             <TableCell>
                                 <Typography fontSize={13} color={"grey.600"}>
-                                    {pt.gender || "N/A"}
+                                    {pt.service_area == "Mandalay"
+                                        ? "MDY"
+                                        : pt.service_area == "Yangon"
+                                        ? "YGN"
+                                        : "N/A"}
                                 </Typography>
                             </TableCell>
                         </TableRow>

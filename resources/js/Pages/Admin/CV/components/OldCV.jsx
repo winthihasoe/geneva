@@ -1,8 +1,7 @@
 import React from "react";
 import { Box, Typography, Divider, Grid2, Button } from "@mui/material";
-import LongText from "@/Components/Typo/LongText";
-import Subtitle from "@/Components/Typo/Subtitle";
 import logo from "../../../../../../public/images/logo/logo.png";
+import AgeCalculator from "@/Components/util/AgeCalculator";
 function OldCV({ cv }) {
     const renderStars = (count) => {
         const stars = [];
@@ -12,12 +11,12 @@ function OldCV({ cv }) {
         }
         return stars;
     };
+
     return (
         <Grid2
             container
             sx={{
                 maxWidth: 800,
-                minHeight: 1300,
                 margin: "auto",
                 border: "1px solid #ddd",
                 position: "relative",
@@ -34,17 +33,9 @@ function OldCV({ cv }) {
                     position: "relative",
                 }}
             >
-                <Box bgcolor={"#fff"} width={"100%"} height={100} />
-                <Box
-                    sx={{
-                        width: { xs: "100%", sm: "90%" },
-                        bgcolor: "#937ac0ff",
-                        height: 300,
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                    }}
-                >
+                {/* <Box bgcolor={"#fff"} width={"100%"} height={100} /> */}
+
+                <Box sx={{ zIndex: 1, width: "100%", p: { xs: 1, sm: 2 } }}>
                     <Box
                         sx={{
                             display: "flex",
@@ -59,7 +50,7 @@ function OldCV({ cv }) {
                                     sm: "90%",
                                     md: "70%",
                                 },
-                                height: { xs: 180, sm: 250, md: 300 },
+                                height: { xs: 150, sm: 250, md: 300 },
                             }}
                         >
                             <img
@@ -95,8 +86,11 @@ function OldCV({ cv }) {
                                     ID -{cv.geneva_id}
                                 </Typography>
                                 <Typography sx={styles.sectionText}>
-                                    <strong>Date of Birth:</strong>{" "}
-                                    {cv.date_of_birth}
+                                    <strong>Age: </strong>
+                                    <AgeCalculator
+                                        date={cv.date_of_birth}
+                                    />{" "}
+                                    years old
                                 </Typography>
 
                                 <Typography sx={styles.sectionText}>
@@ -113,6 +107,8 @@ function OldCV({ cv }) {
                                 </Typography>
                             </Box>
                         </Box>
+
+                        {/* Relevant Qualifications */}
                         <Box
                             sx={{
                                 width: {
@@ -138,6 +134,7 @@ function OldCV({ cv }) {
                                                     sx={styles.sectionText}
                                                     key={cert.id}
                                                 >
+                                                    •{" "}
                                                     {cert.qualification_type
                                                         ? `${cert.qualification_type} in `
                                                         : ""}
@@ -152,20 +149,109 @@ function OldCV({ cv }) {
                                     </Box>
                                 </>
                             ) : (
-                                <Box>
-                                    <Typography sx={styles.sectionTitle}>
-                                        RELEVANT QUALIFICATIONS
-                                    </Typography>
-                                    <Divider sx={{ my: 1 }} />
-
-                                    <Typography sx={styles.sectionText}>
-                                        {cv.caregiver_qualification}
-                                    </Typography>
-                                </Box>
+                                ""
                             )}
+                        </Box>
+
+                        <Box
+                            sx={{
+                                width: {
+                                    xs: "100%",
+                                    sm: "90%",
+                                    md: "80%",
+                                },
+                                p: { xs: 1, sm: 2 },
+                            }}
+                        >
+                            <Typography sx={styles.sectionTitle}>
+                                EXPERIENCES
+                            </Typography>
+                            <Divider sx={{ my: 1 }} />
+                            <Box sx={{ mb: 2, pl: { xs: 0, sm: 2 } }}>
+                                {/* {cv?.newborn_experience_years && (
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            alignItems: "flex-start",
+                                            gap: 0.5,
+                                        }}
+                                    >
+                                        <img
+                                            src="/images/green_mark.png"
+                                            style={{
+                                                width: 15,
+                                                height: 15,
+                                                marginRight: "3px",
+                                            }}
+                                            alt="mark"
+                                        />
+                                        <Typography sx={styles.sectionText}>
+                                            <strong>
+                                                Newborn care experience:
+                                            </strong>{" "}
+                                            {cv?.newborn_experience_years}
+                                        </Typography>
+                                    </Box>
+                                )}
+
+                                {cv?.elder_experience_years && (
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            alignItems: "flex-start",
+                                            gap: 0.5,
+                                        }}
+                                    >
+                                        <img
+                                            src="/images/green_mark.png"
+                                            style={{
+                                                width: 15,
+                                                height: 15,
+                                                marginRight: "3px",
+                                            }}
+                                            alt="mark"
+                                        />
+                                        <Typography sx={styles.sectionText}>
+                                            <strong>
+                                                Elder care experience:
+                                            </strong>{" "}
+                                            {cv?.elder_experience_years}
+                                        </Typography>
+                                    </Box>
+                                )} */}
+
+                                {cv.experiences &&
+                                    cv.experiences.length > 0 &&
+                                    cv.experiences
+                                        .sort((a, b) => {
+                                            if (a.order === b.order) {
+                                                // Secondary sort by `id` if `order` is the same
+                                                return a.id - b.id;
+                                            }
+                                            return a.order - b.order; // Primary sort by `order`
+                                        })
+                                        .map((exp) => (
+                                            <Typography
+                                                key={exp.id}
+                                                sx={styles.sectionText}
+                                            >
+                                                • {exp.experience}
+                                            </Typography>
+                                        ))}
+                            </Box>
                         </Box>
                     </Box>
                 </Box>
+                <Box
+                    sx={{
+                        width: { xs: "100%", sm: "90%" },
+                        bgcolor: "#937ac0ff",
+                        height: 300,
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                    }}
+                />
             </Grid2>
 
             <Grid2 size={7} sx={{ p: { xs: 1, sm: 3, md: 4 } }}>
@@ -219,7 +305,6 @@ function OldCV({ cv }) {
                         flexWrap: "wrap",
                         gap: 1,
                         borderTop: "2px solid",
-                        borderBottom: "2px solid",
                         borderColor: "primary.main",
                         py: 1,
                     }}
@@ -249,92 +334,14 @@ function OldCV({ cv }) {
                         </Typography>
                     </Box>
                 </Box>
-                <Typography
-                    sx={styles.sectionTitle}
-                    bgcolor={"#875cd1"}
-                    display={"inline-block"}
-                    p={1}
-                    color="#fff"
-                >
-                    WORK EXPERIENCES
-                </Typography>
-                <Box sx={{ my: 2, pl: { xs: 0, sm: 2 } }}>
-                    {cv?.newborn_experience_years && (
-                        <Box
-                            sx={{
-                                display: "flex",
-                                alignItems: "flex-start",
-                                gap: 0.5,
-                            }}
-                        >
-                            <img
-                                src="/images/green_mark.png"
-                                style={{
-                                    width: 15,
-                                    height: 15,
-                                    marginRight: "3px",
-                                }}
-                                alt="mark"
-                            />
-                            <Typography sx={styles.sectionText}>
-                                <strong>Newborn care experience:</strong>{" "}
-                                {cv?.newborn_experience_years}
-                            </Typography>
-                        </Box>
-                    )}
-                    {cv?.nanny_experience_years && (
-                        <Box
-                            sx={{
-                                display: "flex",
-                                alignItems: "flex-start",
-                                gap: 0.5,
-                            }}
-                        >
-                            <img
-                                src="/images/green_mark.png"
-                                style={{
-                                    width: 15,
-                                    height: 15,
-                                    marginRight: "3px",
-                                }}
-                                alt="mark"
-                            />
-                            <Typography sx={styles.sectionText}>
-                                <strong>Nanny care experience:</strong>{" "}
-                                {cv?.nanny_experience_years}
-                            </Typography>
-                        </Box>
-                    )}
-                    {cv?.elder_experience_years && (
-                        <Box
-                            sx={{
-                                display: "flex",
-                                alignItems: "flex-start",
-                                gap: 0.5,
-                            }}
-                        >
-                            <img
-                                src="/images/green_mark.png"
-                                style={{
-                                    width: 15,
-                                    height: 15,
-                                    marginRight: "3px",
-                                }}
-                                alt="mark"
-                            />
-                            <Typography sx={styles.sectionText}>
-                                <strong>Elder care experience:</strong>{" "}
-                                {cv?.elder_experience_years}
-                            </Typography>
-                        </Box>
-                    )}
-                </Box>
+
                 <Box
                     sx={{
                         borderTop: "2px solid",
                         borderBottom: "2px solid",
                         borderColor: "primary.main",
                         my: 2,
+                        pb: 2,
                     }}
                 >
                     <Typography
@@ -355,27 +362,31 @@ function OldCV({ cv }) {
                     >
                         {cv?.nursing_skills_for_child?.length > 0 && (
                             <Box>
-                                <Subtitle>Baby care</Subtitle>
+                                <Typography
+                                    variant="h6"
+                                    fontSize={{ xs: 13, sm: 14, md: 15 }}
+                                    fontWeight={600}
+                                >
+                                    Baby Care
+                                </Typography>
                                 {cv?.nursing_skills_for_child.map(
                                     (skill, index) => (
                                         <Box
                                             key={index}
                                             sx={{
                                                 display: "flex",
-                                                alignItems: "flex-start",
+                                                alignItems: "center",
                                                 gap: 0.5,
-                                                mb: 0.5,
                                             }}
                                         >
                                             <img
-                                                src="/images/green_mark.png"
+                                                src="/images/dot.png"
                                                 style={{
-                                                    width: 13,
-                                                    height: 13,
-                                                    marginRight: "2px",
-                                                    marginTop: "5px",
+                                                    width: 6,
+                                                    height: 6,
+                                                    marginRight: "3px",
                                                 }}
-                                                alt="mark"
+                                                alt="Dot"
                                             />
                                             <Typography sx={styles.sectionText}>
                                                 {skill}
@@ -385,29 +396,34 @@ function OldCV({ cv }) {
                                 )}
                             </Box>
                         )}
+                        <Divider sx={{ my: 1 }} />
                         {cv?.nursing_skills_for_elder?.length > 0 && (
                             <Box>
-                                <Subtitle>Elder care</Subtitle>
+                                <Typography
+                                    variant="h6"
+                                    fontSize={{ xs: 13, sm: 14, md: 15 }}
+                                    fontWeight={600}
+                                >
+                                    Elderly Care
+                                </Typography>
                                 {cv?.nursing_skills_for_elder.map(
                                     (skill, index) => (
                                         <Box
                                             key={index}
                                             sx={{
                                                 display: "flex",
-                                                alignItems: "flex-start",
+                                                alignItems: "center",
                                                 gap: 0.5,
-                                                mb: 0.5,
                                             }}
                                         >
                                             <img
-                                                src="/images/green_mark.png"
+                                                src="/images/dot.png"
                                                 style={{
-                                                    width: 13,
-                                                    height: 13,
-                                                    marginRight: "2px",
-                                                    marginTop: "၂px",
+                                                    width: 6,
+                                                    height: 6,
+                                                    marginRight: "3px",
                                                 }}
-                                                alt="mark"
+                                                alt="Dot"
                                             />
                                             <Typography sx={styles.sectionText}>
                                                 {skill}

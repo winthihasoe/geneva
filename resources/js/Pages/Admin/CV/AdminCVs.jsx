@@ -35,6 +35,7 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import ViewListIcon from "@mui/icons-material/ViewList";
+import AgeCalculator from "@/Components/util/AgeCalculator";
 
 export default function AdminCVs({
     cvs,
@@ -51,6 +52,7 @@ export default function AdminCVs({
     const [filters, setFilters] = useState({
         status: initialFilters.status || "",
         service_area: initialFilters.service_area || "",
+        services: initialFilters.services || "",
     });
 
     // Initialize viewMode from localStorage, default to "card"
@@ -82,7 +84,7 @@ export default function AdminCVs({
     const handleApplyFilters = () => {
         const params = {};
         if (filters.status) params.status = filters.status;
-        // if (filters.caregiverLevel) params.level = filters.caregiverLevel;
+        if (filters.services) params.services = filters.services;
         // if (filters.nannyLevel) params.nanny_care_level = filters.nannyLevel;
         if (filters.service_area) params.service_area = filters.service_area;
 
@@ -92,8 +94,8 @@ export default function AdminCVs({
     const handleClearFilters = () => {
         setFilters({
             status: "",
-            caregiverLevel: "",
-            nannyLevel: "",
+            services: "",
+            service_area: "",
         });
         router.get(route("admin.cv.all"));
     };
@@ -124,9 +126,8 @@ export default function AdminCVs({
         }
     };
 
-    const hasActiveFilters = filters.status || filters.service_area;
-
-    console.log("cvs", cvs.data);
+    const hasActiveFilters =
+        filters.status || filters.service_area || filters.services;
 
     return (
         <AdminLayout>
@@ -250,6 +251,7 @@ export default function AdminCVs({
                     </Box>
                 </Box>
 
+                {/* Mandalay Yangon Buttons Filter  */}
                 <Box>
                     <Button
                         variant={
@@ -289,7 +291,11 @@ export default function AdminCVs({
                         <Box>
                             <FormControl
                                 size="small"
-                                sx={{ minWidth: 200, mb: 1 }}
+                                sx={{
+                                    minWidth: { xs: "100%", sm: 250 },
+                                    mb: 1,
+                                    mr: 1,
+                                }}
                             >
                                 <InputLabel>Status</InputLabel>
                                 <Select
@@ -320,30 +326,29 @@ export default function AdminCVs({
                             </FormControl>
 
                             {/* Caregiver Level  */}
-                            {/* <FormControl
+                            <FormControl
                                 size="small"
-                                sx={{ minWidth: 180 }}
+                                sx={{ minWidth: { xs: "100%", sm: 250 } }}
                             >
-                                <InputLabel>Caregiver Level</InputLabel>
+                                <InputLabel>Care Type</InputLabel>
                                 <Select
-                                    value={filters.caregiverLevel}
-                                    label="Caregiver Level"
+                                    value={filters.services}
+                                    label="Care Type"
                                     onChange={(e) =>
                                         handleFilterChange(
-                                            "caregiverLevel",
+                                            "services",
                                             e.target.value
                                         )
                                     }
                                 >
-                                    <MenuItem value="">All</MenuItem>
-                                    <MenuItem value="Caregiver">
-                                        Caregiver
+                                    <MenuItem value="Elder Care">
+                                        Elderly Care
                                     </MenuItem>
-                                    <MenuItem value="Advanced Caregiver">
-                                        Advanced Caregiver
+                                    <MenuItem value="Newborn & Baby Care">
+                                        Newborn & Baby Care
                                     </MenuItem>
                                 </Select>
-                            </FormControl> */}
+                            </FormControl>
 
                             {/* Nanny Level   */}
                             {/* <FormControl
@@ -399,30 +404,18 @@ export default function AdminCVs({
                                             size="small"
                                         />
                                     )}
-                                    {/* {filters.caregiverLevel && (
+                                    {filters.services && (
                                         <Chip
-                                            label={`Caregiver: ${filters.caregiverLevel}`}
+                                            label={filters.services}
                                             onDelete={() =>
                                                 handleFilterChange(
-                                                    "caregiverLevel",
+                                                    "services",
                                                     ""
                                                 )
                                             }
                                             size="small"
                                         />
                                     )}
-                                    {filters.nannyLevel && (
-                                        <Chip
-                                            label={`Nanny: ${filters.nannyLevel}`}
-                                            onDelete={() =>
-                                                handleFilterChange(
-                                                    "nannyLevel",
-                                                    ""
-                                                )
-                                            }
-                                            size="small"
-                                        />
-                                    )} */}
                                 </Box>
                             )}
 
@@ -430,7 +423,10 @@ export default function AdminCVs({
                                 sx={{
                                     display: "flex",
                                     gap: 1,
-                                    justifyContent: "center",
+                                    justifyContent: {
+                                        xs: "center",
+                                        sm: "flex-start",
+                                    },
                                     alignItems: "center",
                                     flex: 1,
                                 }}
@@ -510,9 +506,9 @@ export default function AdminCVs({
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {cvs?.data.map((cv) => (
+                                        {cvs?.data.map((cv, index) => (
                                             <TableRow
-                                                key={cv.id}
+                                                key={index}
                                                 hover
                                                 sx={{ cursor: "pointer" }}
                                                 onClick={() =>
@@ -544,8 +540,26 @@ export default function AdminCVs({
                                                                 fontWeight: 500,
                                                             }}
                                                         >
+                                                            {index + 1}.{" "}
                                                             {cv.full_name}
                                                         </Typography>
+                                                        <span
+                                                            style={{
+                                                                color: "gray",
+                                                                fontSize:
+                                                                    "0.7rem",
+                                                            }}
+                                                        >
+                                                            <AgeCalculator
+                                                                date={
+                                                                    cv.date_of_birth
+                                                                }
+                                                            />{" "}
+                                                            yrs |{" "}
+                                                            {cv.services.join(
+                                                                " | "
+                                                            )}
+                                                        </span>
                                                         {cv.reviews_count >
                                                             0 && (
                                                             <Box

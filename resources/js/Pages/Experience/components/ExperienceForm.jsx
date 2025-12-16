@@ -149,9 +149,7 @@ function ExperienceForm({ data, setData, handleSubmit }) {
                                 sx={{ borderRadius: 20, width: 120 }}
                                 disabled={!complete}
                             >
-                                <Typography fontFamily={"Livvic"}>
-                                    Save
-                                </Typography>
+                                <Typography>Save</Typography>
                             </Button>
                         </Box>
                     </>

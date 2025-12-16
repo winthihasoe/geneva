@@ -83,7 +83,12 @@ function StartCreateCV() {
                 // Experience step - might be optional
                 return true;
             case 8:
-                return data.package && data.package.length > 0;
+                return (
+                    data.package &&
+                    data.package.length > 0 &&
+                    data.service_area &&
+                    data.service_area.length > 0
+                );
             case 9:
                 // Skills step
                 return true;
@@ -143,10 +148,8 @@ function StartCreateCV() {
         }
     };
 
-    console.log("cv data", data);
-
     return (
-        <Container maxWidth="lg" sx={{ minHeight: "80vh" }}>
+        <Container maxWidth="lg" sx={{ minHeight: "80vh", px: 0 }}>
             <Box sx={{ maxWidth: 800, margin: "20px auto 10px auto" }}>
                 <Box
                     sx={{

@@ -13,11 +13,16 @@ use Inertia\Inertia;
 class PatientController extends Controller
 {
     // See by admin
-    public function index()
+    public function index(Request $request)
     {
-        $patients = Patient::with(['currentCaregiver.cv:id,full_name'])
-            ->orderBy('id', 'desc')
-            ->paginate(15);
+        $query = Patient::with(['currentCaregiver.cv:id,full_name']);
+
+        // Apply service area filter if present
+        if ($request->has('service_area') && $request->service_area) {
+            $query->where('service_area', $request->service_area);
+        }
+
+        $patients = $query->orderBy('id', 'desc')->paginate(15);
         
         // Transform the data to include caregiver name
         $patients->getCollection()->transform(function ($patient) {
@@ -26,9 +31,13 @@ class PatientController extends Controller
                 'current_caregiver_name' => $patient->currentCaregiver?->cv?->full_name ?? 'Not Assigned',
             ];
         });
+
         return Inertia::render('Admin/Patient/AdminPatients', [
             'patients' => $patients,
             'count' => Patient::count(),
+            'filters' => [
+                'service_area' => $request->service_area,
+            ],
         ]);
     }
     
@@ -57,6 +66,7 @@ class PatientController extends Controller
             'emergency_contact_relationship' => 'nullable|string|max:50',
             'emergency_contact_phone' => 'nullable|string|max:15',
             'address' => 'nullable|string',
+            'service_area' => 'required|string',
             'notes' => 'nullable|string',
         ]);
 
@@ -96,12 +106,13 @@ class PatientController extends Controller
             'emergency_contact_relationship' => 'nullable|string|max:50',
             'emergency_contact_phone' => 'nullable|string|max:15',
             'address' => 'nullable|string',
+            'service_area' => 'required|string',
             'notes' => 'nullable|string',
         ]);
         $patient = Patient::findOrFail($id);
         $patient->update($validated);   
         // Redirect to the index page with a success message
-        return redirect()->route('admin.patients')->with('success', 'Patient updated successfully!');
+        return back()->with('success', 'Patient updated successfully!');
     }   
 
 

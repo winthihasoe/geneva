@@ -241,6 +241,7 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::get('patients', [PatientController::class, 'index'])->name('admin.patients');
     Route::get('patients/create', [PatientController::class, 'createPatient'])->name('admin.patient.create');
     Route::post('patients/create', [PatientController::class, 'store'])->name('admin.patient.store');
+    Route::put('patients/{id}/update', [PatientController::class, 'update'])->name('admin.patient.update');
     Route::get('patients/search-result', [PatientController::class, 'adminSearchPatient'])->name('admin.patient.search');
     Route::get('patients/{id}', [PatientController::class, 'adminSinglePatient'])->name('admin.patient');
     Route::post('patients/{patientId}', [CarePlanPhotoController::class, 'uploadPhotos'])->name('admin.carePlan.photo.upload');

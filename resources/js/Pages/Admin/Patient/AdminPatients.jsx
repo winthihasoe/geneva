@@ -1,8 +1,3 @@
-import AdminResumeTable from "@/Components/Admin/CV/AdminResumeTable";
-import ResumeToApproveCard from "@/Components/Admin/CV/ResumeCard";
-import ResumeText from "@/Components/Typo/ResumeText";
-import Subtitle from "@/Components/Typo/Subtitle";
-import Title from "@/Components/Typo/Title";
 import NoData from "@/Components/util/NoData";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { Head, router } from "@inertiajs/react";
@@ -10,7 +5,6 @@ import {
     Box,
     Button,
     Container,
-    Divider,
     TextField,
     Pagination,
     Typography,
@@ -19,12 +13,21 @@ import {
 import React, { useState } from "react";
 import PatientTable from "./components/PatientTable";
 
-export default function AdminPatients({ patients, count }) {
+export default function AdminPatients({
+    patients,
+    count,
+    filters: initialFilters = {},
+}) {
     const handlePageChange = (event, value) => {
-        router.get(route("admin.patients"), { page: value });
+        const params = { page: value };
+        if (filters.service_area) params.service_area = filters.service_area;
+        router.get(route("admin.patients"), params);
     };
 
     const [search, setSearch] = useState("");
+    const [filters, setFilters] = useState({
+        service_area: initialFilters.service_area || "",
+    });
 
     const handleSearchChange = (e) => {
         setSearch(e.target.value);
@@ -33,6 +36,20 @@ export default function AdminPatients({ patients, count }) {
     const handleSearchSubmit = (e) => {
         e.preventDefault();
         router.get(route("admin.patient.search"), { search: search.trim() });
+    };
+
+    const handleServiceAreaClick = (area) => {
+        if (filters.service_area === area) {
+            setFilters({
+                service_area: "",
+            });
+            router.get(route("admin.patients"));
+        } else {
+            setFilters({
+                service_area: area,
+            });
+            router.get(route("admin.patients"), { service_area: area });
+        }
     };
 
     return (
@@ -104,10 +121,37 @@ export default function AdminPatients({ patients, count }) {
                         display: "flex",
                         gap: 2,
                         flexWrap: "wrap",
-                        justifyContent: "flex-end",
+                        justifyContent: "space-between",
                         mb: 2,
+                        alignItems: "center",
                     }}
                 >
+                    <Box>
+                        <Button
+                            variant={
+                                filters.service_area === "Mandalay"
+                                    ? "contained"
+                                    : "outlined"
+                            }
+                            size="small"
+                            onClick={() => handleServiceAreaClick("Mandalay")}
+                        >
+                            Mandalay
+                        </Button>
+                        <Button
+                            variant={
+                                filters.service_area === "Yangon"
+                                    ? "contained"
+                                    : "outlined"
+                            }
+                            size="small"
+                            onClick={() => handleServiceAreaClick("Yangon")}
+                            sx={{ ml: 1 }}
+                        >
+                            Yangon
+                        </Button>
+                    </Box>
+
                     <form onSubmit={handleSearchSubmit}>
                         <TextField
                             placeholder="Name"

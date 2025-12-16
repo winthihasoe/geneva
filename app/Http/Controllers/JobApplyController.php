@@ -145,11 +145,29 @@ class JobApplyController extends Controller
     }
 
     // Shows job applies to admin
-    public function adminJobApplies()
+    public function adminJobApplies(Request $request)
     {
+        $query = JobApply::query();
+
+        // Apply status filter
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Apply service area filter
+        if ($request->filled('service_area')) {
+            $query->where('service_area', $request->service_area);
+        }
+
+        $jobApplies = $query->orderBy('id', 'desc')->paginate(20)->withQueryString();
+
         return Inertia::render('Admin/JobApplies/JobApplies', [
-            'jobApplies' => JobApply::orderBy('id', 'desc')->paginate(20),
+            'jobApplies' => $jobApplies,
             'count' => JobApply::count(),
+            'filters' => [
+                'status' => $request->status,
+                'service_area' => $request->service_area,
+            ],
         ]);
     }
    

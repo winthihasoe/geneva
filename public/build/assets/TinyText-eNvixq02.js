@@ -1,0 +1,1 @@
+import{j as r}from"./app-Bre3RjeS.js";import{T as e}from"./Typography-DCJIj7AX.js";function n({children:t,textAlign:o="left"}){return r.jsx(e,{textAlign:o,fontSize:11,gutterBottom:!0,children:t})}export{n as T};

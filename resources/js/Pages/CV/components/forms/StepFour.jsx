@@ -110,14 +110,35 @@ function StepFour({ certificates }) {
 
     return (
         <Box sx={{ margin: "auto", maxWidth: 400 }}>
-            <CertificateForm
+            {/* <CertificateForm
                 data={data}
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
                 errors={errors}
                 preview={preview}
                 setPreview={setPreview}
-            />
+            /> */}
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flex: 1,
+                    height: 300,
+                }}
+            >
+                <Typography textAlign={"center"} variant="h6" sx={{ mb: 2 }}>
+                    Qualification can be added after creating CV.
+                </Typography>
+                <Typography
+                    textAlign={"center"}
+                    variant="body2"
+                    color="text.secondary"
+                >
+                    Please proceed to the next step.
+                </Typography>
+            </Box>
         </Box>
     );
 }

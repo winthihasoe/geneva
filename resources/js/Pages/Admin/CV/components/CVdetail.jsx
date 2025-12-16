@@ -32,8 +32,9 @@ function CVdetail({ cv }) {
             sx={{
                 maxWidth: 800,
                 margin: "10px auto",
-                border: "1px solid",
-                borderColor: "primary.main",
+                boxShadow: 3,
+                borderRadius: 3,
+                p: 1,
             }}
         >
             {/* Wrapper Box for A4 Scaling */}
@@ -384,67 +385,6 @@ function CVdetail({ cv }) {
                         justifyContent: "center",
                     }}
                 >
-                    {hasElderSkills && (
-                        <Box
-                            sx={{
-                                flex: hasChildSkills ? "1" : "0 0 100%", // Full width if no child skills
-                                display: "flex",
-                                flexDirection: "column",
-                            }}
-                        >
-                            <Box sx={{ display: "flex", alignItems: "center" }}>
-                                <Typography
-                                    sx={[
-                                        styles.sectionTitle,
-                                        { color: "primary.main", mr: 1 },
-                                    ]}
-                                >
-                                    CAREGIVER
-                                </Typography>
-                                <Box
-                                    sx={{
-                                        display: {
-                                            xs: "none",
-                                            sm: "flex",
-                                            md: "flex",
-                                        },
-                                        width: 25,
-                                        ml: 1,
-                                    }}
-                                >
-                                    <img
-                                        src="/images/heart.png"
-                                        alt="Heart Logo"
-                                        style={{ width: "100%" }}
-                                    />
-                                </Box>
-                            </Box>
-                            <ResumeText>SKILLS</ResumeText>
-                            <Box sx={{ ml: 1 }}>
-                                {cv?.nursing_skills_for_elder.map(
-                                    (skill, index) => (
-                                        <Typography
-                                            sx={styles.sectionText}
-                                            key={index}
-                                            mb={0.5}
-                                        >
-                                            <img
-                                                src="/images/dot.png"
-                                                style={{
-                                                    width: 8,
-                                                    height: 8,
-                                                    marginRight: "3px",
-                                                }}
-                                                alt="Dot"
-                                            />{" "}
-                                            {skill}
-                                        </Typography>
-                                    )
-                                )}
-                            </Box>
-                        </Box>
-                    )}
-
                     {hasChildSkills && (
                         <Box
                             sx={{
@@ -460,7 +400,7 @@ function CVdetail({ cv }) {
                                         { color: "primary.main", mr: 1 },
                                     ]}
                                 >
-                                    NEWBORN NANNY
+                                    Baby Care
                                 </Typography>
                                 <Box
                                     sx={{
@@ -497,6 +437,67 @@ function CVdetail({ cv }) {
                                                     marginRight: "3px",
                                                 }}
                                                 alt="Line"
+                                            />{" "}
+                                            {skill}
+                                        </Typography>
+                                    )
+                                )}
+                            </Box>
+                        </Box>
+                    )}
+
+                    {hasElderSkills && (
+                        <Box
+                            sx={{
+                                flex: hasChildSkills ? "1" : "0 0 100%", // Full width if no child skills
+                                display: "flex",
+                                flexDirection: "column",
+                            }}
+                        >
+                            <Box sx={{ display: "flex", alignItems: "center" }}>
+                                <Typography
+                                    sx={[
+                                        styles.sectionTitle,
+                                        { color: "primary.main", mr: 1 },
+                                    ]}
+                                >
+                                    Elderly Care
+                                </Typography>
+                                <Box
+                                    sx={{
+                                        display: {
+                                            xs: "none",
+                                            sm: "flex",
+                                            md: "flex",
+                                        },
+                                        width: 25,
+                                        ml: 1,
+                                    }}
+                                >
+                                    <img
+                                        src="/images/heart.png"
+                                        alt="Heart Logo"
+                                        style={{ width: "100%" }}
+                                    />
+                                </Box>
+                            </Box>
+                            <ResumeText>SKILLS</ResumeText>
+                            <Box sx={{ ml: 1 }}>
+                                {cv?.nursing_skills_for_elder.map(
+                                    (skill, index) => (
+                                        <Typography
+                                            sx={styles.sectionText}
+                                            key={index}
+                                            mb={0.5}
+                                        >
+                                            <img
+                                                src="/images/dot.png"
+                                                style={{
+                                                    width: 8,
+                                                    height: 8,
+                                                    marginRight: "3px",
+                                                }}
+                                                alt="Dot"
                                             />{" "}
                                             {skill}
                                         </Typography>

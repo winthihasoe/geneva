@@ -245,6 +245,30 @@ const AdminSingleCV = ({ cv }) => {
                     )}
                 </Box>
 
+                <Divider sx={{ my: 3 }} />
+                <Box>
+                    <Experiences experiences={cv.experiences} cvId={cv.id} />
+                </Box>
+
+                {/* Edit caregiver level and approved status  */}
+                <Grid2 container sx={{ my: 2 }} spacing={3}>
+                    {/* <Grid2 size={{ xs: 12, sm: 6 }}>
+                        <Card sx={{ mb: 3 }}>
+                            <CardContent>
+                                <EditLevel cv={cv} />
+                                <EditApprove cv={cv} />
+                            </CardContent>
+                        </Card>
+                    </Grid2> */}
+                    <Grid2 size={{ xs: 12, sm: 6 }}>
+                        <Card sx={{ mb: 3 }}>
+                            <CardContent>
+                                <EditCVstatus cv={cv} />
+                            </CardContent>
+                        </Card>
+                    </Grid2>
+                </Grid2>
+
                 <Divider sx={{ my: 2 }} />
 
                 <TitleCenter>Documents</TitleCenter>
@@ -448,32 +472,6 @@ const AdminSingleCV = ({ cv }) => {
                         </CardContent>
                     </Card>
                 </Box>
-
-                <Divider sx={{ my: 3 }} />
-                <Box>
-                    <Experiences experiences={cv.experiences} cvId={cv.id} />
-                </Box>
-
-                <Divider sx={{ my: 2 }} />
-
-                {/* Edit caregiver level and approved status  */}
-                <Grid2 container sx={{ my: 5 }} spacing={3}>
-                    {/* <Grid2 size={{ xs: 12, sm: 6 }}>
-                        <Card sx={{ mb: 3 }}>
-                            <CardContent>
-                                <EditLevel cv={cv} />
-                                <EditApprove cv={cv} />
-                            </CardContent>
-                        </Card>
-                    </Grid2> */}
-                    <Grid2 size={{ xs: 12, sm: 6 }}>
-                        <Card sx={{ mb: 3 }}>
-                            <CardContent>
-                                <EditCVstatus cv={cv} />
-                            </CardContent>
-                        </Card>
-                    </Grid2>
-                </Grid2>
             </Container>
         </AdminLayout>
     );

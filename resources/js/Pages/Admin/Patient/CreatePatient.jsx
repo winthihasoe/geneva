@@ -10,10 +10,14 @@ import {
     Typography,
     Box,
     Container,
+    RadioGroup,
+    FormControlLabel,
+    Radio,
 } from "@mui/material";
 import AdminLayout from "@/Layouts/AdminLayout";
 import TitleCenter from "@/Components/Typo/TitleCenter";
 import BackButton from "@/Components/BackButton";
+import { Label } from "@mui/icons-material";
 
 const CreatePatient = () => {
     const { data, setData, post, processing, errors } = useForm({
@@ -31,6 +35,7 @@ const CreatePatient = () => {
         emergency_contact_relationship: "",
         emergency_contact_phone: "",
         address: "",
+        service_area: "",
         notes: "",
         created_by: "",
     });
@@ -329,7 +334,6 @@ const CreatePatient = () => {
                                 variant="outlined"
                                 size="small"
                                 multiline
-                                rows={3}
                                 value={data.address}
                                 onChange={(e) =>
                                     setData("address", e.target.value)
@@ -339,6 +343,51 @@ const CreatePatient = () => {
                                 sx={{ width: "100%" }}
                             />
                         </Box>
+
+                        {/* Service Area  */}
+                        <FormControl
+                            sx={{
+                                mb: 3,
+                            }}
+                            required
+                        >
+                            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                                Service Area
+                            </Typography>
+                            <RadioGroup
+                                aria-label="service-area"
+                                row
+                                value={data.service_area}
+                                onChange={(e) =>
+                                    setData("service_area", e.target.value)
+                                }
+                                name="service_area"
+                            >
+                                <FormControlLabel
+                                    value="Mandalay"
+                                    control={<Radio />}
+                                    label={
+                                        <Typography variant="body2">
+                                            Mandalay
+                                        </Typography>
+                                    }
+                                />
+                                <FormControlLabel
+                                    value="Yangon"
+                                    control={<Radio />}
+                                    label={
+                                        <Typography variant="body2">
+                                            Yangon
+                                        </Typography>
+                                    }
+                                />
+                            </RadioGroup>
+                            {errors.service_area && (
+                                <Typography color="error" variant="caption">
+                                    {errors.service_area}
+                                </Typography>
+                            )}
+                        </FormControl>
 
                         {/* Notes */}
                         <Box sx={{ marginBottom: 3 }}>

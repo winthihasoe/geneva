@@ -10,7 +10,16 @@ import ElderNursingSkillsForm from "./ElderNursingSkillsForm";
 import ChildNursingSkillsForm from "./ChildNursingSkillsForm";
 import CvContext from "@/Context/CvContext";
 
-const ElderSkills = [
+const BasicElderSkills = [
+    "Assistance with bathing, dressing, grooming, toileting",
+    "Meal preparation and feeding support",
+    "Mobility assistance (walking, transferring)",
+    "Companionship and emotional support",
+    "Light housekeeping and laundry",
+    "Medication reminders and administration (Injections not included)",
+    "Escorting to appointments or social activities",
+];
+const AdvancedElderSkills = [
     "Medication management and administration",
     "Vital signs monitoring",
     "Wound care and dressing changes",
@@ -31,7 +40,22 @@ const ElderSkills = [
     "Emergency response planning",
 ];
 
-const BabySkills = [
+const BasicBabySkills = [
+    "Breastfeeding support",
+    "Diaper changing",
+    "Bathing and baby hygiene",
+    "Bottle feeding and burping",
+    "Preparing baby formula",
+    "Sterilizing bottles and utensils",
+    "Putting baby to sleep (sleep routine support)",
+    "Dressing the baby",
+    "Light baby laundry",
+    "Cleaning and organizing baby items",
+    "Providing emotional comfort (talking, singing, playing)",
+    "Monitoring baby's general behavior and mood",
+    "Recording feeding and sleep times for parents",
+];
+const AdvancedBabySkills = [
     "Administering prescribed medications",
     "Monitoring vital signs (e.g. temperature, breathing)",
     "Tube feeding or special feeding methods (if required)",
@@ -47,13 +71,7 @@ const BabySkills = [
 ];
 
 function StepNine() {
-    const {
-        data,
-        handleChange,
-
-        elderBasicCare,
-        elderAdvancedCare,
-    } = useContext(CvContext);
+    const { data, handleChange } = useContext(CvContext);
 
     const handleCheckboxChange = (section, value) => (event) => {
         const newValues = event.target.checked
@@ -73,10 +91,34 @@ function StepNine() {
             {/* Elder Care Skills  */}
             <Box sx={{ width: 300 }}>
                 <Typography variant="body1" fontWeight="bold" sx={{ mb: 2 }}>
-                    Medical Skills (Elder Care)
+                    Basic Skills (Elderly Care)
                 </Typography>
                 <FormGroup sx={{ mb: 3, px: 2 }}>
-                    {ElderSkills.map((care) => (
+                    {BasicElderSkills.map((care) => (
+                        <FormControlLabel
+                            key={care}
+                            control={
+                                <Checkbox
+                                    checked={data.nursing_skills_for_elder.includes(
+                                        care
+                                    )}
+                                    onChange={handleCheckboxChange(
+                                        "nursing_skills_for_elder",
+                                        care
+                                    )}
+                                />
+                            }
+                            label={
+                                <Typography fontSize={12}>{care}</Typography>
+                            }
+                        />
+                    ))}
+                </FormGroup>
+                <Typography variant="body1" fontWeight="bold" sx={{ mb: 2 }}>
+                    Advanced Skills (Elderly Care)
+                </Typography>
+                <FormGroup sx={{ mb: 3, px: 2 }}>
+                    {AdvancedElderSkills.map((care) => (
                         <FormControlLabel
                             key={care}
                             control={
@@ -101,10 +143,36 @@ function StepNine() {
             {/* Child Care Skills  */}
             <Box sx={{ width: 300 }}>
                 <Typography variant="body1" fontWeight="bold" sx={{ mb: 2 }}>
-                    Medical Skills (Baby Care)
+                    Basic Skills (Baby Care)
                 </Typography>
                 <FormGroup sx={{ mb: 3, px: 2 }}>
-                    {BabySkills.map((care) => (
+                    {BasicBabySkills.map((care) => (
+                        <FormControlLabel
+                            key={care}
+                            control={
+                                <Checkbox
+                                    checked={data.nursing_skills_for_child.includes(
+                                        care
+                                    )}
+                                    onChange={handleCheckboxChange(
+                                        "nursing_skills_for_child",
+                                        care
+                                    )}
+                                />
+                            }
+                            label={
+                                <Typography fontSize={12}>{care}</Typography>
+                            }
+                        />
+                    ))}
+                </FormGroup>
+
+                {/* Adv Skills for baby care  */}
+                <Typography variant="body1" fontWeight="bold" sx={{ mb: 2 }}>
+                    Advanced Skills (Baby Care)
+                </Typography>
+                <FormGroup sx={{ mb: 3, px: 2 }}>
+                    {AdvancedBabySkills.map((care) => (
                         <FormControlLabel
                             key={care}
                             control={

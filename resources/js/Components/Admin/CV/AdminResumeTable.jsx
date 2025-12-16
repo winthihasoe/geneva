@@ -73,7 +73,7 @@ function AdminResumeTable({ resumes }) {
                                     fontSize={"0.7rem"}
                                     fontWeight={"bold"}
                                 >
-                                    {resume.full_name || "N/A"}
+                                    {index + 1}. {resume.full_name || "N/A"}
                                 </Typography>
                             </TableCell>
 

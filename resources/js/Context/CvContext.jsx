@@ -111,6 +111,7 @@ export const CvProvider = ({
         current_step: initialData.current_step || 1,
         agree_to_terms: initialData.agree_to_terms ?? false,
         training_or_assessment: initialData.training_or_assessment ?? "",
+        status: initialData.status || "Available",
     });
 
     const [completedSteps, setCompletedSteps] = useState({});

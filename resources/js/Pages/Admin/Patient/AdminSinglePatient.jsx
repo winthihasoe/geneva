@@ -31,6 +31,8 @@ import CarePlanPhoto from "./components/CarePlanPhoto";
 import NoData from "@/Components/util/NoData";
 import Avatar from "@mui/material/Avatar";
 import ReviewLinkButton from "@/Components/ReviewLinkButton";
+import { Edit } from "@mui/icons-material";
+import EditPatient from "./components/EditPatient";
 
 function AdminSinglePatient({
     patient,
@@ -40,11 +42,16 @@ function AdminSinglePatient({
     reviewedCaregiverIds = [],
 }) {
     const [previews, setPreviews] = useState([]);
+    const [endDialogOpen, setEndDialogOpen] = useState(false);
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
     const { data, setData, post, processing, reset } = useForm({
         patient_id: patient.id,
         photos: [],
     });
-    const [endDialogOpen, setEndDialogOpen] = useState(false);
+
+    const handleUpdatePatient = () => {
+        setEditDialogOpen(true);
+    };
 
     // Assignment form
     const assignmentForm = useForm({
@@ -134,7 +141,7 @@ function AdminSinglePatient({
 
     // Helper function to format value (handles dates)
     const formatValue = (key, value) => {
-        if (!value) return "N/A";
+        if (!value) return "-";
 
         // Check if the key suggests it's a date field
         const dateFields = [
@@ -655,6 +662,13 @@ function AdminSinglePatient({
                             </form>
                         </Box>
 
+                        {/* Edit Patient Dialog */}
+                        <EditPatient
+                            open={editDialogOpen}
+                            onClose={() => setEditDialogOpen(false)}
+                            patient={patient}
+                        />
+
                         {/* End Assignment Dialog */}
                         <Dialog
                             open={endDialogOpen}
@@ -726,15 +740,30 @@ function AdminSinglePatient({
                                 mb: 3,
                             }}
                         >
-                            <Typography
-                                variant="h6"
-                                fontWeight="bold"
-                                mb={2}
-                                fontFamily={"Roboto Slab"}
-                                color="primary"
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    mb: 2,
+                                    justifyContent: "space-between",
+                                }}
                             >
-                                Patient Details
-                            </Typography>
+                                <Typography
+                                    variant="h6"
+                                    fontWeight="bold"
+                                    fontFamily={"Roboto Slab"}
+                                    color="primary"
+                                >
+                                    Patient Details
+                                </Typography>
+                                <IconButton
+                                    sx={{ bgcolor: "grey.300" }}
+                                    size="small"
+                                    onClick={handleUpdatePatient}
+                                >
+                                    <Edit fontSize="small" color="info" />
+                                </IconButton>
+                            </Box>
 
                             <Box>
                                 {Object.entries(patient)

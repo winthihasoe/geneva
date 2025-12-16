@@ -62,6 +62,7 @@ function AdminJobApplyTable({ applications }) {
                         >
                             <TableCell>
                                 <Typography variant="body2" fontSize={"0.8rem"}>
+                                    {index + 1}.{" "}
                                     <strong>{apply.name || "N/A"}</strong>
                                     <br />
                                     <span
@@ -73,7 +74,13 @@ function AdminJobApplyTable({ applications }) {
                                         <AgeCalculator
                                             date={apply.date_of_birth}
                                         />{" "}
-                                        yrs
+                                        yrs (
+                                        {apply.service_area == "Mandalay"
+                                            ? "MDY"
+                                            : apply.service_area == "Yangon"
+                                            ? "YGN"
+                                            : "Service Area ?"}
+                                        )
                                     </span>
                                 </Typography>
                             </TableCell>

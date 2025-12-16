@@ -27,6 +27,7 @@ class Patient extends Model
         'emergency_contact_relationship',
         'emergency_contact_phone',
         'address',
+        'service_area',
         'notes',
         'created_by',
     ];

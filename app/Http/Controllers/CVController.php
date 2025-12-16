@@ -476,13 +476,19 @@ class CVController extends Controller
         if ($request->has('service_area') && $request->service_area != '') {
             $query->where('service_area', $request->service_area);
         }
+
+        // Apply caregiver services filter (services data in table is an array)
+        if ($request->has('services') && $request->services != '') {
+            $service = $request->services;
+            $query->whereJsonContains('services', $service);
+        }
         
         $cvs = $query->orderBy('id', 'desc')->paginate(20);
 
         return Inertia::render('Admin/CV/AdminCVs', [
             'cvs' => $cvs,
             'cvCount' => $cvCount,
-            'filters' => $request->only(['status', 'service_area'])
+            'filters' => $request->only(['status', 'service_area', 'services']),
         ]);
     }
 

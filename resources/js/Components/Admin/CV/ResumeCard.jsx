@@ -6,6 +6,7 @@ import {
     CardMedia,
     Grid2 as Grid,
     IconButton,
+    Rating,
     Typography,
 } from "@mui/material";
 import React, { useState } from "react";
@@ -33,7 +34,7 @@ export default function ResumeCard({ resume }) {
                 router.visit(route("admin.cv.single", { cvId: resume.id }))
             }
         >
-            <CardMedia sx={{ height: { xs: 120, sm: 130 } }}>
+            <CardMedia sx={{ height: { xs: 120, sm: 150 } }}>
                 {resume.profile_photo ? (
                     <Box
                         sx={{
@@ -85,7 +86,7 @@ export default function ResumeCard({ resume }) {
                 <Typography
                     fontWeight={700}
                     fontFamily={"Roboto Slab"}
-                    fontSize={{ xs: "0.7rem", sm: "1rem", md: "1.1rem" }}
+                    fontSize={{ xs: "0.7rem", sm: "1rem", md: "1rem" }}
                     sx={{
                         overflow: "hidden",
                         textOverflow: "ellipsis",
@@ -96,17 +97,47 @@ export default function ResumeCard({ resume }) {
                 </Typography>
 
                 <Typography
-                    fontSize={{ xs: "0.6rem", sm: "0.8rem", md: "1rem" }}
+                    fontSize={{ xs: "0.6rem", sm: "0.8rem", md: "0.8rem" }}
                     color="text.secondary"
                 >
-                    Age: <AgeCalculator date={resume.date_of_birth} /> yrs
+                    <AgeCalculator date={resume.date_of_birth} /> yrs |{" "}
+                    {resume.weight} kg | {resume.height} cm
                 </Typography>
                 <Typography
-                    fontSize={{ xs: "0.6rem", sm: "0.8rem", md: "1rem" }}
+                    fontSize={{ xs: "0.6rem", sm: "0.8rem", md: "0.8rem" }}
                     color="text.secondary"
                 >
                     {resume.service_area || "Service area?"}
                 </Typography>
+                {resume.reviews_count > 0 && (
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 0.5,
+                            mt: 0.5,
+                        }}
+                    >
+                        <Rating
+                            value={resume.reviews_avg_rating || 0}
+                            readOnly
+                            size="small"
+                            precision={0.5}
+                            sx={{
+                                fontSize: "0.9rem",
+                            }}
+                        />
+                        <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            sx={{
+                                fontSize: "0.65rem",
+                            }}
+                        >
+                            ({resume.reviews_count})
+                        </Typography>
+                    </Box>
+                )}
             </CardContent>
         </Card>
     );
