@@ -48,9 +48,12 @@ function Success() {
                             fontSize={{ xs: 11, sm: 13, md: 13 }}
                             textAlign={"center"}
                             mb={2}
+                            lineHeight={2}
                         >
-                            Admin will reach out within 3 business days for
-                            confirmation and interview.
+                            Geneva Co.,Ltd မှ သင်၏လျှောက်လွှာကို ရရှိပြီးပါပြီ။
+                            <br />
+                            အင်တာဗျူးရန်အတွက် သင်၏ဖုန်းကို (၃)ရက်အတွင်း
+                            ဆက်သွယ်ပေးမည်ဖြစ်ပါသည်။
                         </Typography>
                         <Button
                             variant="contained"

@@ -41,6 +41,16 @@ class JobApplyController extends Controller
                 'visa' => 'nullable|file|mimes:jpeg,png,jpg|max:10048',
                 'certificates.*' => 'required|file|mimes:jpeg,png,jpg|max:10048',
             ]);
+
+            // Check if application already exists
+            $existingApply = JobApply::where('name', $validatedData['name'])
+                ->where('date_of_birth', $validatedData['date_of_birth'])
+                ->where('gender', $validatedData['gender'])
+                ->first();
+
+            if ($existingApply) {
+                return redirect()->route('job.apply.already.submit')->with('success', 'You have already submitted an application.');
+            }
     
               // Handle file uploads with null checks
               // table column is passport but store National ID
@@ -142,6 +152,11 @@ class JobApplyController extends Controller
     public function success ()
     {
         return Inertia::render('JobApply/Success');
+    }
+
+    public function alreadySubmit()
+    {
+        return Inertia::render('JobApply/AlreadySubmit');
     }
 
     // Shows job applies to admin

@@ -37,6 +37,7 @@ Route::get('/services/{name}', [ServiceController::class, 'getServiceByName'])->
 Route::get('job-apply', [JobApplyController::class, 'jobApply'])->name('job.apply');
 Route::post('job-apply', [JobApplyController::class, 'store'])->name('job.apply.store');
 Route::get('job-apply-success', [JobApplyController::class, 'success'])->name('job.apply.success');
+Route::get('job-apply-already-submit', [JobApplyController::class, 'alreadySubmit'])->name('job.apply.already.submit');
 
 // About Us
 Route::get('mission-statement', [PageController::class, 'mission'])->name('mission');

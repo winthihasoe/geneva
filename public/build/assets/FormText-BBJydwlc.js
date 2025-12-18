@@ -1,0 +1,1 @@
+import{j as m}from"./app-DZBdZ7lz.js";import{T as r}from"./Typography-G38G2HU1.js";function e({children:o,textAlign:t="left"}){return m.jsx(r,{fontFamily:"Livvic",mb:1,textAlign:t,fontSize:{xs:11,sm:13,md:14},children:o})}export{e as F};

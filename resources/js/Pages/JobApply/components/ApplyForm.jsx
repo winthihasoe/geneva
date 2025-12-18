@@ -31,17 +31,48 @@ function ApplyForm({ data, setData, handleSubmit, errors }) {
     });
 
     const compressImage = (file, callback) => {
+        // Add file size check before compression
+        const maxSize = 10 * 1024 * 1024; // 10MB
+        if (file.size > maxSize) {
+            alert("File is too large. Please choose a file smaller than 10MB.");
+            return;
+        }
+
         new Compressor(file, {
-            quality: 0.3, // Adjust quality (0.6 = 60% quality)
+            quality: 0.6, // Increase from 0.3 for better quality
+            maxWidth: 1920, // Add max dimensions
+            maxHeight: 1920,
+            mimeType: "image/jpeg", // Force JPEG format
             success: (compressedFile) => {
+                // Additional size check after compression
+                if (compressedFile.size > 5 * 1024 * 1024) {
+                    // 5MB
+                    alert(
+                        "Compressed file is still too large. Please choose a smaller image."
+                    );
+                    return;
+                }
                 callback(compressedFile);
-                console.log("Compression success");
+                console.log("Compression success", compressedFile.size);
             },
             error: (err) => {
                 console.error("Compression error:", err);
+                alert("Failed to compress image. Please try a different file.");
             },
         });
     };
+    // const compressImage = (file, callback) => {
+    //     new Compressor(file, {
+    //         quality: 0.3, // Adjust quality (0.6 = 60% quality)
+    //         success: (compressedFile) => {
+    //             callback(compressedFile);
+    //             console.log("Compression success");
+    //         },
+    //         error: (err) => {
+    //             console.error("Compression error:", err);
+    //         },
+    //     });
+    // };
 
     const handleChange = (e) => {
         const { name, files } = e.target;
