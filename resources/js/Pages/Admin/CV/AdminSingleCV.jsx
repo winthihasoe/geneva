@@ -12,6 +12,10 @@ import {
     IconButton,
     Container,
     Alert,
+    Menu,
+    MenuItem,
+    ListItemText,
+    ListItemIcon,
 } from "@mui/material";
 import Subtitle from "@/Components/Typo/Subtitle";
 import AdminLayout from "@/Layouts/AdminLayout";
@@ -32,6 +36,10 @@ import EditCVstatus from "./components/EditCVstatus";
 import CreateCertificate from "./components/CreateCertificate";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import Compressor from "compressorjs";
+import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
+import DownloadIcon from "@mui/icons-material/Download";
+import { generateCVPdf } from "./components/GenerateCVpdf";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
 
 const AdminSingleCV = ({ cv }) => {
     const renderStars = (count) => {
@@ -146,6 +154,32 @@ const AdminSingleCV = ({ cv }) => {
         });
     }, [isAdding]);
 
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleGenerateCV = async () => {
+        await generateCVPdf(cv);
+        handleClose();
+    };
+
+    const handleChangeLayout = () => {
+        setNewCV(!newCV);
+        handleClose();
+    };
+
+    const handleEditCV = () => {
+        router.get(route("admin.cv.edit", cv.id));
+        handleClose();
+    };
+
     return (
         <AdminLayout>
             <Head title="Single CV" />
@@ -153,32 +187,43 @@ const AdminSingleCV = ({ cv }) => {
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                     <BackButton />
                     <Box>
-                        <Button
-                            sx={{ gap: 1 }}
-                            onClick={() => setNewCV(!newCV)}
-                        >
-                            <Typography
-                                fontSize={{
-                                    xs: 12,
-                                    sm: 13,
-                                    md: 15,
-                                }}
-                                fontWeight={600}
-                            >
-                                Change layout{" "}
-                            </Typography>
-                            <ChangeCircleRoundedIcon />
-                        </Button>
-                        <Button
-                            variant="contained"
+                        <IconButton
+                            onClick={handleClick}
                             size="small"
-                            sx={{ fontSize: "0.8rem" }}
-                            onClick={() =>
-                                router.get(route("admin.cv.edit", cv.id))
-                            }
+                            aria-controls={open ? "cv-menu" : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? "true" : undefined}
                         >
-                            Edit CV
-                        </Button>
+                            <MoreHorizRoundedIcon />
+                        </IconButton>
+                        <Menu
+                            id="cv-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            MenuListProps={{
+                                "aria-labelledby": "cv-menu-button",
+                            }}
+                        >
+                            <MenuItem onClick={handleGenerateCV}>
+                                <ListItemIcon>
+                                    <DownloadIcon fontSize="small" />
+                                </ListItemIcon>
+                                <ListItemText>Generate CV</ListItemText>
+                            </MenuItem>
+                            <MenuItem onClick={handleChangeLayout}>
+                                <ListItemIcon>
+                                    <ChangeCircleRoundedIcon fontSize="small" />
+                                </ListItemIcon>
+                                <ListItemText>Change Layout</ListItemText>
+                            </MenuItem>
+                            <MenuItem onClick={handleEditCV}>
+                                <ListItemIcon>
+                                    <EditRoundedIcon fontSize="small" />
+                                </ListItemIcon>
+                                <ListItemText>Edit CV</ListItemText>
+                            </MenuItem>
+                        </Menu>
                     </Box>
                 </Box>
                 <Box position={"relative"}>
@@ -246,6 +291,7 @@ const AdminSingleCV = ({ cv }) => {
                 </Box>
 
                 <Divider sx={{ my: 3 }} />
+                {/* Experience  */}
                 <Box>
                     <Experiences experiences={cv.experiences} cvId={cv.id} />
                 </Box>

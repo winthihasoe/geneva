@@ -26,8 +26,11 @@ class User extends Authenticatable
         'profile_photo',
         'uid',
         'is_employer',
+        'employer_status',
         'is_caregiver',
+        'cg_status',
         'is_admin',
+        'email_verified_at',
         'last_active_at',
     ];
 

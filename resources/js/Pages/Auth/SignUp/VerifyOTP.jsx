@@ -294,54 +294,6 @@ function VerifyOTP() {
                         </Box>
                     </Grid2>
                 </Grid2>
-                {/* <Box
-                    sx={{
-                        maxWidth: 350,
-                        border: { xs: "none", sm: "2px solid #21875C" },
-                        borderRadius: 5,
-                        py: 3,
-                        px: { xs: 0, sm: 2, md: 2 },
-                    }}
-                >
-                    <form onSubmit={handleOtpVerification}>
-                        <TitleCenter>Enter OTP to verify account</TitleCenter>
-                        <Subtitle>
-                            Get OTP from your email inbox and paste it.
-                        </Subtitle>
-                        <Box>
-                            <TextField
-                                sx={{ my: 1 }}
-                                fullWidth
-                                placeholder="x x x x x x"
-                                required
-                                disabled={processing}
-                                onChange={(e) => setData("OTP", e.target.value)}
-                                value={data.OTP}
-                            />
-                            {errors && (
-                                <Typography fontSize={12} color="error" mt={1}>
-                                    {errors.OTP}
-                                </Typography>
-                            )}
-                        </Box>
-                        <Box sx={{ textAlign: "center", mt: 2 }}>
-                            <Button
-                                variant="contained"
-                                sx={{ borderRadius: 10 }}
-                                type="submit"
-                                disabled={processing}
-                            >
-                                <Typography
-                                    fontFamily={"Lilita One"}
-                                    fontWeight={500}
-                                    fontSize={20}
-                                >
-                                    Submit
-                                </Typography>
-                            </Button>
-                        </Box>
-                    </form>
-                </Box> */}
             </Container>
         </AppLayout>
     );

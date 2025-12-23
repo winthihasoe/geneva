@@ -1,1 +1,0 @@
-import{j as o}from"./app-DZBdZ7lz.js";import{T as s}from"./Typography-G38G2HU1.js";function x({children:m}){return o.jsx(s,{mt:2,fontSize:{xs:11,sm:13,md:14},mb:{xs:1.5,sm:2},children:m})}export{x as B};
