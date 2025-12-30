@@ -2,6 +2,7 @@ import {
     Box,
     Button,
     Paper,
+    Rating,
     Table,
     TableBody,
     TableCell,
@@ -16,95 +17,146 @@ import AgeCalculator from "@/Components/util/AgeCalculator";
 import ShowActiveOrOffline from "@/Components/util/ShowActiveOrOffline";
 import MaleRoundedIcon from "@mui/icons-material/MaleRounded";
 
-function AdminResumeTable({ resumes }) {
+function AdminResumeTable({ cvs }) {
     return (
-        <TableContainer component={Paper}>
-            <Table aria-label="CV table">
-                <TableHead sx={{ bgcolor: "primary.main" }}>
+        <TableContainer component={Paper} sx={{ mb: 3, mt: 2 }}>
+            <Table>
+                <TableHead sx={{ bgcolor: "gray.200" }}>
                     <TableRow>
-                        <TableCell>
-                            <Typography
-                                fontWeight="bold"
-                                fontSize={"0.8rem"}
-                                color={"#fff"}
-                            >
-                                Name
-                            </Typography>
+                        <TableCell
+                            sx={{
+                                fontSize: "0.8rem",
+                                fontWeight: "bold",
+                                width: "60%",
+                            }}
+                        >
+                            Name
                         </TableCell>
 
-                        <TableCell>
-                            <Typography
-                                textAlign={"center"}
-                                fontWeight="bold"
-                                color={"#fff"}
-                                fontSize={"0.8rem"}
-                            >
-                                Status
-                            </Typography>
+                        <TableCell
+                            sx={{
+                                fontSize: "0.8rem",
+                                fontWeight: "bold",
+                                width: "10%",
+                            }}
+                        >
+                            Location
                         </TableCell>
-                        <TableCell>
-                            <Typography
-                                textAlign={"center"}
-                                fontWeight="bold"
-                                color={"#fff"}
-                                fontSize={"0.8rem"}
-                            >
-                                Contact
-                            </Typography>
-                        </TableCell>
-                        <TableCell>
-                            <Typography fontSize={"0.8rem"} color={"#fff"}>
-                                <MaleRoundedIcon fontSize="small" />
-                            </Typography>
+                        <TableCell
+                            sx={{
+                                fontSize: "0.8rem",
+                                fontWeight: "bold",
+                                width: "30%",
+                            }}
+                        >
+                            Phone
                         </TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {resumes.map((resume, index) => (
-                        <TableRow
-                            key={index}
-                            onClick={() =>
-                                router.get(route("admin.cv.single", resume.id))
-                            }
-                            sx={{ cursor: "pointer" }}
-                        >
-                            <TableCell>
-                                <Typography
-                                    fontSize={"0.7rem"}
-                                    fontWeight={"bold"}
+                    {cvs &&
+                        cvs.map((cv, index) => (
+                            <TableRow
+                                key={index}
+                                hover
+                                sx={{ cursor: "pointer" }}
+                                onClick={() =>
+                                    router.visit(
+                                        route("admin.cv.single", {
+                                            cvId: cv.id,
+                                        })
+                                    )
+                                }
+                            >
+                                <TableCell
+                                    sx={{
+                                        fontSize: {
+                                            xs: "0.7rem",
+                                            sm: "0.7rem",
+                                            md: "0.8rem",
+                                        },
+                                    }}
                                 >
-                                    {index + 1}. {resume.full_name || "N/A"}
-                                </Typography>
-                            </TableCell>
+                                    <Box>
+                                        <Typography
+                                            sx={{
+                                                fontSize: {
+                                                    xs: "0.7rem",
+                                                    sm: "0.8rem",
+                                                    md: "0.9rem",
+                                                },
+                                                fontWeight: 500,
+                                            }}
+                                        >
+                                            {index + 1}. <b>{cv.full_name}</b>
+                                        </Typography>
+                                        <span
+                                            style={{
+                                                color: "gray",
+                                                fontSize: "0.6rem",
+                                            }}
+                                        >
+                                            <AgeCalculator
+                                                date={cv.date_of_birth}
+                                            />{" "}
+                                            yrs | {cv.services.join(" | ")}
+                                        </span>
+                                        {cv.reviews_count > 0 && (
+                                            <Box
+                                                sx={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    gap: 0.5,
+                                                    mt: 0.5,
+                                                }}
+                                            >
+                                                <Rating
+                                                    value={
+                                                        cv.reviews_avg_rating ||
+                                                        0
+                                                    }
+                                                    readOnly
+                                                    size="small"
+                                                    precision={0.5}
+                                                    sx={{
+                                                        fontSize: "0.9rem",
+                                                    }}
+                                                />
+                                                <Typography
+                                                    variant="caption"
+                                                    color="text.secondary"
+                                                    sx={{
+                                                        fontSize: "0.65rem",
+                                                    }}
+                                                >
+                                                    ({cv.reviews_count})
+                                                </Typography>
+                                            </Box>
+                                        )}
+                                    </Box>
+                                </TableCell>
 
-                            <TableCell>
-                                <Typography
-                                    fontSize={"0.7rem"}
-                                    color="text.secondary"
+                                <TableCell
+                                    sx={{
+                                        fontSize: "0.7rem",
+                                    }}
                                 >
-                                    {resume.status}
-                                </Typography>
-                            </TableCell>
-
-                            <TableCell>
-                                <Typography
-                                    fontSize={"0.7rem"}
-                                    color={"primary"}
-                                    textAlign={"center"}
+                                    {cv.service_area == "Mandalay"
+                                        ? "MDY"
+                                        : cv.service_area == "Yangon"
+                                        ? "YGN"
+                                        : cv.service_area}
+                                </TableCell>
+                                <TableCell
+                                    sx={{
+                                        fontSize: "0.7rem",
+                                    }}
                                 >
-                                    {resume.phone || "-"}
-                                </Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Typography
-                                    fontSize={"0.7rem"}
-                                    color={"grey.600"}
-                                >
-                                    {resume.gender == "Male" ? "M" : "F"}
-                                </Typography>
-                            </TableCell>
-                        </TableRow>
-                    ))}
+                                    {/* when click, phone call  */}
+                                    <a href={`tel:${cv.phone}`}>{cv.phone}</a>
+                                </TableCell>
+                            </TableRow>
+                        ))}
                 </TableBody>
             </Table>
         </TableContainer>

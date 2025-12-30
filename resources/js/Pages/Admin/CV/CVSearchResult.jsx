@@ -7,6 +7,8 @@ import { Box, Container, Typography } from "@mui/material";
 import React from "react";
 
 function CVSearchResult({ searchTerm, searchResults }) {
+    console.log("search result", searchResults);
+
     return (
         <AdminLayout>
             <Head title="Search Result" />
@@ -30,7 +32,7 @@ function CVSearchResult({ searchTerm, searchResults }) {
                     }}
                 >
                     {searchResults.length > 0 ? (
-                        <AdminResumeTable resumes={searchResults} />
+                        <AdminResumeTable cvs={searchResults} />
                     ) : (
                         <NoData />
                     )}

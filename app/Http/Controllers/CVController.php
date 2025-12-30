@@ -529,6 +529,9 @@ class CVController extends Controller
         $search = strtolower($request->input('search'));
         // Perform the search
         $searchResults = CV::with('user')
+            ->with('reviews')
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
             ->whereHas('user', function($query) use ($search) {
                 $query->where('name', 'like', "%{$search}%");
             })
