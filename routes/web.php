@@ -250,6 +250,8 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
 
     // Assign Caregiver to Patient
     Route::post('/admin/patient/caregiver/assign', [PatientCaregiverAssignmentController::class, 'assign'])->name('admin.patient.caregiver.assign');
+    Route::post('/patient/caregiver/assign-additional', [PatientCaregiverAssignmentController::class, 'assignAdditional'])
+    ->name('admin.patient.caregiver.assign.additional');
     Route::put('/admin/patient/caregiver/end/{id}', [PatientCaregiverAssignmentController::class, 'end'])->name('admin.patient.caregiver.end');
 
     // Care plans

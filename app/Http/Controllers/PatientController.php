@@ -133,32 +133,36 @@ class PatientController extends Controller
                 ];
             });
         
-        // Get current active assignment
-        $currentAssignment = PatientCaregiverAssignment::with('cv')
+        // Get current active assignments (can be multiple)
+        $currentAssignments = PatientCaregiverAssignment::with('cv')
             ->where('patient_id', $id)
             ->whereNull('end_date')
-            ->first();
-            
-        if ($currentAssignment && $currentAssignment->cv) {
-            // Transform the caregiver data
-            $currentAssignment = [
-                'id' => $currentAssignment->id,
-                'patient_id' => $currentAssignment->patient_id,
-                'cv_id' => $currentAssignment->cv_id,
-                'start_date' => $currentAssignment->start_date,
-                'end_date' => $currentAssignment->end_date,
-                'assignment_reason' => $currentAssignment->assignment_reason,
-                'caregiver' => [
-                    'id' => $currentAssignment->cv->id,
-                    'slug' => $currentAssignment->cv->slug,
-                    'full_name' => $currentAssignment->cv->full_name,
-                    'geneva_id' => $currentAssignment->cv->geneva_id,
-                    'profile_photo' => $currentAssignment->cv->profile_photo 
-                        ? asset('storage/' . $currentAssignment->cv->profile_photo) 
-                        : null,
-                ]
-            ];
-        }
+            ->get()
+            ->map(function ($assignment) {
+                if (! $assignment->cv) {
+                    return null;
+                }
+                return [
+                    'id' => $assignment->id,
+                    'patient_id' => $assignment->patient_id,
+                    'cv_id' => $assignment->cv_id,
+                    'start_date' => $assignment->start_date,
+                    'end_date' => $assignment->end_date,
+                    'assignment_reason' => $assignment->assignment_reason,
+                    'caregiver' => [
+                        'id' => $assignment->cv->id,
+                        'slug' => $assignment->cv->slug,
+                        'full_name' => $assignment->cv->full_name,
+                        'geneva_id' => $assignment->cv->geneva_id,
+                        'profile_photo' => $assignment->cv->profile_photo 
+                            ? asset('storage/' . $assignment->cv->profile_photo) 
+                            : null,
+                    ]
+                ];
+            })
+            ->filter() // remove any nulls
+            ->values()
+            ->all();
 
         // Get assignment history
         $history = $patient->caregiverAssignments()
@@ -193,7 +197,7 @@ class PatientController extends Controller
         return Inertia::render('Admin/Patient/AdminSinglePatient', [
             'patient' => $patient,
             'caregivers' => $caregivers,
-            'currentAssignment' => $currentAssignment,
+            'currentAssignment' => $currentAssignments,
             'history' => $history,
             'reviewedCaregiverIds' => $reviews,
         ]);

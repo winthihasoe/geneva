@@ -45,6 +45,51 @@ class PatientCaregiverAssignmentController extends Controller
         return redirect()->back()->with('success', 'Caregiver assigned successfully');
     }
 
+    public function assignAdditional(Request $request)
+    {
+        $validated = $request->validate([
+            'patient_id' => 'required|exists:patients,id',
+            'cv_id' => 'required|exists:c_v_s,id',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'assignment_reason' => 'nullable|string|max:500',
+        ]);
+
+        // Check if caregiver is already assigned to this patient
+        $existingAssignment = PatientCaregiverAssignment::where('patient_id', $validated['patient_id'])
+            ->where('cv_id', $validated['cv_id'])
+            ->whereNull('end_date')
+            ->first();
+
+        if ($existingAssignment) {
+            return redirect()->back()->with('error', 'This caregiver is already assigned to this patient');
+        }
+
+        // Check current active assignments count
+        $currentAssignmentsCount = PatientCaregiverAssignment::where('patient_id', $validated['patient_id'])
+            ->whereNull('end_date')
+            ->count();
+
+        if ($currentAssignmentsCount >= 3) {
+            return redirect()->back()->with('error', 'Maximum 3 caregivers can be assigned at once');
+        }
+
+        // Create new assignment (additional caregiver)
+        PatientCaregiverAssignment::create([
+            'patient_id' => $validated['patient_id'],
+            'cv_id' => $validated['cv_id'],
+            'assigned_by' => Auth::id(),
+            'start_date' => $validated['start_date'],
+            'end_date' => $validated['end_date'],
+            'assignment_reason' => $validated['assignment_reason'],
+        ]);
+
+        // Update CV status to Occupied
+        CV::where('id', $validated['cv_id'])->update(['status' => 'Occupied']);
+
+        return redirect()->back()->with('success', 'Additional caregiver assigned successfully');
+    }
+
     public function end(Request $request, $id)
     {
         $validated = $request->validate([

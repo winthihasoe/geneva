@@ -20,6 +20,7 @@ import {
     Grid2,
     Divider,
     Container,
+    Collapse,
 } from "@mui/material";
 import { Head, useForm } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
@@ -33,6 +34,7 @@ import Avatar from "@mui/material/Avatar";
 import ReviewLinkButton from "@/Components/ReviewLinkButton";
 import { Edit } from "@mui/icons-material";
 import EditPatient from "./components/EditPatient";
+import AddIcon from "@mui/icons-material/Add";
 
 function AdminSinglePatient({
     patient,
@@ -42,12 +44,15 @@ function AdminSinglePatient({
     reviewedCaregiverIds = [],
 }) {
     const [previews, setPreviews] = useState([]);
+    const [showAdditionalForm, setShowAdditionalForm] = useState(false);
     const [endDialogOpen, setEndDialogOpen] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const { data, setData, post, processing, reset } = useForm({
         patient_id: patient.id,
         photos: [],
     });
+    const [selectedAssignmentToEnd, setSelectedAssignmentToEnd] =
+        useState(null);
 
     const handleUpdatePatient = () => {
         setEditDialogOpen(true);
@@ -59,7 +64,16 @@ function AdminSinglePatient({
         cv_id: "",
         start_date: "",
         end_date: "",
-        assignment_reason: "",
+        assignment_reason: "", // Now it store the duty
+    });
+
+    // Additional assignment form
+    const additionalAssignmentForm = useForm({
+        patient_id: patient.id,
+        cv_id: "",
+        start_date: "",
+        end_date: "",
+        assignment_reason: "", // Now it store the duty
     });
 
     // End assignment form
@@ -114,18 +128,43 @@ function AdminSinglePatient({
         });
     };
 
+    const handleAssignAdditionalCaregiver = (e) => {
+        e.preventDefault();
+        additionalAssignmentForm.post(
+            route("admin.patient.caregiver.assign.additional"),
+            {
+                onSuccess: () => {
+                    additionalAssignmentForm.reset();
+                    setShowAdditionalForm(false);
+                },
+            }
+        );
+    };
+
     const handleEndAssignment = () => {
-        if (endAssignmentForm.data.end_reason.trim()) {
+        if (
+            endAssignmentForm.data.end_reason.trim() &&
+            selectedAssignmentToEnd
+        ) {
             endAssignmentForm.put(
-                route("admin.patient.caregiver.end", currentAssignment.id),
+                route(
+                    "admin.patient.caregiver.end",
+                    selectedAssignmentToEnd.id
+                ),
                 {
                     onSuccess: () => {
                         setEndDialogOpen(false);
+                        setSelectedAssignmentToEnd(null);
                         endAssignmentForm.reset();
                     },
                 }
             );
         }
+    };
+
+    const openEndDialog = (assignment) => {
+        setSelectedAssignmentToEnd(assignment);
+        setEndDialogOpen(true);
     };
 
     // Helper function to format date
@@ -163,6 +202,15 @@ function AdminSinglePatient({
         return value;
     };
 
+    // Convert currentAssignment to array if it's not already
+    const currentAssignments = Array.isArray(currentAssignment)
+        ? currentAssignment
+        : currentAssignment
+        ? [currentAssignment]
+        : [];
+
+    const canAssignMore = currentAssignments.length < 3;
+
     if (!patient) {
         return (
             <AdminLayout>
@@ -184,7 +232,7 @@ function AdminSinglePatient({
 
     return (
         <AdminLayout>
-            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Container maxWidth="lg" sx={{ mb: 4, px: { xs: 0, sm: 2 } }}>
                 <Head title="Patient Detail" />
                 <BackButton />
                 <Grid2 container spacing={2} mb={3} mt={1}>
@@ -211,122 +259,179 @@ function AdminSinglePatient({
                                 Caregiver Assignment
                             </Typography>
 
-                            {/* Current Assignment Display */}
-                            {currentAssignment ? (
-                                <Box
-                                    sx={{
-                                        mb: 3,
-                                        p: 2,
-                                        bgcolor: "white",
-                                        borderBottom: "1px solid",
-                                        borderColor: "gray.300",
-                                    }}
-                                >
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            justifyContent: "space-between",
-                                            alignItems: "center",
-                                            mb: 1,
-                                        }}
-                                    >
-                                        <Typography
-                                            variant="subtitle1"
-                                            fontWeight="bold"
-                                        >
-                                            Currently Assigned
-                                        </Typography>
-                                        <Chip
-                                            label="Active"
-                                            color="success"
-                                            size="small"
-                                        />
-                                    </Box>
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: 2,
-                                            mb: 2,
-                                        }}
-                                    >
-                                        <Avatar
-                                            src={
-                                                currentAssignment.caregiver
-                                                    .profile_photo
-                                            }
-                                            alt={
-                                                currentAssignment.caregiver
-                                                    .full_name
-                                            }
-                                            sx={{ width: 56, height: 56 }}
-                                        />
-                                        <Box>
-                                            <Typography
-                                                variant="body2"
-                                                sx={{ mb: 0.5 }}
-                                            >
-                                                <strong>Name:</strong>{" "}
-                                                {
-                                                    currentAssignment.caregiver
-                                                        .full_name
-                                                }
-                                            </Typography>
-                                            <Typography
-                                                variant="body2"
-                                                sx={{ mb: 0.5 }}
-                                            >
-                                                <strong> ID:</strong>{" "}
-                                                {
-                                                    currentAssignment.caregiver
-                                                        .geneva_id
-                                                }
-                                            </Typography>
-                                        </Box>
-                                    </Box>
+                            {/* Current Assignments Display */}
+                            {currentAssignments.length > 0 ? (
+                                <Box sx={{ mb: 3 }}>
                                     <Typography
-                                        variant="body2"
-                                        sx={{ mb: 0.5 }}
+                                        variant="subtitle1"
+                                        fontWeight="bold"
+                                        sx={{ mb: 2 }}
                                     >
-                                        <strong>Start Date:</strong>{" "}
-                                        {formatDate(
-                                            currentAssignment.start_date
-                                        )}
+                                        Currently Assigned Caregivers (
+                                        {currentAssignments.length}/3)
                                     </Typography>
-                                    {currentAssignment.assignment_reason && (
-                                        <Typography
-                                            variant="body2"
-                                            sx={{ mb: 0.5 }}
-                                        >
-                                            <strong>Reason:</strong>{" "}
-                                            {
-                                                currentAssignment.assignment_reason
-                                            }
-                                        </Typography>
+
+                                    {currentAssignments.map(
+                                        (assignment, index) => (
+                                            <Box
+                                                key={assignment.id}
+                                                sx={{
+                                                    mb: 2,
+                                                    p: 2,
+                                                    bgcolor: "white",
+                                                    borderRadius: 2,
+                                                    border: "1px solid",
+                                                    borderColor: "grey.300",
+                                                }}
+                                            >
+                                                <Box
+                                                    sx={{
+                                                        display: "flex",
+                                                        justifyContent:
+                                                            "space-between",
+                                                        alignItems: "center",
+                                                        mb: 1,
+                                                    }}
+                                                >
+                                                    <Typography
+                                                        variant="subtitle2"
+                                                        fontWeight="bold"
+                                                    >
+                                                        Caregiver #{index + 1}
+                                                    </Typography>
+                                                    <Chip
+                                                        label="Active"
+                                                        color="success"
+                                                        size="small"
+                                                    />
+                                                </Box>
+                                                <Box
+                                                    sx={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        gap: 2,
+                                                        mb: 2,
+                                                    }}
+                                                >
+                                                    <Avatar
+                                                        src={
+                                                            assignment.caregiver
+                                                                .profile_photo
+                                                        }
+                                                        alt={
+                                                            assignment.caregiver
+                                                                .full_name
+                                                        }
+                                                        sx={{
+                                                            width: 56,
+                                                            height: 56,
+                                                        }}
+                                                    />
+                                                    <Box>
+                                                        <Typography
+                                                            variant="body2"
+                                                            sx={{ mb: 0.5 }}
+                                                        >
+                                                            <strong>
+                                                                Name:
+                                                            </strong>{" "}
+                                                            {
+                                                                assignment
+                                                                    .caregiver
+                                                                    .full_name
+                                                            }
+                                                        </Typography>
+                                                        <Typography
+                                                            variant="body2"
+                                                            sx={{ mb: 0.5 }}
+                                                        >
+                                                            <strong>
+                                                                Geneva ID:
+                                                            </strong>{" "}
+                                                            {
+                                                                assignment
+                                                                    .caregiver
+                                                                    .geneva_id
+                                                            }
+                                                        </Typography>
+                                                    </Box>
+                                                </Box>
+                                                <Typography
+                                                    variant="body2"
+                                                    sx={{ mb: 0.5 }}
+                                                >
+                                                    <strong>Start Date:</strong>{" "}
+                                                    {formatDate(
+                                                        assignment.start_date
+                                                    )}
+                                                </Typography>
+                                                {assignment.assignment_reason && (
+                                                    <Typography
+                                                        variant="body2"
+                                                        sx={{ mb: 0.5 }}
+                                                    >
+                                                        <strong>Assign:</strong>{" "}
+                                                        {
+                                                            assignment.assignment_reason
+                                                        }
+                                                    </Typography>
+                                                )}
+                                                {/* Add Review Link Button */}
+                                                <Box sx={{ mt: 2, mb: 2 }}>
+                                                    <ReviewLinkButton
+                                                        patientSlug={
+                                                            patient.slug
+                                                        }
+                                                        caregiverSlug={
+                                                            assignment.caregiver
+                                                                .slug
+                                                        }
+                                                        isReviewed={reviewedCaregiverIds.includes(
+                                                            assignment.caregiver
+                                                                .id
+                                                        )}
+                                                    />
+                                                </Box>
+                                                <Button
+                                                    variant="outlined"
+                                                    color="error"
+                                                    size="small"
+                                                    onClick={() =>
+                                                        openEndDialog(
+                                                            assignment
+                                                        )
+                                                    }
+                                                    disabled={
+                                                        assignmentForm.processing
+                                                    }
+                                                    sx={{
+                                                        mt: 2,
+                                                        borderRadius: 20,
+                                                    }}
+                                                >
+                                                    End Assignment
+                                                </Button>
+                                            </Box>
+                                        )
                                     )}
-                                    {/* Add Review Link Button */}
-                                    <Box sx={{ mt: 2, mb: 2 }}>
-                                        <ReviewLinkButton
-                                            patientSlug={patient.slug}
-                                            caregiverSlug={
-                                                currentAssignment.caregiver.slug
-                                            }
-                                            isReviewed={reviewedCaregiverIds.includes(
-                                                currentAssignment.caregiver.id
-                                            )}
-                                        />
-                                    </Box>
-                                    <Button
-                                        variant="outlined"
-                                        color="error"
-                                        size="small"
-                                        onClick={() => setEndDialogOpen(true)}
-                                        disabled={assignmentForm.processing}
-                                        sx={{ borderRadius: 20 }}
-                                    >
-                                        End Assignment
-                                    </Button>
-                                    {/* <Divider sx={{ my: 2 }} /> */}
+
+                                    {/* Assign More Caregiver Button */}
+                                    {canAssignMore && (
+                                        <Box sx={{ mt: 2 }}>
+                                            <Button
+                                                variant="contained"
+                                                color="secondary"
+                                                startIcon={<AddIcon />}
+                                                onClick={() =>
+                                                    setShowAdditionalForm(true)
+                                                }
+                                                sx={{ borderRadius: 20 }}
+                                                size="small"
+                                            >
+                                                Assign More Caregiver
+                                            </Button>
+                                        </Box>
+                                    )}
                                 </Box>
                             ) : (
                                 <Typography
@@ -337,6 +442,193 @@ function AdminSinglePatient({
                                     No caregiver currently assigned
                                 </Typography>
                             )}
+                            {/* Additional Assignment Form */}
+                            <Collapse in={showAdditionalForm}>
+                                <Box
+                                    sx={{
+                                        p: 2,
+                                        mb: 3,
+                                        bgcolor: "warning.50",
+                                        borderRadius: 2,
+                                        border: "2px solid",
+                                        borderColor: "warning.main",
+                                    }}
+                                >
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                            mb: 2,
+                                        }}
+                                    >
+                                        <Typography
+                                            variant="subtitle1"
+                                            fontWeight="bold"
+                                        >
+                                            Assign Additional Caregiver
+                                        </Typography>
+                                        <IconButton
+                                            size="small"
+                                            onClick={() => {
+                                                setShowAdditionalForm(false);
+                                                additionalAssignmentForm.reset();
+                                            }}
+                                        >
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </Box>
+
+                                    <form
+                                        onSubmit={
+                                            handleAssignAdditionalCaregiver
+                                        }
+                                    >
+                                        <FormControl fullWidth sx={{ mb: 2 }}>
+                                            <InputLabel>
+                                                Select Additional Caregiver
+                                            </InputLabel>
+                                            <Select
+                                                variant="standard"
+                                                value={
+                                                    additionalAssignmentForm
+                                                        .data.cv_id
+                                                }
+                                                onChange={(e) =>
+                                                    additionalAssignmentForm.setData(
+                                                        "cv_id",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                error={
+                                                    !!additionalAssignmentForm
+                                                        .errors.cv_id
+                                                }
+                                                required
+                                            >
+                                                <MenuItem value="">
+                                                    <em>Choose a caregiver</em>
+                                                </MenuItem>
+                                                {caregivers.map((caregiver) => (
+                                                    <MenuItem
+                                                        key={caregiver.id}
+                                                        value={caregiver.id}
+                                                    >
+                                                        <Box
+                                                            sx={{
+                                                                display: "flex",
+                                                                alignItems:
+                                                                    "center",
+                                                                gap: 2,
+                                                            }}
+                                                        >
+                                                            <Avatar
+                                                                src={
+                                                                    caregiver.profile_photo
+                                                                }
+                                                                alt={
+                                                                    caregiver.full_name
+                                                                }
+                                                                sx={{
+                                                                    width: 40,
+                                                                    height: 40,
+                                                                }}
+                                                            />
+                                                            <Box>
+                                                                <Typography variant="body1">
+                                                                    {
+                                                                        caregiver.full_name
+                                                                    }
+                                                                </Typography>
+                                                                <Typography
+                                                                    variant="caption"
+                                                                    color="text.secondary"
+                                                                >
+                                                                    {
+                                                                        caregiver.ha_id
+                                                                    }
+                                                                </Typography>
+                                                            </Box>
+                                                        </Box>
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+
+                                        <TextField
+                                            fullWidth
+                                            label="Start Date"
+                                            type="date"
+                                            value={
+                                                additionalAssignmentForm.data
+                                                    .start_date
+                                            }
+                                            onChange={(e) =>
+                                                additionalAssignmentForm.setData(
+                                                    "start_date",
+                                                    e.target.value
+                                                )
+                                            }
+                                            InputLabelProps={{ shrink: true }}
+                                            sx={{ mb: 2 }}
+                                            required
+                                        />
+
+                                        <TextField
+                                            fullWidth
+                                            label="End Date (Optional)"
+                                            type="date"
+                                            value={
+                                                additionalAssignmentForm.data
+                                                    .end_date
+                                            }
+                                            onChange={(e) =>
+                                                additionalAssignmentForm.setData(
+                                                    "end_date",
+                                                    e.target.value
+                                                )
+                                            }
+                                            InputLabelProps={{ shrink: true }}
+                                            sx={{ mb: 2 }}
+                                        />
+
+                                        <TextField
+                                            fullWidth
+                                            label="Assign duty"
+                                            placeholder="Live-out / Day duty"
+                                            multiline
+                                            rows={2}
+                                            value={
+                                                additionalAssignmentForm.data
+                                                    .assignment_reason
+                                            }
+                                            onChange={(e) =>
+                                                additionalAssignmentForm.setData(
+                                                    "assignment_reason",
+                                                    e.target.value
+                                                )
+                                            }
+                                            sx={{ mb: 2 }}
+                                        />
+
+                                        <Button
+                                            type="submit"
+                                            variant="contained"
+                                            color="primary"
+                                            disabled={
+                                                additionalAssignmentForm.processing
+                                            }
+                                            sx={{ borderRadius: 20 }}
+                                            fullWidth
+                                            size="small"
+                                        >
+                                            {additionalAssignmentForm.processing
+                                                ? "Assigning..."
+                                                : "Assign Additional Caregiver"}
+                                        </Button>
+                                    </form>
+                                </Box>
+                            </Collapse>
 
                             {/* Assignment History */}
                             {history && history.length > 0 && (
@@ -346,7 +638,7 @@ function AdminSinglePatient({
                                         fontWeight="bold"
                                         sx={{ mb: 2 }}
                                     >
-                                        Assignment History
+                                        Assignment History ({history.length})
                                     </Typography>
                                     {history.map((assignment) => (
                                         <Box
@@ -427,16 +719,18 @@ function AdminSinglePatient({
                                                 <Typography
                                                     variant="caption"
                                                     display="block"
+                                                    color="error.main"
                                                     sx={{ mb: 0.5 }}
                                                 >
                                                     <strong>
-                                                        Assignment Reason:
+                                                        Assign Duty:
                                                     </strong>{" "}
                                                     {
                                                         assignment.assignment_reason
                                                     }
                                                 </Typography>
                                             )}
+
                                             {assignment.end_reason && (
                                                 <Typography
                                                     variant="caption"
@@ -466,200 +760,157 @@ function AdminSinglePatient({
                                 </Box>
                             )}
 
-                            {/* Assignment Form */}
-                            <form onSubmit={handleAssignCaregiver}>
-                                <Typography
-                                    variant="subtitle1"
-                                    fontWeight="bold"
-                                    sx={{ mb: 2, mt: 3 }}
-                                >
-                                    {currentAssignment
-                                        ? "Assign New Caregiver (Replace Current)"
-                                        : "Assign Caregiver"}
-                                </Typography>
+                            {/* Original Assignment Form - for first assignment or replacement */}
+                            {currentAssignments.length === 0 && (
+                                <form onSubmit={handleAssignCaregiver}>
+                                    <Typography
+                                        variant="subtitle1"
+                                        fontWeight="bold"
+                                        sx={{ mt: 3 }}
+                                    >
+                                        Assign Caregiver
+                                    </Typography>
+                                    <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                        sx={{ mb: 2, display: "block" }}
+                                    >
+                                        Caregivers with "Available" status will
+                                        shown here.
+                                    </Typography>
 
-                                <FormControl fullWidth sx={{ mb: 2 }}>
-                                    <InputLabel>Select Caregiver</InputLabel>
-                                    <Select
-                                        value={assignmentForm.data.cv_id}
+                                    {/* Original assignment form fields */}
+                                    <FormControl fullWidth sx={{ mb: 2 }}>
+                                        <InputLabel>
+                                            Select Caregiver
+                                        </InputLabel>
+                                        <Select
+                                            variant="standard"
+                                            value={assignmentForm.data.cv_id}
+                                            onChange={(e) =>
+                                                assignmentForm.setData(
+                                                    "cv_id",
+                                                    e.target.value
+                                                )
+                                            }
+                                            error={
+                                                !!assignmentForm.errors.cv_id
+                                            }
+                                            required
+                                        >
+                                            <MenuItem value="">
+                                                <em>Choose a caregiver</em>
+                                            </MenuItem>
+                                            {caregivers?.map((caregiver) => (
+                                                <MenuItem
+                                                    key={caregiver.id}
+                                                    value={caregiver.id}
+                                                >
+                                                    <Box
+                                                        sx={{
+                                                            display: "flex",
+                                                            alignItems:
+                                                                "center",
+                                                            gap: 2,
+                                                        }}
+                                                    >
+                                                        <Avatar
+                                                            src={
+                                                                caregiver.profile_photo
+                                                            }
+                                                            alt={
+                                                                caregiver.full_name
+                                                            }
+                                                            sx={{
+                                                                width: 40,
+                                                                height: 40,
+                                                            }}
+                                                        />
+                                                        <Box>
+                                                            <Typography variant="body1">
+                                                                {
+                                                                    caregiver.full_name
+                                                                }
+                                                            </Typography>
+                                                            <Typography
+                                                                variant="caption"
+                                                                color="text.secondary"
+                                                            >
+                                                                {
+                                                                    caregiver.ha_id
+                                                                }
+                                                            </Typography>
+                                                        </Box>
+                                                    </Box>
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+
+                                    <TextField
+                                        fullWidth
+                                        label="Start Date"
+                                        type="date"
+                                        value={assignmentForm.data.start_date}
                                         onChange={(e) =>
                                             assignmentForm.setData(
-                                                "cv_id",
+                                                "start_date",
                                                 e.target.value
                                             )
                                         }
-                                        error={!!assignmentForm.errors.cv_id}
+                                        InputLabelProps={{ shrink: true }}
+                                        sx={{ mb: 3 }}
                                         required
-                                        renderValue={(selected) => {
-                                            const caregiver = caregivers?.find(
-                                                (c) => c.id === selected
-                                            );
-                                            if (!caregiver) return "";
-                                            return (
-                                                <Box
-                                                    sx={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        gap: 1,
-                                                    }}
-                                                >
-                                                    <Avatar
-                                                        src={
-                                                            caregiver.profile_photo
-                                                        }
-                                                        alt={
-                                                            caregiver.full_name
-                                                        }
-                                                        sx={{
-                                                            width: 32,
-                                                            height: 32,
-                                                        }}
-                                                    />
-                                                    <Typography>
-                                                        {caregiver.full_name} (
-                                                        {caregiver.geneva_id})
-                                                    </Typography>
-                                                </Box>
-                                            );
-                                        }}
+                                    />
+
+                                    <TextField
+                                        fullWidth
+                                        label="End Date (Optional)"
+                                        type="date"
+                                        value={assignmentForm.data.end_date}
+                                        onChange={(e) =>
+                                            assignmentForm.setData(
+                                                "end_date",
+                                                e.target.value
+                                            )
+                                        }
+                                        InputLabelProps={{ shrink: true }}
+                                        sx={{ mb: 2 }}
+                                    />
+
+                                    <TextField
+                                        fullWidth
+                                        label="Assign duty"
+                                        multiline
+                                        rows={2}
+                                        value={
+                                            assignmentForm.data
+                                                .assignment_reason
+                                        }
+                                        onChange={(e) =>
+                                            assignmentForm.setData(
+                                                "assignment_reason",
+                                                e.target.value
+                                            )
+                                        }
+                                        sx={{ mb: 2 }}
+                                        placeholder="Live-out / Day duty"
+                                    />
+
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        color="primary"
+                                        disabled={assignmentForm.processing}
+                                        sx={{ borderRadius: 20 }}
+                                        fullWidth
                                     >
-                                        <MenuItem value="">
-                                            <em>Choose a caregiver</em>
-                                        </MenuItem>
-                                        {caregivers?.map((caregiver) => (
-                                            <MenuItem
-                                                key={caregiver.id}
-                                                value={caregiver.id}
-                                            >
-                                                <Box
-                                                    sx={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        gap: 2,
-                                                    }}
-                                                >
-                                                    <Avatar
-                                                        src={
-                                                            caregiver.profile_photo
-                                                        }
-                                                        alt={
-                                                            caregiver.full_name
-                                                        }
-                                                        sx={{
-                                                            width: 40,
-                                                            height: 40,
-                                                        }}
-                                                    />
-                                                    <Box>
-                                                        <Typography variant="body1">
-                                                            {
-                                                                caregiver.full_name
-                                                            }
-                                                        </Typography>
-                                                        <Typography
-                                                            variant="caption"
-                                                            color="text.secondary"
-                                                        >
-                                                            {
-                                                                caregiver.geneva_id
-                                                            }{" "}
-                                                            -{" "}
-                                                            {
-                                                                caregiver.service_area
-                                                            }
-                                                        </Typography>
-                                                    </Box>
-                                                </Box>
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                    {assignmentForm.errors.cv_id && (
-                                        <Typography
-                                            variant="caption"
-                                            color="error"
-                                        >
-                                            {assignmentForm.errors.cv_id}
-                                        </Typography>
-                                    )}
-                                </FormControl>
-
-                                <TextField
-                                    fullWidth
-                                    label="Start Date"
-                                    type="date"
-                                    value={assignmentForm.data.start_date}
-                                    onChange={(e) =>
-                                        assignmentForm.setData(
-                                            "start_date",
-                                            e.target.value
-                                        )
-                                    }
-                                    InputLabelProps={{ shrink: true }}
-                                    error={!!assignmentForm.errors.start_date}
-                                    helperText={
-                                        assignmentForm.errors.start_date
-                                    }
-                                    sx={{ mb: 2 }}
-                                    required
-                                />
-
-                                <TextField
-                                    fullWidth
-                                    label="End Date (Optional)"
-                                    type="date"
-                                    value={assignmentForm.data.end_date}
-                                    onChange={(e) =>
-                                        assignmentForm.setData(
-                                            "end_date",
-                                            e.target.value
-                                        )
-                                    }
-                                    InputLabelProps={{ shrink: true }}
-                                    error={!!assignmentForm.errors.end_date}
-                                    helperText={assignmentForm.errors.end_date}
-                                    sx={{ mb: 2 }}
-                                />
-
-                                <TextField
-                                    fullWidth
-                                    label="Reason (Optional)"
-                                    multiline
-                                    rows={2}
-                                    value={
-                                        assignmentForm.data.assignment_reason
-                                    }
-                                    onChange={(e) =>
-                                        assignmentForm.setData(
-                                            "assignment_reason",
-                                            e.target.value
-                                        )
-                                    }
-                                    error={
-                                        !!assignmentForm.errors
-                                            .assignment_reason
-                                    }
-                                    helperText={
-                                        assignmentForm.errors.assignment_reason
-                                    }
-                                    sx={{ mb: 2 }}
-                                    placeholder="e.g., Regular assignment, Replacement, etc."
-                                />
-
-                                <Button
-                                    type="submit"
-                                    variant="contained"
-                                    color="primary"
-                                    disabled={assignmentForm.processing}
-                                    sx={{ borderRadius: 20 }}
-                                    fullWidth
-                                >
-                                    {assignmentForm.processing
-                                        ? "Assigning..."
-                                        : currentAssignment
-                                        ? "Assign & Replace"
-                                        : "Assign Caregiver"}
-                                </Button>
-                            </form>
+                                        {assignmentForm.processing
+                                            ? "Assigning..."
+                                            : "Assign Caregiver"}
+                                    </Button>
+                                </form>
+                            )}
                         </Box>
 
                         {/* Edit Patient Dialog */}
@@ -818,7 +1069,7 @@ function AdminSinglePatient({
                 </Grid2>
 
                 {/* Care Plan Photo Upload Section */}
-                <Box
+                {/* <Box
                     sx={{
                         maxWidth: 600,
                         margin: "auto",
@@ -921,10 +1172,10 @@ function AdminSinglePatient({
                             </Button>
                         </Box>
                     )}
-                </Box>
+                </Box> */}
 
                 {/* Care Plan Photos Section */}
-                <Box
+                {/* <Box
                     sx={{
                         maxWidth: 600,
                         margin: "auto",
@@ -960,7 +1211,7 @@ function AdminSinglePatient({
                             <NoData />
                         )}
                     </Box>
-                </Box>
+                </Box> */}
             </Container>
         </AdminLayout>
     );
