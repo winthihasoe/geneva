@@ -81,7 +81,7 @@ function AdminReviews({ reviews, stats, filters = {} }) {
             },
             {
                 preserveState: true,
-            }
+            },
         );
     };
 
@@ -95,7 +95,7 @@ function AdminReviews({ reviews, stats, filters = {} }) {
             },
             {
                 preserveState: true,
-            }
+            },
         );
     };
 
@@ -186,7 +186,7 @@ function AdminReviews({ reviews, stats, filters = {} }) {
                                                         },
                                                         {
                                                             preserveState: true,
-                                                        }
+                                                        },
                                                     );
                                                 }}
                                             >
@@ -257,16 +257,23 @@ function AdminReviews({ reviews, stats, filters = {} }) {
                                             <Avatar
                                                 src={review.patient?.avatar}
                                                 alt={
-                                                    review.patient?.first_name +
-                                                    " " +
-                                                    review.patient?.last_name
+                                                    review.patient
+                                                        ? review.patient
+                                                              .first_name +
+                                                          (review.patient
+                                                              .last_name
+                                                              ? " " +
+                                                                review.patient
+                                                                    .last_name
+                                                              : "")
+                                                        : "Anonymous"
                                                 }
                                                 onClick={() =>
                                                     router.get(
                                                         route(
                                                             "admin.patient",
-                                                            review.patient.id
-                                                        )
+                                                            review.patient.id,
+                                                        ),
                                                     )
                                                 }
                                                 sx={{ cursor: "pointer" }}
@@ -282,8 +289,8 @@ function AdminReviews({ reviews, stats, filters = {} }) {
                                                             route(
                                                                 "admin.patient",
                                                                 review.patient
-                                                                    .id
-                                                            )
+                                                                    .id,
+                                                            ),
                                                         )
                                                     }
                                                     sx={{
@@ -295,11 +302,15 @@ function AdminReviews({ reviews, stats, filters = {} }) {
                                                     }}
                                                 >
                                                     {review?.patient
-                                                        .first_name +
-                                                        " " +
-                                                        review.patient
-                                                            .last_name ||
-                                                        "Anonymous"}{" "}
+                                                        ? review.patient
+                                                              .first_name +
+                                                          (review.patient
+                                                              .last_name
+                                                              ? " " +
+                                                                review.patient
+                                                                    .last_name
+                                                              : "")
+                                                        : "Anonymous"}
                                                 </Typography>
                                                 <Box
                                                     sx={{
@@ -325,7 +336,7 @@ function AdminReviews({ reviews, stats, filters = {} }) {
                                                             }}
                                                         />
                                                         {new Date(
-                                                            review.created_at
+                                                            review.created_at,
                                                         ).toLocaleDateString()}
                                                     </Typography>
                                                 </Box>
@@ -407,8 +418,8 @@ function AdminReviews({ reviews, stats, filters = {} }) {
                                                     router.get(
                                                         route(
                                                             "admin.cv.single",
-                                                            review.cv.id
-                                                        )
+                                                            review.cv.id,
+                                                        ),
                                                     )
                                                 }
                                             />
