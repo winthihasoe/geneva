@@ -1,1 +1,0 @@
-import{j as r}from"./app-nYEU2lQm.js";import{T as e}from"./Typography-C7N8tyXw.js";function n({children:t,textAlign:o="left"}){return r.jsx(e,{textAlign:o,fontSize:11,gutterBottom:!0,children:t})}export{n as T};

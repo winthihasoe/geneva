@@ -198,6 +198,8 @@ Route::middleware(['auth', 'is.caregiver'])->group(function () {
     Route::get('my-care-logs/filter', [CgDashboardController::class, 'filterCareLogs'])->name('cg.mycarelogs.filter');
 
     // Care Log Details Routes - Separated by care type
+    Route::get('care-log/{id}/baby-details', [CareLogController::class, 'getBabyCareLogDetails'])->name('cg.carelog.baby.details');
+    Route::get('care-log/{id}/baby-details-preview', [CareLogController::class, 'showBabyCareLogDetails'])->name('cg.carelog.baby.details.show');
     Route::get('care-log/{id}/newborn-details', [CareLogController::class, 'getNewbornCareLogDetails'])->name('cg.carelog.newborn.details');
     Route::get('care-log/{id}/newborn-details-preview', [CareLogController::class, 'showNewbornCareLogDetails'])->name('cg.carelog.newborn.details.show');
     Route::get('care-log/{id}/maternal-details', [CareLogController::class, 'getMaternalCareLogDetails'])->name('cg.carelog.maternal.details');
@@ -272,6 +274,8 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     // Care Logs
     Route::get('care-logs', [CareLogController::class, 'adminCareLogs'])->name('admin.care.logs');
     // Admin Care Log Details Routes
+    Route::get('care-logs/{id}/baby-details', [CareLogController::class, 'adminBabyCareLogDetails'])->name('admin.carelog.baby.details');
+    Route::get('care-logs/{id}/baby-details-preview', [CareLogController::class, 'adminShowBabyCareLogDetails'])->name('admin.carelog.baby.details.show');
     Route::get('care-logs/{id}/newborn-details', [CareLogController::class, 'adminNewbornCareLogDetails'])->name('admin.carelog.newborn.details');
     Route::get('care-logs/{id}/newborn-details-preview', [CareLogController::class, 'adminShowNewbornCareLogDetails'])->name('admin.carelog.newborn.details.show');
     Route::get('care-logs/{id}/maternal-details', [CareLogController::class, 'adminMaternalCareLogDetails'])->name('admin.carelog.maternal.details');

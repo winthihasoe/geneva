@@ -51,6 +51,8 @@ import ArrowCircleLeftOutlinedIcon from "@mui/icons-material/ArrowCircleLeftOutl
 // Add this function near the top of your component, after the imports
 const getDetailsRoute = (careType) => {
     switch (careType) {
+        case "baby":
+            return "cg.carelog.baby.details";
         case "newborn":
             return "cg.carelog.newborn.details";
         case "maternal":

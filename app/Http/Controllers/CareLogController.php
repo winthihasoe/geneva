@@ -1302,6 +1302,25 @@ class CareLogController extends Controller
     }
 
     // Newborn Care Log Details
+    public function getBabyCareLogDetails($id)
+    {
+        $careLogData = $this->getCareLogData($id, 'baby');
+
+        return Inertia::render('Caregiver/CareLogs/BabyCareLog/BabyCareLogDetails', [
+            'careLogData' => $careLogData,
+        ]);
+    }
+
+    public function showBabyCareLogDetails($id)
+    {
+        $careLogData = $this->getCareLogData($id, 'baby');
+
+        return Inertia::render('Caregiver/CareLogs/BabyCareLog/ShowBabyCareLogDetails', [
+            'careLogData' => $careLogData,
+        ]);
+    }
+
+    // Newborn Care Log Details
     public function getNewbornCareLogDetails($id)
     {
         $careLogData = $this->getCareLogData($id, 'newborn');
@@ -1574,13 +1593,14 @@ class CareLogController extends Controller
         // Count care logs by type (no filters, total in DB)
         $careTypeCounts = DB::table('care_logs')
             ->select('care_type', DB::raw('count(*) as total'))
-            ->whereIn('care_type', ['newborn', 'maternal', 'elder'])
+            ->whereIn('care_type', ['baby', 'newborn', 'maternal', 'elder'])
             ->groupBy('care_type')
             ->pluck('total', 'care_type')
             ->toArray();
 
         // Ensure all types are present
         $careTypeCounts = array_merge([
+            'baby' => 0,
             'newborn' => 0,
             'maternal' => 0,
             'elder' => 0,
@@ -1599,6 +1619,24 @@ class CareLogController extends Controller
     }
 
     // Admin Care Log Details Methods
+    public function adminBabyCareLogDetails($id)
+    {
+        $careLogData = $this->getAdminCareLogData($id, 'baby');
+
+        return Inertia::render('Admin/CareLogs/AdminBabyCareLogDetails', [
+            'careLogData' => $careLogData,
+        ]);
+    }
+
+    public function adminShowBabyCareLogDetails($id)
+    {
+        $careLogData = $this->getAdminCareLogData($id, 'baby');
+
+        return Inertia::render('Caregiver/CareLogs/BabyCareLog/ShowBabyCareLogDetails', [
+            'careLogData' => $careLogData,
+        ]);
+    }
+
     public function adminNewbornCareLogDetails($id)
     {
         $careLogData = $this->getAdminCareLogData($id, 'newborn');

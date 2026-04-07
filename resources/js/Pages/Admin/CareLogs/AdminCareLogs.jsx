@@ -106,6 +106,8 @@ function AdminCareLogs() {
 
     const getDetailsRoute = (careType) => {
         switch (careType) {
+            case "baby":
+                return "admin.carelog.baby.details";
             case "newborn":
                 return "admin.carelog.newborn.details";
             case "maternal":
