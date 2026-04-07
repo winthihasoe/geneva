@@ -1,0 +1,1 @@
+import{j as s}from"./app-Bg9bGGU-.js";import{c as a}from"./createSvgIcon-BOGwg-WM.js";const t=a(s.jsx("path",{d:"m12 8-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"}),"ExpandLess"),r=a(s.jsx("path",{d:"M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"}),"ExpandMore");export{t as E,r as a};

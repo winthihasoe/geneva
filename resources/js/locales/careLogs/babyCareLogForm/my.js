@@ -122,8 +122,8 @@ export default {
         vitalSignsHeading:
             "Vital Signs (အပူချိန် / နှလုံးခုန်နှုန်း / အသက်ရှုနှုန်း)",
         temperature: "အပူချိန်",
-        pulseRate: "နှလုံးခုန်နှုန်း (နာရီပိုင်း)",
-        respiratoryRate: "အသက်ရှုနှုန်း (နာရီပိုင်း)",
+        pulseRate: "နှလုံးခုန်နှုန်း",
+        respiratoryRate: "အသက်ရှုနှုန်း",
         tempPlaceholder: "37.0",
         pulsePlaceholder: "120",
         respPlaceholder: "40",
