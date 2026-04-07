@@ -38,4 +38,9 @@ class PatientCaregiverAssignment extends Model
     {
         return $this->belongsTo(User::class, 'assigned_by');
     }
+
+    public function isActive(): bool
+    {
+        return $this->end_date === null;
+    }
 }

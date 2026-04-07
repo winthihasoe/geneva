@@ -21,7 +21,7 @@ import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import MonitorHeartRoundedIcon from "@mui/icons-material/MonitorHeartRounded";
 import AirlineSeatLegroomReducedRoundedIcon from "@mui/icons-material/AirlineSeatLegroomReducedRounded";
 
-function FetalHealth({ formData, setFormData }) {
+function FetalHealth({ strings, formData, setFormData }) {
     const handleFetalMovementChange = (event) => {
         const value = event.target.value === "true";
         setFormData((prev) => ({
@@ -92,7 +92,7 @@ function FetalHealth({ formData, setFormData }) {
         >
             <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
                 <Typography variant="h6" fontWeight="bold" color="primary">
-                    10. Fetal Health Monitoring
+                    {strings.fetalHealth.sectionTitle}
                 </Typography>
             </Box>
 

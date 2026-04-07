@@ -22,6 +22,7 @@ import {
     useTheme,
     useMediaQuery,
     Stack,
+    Divider,
 } from "@mui/material";
 import {
     ArrowBack as ArrowBackIcon,
@@ -44,6 +45,8 @@ import {
 } from "@mui/icons-material";
 import BackButton from "@/Components/BackButton";
 import { generateElderlyCareLogPDF } from "@/utils/elderlyCareLogPdfGenerator";
+import { transformElderlyCareLogToPdfFormData } from "@/utils/careLogPdfTransforms";
+import { genevaCareLogsGeneratedLine } from "@/utils/genevaCareLogStrings";
 
 const ElderlyCareLogDetails = () => {
     const { props } = usePage();
@@ -67,18 +70,16 @@ const ElderlyCareLogDetails = () => {
     } = careLogData;
 
     const handleGeneratePDF = async () => {
+        if (!window.confirm("Download this care log as a PDF?")) {
+            return;
+        }
         setIsGeneratingPDF(true);
 
         try {
-            // Transform the care log data to the format expected by PDF generator
-            const formData = transformCareLogToFormData();
-            const result = await generateElderlyCareLogPDF(formData, "elderly");
+            const formData = transformElderlyCareLogToPdfFormData(careLogData);
+            const result = await generateElderlyCareLogPDF(formData);
 
-            if (result.success) {
-                alert(
-                    `PDF generated successfully! Saved as: ${result.filename}`
-                );
-            } else {
+            if (!result.success) {
                 alert(`Failed to generate PDF: ${result.error}`);
             }
         } catch (error) {
@@ -87,164 +88,6 @@ const ElderlyCareLogDetails = () => {
         } finally {
             setIsGeneratingPDF(false);
         }
-    };
-
-    const transformCareLogToFormData = () => {
-        return {
-            date: care_log.care_date,
-            firstName: care_log.first_name,
-            lastName: care_log.last_name || "",
-            age: care_log.age_display,
-            weight: care_log.weight_kg,
-            height: care_log.height_cm,
-            additionalNotes: care_log.additional_notes,
-            caregiverName: care_log.caregiver_name,
-            caregiverSignature: care_log.caregiver_signature,
-            guardianSignature: care_log.guardian_signature,
-            guardianComment: care_log.guardian_comment,
-            emotionalMood: emotion_behavior?.mood,
-            behavioralConcerns: emotion_behavior?.behavior,
-            emotionalActionTaken: emotion_behavior?.action_taken,
-            hygiene:
-                hygiene_records?.map((record) => ({
-                    time: record.hygiene_time,
-                    activity: record.hygiene_activity,
-                    notes: record.notes,
-                    moisturizer_applied: record.moisturizer_applied,
-                    pressure_areas_checked: record.pressure_areas_checked,
-                    skin_care_findings: record.skin_care_findings,
-                })) || [],
-
-            medication:
-                medication_records?.map((record) => ({
-                    time: record.administration_time,
-                    medication: record.medication_name,
-                    dosage: record.dosage,
-                    route: record.route,
-                    notes: record.notes,
-                })) || [],
-            mobility:
-                mobility_records?.map((record) => ({
-                    time: record.exercise_time,
-                    duration: record.duration,
-                    activity: record.mobility_assistance_details,
-                    notes: record.notes,
-                })) || [],
-            intake:
-                intake_output_records
-                    ?.filter((record) => record.meal_type)
-                    ?.map((record) => ({
-                        meal_type: record.meal_type,
-                        meal_time: record.meal_time,
-                        food_items: JSON.parse(record.food_items || "[]"),
-                        amount: record.amount,
-                        amount_unit: record.amount_unit,
-                        assistance_needed: record.assistance_needed,
-                        intake_notes: record.intake_notes,
-                    })) || [],
-            output:
-                intake_output_records
-                    ?.filter(
-                        (record) => record.output_time || record.urine_volume
-                    )
-                    ?.map((record) => ({
-                        output_time: record.output_time,
-                        urine_volume: record.urine_volume,
-                        urine_volume_unit: record.urine_volume_unit,
-                        urine_color: record.urine_color,
-                        bowel_movement: record.bowel_movement,
-                        bowel_consistency: record.bowel_consistency,
-                        output_notes: record.output_notes,
-                    })) || [],
-            hydration:
-                intake_output_records
-                    ?.filter(
-                        (record) =>
-                            record.fluid_intake || record.dehydration_signs
-                    )
-                    ?.map((record) => ({
-                        fluid_intake: record.fluid_intake,
-                        fluid_intake_unit: record.fluid_intake_unit,
-                        dehydration_signs: record.dehydration_signs,
-                        other_dehydration_signs: record.other_dehydration_signs,
-                    })) || [],
-            activities:
-                activity_records?.map((record) => ({
-                    activity: record.activity_type,
-                    time: record.activity_time,
-                    duration: record.duration,
-                    notes: record.notes,
-                })) || [],
-            sleep:
-                sleep_records?.map((record) => ({
-                    type: record.type,
-                    time: record.sleep_start_time,
-                    duration: record.duration,
-                    quality: record.sleep_quality,
-                    notes: record.notes,
-                })) || [],
-            sleepIssues:
-                sleep_records.length > 0 ? sleep_records[0]?.sleep_issue : "",
-            accidents:
-                emergency_incidents?.map((record) => ({
-                    time:
-                        record.incident_time?.split(" ")[1] ||
-                        record.incident_time,
-                    description: record.incident_description,
-                    severity: record.severity,
-                    action: record.actions_taken,
-                })) || [],
-            household:
-                household_records?.map((record) => ({
-                    task: record.household_work,
-                    time: record.start_time,
-                    duration: record.duration,
-                    notes: record.notes,
-                })) || [],
-            vitalSigns: transformVitalSigns(),
-            bloodGlucose:
-                blood_glucose_records?.map((record) => ({
-                    measurement_time: record.measurement_time,
-                    glucose_level: record.glucose_level,
-                    timing: record.timing,
-                    note: record.notes,
-                })) || [],
-            supplies:
-                supply_requests?.map((record) => ({
-                    item: record.item,
-                    quantity: record.quantity,
-                    purpose: record.purpose,
-                    priority: record.priority,
-                })) || [],
-        };
-    };
-
-    const transformVitalSigns = () => {
-        const vitalSigns = {
-            times: [],
-            bloodPressureSystolic: [],
-            bloodPressureDiastolic: [],
-            temperature: [],
-            temperatureUnit: [],
-            pulseRate: [],
-            respiratoryRate: [],
-            spo2: [],
-        };
-
-        vital_signs?.forEach((sign) => {
-            vitalSigns.times.push(sign.measurement_time || "");
-            vitalSigns.bloodPressureSystolic.push(sign.systolic_pressure || "");
-            vitalSigns.bloodPressureDiastolic.push(
-                sign.diastolic_pressure || ""
-            );
-            vitalSigns.temperature.push(sign.temperature || "");
-            vitalSigns.temperatureUnit.push(sign.temperature_unit || "C");
-            vitalSigns.pulseRate.push(sign.pulse_rate || "");
-            vitalSigns.respiratoryRate.push(sign.respiratory_rate || "");
-            vitalSigns.spo2.push(sign.spo2 || "");
-        });
-
-        return vitalSigns;
     };
 
     const formatDate = (dateString) => {
@@ -1560,6 +1403,26 @@ const ElderlyCareLogDetails = () => {
                         </Grid>
                     </CardContent>
                 </Card>
+
+                <Box sx={{ textAlign: "center", mt: 4, mb: 2 }}>
+                    <Divider sx={{ mb: 2 }} />
+                    <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mb: 2 }}
+                    >
+                        {genevaCareLogsGeneratedLine()}
+                    </Typography>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<DownloadIcon />}
+                        disabled={isGeneratingPDF}
+                        onClick={handleGeneratePDF}
+                    >
+                        {isGeneratingPDF ? "Generating…" : "Download PDF"}
+                    </Button>
+                </Box>
             </Container>
         </AppLayout>
     );

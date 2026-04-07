@@ -21,6 +21,7 @@ import {
     useMediaQuery,
     useTheme,
     Stack,
+    Divider,
 } from "@mui/material";
 import {
     Download as DownloadIcon,
@@ -43,6 +44,8 @@ import {
 } from "@mui/icons-material";
 import BackButton from "@/Components/BackButton";
 import { generateMaternalCareLogPDF } from "@/utils/maternalCareLogPdfGenerator";
+import { transformMaternalCareLogToPdfFormData } from "@/utils/careLogPdfTransforms";
+import { genevaCareLogsGeneratedLine } from "@/utils/genevaCareLogStrings";
 
 const MaternalCareLogDetails = () => {
     const { props } = usePage();
@@ -69,21 +72,16 @@ const MaternalCareLogDetails = () => {
     } = careLogData;
 
     const handleGeneratePDF = async () => {
+        if (!window.confirm("Download this care log as a PDF?")) {
+            return;
+        }
         setIsGeneratingPDF(true);
 
         try {
-            // Transform the care log data to the format expected by PDF generator
-            const formData = transformCareLogToFormData();
-            const result = await generateMaternalCareLogPDF(
-                formData,
-                "maternal"
-            );
+            const formData = transformMaternalCareLogToPdfFormData(careLogData);
+            const result = await generateMaternalCareLogPDF(formData);
 
-            if (result.success) {
-                alert(
-                    `PDF generated successfully! Saved as: ${result.filename}`
-                );
-            } else {
+            if (!result.success) {
                 alert(`Failed to generate PDF: ${result.error}`);
             }
         } catch (error) {
@@ -92,165 +90,6 @@ const MaternalCareLogDetails = () => {
         } finally {
             setIsGeneratingPDF(false);
         }
-    };
-
-    const transformCareLogToFormData = () => {
-        return {
-            date: care_log.care_date,
-            firstName: care_log.first_name,
-            lastName: care_log.last_name || "",
-            age: care_log.age_display,
-            gestationalAge: care_log.gestational_age,
-            weight: care_log.weight_kg,
-            height: care_log.height_cm,
-            additionalNotes: care_log.additional_notes,
-            caregiverName: care_log.caregiver_name,
-            caregiverSignature: care_log.caregiver_signature,
-            guardianSignature: care_log.guardian_signature,
-            guardianComment: care_log.guardian_comment,
-            emotionalMood: emotion_behavior?.mood,
-            behavioralConcerns: emotion_behavior?.behavior,
-            emotionalActionTaken: emotion_behavior?.action_taken,
-            hygiene:
-                hygiene_records?.map((record) => ({
-                    time: record.hygiene_time,
-                    activity: record.hygiene_activity,
-                    notes: record.notes,
-                    moisturizer_applied: record.moisturizer_applied,
-                    pressure_areas_checked: record.pressure_areas_checked,
-                    skin_care_findings: record.skin_care_findings,
-                })) || [],
-
-            medication:
-                medication_records?.map((record) => ({
-                    time: record.administration_time,
-                    medication: record.medication_name,
-                    dosage: record.dosage,
-                    route: record.route,
-                    notes: record.notes,
-                })) || [],
-            mobility:
-                mobility_records?.map((record) => ({
-                    time: record.exercise_time,
-                    duration: record.duration,
-                    activity: record.mobility_assistance_details,
-                    notes: record.notes,
-                })) || [],
-            intake:
-                intake_output_records
-                    ?.filter((record) => record.meal_type)
-                    ?.map((record) => ({
-                        meal_type: record.meal_type,
-                        meal_time: record.meal_time,
-                        food_items: JSON.parse(record.food_items || "[]"),
-                        amount: record.amount,
-                        amount_unit: record.amount_unit,
-                        assistance_needed: record.assistance_needed,
-                        intake_notes: record.intake_notes,
-                    })) || [],
-            output:
-                urinary_bowel_records
-                    ?.filter(
-                        (record) => record.record_time || record.urine_frequency
-                    )
-                    ?.map((record) => ({
-                        record_time: record.record_time,
-                        urine_frequency: record.urine_frequency,
-                        blood_in_urine: record.blood_in_urine,
-                        pain_discomfort_urination:
-                            record.pain_discomfort_urination,
-                        bowel_movement_frequency:
-                            record.bowel_movement_frequency,
-                        blood_in_stool: record.blood_in_stool,
-                        discharge: record.discharge,
-                        other_symptoms: record.other_symptoms,
-                    })) || [],
-
-            activities:
-                activity_records?.map((record) => ({
-                    activity: record.activity_type,
-                    time: record.activity_time,
-                    duration: record.duration,
-                    notes: record.notes,
-                })) || [],
-            sleep:
-                sleep_records?.map((record) => ({
-                    type: record.type,
-                    time: record.sleep_start_time,
-                    duration: record.duration,
-                    quality: record.sleep_quality,
-                    notes: record.notes,
-                })) || [],
-            sleepIssues:
-                sleep_records.length > 0 ? sleep_records[0]?.sleep_issue : "",
-            accidents:
-                emergency_incidents?.map((record) => ({
-                    time:
-                        record.incident_time?.split(" ")[1] ||
-                        record.incident_time,
-                    description: record.incident_description,
-                    severity: record.severity,
-                    action: record.actions_taken,
-                })) || [],
-            household:
-                household_records?.map((record) => ({
-                    task: record.household_work,
-                    time: record.start_time,
-                    duration: record.duration,
-                    notes: record.notes,
-                })) || [],
-            vitalSigns: transformVitalSigns(),
-            bloodGlucose:
-                blood_glucose_records?.map((record) => ({
-                    measurement_time: record.measurement_time,
-                    glucose_level: record.glucose_level,
-                    timing: record.timing,
-                    note: record.notes,
-                })) || [],
-            supplies:
-                supply_requests?.map((record) => ({
-                    item: record.item,
-                    quantity: record.quantity,
-                    purpose: record.purpose,
-                    priority: record.priority,
-                })) || [],
-            fetalHealth: {
-                fetal_movement_detected:
-                    fetal_health_records?.fetal_movement_detected ?? null,
-                fetal_heart_sound:
-                    fetal_health_records?.fetal_heart_sound ?? null,
-                kick_count: fetal_health_records?.kick_count ?? null,
-                notes: fetal_health_records?.notes ?? null,
-            },
-        };
-    };
-
-    const transformVitalSigns = () => {
-        const vitalSigns = {
-            times: [],
-            bloodPressureSystolic: [],
-            bloodPressureDiastolic: [],
-            temperature: [],
-            temperatureUnit: [],
-            pulseRate: [],
-            respiratoryRate: [],
-            spo2: [],
-        };
-
-        vital_signs?.forEach((sign) => {
-            vitalSigns.times.push(sign.measurement_time || "");
-            vitalSigns.bloodPressureSystolic.push(sign.systolic_pressure || "");
-            vitalSigns.bloodPressureDiastolic.push(
-                sign.diastolic_pressure || ""
-            );
-            vitalSigns.temperature.push(sign.temperature || "");
-            vitalSigns.temperatureUnit.push(sign.temperature_unit || "C");
-            vitalSigns.pulseRate.push(sign.pulse_rate || "");
-            vitalSigns.respiratoryRate.push(sign.respiratory_rate || "");
-            vitalSigns.spo2.push(sign.spo2 || "");
-        });
-
-        return vitalSigns;
     };
 
     // Helper functions for formatting
@@ -269,7 +108,7 @@ const MaternalCareLogDetails = () => {
                 hour: "numeric",
                 minute: "2-digit",
                 hour12: true,
-            }
+            },
         );
     };
 
@@ -297,7 +136,7 @@ const MaternalCareLogDetails = () => {
 
         if (isHygieneTable) {
             filteredData = data.filter(
-                (row) => row.hygiene_time || row.hygiene_activity || row.notes
+                (row) => row.hygiene_time || row.hygiene_activity || row.notes,
             );
         }
 
@@ -338,7 +177,7 @@ const MaternalCareLogDetails = () => {
                                         {column.format
                                             ? column.format(
                                                   row[column.key],
-                                                  row
+                                                  row,
                                               )
                                             : row[column.key] || "-"}
                                     </Typography>
@@ -374,7 +213,7 @@ const MaternalCareLogDetails = () => {
                                         {column.format
                                             ? column.format(
                                                   row[column.key],
-                                                  row
+                                                  row,
                                               )
                                             : row[column.key] || "-"}
                                     </TableCell>
@@ -391,7 +230,7 @@ const MaternalCareLogDetails = () => {
     const intakeRecords =
         intake_output_records?.filter(
             (record) =>
-                record.meal_type || record.meal_time || record.food_items
+                record.meal_type || record.meal_time || record.food_items,
         ) || [];
 
     return (
@@ -419,8 +258,8 @@ const MaternalCareLogDetails = () => {
                             router.get(
                                 route(
                                     "cg.carelog.maternal.details.show",
-                                    care_log.id
-                                )
+                                    care_log.id,
+                                ),
                             )
                         }
                         size="small"
@@ -563,20 +402,20 @@ const MaternalCareLogDetails = () => {
                                 { key: "hygiene_activity", label: "Activity" },
                                 { key: "notes", label: "Notes" },
                             ],
-                            "No hygiene records found"
+                            "No hygiene records found",
                         )}
                         {/* Moisturizer, Pressure Area, Skin Care Findings summary */}
                         {hygiene_records &&
                             hygiene_records.length > 0 &&
                             (() => {
                                 const anyMoisturizer = hygiene_records.some(
-                                    (r) => r.moisturizer_applied
+                                    (r) => r.moisturizer_applied,
                                 );
                                 const anyPressure = hygiene_records.some(
-                                    (r) => r.pressure_areas_checked
+                                    (r) => r.pressure_areas_checked,
                                 );
                                 const anySkinCare = hygiene_records.some(
-                                    (r) => r.skin_care_findings
+                                    (r) => r.skin_care_findings,
                                 );
                                 if (
                                     !anyMoisturizer &&
@@ -612,11 +451,11 @@ const MaternalCareLogDetails = () => {
                                                 {hygiene_records
                                                     .filter(
                                                         (r) =>
-                                                            r.skin_care_findings
+                                                            r.skin_care_findings,
                                                     )
                                                     .map(
                                                         (r, i) =>
-                                                            r.skin_care_findings
+                                                            r.skin_care_findings,
                                                     )
                                                     .join(", ")}
                                             </Typography>
@@ -659,7 +498,7 @@ const MaternalCareLogDetails = () => {
                                 { key: "route", label: "Route" },
                                 { key: "notes", label: "Notes" },
                             ],
-                            "No medication records found"
+                            "No medication records found",
                         )}
                     </CardContent>
                 </Card>
@@ -729,7 +568,7 @@ const MaternalCareLogDetails = () => {
                                 },
                                 { key: "notes", label: "Notes" },
                             ],
-                            "No vital signs records found"
+                            "No vital signs records found",
                         )}
                     </CardContent>
                 </Card>
@@ -770,7 +609,7 @@ const MaternalCareLogDetails = () => {
                                 { key: "timing", label: "Timing" },
                                 { key: "notes", label: "Notes" },
                             ],
-                            "No blood glucose records found"
+                            "No blood glucose records found",
                         )}
                     </CardContent>
                 </Card>
@@ -809,7 +648,7 @@ const MaternalCareLogDetails = () => {
                                 },
                                 { key: "notes", label: "Notes" },
                             ],
-                            "No mobility & exercise records found"
+                            "No mobility & exercise records found",
                         )}
                     </CardContent>
                 </Card>
@@ -878,7 +717,7 @@ const MaternalCareLogDetails = () => {
                                 },
                                 { key: "intake_notes", label: "Notes" },
                             ],
-                            "No intake records found"
+                            "No intake records found",
                         )}
                     </CardContent>
                 </Card>
@@ -940,7 +779,7 @@ const MaternalCareLogDetails = () => {
                                     label: "Other Symptoms",
                                 },
                             ],
-                            "No output records found"
+                            "No output records found",
                         )}
                     </CardContent>
                 </Card>
@@ -976,7 +815,7 @@ const MaternalCareLogDetails = () => {
                                 { key: "duration", label: "Duration" },
                                 { key: "notes", label: "Notes" },
                             ],
-                            "No activity records found"
+                            "No activity records found",
                         )}
                     </CardContent>
                 </Card>
@@ -1013,7 +852,7 @@ const MaternalCareLogDetails = () => {
                                 { key: "sleep_quality", label: "Quality" },
                                 { key: "notes", label: "Notes" },
                             ],
-                            "No sleep records found"
+                            "No sleep records found",
                         )}
                     </CardContent>
                 </Card>
@@ -1042,9 +881,9 @@ const MaternalCareLogDetails = () => {
                             {fetal_health_records?.fetal_movement_detected == 1
                                 ? "Yes"
                                 : fetal_health_records?.fetal_movement_detected ==
-                                  0
-                                ? "No"
-                                : "Not recorded"}
+                                    0
+                                  ? "No"
+                                  : "Not recorded"}
                         </Typography>
                         <Typography variant="body1">
                             Kick Count: {fetal_health_records?.kick_count}
@@ -1162,7 +1001,7 @@ const MaternalCareLogDetails = () => {
                                     label: "Actions Taken",
                                 },
                             ],
-                            "No emergency incidents found"
+                            "No emergency incidents found",
                         )}
                     </CardContent>
                 </Card>
@@ -1198,7 +1037,7 @@ const MaternalCareLogDetails = () => {
                                 { key: "duration", label: "Duration" },
                                 { key: "notes", label: "Notes" },
                             ],
-                            "No household work records found"
+                            "No household work records found",
                         )}
                     </CardContent>
                 </Card>
@@ -1230,7 +1069,7 @@ const MaternalCareLogDetails = () => {
                                 { key: "purpose", label: "Purpose" },
                                 { key: "priority", label: "Priority" },
                             ],
-                            "No supply requests found"
+                            "No supply requests found",
                         )}
                     </CardContent>
                 </Card>
@@ -1438,6 +1277,26 @@ const MaternalCareLogDetails = () => {
                         </Grid>
                     </CardContent>
                 </Card>
+
+                <Box sx={{ textAlign: "center", mt: 4, mb: 2 }}>
+                    <Divider sx={{ mb: 2 }} />
+                    <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mb: 2 }}
+                    >
+                        {genevaCareLogsGeneratedLine()}
+                    </Typography>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        startIcon={<DownloadIcon />}
+                        disabled={isGeneratingPDF}
+                        onClick={handleGeneratePDF}
+                    >
+                        {isGeneratingPDF ? "Generating…" : "Download PDF"}
+                    </Button>
+                </Box>
             </Container>
         </AppLayout>
     );

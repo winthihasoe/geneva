@@ -16,13 +16,20 @@ import {
 } from "@mui/material";
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 
+const DIAPER_CONTENTS = ["Wet", "Dirty", "Both"];
+
 const DiaperChangesSection = ({
     data,
     handleArrayChange,
     addArrayItem,
     removeArrayItem,
     entryRefs,
+    strings,
 }) => {
+    const d = strings.diaper;
+    const c = strings.common;
+    const o = strings.options;
+
     return (
         <Card sx={{ borderRadius: 2, bgcolor: "transparent" }}>
             <CardContent>
@@ -37,21 +44,21 @@ const DiaperChangesSection = ({
                     }}
                 >
                     <Typography variant="h6" fontWeight="bold" color="primary">
-                        2. Diaper Changes
+                        {d.sectionTitle}
                     </Typography>
                     <Button
                         startIcon={<AddIcon />}
                         onClick={() =>
                             addArrayItem("diaperChanges", {
                                 time: "",
-                                content: "", // Changed from 'type' to 'content'
+                                content: "",
                                 notes: "",
                             })
                         }
                         variant="outlined"
                         size="small"
                     >
-                        Add Entry
+                        {c.addEntry}
                     </Button>
                 </Box>
 
@@ -77,7 +84,7 @@ const DiaperChangesSection = ({
                                 variant="subtitle2"
                                 color="text.secondary"
                             >
-                                Entry {index + 1}
+                                {c.entry(index + 1)}
                             </Typography>
                             <IconButton
                                 onClick={() =>
@@ -96,7 +103,7 @@ const DiaperChangesSection = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Time"
+                                    label={c.time}
                                     type="time"
                                     value={item.time}
                                     onChange={(e) =>
@@ -113,22 +120,24 @@ const DiaperChangesSection = ({
 
                             <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
                                 <FormControl fullWidth variant="standard">
-                                    <InputLabel>Diaper Content</InputLabel>
+                                    <InputLabel>{d.diaperContent}</InputLabel>
                                     <Select
-                                        value={item.content} // Changed from 'type' to 'content'
+                                        value={item.content}
                                         onChange={(e) =>
                                             handleArrayChange(
                                                 "diaperChanges",
                                                 index,
-                                                "content", // Changed from 'type' to 'content'
+                                                "content",
                                                 e.target.value
                                             )
                                         }
-                                        label="Diaper Content"
+                                        label={d.diaperContent}
                                     >
-                                        <MenuItem value="Wet">Wet</MenuItem>
-                                        <MenuItem value="Dirty">Dirty</MenuItem>
-                                        <MenuItem value="Both">Both</MenuItem>
+                                        {DIAPER_CONTENTS.map((key) => (
+                                            <MenuItem key={key} value={key}>
+                                                {o.diaperContent[key]}
+                                            </MenuItem>
+                                        ))}
                                     </Select>
                                 </FormControl>
                             </Grid2>
@@ -137,7 +146,7 @@ const DiaperChangesSection = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Notes"
+                                    label={c.notes}
                                     value={item.notes}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -149,7 +158,7 @@ const DiaperChangesSection = ({
                                     }
                                     multiline
                                     maxRows={3}
-                                    placeholder="Any observations..."
+                                    placeholder={d.notesPlaceholder}
                                 />
                             </Grid2>
                         </Grid2>

@@ -17,7 +17,12 @@ import {
     Container,
     Button,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { usePage } from "@inertiajs/react";
+import DownloadIcon from "@mui/icons-material/Download";
+import { generateElderlyCareLogPDF } from "@/utils/elderlyCareLogPdfGenerator";
+import { transformElderlyCareLogToPdfFormData } from "@/utils/careLogPdfTransforms";
+import { genevaCareLogsGeneratedLine } from "@/utils/genevaCareLogStrings";
 import ElderlyIcon from "@mui/icons-material/Elderly";
 import HygieneIcon from "@mui/icons-material/CleanHands";
 import MedicationIcon from "@mui/icons-material/LocalPharmacy";
@@ -33,29 +38,31 @@ import HouseholdIcon from "@mui/icons-material/CleaningServices";
 import SupplyIcon from "@mui/icons-material/Inventory";
 import "../../../../../css/a4.css";
 
-const primaryColor = "#21875C";
 const secondaryColor = "#FFC547";
 const textColor = "#333";
 const lightGray = "#808080";
 const headerBg = "#f5f5f5";
 
-const SectionTitle = ({ children, fontSize = 20 }) => (
-    <Typography
-        variant="h6"
-        sx={{
-            color: primaryColor,
-            fontWeight: "bold",
-            fontSize,
-            mt: 3,
-            mb: 2,
-            borderBottom: `2px solid ${secondaryColor}`,
-            display: "inline-block",
-            pb: 0.5,
-        }}
-    >
-        {children}
-    </Typography>
-);
+const SectionTitle = ({ children, fontSize = 20 }) => {
+    const theme = useTheme();
+    return (
+        <Typography
+            variant="h6"
+            sx={{
+                color: theme.palette.primary.main,
+                fontWeight: "bold",
+                fontSize,
+                mt: 3,
+                mb: 2,
+                borderBottom: `2px solid ${secondaryColor}`,
+                display: "inline-block",
+                pb: 0.5,
+            }}
+        >
+            {children}
+        </Typography>
+    );
+};
 
 const InfoRow = ({ label, value }) => (
     <Grid container spacing={1} sx={{ mb: 0.5 }}>
@@ -72,47 +79,55 @@ const InfoRow = ({ label, value }) => (
     </Grid>
 );
 
-const TableSection = ({ title, columns, rows, emptyMessage }) => (
-    <Box>
-        {rows && rows.length > 0 ? (
-            <TableContainer component={Paper} sx={{ boxShadow: "none" }}>
-                <Table size="small">
-                    <TableHead>
-                        <TableRow sx={{ background: primaryColor }}>
-                            {columns.map((col, idx) => (
-                                <TableCell
-                                    key={idx}
-                                    sx={{ color: "#fff", fontWeight: "bold" }}
-                                >
-                                    {col}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.map((row, idx) => (
+const TableSection = ({ title, columns, rows, emptyMessage }) => {
+    const theme = useTheme();
+    return (
+        <Box>
+            {rows && rows.length > 0 ? (
+                <TableContainer component={Paper} sx={{ boxShadow: "none" }}>
+                    <Table size="small">
+                        <TableHead>
                             <TableRow
-                                key={idx}
-                                sx={{
-                                    background:
-                                        idx % 2 === 0 ? headerBg : "#fff",
-                                }}
+                                sx={{ background: theme.palette.primary.main }}
                             >
-                                {row.map((cell, cidx) => (
-                                    <TableCell key={cidx}>{cell}</TableCell>
+                                {columns.map((col, idx) => (
+                                    <TableCell
+                                        key={idx}
+                                        sx={{
+                                            color: "#fff",
+                                            fontWeight: "bold",
+                                        }}
+                                    >
+                                        {col}
+                                    </TableCell>
                                 ))}
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        ) : (
-            <Typography sx={{ color: lightGray, mt: 1 }}>
-                {emptyMessage}
-            </Typography>
-        )}
-    </Box>
-);
+                        </TableHead>
+                        <TableBody>
+                            {rows.map((row, idx) => (
+                                <TableRow
+                                    key={idx}
+                                    sx={{
+                                        background:
+                                            idx % 2 === 0 ? headerBg : "#fff",
+                                    }}
+                                >
+                                    {row.map((cell, cidx) => (
+                                        <TableCell key={cidx}>{cell}</TableCell>
+                                    ))}
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            ) : (
+                <Typography sx={{ color: lightGray, mt: 1 }}>
+                    {emptyMessage}
+                </Typography>
+            )}
+        </Box>
+    );
+};
 
 const formatTime = (timeString) => {
     if (!timeString) return "-";
@@ -141,8 +156,31 @@ const formatDate = (dateString) => {
 };
 
 const ShowElderlyCareLogDetails = () => {
+    const theme = useTheme();
     const { props } = usePage();
     const { careLogData } = props;
+    const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+
+    const handleDownloadPdf = async () => {
+        if (!window.confirm("Download this care log as a PDF?")) {
+            return;
+        }
+        setIsGeneratingPdf(true);
+        try {
+            const formData = transformElderlyCareLogToPdfFormData(careLogData);
+            const result = await generateElderlyCareLogPDF(formData);
+            if (!result.success) {
+                alert(
+                    `Failed to generate PDF: ${result.error || "Unknown error"}`,
+                );
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Failed to generate PDF. Please try again.");
+        } finally {
+            setIsGeneratingPdf(false);
+        }
+    };
 
     const {
         care_log,
@@ -164,23 +202,23 @@ const ShowElderlyCareLogDetails = () => {
     const intakeRecords =
         intake_output_records?.filter(
             (record) =>
-                record.meal_type || record.meal_time || record.food_items
+                record.meal_type || record.meal_time || record.food_items,
         ) || [];
     const outputRecords =
         intake_output_records?.filter(
             (record) =>
                 record.output_time ||
                 record.urine_volume ||
-                record.bowel_movement
+                record.bowel_movement,
         ) || [];
     const hydrationRecord = intake_output_records?.find(
-        (record) => record.fluid_intake || record.dehydration_signs
+        (record) => record.fluid_intake || record.dehydration_signs,
     );
 
     // Table data helpers
     const hygieneRows = (hygiene_records || [])
         .filter(
-            (item) => item.hygiene_time || item.hygiene_activity || item.notes
+            (item) => item.hygiene_time || item.hygiene_activity || item.notes,
         )
         .map((item) => [
             formatTime(item.hygiene_time),
@@ -305,15 +343,23 @@ const ShowElderlyCareLogDetails = () => {
             <Box sx={{ textAlign: "center", mb: 2 }}>
                 <Typography
                     variant="h5"
-                    sx={{ color: primaryColor, fontWeight: "bold" }}
+                    sx={{
+                        color: theme.palette.primary.main,
+                        fontWeight: "bold",
+                    }}
                 >
                     ELDERLY CARE LOG
                 </Typography>
                 <Typography sx={{ color: lightGray, fontSize: 13 }}>
-                    Generated on {new Date().toLocaleDateString()} at{" "}
-                    {new Date().toLocaleTimeString()}
+                    {genevaCareLogsGeneratedLine()}
                 </Typography>
-                <Divider sx={{ mt: 1, mb: 2, borderColor: primaryColor }} />
+                <Divider
+                    sx={{
+                        mt: 1,
+                        mb: 2,
+                        borderColor: theme.palette.primary.main,
+                    }}
+                />
             </Box>
 
             {/* Basic Info */}
@@ -368,13 +414,13 @@ const ShowElderlyCareLogDetails = () => {
                 hygiene_records.length > 0 &&
                 (() => {
                     const anyMoisturizer = hygiene_records.some(
-                        (r) => r.moisturizer_applied
+                        (r) => r.moisturizer_applied,
                     );
                     const anyPressure = hygiene_records.some(
-                        (r) => r.pressure_areas_checked
+                        (r) => r.pressure_areas_checked,
                     );
                     const anySkinCare = hygiene_records.some(
-                        (r) => r.skin_care_findings
+                        (r) => r.skin_care_findings,
                     );
                     if (!anyMoisturizer && !anyPressure && !anySkinCare)
                         return null;
@@ -914,10 +960,22 @@ const ShowElderlyCareLogDetails = () => {
 
             {/* Footer */}
             <Box sx={{ textAlign: "center", mt: 4 }}>
-                <Divider sx={{ mb: 1, borderColor: primaryColor }} />
+                <Divider
+                    sx={{ mb: 1, borderColor: theme.palette.primary.main }}
+                />
                 <Typography sx={{ color: lightGray, fontSize: 12 }}>
-                    Generated by Hearty Aid Care Logs System
+                    {genevaCareLogsGeneratedLine()}
                 </Typography>
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    startIcon={<DownloadIcon />}
+                    disabled={isGeneratingPdf}
+                    onClick={handleDownloadPdf}
+                    sx={{ mt: 8 }}
+                >
+                    {isGeneratingPdf ? "Generating…" : "Download"}
+                </Button>
             </Box>
         </div>
     );

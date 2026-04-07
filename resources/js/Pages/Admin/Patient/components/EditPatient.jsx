@@ -93,6 +93,7 @@ function EditPatient({ open, onClose, patient }) {
                                     <MenuItem value="Elder">Elder</MenuItem>
                                     <MenuItem value="Baby">Baby</MenuItem>
                                     <MenuItem value="Newborn">Newborn</MenuItem>
+                                    <MenuItem value="Maternal">Maternal</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid2>

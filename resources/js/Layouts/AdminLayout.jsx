@@ -21,6 +21,7 @@ import {
     ListItemButton,
     ListItemIcon,
     ListItemText,
+    ListSubheader,
     Switch,
 } from "@mui/material";
 import { lightTheme, darkTheme } from "@/theme"; // Import themes
@@ -110,7 +111,20 @@ export default function AdminLayout({ children }) {
             ? darkTheme.breakpoints.down("sm")
             : lightTheme.breakpoints.down("sm")
     );
-    const url = window.location.pathname;
+    const pathname = window.location.pathname;
+
+    const isPatientsGroupChildActive = (link) => {
+        if (link === "/admin/patients") {
+            return (
+                pathname === "/admin/patients" ||
+                pathname.startsWith("/admin/patients/")
+            );
+        }
+        if (link === "/admin/care-logs") {
+            return pathname.startsWith("/admin/care-logs");
+        }
+        return pathname.includes(link);
+    };
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -141,46 +155,121 @@ export default function AdminLayout({ children }) {
             </DrawerHeader>
             <Divider />
             <List>
-                {AdminSidebarData.map((menuItem) => (
-                    <ListItem
-                        key={menuItem.title}
-                        disablePadding
-                        sx={{
-                            display: "block",
-                            bgcolor: url.includes(menuItem.link) ? "#aaa" : "",
-                        }}
-                    >
-                        <ListItemButton
+                {AdminSidebarData.map((menuItem) => {
+                    if (menuItem.type === "group") {
+                        return (
+                            <React.Fragment key={menuItem.title}>
+                                {open && (
+                                    <ListSubheader
+                                        component="div"
+                                        disableSticky
+                                        sx={{
+                                            lineHeight: "32px",
+                                            mt: 0.5,
+                                            fontWeight: 700,
+                                            fontSize: 12,
+                                            opacity: 0.7,
+                                        }}
+                                    >
+                                        {menuItem.title}
+                                    </ListSubheader>
+                                )}
+                                {menuItem.items.map((child) => (
+                                    <ListItem
+                                        key={`${menuItem.title}-${child.title}`}
+                                        disablePadding
+                                        sx={{
+                                            display: "block",
+                                            bgcolor: isPatientsGroupChildActive(
+                                                child.link
+                                            )
+                                                ? "#aaa"
+                                                : "",
+                                        }}
+                                    >
+                                        <ListItemButton
+                                            sx={{
+                                                height: 60,
+                                                justifyContent: open
+                                                    ? "initial"
+                                                    : "center",
+                                                px: 2.5,
+                                                pl: open ? 4 : 2.5,
+                                            }}
+                                            onClick={() =>
+                                                router.get(child.link)
+                                            }
+                                        >
+                                            <ListItemIcon
+                                                sx={{
+                                                    minWidth: 0,
+                                                    mr: open ? 2 : "auto",
+                                                    justifyContent: "center",
+                                                }}
+                                            >
+                                                {child.icon}
+                                            </ListItemIcon>
+                                            <ListItemText
+                                                primary={child.title}
+                                                sx={{
+                                                    opacity: open ? 0.8 : 0,
+                                                    fontSize: "1rem",
+                                                }}
+                                                primaryTypographyProps={{
+                                                    fontSize: 13,
+                                                    fontWeight: 700,
+                                                }}
+                                            />
+                                        </ListItemButton>
+                                    </ListItem>
+                                ))}
+                            </React.Fragment>
+                        );
+                    }
+
+                    return (
+                        <ListItem
+                            key={menuItem.title}
+                            disablePadding
                             sx={{
-                                height: 60,
-                                justifyContent: open ? "initial" : "center",
-                                px: 2.5,
+                                display: "block",
+                                bgcolor: pathname.includes(menuItem.link)
+                                    ? "#aaa"
+                                    : "",
                             }}
-                            onClick={() => router.get(menuItem.link)}
                         >
-                            <ListItemIcon
+                            <ListItemButton
                                 sx={{
-                                    minWidth: 0,
-                                    mr: open ? 2 : "auto",
-                                    justifyContent: "center",
+                                    height: 60,
+                                    justifyContent: open ? "initial" : "center",
+                                    px: 2.5,
                                 }}
+                                onClick={() => router.get(menuItem.link)}
                             >
-                                {menuItem.icon}
-                            </ListItemIcon>
-                            <ListItemText
-                                primary={menuItem.title}
-                                sx={{
-                                    opacity: open ? 0.8 : 0,
-                                    fontSize: "1rem",
-                                }}
-                                primaryTypographyProps={{
-                                    fontSize: 13,
-                                    fontWeight: 700,
-                                }}
-                            />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
+                                <ListItemIcon
+                                    sx={{
+                                        minWidth: 0,
+                                        mr: open ? 2 : "auto",
+                                        justifyContent: "center",
+                                    }}
+                                >
+                                    {menuItem.icon}
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={menuItem.title}
+                                    sx={{
+                                        opacity: open ? 0.8 : 0,
+                                        fontSize: "1rem",
+                                    }}
+                                    primaryTypographyProps={{
+                                        fontSize: 13,
+                                        fontWeight: 700,
+                                    }}
+                                />
+                            </ListItemButton>
+                        </ListItem>
+                    );
+                })}
             </List>
         </>
     );

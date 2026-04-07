@@ -16,13 +16,20 @@ import {
 } from "@mui/material";
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 
+const PRIORITY_VALUES = ["low", "medium", "high", "urgent"];
+
 const RequestedSuppliesSection = ({
+    strings,
     data,
     handleArrayChange,
     addArrayItem,
     removeArrayItem,
     entryRefs,
 }) => {
+    const c = strings.common;
+    const s = strings.supplies;
+    const pr = strings.options.priority;
+
     return (
         <Card sx={{ borderRadius: 2, bgcolor: "transparent" }}>
             <CardContent>
@@ -37,7 +44,7 @@ const RequestedSuppliesSection = ({
                     }}
                 >
                     <Typography variant="h6" fontWeight="bold" color="primary">
-                        Requested Supplies
+                        {s.sectionTitle}
                     </Typography>
                     <Button
                         startIcon={<AddIcon />}
@@ -46,13 +53,13 @@ const RequestedSuppliesSection = ({
                                 item: "",
                                 quantity: "",
                                 purpose: "",
-                                priority: "medium", // Changed: Set default to match database default
+                                priority: "medium",
                             })
                         }
                         variant="outlined"
                         size="small"
                     >
-                        Add Item
+                        {c.addItem}
                     </Button>
                 </Box>
 
@@ -79,7 +86,7 @@ const RequestedSuppliesSection = ({
                                 variant="subtitle2"
                                 color="text.secondary"
                             >
-                                Item {index + 1}
+                                {c.itemN(index + 1)}
                             </Typography>
                             <IconButton
                                 onClick={() =>
@@ -98,7 +105,7 @@ const RequestedSuppliesSection = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Requested Items"
+                                    label={c.requestedItems}
                                     value={item.item}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -108,7 +115,7 @@ const RequestedSuppliesSection = ({
                                             e.target.value
                                         )
                                     }
-                                    placeholder="Item name"
+                                    placeholder={s.itemPlaceholder}
                                 />
                             </Grid2>
 
@@ -116,7 +123,7 @@ const RequestedSuppliesSection = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Quantity"
+                                    label={c.quantity}
                                     value={item.quantity}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -126,7 +133,7 @@ const RequestedSuppliesSection = ({
                                             e.target.value
                                         )
                                     }
-                                    placeholder="Qty"
+                                    placeholder={s.qtyPlaceholder}
                                 />
                             </Grid2>
 
@@ -134,7 +141,7 @@ const RequestedSuppliesSection = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Purpose"
+                                    label={c.purpose}
                                     value={item.purpose}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -146,13 +153,13 @@ const RequestedSuppliesSection = ({
                                     }
                                     multiline
                                     maxRows={2}
-                                    placeholder="Purpose for this item"
+                                    placeholder={s.purposePlaceholder}
                                 />
                             </Grid2>
 
                             <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
                                 <FormControl fullWidth variant="standard">
-                                    <InputLabel>Priority</InputLabel>
+                                    <InputLabel>{c.priority}</InputLabel>
                                     <Select
                                         value={item.priority}
                                         onChange={(e) =>
@@ -163,16 +170,13 @@ const RequestedSuppliesSection = ({
                                                 e.target.value
                                             )
                                         }
-                                        label="Priority"
+                                        label={c.priority}
                                     >
-                                        <MenuItem value="low">Low</MenuItem>
-                                        <MenuItem value="medium">
-                                            Medium
-                                        </MenuItem>
-                                        <MenuItem value="high">High</MenuItem>
-                                        <MenuItem value="urgent">
-                                            Urgent
-                                        </MenuItem>
+                                        {PRIORITY_VALUES.map((value) => (
+                                            <MenuItem key={value} value={value}>
+                                                {pr[value]}
+                                            </MenuItem>
+                                        ))}
                                     </Select>
                                 </FormControl>
                             </Grid2>

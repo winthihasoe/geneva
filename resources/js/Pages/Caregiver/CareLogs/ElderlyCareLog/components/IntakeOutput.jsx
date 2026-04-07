@@ -15,16 +15,24 @@ import {
     MenuItem,
     FormControlLabel,
     Switch,
-    Chip,
 } from "@mui/material";
 import {
     Add as AddIcon,
     Delete as DeleteIcon,
-    Add as AddFoodIcon,
     Remove as RemoveFoodIcon,
 } from "@mui/icons-material";
 
+const MEAL_TYPE_ORDER = [
+    "breakfast",
+    "mid_morning_snack",
+    "lunch",
+    "afternoon_snack",
+    "dinner",
+    "evening_snack",
+];
+
 const IntakeOutput = ({
+    strings,
     formData,
     handleInputChange,
     handleArrayChange,
@@ -32,14 +40,14 @@ const IntakeOutput = ({
     removeArrayItem,
     entryRefs,
 }) => {
-    const mealTypes = [
-        { value: "breakfast", label: "Breakfast" },
-        { value: "mid_morning_snack", label: "Mid-morning Snack" },
-        { value: "lunch", label: "Lunch" },
-        { value: "afternoon_snack", label: "Afternoon Snack" },
-        { value: "dinner", label: "Dinner" },
-        { value: "evening_snack", label: "Evening Snack" },
-    ];
+    const c = strings.common;
+    const io = strings.intakeOutput;
+    const opt = strings.options;
+
+    const mealTypes = MEAL_TYPE_ORDER.map((value) => ({
+        value,
+        label: opt.mealType[value],
+    }));
 
     const amountUnits = [
         { value: "ml", label: "ml" },
@@ -58,38 +66,28 @@ const IntakeOutput = ({
         { value: "cup", label: "cup" },
     ];
 
-    const dehydrationSigns = [
-        { value: "none", label: "None" },
-        { value: "dry_mouth", label: "Dry Mouth" },
-        { value: "dizziness", label: "Dizziness" },
-        { value: "other", label: "Other" },
-    ];
+    const dehydrationSigns = Object.keys(opt.dehydration).map((value) => ({
+        value,
+        label: opt.dehydration[value],
+    }));
 
-    const bowelOptions = [
-        { value: "yes", label: "Yes" },
-        { value: "no", label: "No" },
-    ];
+    const bowelOptions = Object.keys(opt.bowelYesNo).map((value) => ({
+        value,
+        label: opt.bowelYesNo[value],
+    }));
 
-    const urineCopylors = [
-        { value: "pale_yellow", label: "Pale Yellow" },
-        { value: "yellow", label: "Yellow" },
-        { value: "dark_yellow", label: "Dark Yellow" },
-        { value: "amber", label: "Amber" },
-        { value: "brown", label: "Brown" },
-        { value: "red", label: "Red" },
-        { value: "other", label: "Other" },
-    ];
+    const urineColors = Object.keys(opt.urineColor).map((value) => ({
+        value,
+        label: opt.urineColor[value],
+    }));
 
-    const bowelConsistencies = [
-        { value: "normal", label: "Normal" },
-        { value: "soft", label: "Soft" },
-        { value: "hard", label: "Hard" },
-        { value: "loose", label: "Loose" },
-        { value: "watery", label: "Watery" },
-        { value: "constipated", label: "Constipated" },
-    ];
+    const bowelConsistencies = Object.keys(opt.bowelConsistency).map(
+        (value) => ({
+            value,
+            label: opt.bowelConsistency[value],
+        })
+    );
 
-    // Handle food items for intake entries
     const addFoodItem = (intakeIndex) => {
         const updatedIntake = [...formData.intake];
         if (!updatedIntake[intakeIndex].food_items) {
@@ -128,10 +126,9 @@ const IntakeOutput = ({
                     mb={3}
                     color="primary"
                 >
-                    5. Intake & Output
+                    {io.sectionTitle}
                 </Typography>
 
-                {/* Intake Section */}
                 <Box sx={{ mb: 4 }}>
                     <Box
                         sx={{
@@ -144,7 +141,7 @@ const IntakeOutput = ({
                         }}
                     >
                         <Typography variant="subtitle1" fontWeight="bold">
-                            Intake Entries
+                            {io.intakeEntries}
                         </Typography>
                         <Button
                             startIcon={<AddIcon />}
@@ -162,7 +159,7 @@ const IntakeOutput = ({
                             variant="outlined"
                             size="small"
                         >
-                            Add Intake Entry
+                            {c.addIntakeEntry}
                         </Button>
                     </Box>
 
@@ -187,7 +184,7 @@ const IntakeOutput = ({
                                     variant="subtitle2"
                                     color="text.secondary"
                                 >
-                                    Intake Entry {index + 1}
+                                    {c.intakeEntry(index + 1)}
                                 </Typography>
                                 <IconButton
                                     onClick={() =>
@@ -204,7 +201,9 @@ const IntakeOutput = ({
                             <Grid2 container spacing={2} sx={{ mb: 3 }}>
                                 <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
                                     <FormControl fullWidth variant="standard">
-                                        <InputLabel>Meal/Snack Type</InputLabel>
+                                        <InputLabel>
+                                            {c.mealSnackType}
+                                        </InputLabel>
                                         <Select
                                             value={item.meal_type}
                                             onChange={(e) =>
@@ -232,7 +231,7 @@ const IntakeOutput = ({
                                     <TextField
                                         fullWidth
                                         variant="standard"
-                                        label="Time"
+                                        label={c.time}
                                         type="time"
                                         value={item.meal_time}
                                         onChange={(e) =>
@@ -251,7 +250,7 @@ const IntakeOutput = ({
                                     <TextField
                                         fullWidth
                                         variant="standard"
-                                        label="Amount"
+                                        label={c.amount}
                                         type="number"
                                         value={item.amount}
                                         onChange={(e) =>
@@ -262,13 +261,13 @@ const IntakeOutput = ({
                                                 e.target.value
                                             )
                                         }
-                                        placeholder="250"
+                                        placeholder={io.intakeAmountPlaceholder}
                                     />
                                 </Grid2>
 
                                 <Grid2 size={{ xs: 6, sm: 3, md: 2 }}>
                                     <FormControl fullWidth variant="standard">
-                                        <InputLabel>Unit</InputLabel>
+                                        <InputLabel>{c.unit}</InputLabel>
                                         <Select
                                             value={item.amount_unit}
                                             onChange={(e) =>
@@ -308,12 +307,11 @@ const IntakeOutput = ({
                                                 size="small"
                                             />
                                         }
-                                        label="Assistance Needed"
+                                        label={c.assistanceNeeded}
                                         sx={{ mt: 2 }}
                                     />
                                 </Grid2>
 
-                                {/* Food Items List */}
                                 <Grid2 size={{ xs: 12 }}>
                                     <Box sx={{ mb: 2 }}>
                                         <Box
@@ -329,7 +327,7 @@ const IntakeOutput = ({
                                                 variant="body2"
                                                 fontWeight="bold"
                                             >
-                                                Food/Drink Items
+                                                {c.foodDrinkItems}
                                             </Typography>
                                             <Button
                                                 size="small"
@@ -338,7 +336,7 @@ const IntakeOutput = ({
                                                 }
                                                 variant="contained"
                                             >
-                                                Add Food/Drink
+                                                {c.addFoodDrink}
                                             </Button>
                                         </Box>
 
@@ -357,9 +355,9 @@ const IntakeOutput = ({
                                                         fullWidth
                                                         size="small"
                                                         variant="standard"
-                                                        label={`Item ${
+                                                        label={c.foodItem(
                                                             foodIndex + 1
-                                                        }`}
+                                                        )}
                                                         value={foodItem}
                                                         onChange={(e) =>
                                                             handleFoodItemChange(
@@ -368,7 +366,9 @@ const IntakeOutput = ({
                                                                 e.target.value
                                                             )
                                                         }
-                                                        placeholder="e.g., Rice, Chicken soup, Water"
+                                                        placeholder={
+                                                            io.foodPlaceholder
+                                                        }
                                                     />
                                                     <IconButton
                                                         size="small"
@@ -398,7 +398,7 @@ const IntakeOutput = ({
                                     <TextField
                                         fullWidth
                                         variant="standard"
-                                        label="Intake Notes"
+                                        label={c.intakeNotes}
                                         value={item.intake_notes}
                                         onChange={(e) =>
                                             handleArrayChange(
@@ -410,7 +410,9 @@ const IntakeOutput = ({
                                         }
                                         multiline
                                         maxRows={3}
-                                        placeholder="Preferences, issues, appetite, cooperation..."
+                                        placeholder={
+                                            io.intakeNotesPlaceholder
+                                        }
                                     />
                                 </Grid2>
                             </Grid2>
@@ -425,7 +427,6 @@ const IntakeOutput = ({
                     * * * *
                 </Typography>
 
-                {/* Output Section */}
                 <Box sx={{ mb: 4 }}>
                     <Box
                         sx={{
@@ -438,7 +439,7 @@ const IntakeOutput = ({
                         }}
                     >
                         <Typography variant="subtitle1" fontWeight="bold">
-                            Output Entries
+                            {io.outputEntries}
                         </Typography>
                         <Button
                             startIcon={<AddIcon />}
@@ -456,7 +457,7 @@ const IntakeOutput = ({
                             variant="outlined"
                             size="small"
                         >
-                            Add Output Entry
+                            {c.addOutputEntry}
                         </Button>
                     </Box>
 
@@ -481,7 +482,7 @@ const IntakeOutput = ({
                                     variant="subtitle2"
                                     color="text.secondary"
                                 >
-                                    Output Entry {index + 1}
+                                    {c.outputEntry(index + 1)}
                                 </Typography>
                                 <IconButton
                                     onClick={() =>
@@ -500,7 +501,7 @@ const IntakeOutput = ({
                                     <TextField
                                         fullWidth
                                         variant="standard"
-                                        label="Time"
+                                        label={c.time}
                                         type="time"
                                         value={item.output_time}
                                         onChange={(e) =>
@@ -519,7 +520,7 @@ const IntakeOutput = ({
                                     <TextField
                                         fullWidth
                                         variant="standard"
-                                        label="Urine Volume"
+                                        label={c.urineVolume}
                                         type="number"
                                         value={item.urine_volume}
                                         onChange={(e) =>
@@ -536,7 +537,7 @@ const IntakeOutput = ({
 
                                 <Grid2 size={{ xs: 6, sm: 3, md: 1 }}>
                                     <FormControl fullWidth variant="standard">
-                                        <InputLabel>Unit</InputLabel>
+                                        <InputLabel>{c.unit}</InputLabel>
                                         <Select
                                             value={item.urine_volume_unit}
                                             onChange={(e) =>
@@ -562,7 +563,7 @@ const IntakeOutput = ({
 
                                 <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
                                     <FormControl fullWidth variant="standard">
-                                        <InputLabel>Urine Color</InputLabel>
+                                        <InputLabel>{c.urineColor}</InputLabel>
                                         <Select
                                             value={item.urine_color}
                                             onChange={(e) =>
@@ -574,7 +575,7 @@ const IntakeOutput = ({
                                                 )
                                             }
                                         >
-                                            {urineCopylors.map((color) => (
+                                            {urineColors.map((color) => (
                                                 <MenuItem
                                                     key={color.value}
                                                     value={color.value}
@@ -588,7 +589,9 @@ const IntakeOutput = ({
 
                                 <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
                                     <FormControl fullWidth variant="standard">
-                                        <InputLabel>Bowel Movement</InputLabel>
+                                        <InputLabel>
+                                            {c.bowelMovement}
+                                        </InputLabel>
                                         <Select
                                             value={item.bowel_movement}
                                             onChange={(e) =>
@@ -619,7 +622,7 @@ const IntakeOutput = ({
                                             variant="standard"
                                         >
                                             <InputLabel>
-                                                Bowel Consistency
+                                                {c.bowelConsistency}
                                             </InputLabel>
                                             <Select
                                                 value={item.bowel_consistency}
@@ -655,7 +658,7 @@ const IntakeOutput = ({
                                     <TextField
                                         fullWidth
                                         variant="standard"
-                                        label="Output Notes"
+                                        label={c.outputNotes}
                                         value={item.output_notes}
                                         onChange={(e) =>
                                             handleArrayChange(
@@ -667,7 +670,9 @@ const IntakeOutput = ({
                                         }
                                         multiline
                                         maxRows={3}
-                                        placeholder="Any observations, difficulties, concerns..."
+                                        placeholder={
+                                            io.outputNotesPlaceholder
+                                        }
                                     />
                                 </Grid2>
                             </Grid2>
@@ -679,13 +684,12 @@ const IntakeOutput = ({
                     ))}
                 </Box>
 
-                {/* Hydration Record Section */}
                 <Typography my={3} textAlign={"center"}>
                     * * * *
                 </Typography>
                 <Box sx={{ mt: 4 }}>
                     <Typography variant="subtitle1" fontWeight="bold" mb={3}>
-                        Daily Hydration Summary
+                        {c.dailyHydrationSummary}
                     </Typography>
 
                     <Grid2 container spacing={3}>
@@ -693,7 +697,7 @@ const IntakeOutput = ({
                             <TextField
                                 fullWidth
                                 variant="standard"
-                                label="Total Fluid Consumed"
+                                label={c.totalFluidConsumed}
                                 type="number"
                                 value={formData.hydration.fluid_intake}
                                 onChange={(e) =>
@@ -702,13 +706,13 @@ const IntakeOutput = ({
                                         fluid_intake: e.target.value,
                                     })
                                 }
-                                placeholder="2.5"
+                                placeholder={io.fluidPlaceholder}
                             />
                         </Grid2>
 
                         <Grid2 size={{ xs: 6, sm: 4, md: 2 }}>
                             <FormControl fullWidth variant="standard">
-                                <InputLabel>Unit</InputLabel>
+                                <InputLabel>{c.unit}</InputLabel>
                                 <Select
                                     value={formData.hydration.fluid_intake_unit}
                                     onChange={(e) =>
@@ -732,7 +736,7 @@ const IntakeOutput = ({
 
                         <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
                             <FormControl fullWidth variant="standard">
-                                <InputLabel>Signs of Dehydration</InputLabel>
+                                <InputLabel>{c.signsOfDehydration}</InputLabel>
                                 <Select
                                     value={formData.hydration.dehydration_signs}
                                     onChange={(e) =>
@@ -764,7 +768,7 @@ const IntakeOutput = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Other Dehydration Signs"
+                                    label={c.otherDehydrationSigns}
                                     value={
                                         formData.hydration
                                             .other_dehydration_signs
@@ -776,7 +780,9 @@ const IntakeOutput = ({
                                                 e.target.value,
                                         })
                                     }
-                                    placeholder="Describe other signs..."
+                                    placeholder={
+                                        io.otherDehydrationPlaceholder
+                                    }
                                 />
                             </Grid2>
                         )}

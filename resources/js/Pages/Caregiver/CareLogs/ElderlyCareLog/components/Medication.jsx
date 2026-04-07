@@ -17,22 +17,20 @@ import {
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 
 const Medication = ({
+    strings,
     data,
     handleArrayChange,
     addArrayItem,
     removeArrayItem,
     entryRefs,
 }) => {
-    const routes = [
-        { value: "PO", label: "PO (Oral)" },
-        { value: "SC", label: "SC (Subcutaneous)" },
-        { value: "IV", label: "IV (Intravenous)" },
-        { value: "IM", label: "IM (Intramuscular)" },
-        { value: "Inhale", label: "Inhale" },
-        { value: "Local", label: "Local (Topical)" },
-        { value: "Rectal", label: "Rectal" },
-        { value: "Sublingual", label: "Sublingual" },
-    ];
+    const c = strings.common;
+    const m = strings.medication;
+    const routeLabels = strings.options.routes;
+    const routes = Object.keys(routeLabels).map((value) => ({
+        value,
+        label: routeLabels[value],
+    }));
 
     return (
         <Card sx={{ borderRadius: 2, bgcolor: "transparent" }}>
@@ -48,7 +46,7 @@ const Medication = ({
                     }}
                 >
                     <Typography variant="h6" fontWeight="bold" color="primary">
-                        2. Medication Administration
+                        {m.sectionTitle}
                     </Typography>
                     <Button
                         startIcon={<AddIcon />}
@@ -64,7 +62,7 @@ const Medication = ({
                         variant="outlined"
                         size="small"
                     >
-                        Add Entry
+                        {c.addEntry}
                     </Button>
                 </Box>
 
@@ -89,7 +87,7 @@ const Medication = ({
                                 variant="subtitle2"
                                 color="text.secondary"
                             >
-                                Entry {index + 1}
+                                {c.entry(index + 1)}
                             </Typography>
                             <IconButton
                                 onClick={() =>
@@ -108,7 +106,7 @@ const Medication = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Time"
+                                    label={c.time}
                                     type="time"
                                     value={item.time}
                                     onChange={(e) =>
@@ -127,7 +125,7 @@ const Medication = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Medication"
+                                    label={c.medication}
                                     value={item.medication}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -137,7 +135,7 @@ const Medication = ({
                                             e.target.value.slice(0, 255)
                                         )
                                     }
-                                    placeholder="e.g., Metformin, Aspirin"
+                                    placeholder={m.medPlaceholder}
                                     inputProps={{ maxLength: 255 }}
                                 />
                             </Grid2>
@@ -146,7 +144,7 @@ const Medication = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Dosage"
+                                    label={c.dosage}
                                     value={item.dosage}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -156,14 +154,14 @@ const Medication = ({
                                             e.target.value.slice(0, 255)
                                         )
                                     }
-                                    placeholder="e.g., 250mg, 500mg"
+                                    placeholder={m.dosagePlaceholder}
                                     inputProps={{ maxLength: 255 }}
                                 />
                             </Grid2>
 
                             <Grid2 size={{ xs: 12, sm: 6, md: 2 }}>
                                 <FormControl fullWidth variant="standard">
-                                    <InputLabel>Route</InputLabel>
+                                    <InputLabel>{c.route}</InputLabel>
                                     <Select
                                         value={item.route}
                                         onChange={(e) =>
@@ -191,7 +189,7 @@ const Medication = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Notes"
+                                    label={c.notes}
                                     value={item.notes}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -203,7 +201,7 @@ const Medication = ({
                                     }
                                     multiline
                                     maxRows={5}
-                                    placeholder="Client response, side effects, cooperation..."
+                                    placeholder={m.notesPlaceholder}
                                     inputProps={{ maxLength: 255 }}
                                 />
                             </Grid2>

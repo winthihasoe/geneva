@@ -52,10 +52,10 @@ class PatientController extends Controller
     {
         // Validate the request data
         $validated = $request->validate([
-            'type' => 'required|in:Elder,Baby,Newborn',
+            'type' => 'required|in:Elder,Baby,Newborn,Maternal',
             'first_name' => 'required|string|max:100',
             'last_name' => 'nullable|string|max:100',
-            'date_of_birth' => 'nullable|date|before_or_equal:today',
+            'date_of_birth' => 'required|date|before_or_equal:today',
             'gender' => 'required|in:Male,Female,Other',
             'weight_kg' => 'nullable|numeric',
             'height_cm' => 'nullable|numeric',
@@ -92,7 +92,7 @@ class PatientController extends Controller
     {
         // Validate the request data
         $validated = $request->validate([
-            'type' => 'required|in:Elder,Baby,Newborn',
+            'type' => 'required|in:Elder,Baby,Newborn,Maternal',
             'first_name' => 'required|string|max:100',
             'last_name' => 'nullable|string|max:100',
             'date_of_birth' => 'nullable|date|before_or_equal:today',

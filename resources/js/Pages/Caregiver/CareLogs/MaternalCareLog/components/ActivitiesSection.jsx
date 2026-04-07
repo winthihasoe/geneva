@@ -13,12 +13,16 @@ import {
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 
 const ActivitiesSection = ({
+    strings,
     data,
     handleArrayChange,
     addArrayItem,
     removeArrayItem,
     entryRefs,
 }) => {
+    const c = strings.common;
+    const a = strings.activities;
+
     return (
         <Card sx={{ borderRadius: 2, bgcolor: "transparent" }}>
             <CardContent>
@@ -33,7 +37,7 @@ const ActivitiesSection = ({
                     }}
                 >
                     <Typography variant="h6" fontWeight="bold" color="primary">
-                        7. Activities
+                        {a.sectionTitle}
                     </Typography>
                     <Button
                         startIcon={<AddIcon />}
@@ -48,7 +52,7 @@ const ActivitiesSection = ({
                         variant="outlined"
                         size="small"
                     >
-                        Add Entry
+                        {c.addEntry}
                     </Button>
                 </Box>
 
@@ -73,7 +77,7 @@ const ActivitiesSection = ({
                                 variant="subtitle2"
                                 color="text.secondary"
                             >
-                                Entry {index + 1}
+                                {c.entry(index + 1)}
                             </Typography>
                             <IconButton
                                 onClick={() =>
@@ -92,7 +96,7 @@ const ActivitiesSection = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Time"
+                                    label={c.time}
                                     type="time"
                                     value={item.time}
                                     onChange={(e) =>
@@ -111,7 +115,7 @@ const ActivitiesSection = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Activity"
+                                    label={c.activity}
                                     value={item.activity}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -123,7 +127,7 @@ const ActivitiesSection = ({
                                     }
                                     multiline
                                     maxRows={5}
-                                    placeholder="e.g., Reading books, Walking in garden, Playing cards, Social conversation, TV watching, Music therapy"
+                                    placeholder={a.activityPlaceholder}
                                 />
                             </Grid2>
 
@@ -131,7 +135,7 @@ const ActivitiesSection = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Duration"
+                                    label={c.duration}
                                     value={item.duration}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -141,7 +145,7 @@ const ActivitiesSection = ({
                                             e.target.value
                                         )
                                     }
-                                    placeholder="e.g., 30 mins"
+                                    placeholder={a.durationPlaceholder}
                                 />
                             </Grid2>
 
@@ -149,7 +153,7 @@ const ActivitiesSection = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Notes"
+                                    label={c.notes}
                                     value={item.notes}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -161,7 +165,7 @@ const ActivitiesSection = ({
                                     }
                                     multiline
                                     maxRows={3}
-                                    placeholder="Client engagement, enjoyment, participation level..."
+                                    placeholder={a.notesPlaceholder}
                                 />
                             </Grid2>
                         </Grid2>

@@ -1,7 +1,13 @@
 import React from "react";
 import { Typography, TextField, Card, CardContent } from "@mui/material";
 
-const AdditionalNotesSection = ({ additionalNotes, handleInputChange }) => {
+const AdditionalNotesSection = ({
+    strings,
+    additionalNotes,
+    handleInputChange,
+}) => {
+    const a = strings.additionalNotes;
+
     return (
         <Card sx={{ borderRadius: 2, bgcolor: "transparent" }}>
             <CardContent>
@@ -11,7 +17,7 @@ const AdditionalNotesSection = ({ additionalNotes, handleInputChange }) => {
                     mb={3}
                     color="primary"
                 >
-                    12. Additional Notes/Observations
+                    {a.sectionTitle}
                 </Typography>
                 <TextField
                     fullWidth
@@ -22,8 +28,8 @@ const AdditionalNotesSection = ({ additionalNotes, handleInputChange }) => {
                     onChange={(e) =>
                         handleInputChange("additionalNotes", e.target.value)
                     }
-                    placeholder="Add any additional observations or notes here..."
-                    label="Additional Notes"
+                    placeholder={a.placeholder}
+                    label={a.label}
                 />
             </CardContent>
         </Card>

@@ -39,6 +39,8 @@ import {
     Mood as MoodIcon,
 } from "@mui/icons-material";
 import { generateCareLogPDF } from "@/utils/pdfGenerator";
+import { transformNewbornCareLogToPdfFormData } from "@/utils/careLogPdfTransforms";
+import { genevaCareLogsGeneratedLine } from "@/utils/genevaCareLogStrings";
 import ChildCareIcon from "@mui/icons-material/ChildCare";
 import BackButton from "@/Components/BackButton";
 
@@ -60,18 +62,16 @@ const NewbornCareLogDetails = () => {
     } = careLogData;
 
     const handleGeneratePDF = async () => {
+        if (!window.confirm("Download this care log as a PDF?")) {
+            return;
+        }
         setIsGeneratingPDF(true);
 
         try {
-            // Transform the care log data to the format expected by PDF generator
-            const formData = transformCareLogToFormData();
+            const formData = transformNewbornCareLogToPdfFormData(careLogData);
             const result = await generateCareLogPDF(formData);
 
-            if (result.success) {
-                alert(
-                    `PDF generated successfully! Saved as: ${result.filename}`
-                );
-            } else {
+            if (!result.success) {
                 alert(`Failed to generate PDF: ${result.error}`);
             }
         } catch (error) {
@@ -80,88 +80,6 @@ const NewbornCareLogDetails = () => {
         } finally {
             setIsGeneratingPDF(false);
         }
-    };
-
-    const transformCareLogToFormData = () => {
-        return {
-            date: care_log.care_date,
-            firstName: care_log.first_name,
-            lastName: care_log.last_name || "",
-            age: care_log.age_display,
-            weight: care_log.weight_kg,
-            height: care_log.height_cm,
-            additionalNotes: care_log.additional_notes,
-            caregiverName: care_log.caregiver_name,
-            caregiverSignature: care_log.caregiver_signature,
-            guardianSignature: care_log.guardian_signature,
-            guardianComment: care_log.guardian_comment,
-            mood: emotion_behavior?.mood,
-            symptoms: emotion_behavior?.symptoms,
-            medications: emotion_behavior?.medications,
-            feeding:
-                feeding_records?.map((record) => ({
-                    time: record.feeding_time,
-                    type: record.feeding_type,
-                    amount: record.amount,
-                    amount_unit: record.amount_unit,
-                    notes: record.notes,
-                })) || [],
-            diaperChanges:
-                diaper_changes?.map((record) => ({
-                    time: record.change_time,
-                    content: record.diaper_content,
-                    notes: record.notes,
-                })) || [],
-            sleep:
-                sleep_records?.map((record) => ({
-                    timeStarted: record.sleep_start_time,
-                    timeEnded: record.sleep_end_time,
-                    duration: record.duration,
-                    notes: record.notes,
-                })) || [],
-            activities:
-                activity_records?.map((record) => ({
-                    time: record.activity_time,
-                    activity: record.activity_type,
-                    duration: record.duration,
-                    details: record.notes,
-                })) || [],
-            hygiene:
-                hygiene_records?.map((record) => ({
-                    time: record.hygiene_time,
-                    activity: record.hygiene_activity,
-                    products: record.products_used,
-                    notes: record.notes,
-                })) || [],
-            vitalSigns: transformVitalSigns(),
-            requestedSupplies:
-                supply_requests?.map((record) => ({
-                    item: record.item,
-                    quantity: record.quantity,
-                    purpose: record.purpose,
-                    priority: record.priority,
-                })) || [],
-        };
-    };
-
-    const transformVitalSigns = () => {
-        const vitalSigns = {
-            times: [],
-            temperature: [],
-            temperatureUnit: [],
-            pulseRate: [],
-            respiratoryRate: [],
-        };
-
-        vital_signs?.forEach((sign) => {
-            vitalSigns.times.push(sign.measurement_time || "");
-            vitalSigns.temperature.push(sign.temperature || "");
-            vitalSigns.temperatureUnit.push(sign.temperature_unit || "C");
-            vitalSigns.pulseRate.push(sign.pulse_rate || "");
-            vitalSigns.respiratoryRate.push(sign.respiratory_rate || "");
-        });
-
-        return vitalSigns;
     };
 
     const formatDate = (dateString) => {
@@ -1015,6 +933,26 @@ const NewbornCareLogDetails = () => {
                         </Grid>
                     </CardContent>
                 </Card>
+
+                <Box sx={{ textAlign: "center", mt: 4, mb: 2 }}>
+                    <Divider sx={{ mb: 2 }} />
+                    <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mb: 2 }}
+                    >
+                        {genevaCareLogsGeneratedLine()}
+                    </Typography>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<DownloadIcon />}
+                        disabled={isGeneratingPDF}
+                        onClick={handleGeneratePDF}
+                    >
+                        {isGeneratingPDF ? "Generating…" : "Download PDF"}
+                    </Button>
+                </Box>
             </Container>
         </AppLayout>
     );

@@ -14,6 +14,8 @@ import {
     DialogContent,
     DialogActions,
     Divider,
+    ToggleButton,
+    ToggleButtonGroup,
 } from "@mui/material";
 import {
     Save as SaveIcon,
@@ -55,416 +57,415 @@ import EmotionBehavior from "./components/EmotionBehavior";
 import AccidentEmergency from "./components/AccidentEmergency";
 import HouseholdWork from "./components/HouseholdWork";
 import Backbutton from "@/Components/Backbutton";
+import {
+    ELDERLY_CARE_LOG_FORM_LOCALE_KEY,
+    getElderlyFormStrings,
+    parseElderlyFormLocale,
+} from "@/locales/careLogs/elderlyCareLogForm";
 
 // Test Data Generator - Add this after imports
 const longNote =
     "This is a detailed observation note. The client responded well to care and showed positive engagement throughout the activity. No adverse reactions were observed. Continued monitoring is recommended for optimal health and well-being. Family members were informed and are supportive of the current care plan. Further updates will be provided as needed.";
 
-const generateTestData = () => ({
-    // Basic Information
-    date: new Date().toISOString().split("T")[0],
-    firstName: "Margaret",
-    lastName: "Thompson",
-    age: "78 years",
-    weight: "65",
-    height: "165",
+// const generateTestData = () => ({
+//     // Basic Information (name/age come from patient prefill)
+//     date: new Date().toISOString().split("T")[0],
+//     weight: "65",
+//     height: "165",
 
-    // Hygiene data
-    hygiene: [
-        {
-            time: "08:00",
-            activity: "Morning shower",
-            notes: longNote,
-        },
-        {
-            time: "14:30",
-            activity: "Oral care",
-            notes: longNote,
-        },
-        {
-            time: "20:00",
-            activity: "Evening wash",
-            notes: longNote,
-        },
-    ],
-    moisturizer_applied: true,
-    pressure_areas_checked: true,
-    skin_care_findings: longNote,
+//     // Hygiene data
+//     hygiene: [
+//         {
+//             time: "08:00",
+//             activity: "Morning shower",
+//             notes: longNote,
+//         },
+//         {
+//             time: "14:30",
+//             activity: "Oral care",
+//             notes: longNote,
+//         },
+//         {
+//             time: "20:00",
+//             activity: "Evening wash",
+//             notes: longNote,
+//         },
+//     ],
+//     moisturizer_applied: true,
+//     pressure_areas_checked: true,
+//     skin_care_findings: longNote,
 
-    // Medication data
-    medication: [
-        {
-            time: "08:00",
-            medication: "Metformin",
-            dosage: "500mg",
-            route: "PO",
-            notes: longNote,
-        },
-        {
-            time: "12:00",
-            medication: "Lisinopril",
-            dosage: "10mg",
-            route: "PO",
-            notes: longNote,
-        },
-        {
-            time: "18:00",
-            medication: "Vitamin D",
-            dosage: "1000 IU",
-            route: "IV",
-            notes: longNote,
-        },
-    ],
+//     // Medication data
+//     medication: [
+//         {
+//             time: "08:00",
+//             medication: "Metformin",
+//             dosage: "500mg",
+//             route: "PO",
+//             notes: longNote,
+//         },
+//         {
+//             time: "12:00",
+//             medication: "Lisinopril",
+//             dosage: "10mg",
+//             route: "PO",
+//             notes: longNote,
+//         },
+//         {
+//             time: "18:00",
+//             medication: "Vitamin D",
+//             dosage: "1000 IU",
+//             route: "IV",
+//             notes: longNote,
+//         },
+//     ],
 
-    // Mobility & Exercise data
-    mobility: [
-        {
-            time: "09:30",
-            activity: "Walking exercise",
-            duration: "20 minutes",
-            notes: longNote,
-        },
-        {
-            time: "15:00",
-            activity: "Chair exercises",
-            duration: "15 minutes",
-            notes: longNote,
-        },
-    ],
+//     // Mobility & Exercise data
+//     mobility: [
+//         {
+//             time: "09:30",
+//             activity: "Walking exercise",
+//             duration: "20 minutes",
+//             notes: longNote,
+//         },
+//         {
+//             time: "15:00",
+//             activity: "Chair exercises",
+//             duration: "15 minutes",
+//             notes: longNote,
+//         },
+//     ],
 
-    // Intake data
-    intake: [
-        {
-            meal_type: "breakfast",
-            meal_time: "08:30",
-            food_items: [
-                "Oatmeal",
-                "Fresh berries",
-                "Orange juice",
-                "Lemon tea",
-                "Water",
-                "Milk",
-                "Yogurt",
-            ],
-            amount: "75",
-            amount_unit: "ml",
-            assistance_needed: false,
-            intake_notes: longNote,
-        },
-        {
-            meal_type: "lunch",
-            meal_time: "12:30",
-            food_items: ["Chicken soup", "Whole grain bread", "Apple slices"],
-            amount: "90",
-            amount_unit: "ml",
-            assistance_needed: false,
-            intake_notes: longNote,
-        },
-        {
-            meal_type: "dinner",
-            meal_time: "18:30",
-            food_items: ["Grilled salmon", "Steamed vegetables", "Rice"],
-            amount: "80",
-            amount_unit: "ml",
-            assistance_needed: true,
-            intake_notes: longNote,
-        },
-    ],
+//     // Intake data
+//     intake: [
+//         {
+//             meal_type: "breakfast",
+//             meal_time: "08:30",
+//             food_items: [
+//                 "Oatmeal",
+//                 "Fresh berries",
+//                 "Orange juice",
+//                 "Lemon tea",
+//                 "Water",
+//                 "Milk",
+//                 "Yogurt",
+//             ],
+//             amount: "75",
+//             amount_unit: "ml",
+//             assistance_needed: false,
+//             intake_notes: longNote,
+//         },
+//         {
+//             meal_type: "lunch",
+//             meal_time: "12:30",
+//             food_items: ["Chicken soup", "Whole grain bread", "Apple slices"],
+//             amount: "90",
+//             amount_unit: "ml",
+//             assistance_needed: false,
+//             intake_notes: longNote,
+//         },
+//         {
+//             meal_type: "dinner",
+//             meal_time: "18:30",
+//             food_items: ["Grilled salmon", "Steamed vegetables", "Rice"],
+//             amount: "80",
+//             amount_unit: "ml",
+//             assistance_needed: true,
+//             intake_notes: longNote,
+//         },
+//     ],
 
-    // Output data
-    output: [
-        {
-            output_time: "10:00",
-            urine_volume: "250",
-            urine_volume_unit: "ml",
-            urine_color: "pale_yellow",
-            bowel_movement: "yes",
-            bowel_consistency: "soft",
-            output_notes: longNote,
-        },
-        {
-            output_time: "16:30",
-            urine_volume: "300",
-            urine_volume_unit: "ml",
-            urine_color: "amber",
-            bowel_movement: "no",
-            bowel_consistency: "",
-            output_notes: longNote,
-        },
-    ],
+//     // Output data
+//     output: [
+//         {
+//             output_time: "10:00",
+//             urine_volume: "250",
+//             urine_volume_unit: "ml",
+//             urine_color: "pale_yellow",
+//             bowel_movement: "yes",
+//             bowel_consistency: "soft",
+//             output_notes: longNote,
+//         },
+//         {
+//             output_time: "16:30",
+//             urine_volume: "300",
+//             urine_volume_unit: "ml",
+//             urine_color: "amber",
+//             bowel_movement: "no",
+//             bowel_consistency: "",
+//             output_notes: longNote,
+//         },
+//     ],
 
-    // Hydration data
-    hydration: {
-        fluid_intake: "1.8",
-        fluid_intake_unit: "l",
-        dehydration_signs: "none",
-        other_dehydration_signs: "none",
-    },
+//     // Hydration data
+//     hydration: {
+//         fluid_intake: "1.8",
+//         fluid_intake_unit: "l",
+//         dehydration_signs: "none",
+//         other_dehydration_signs: "none",
+//     },
 
-    // Activities data
-    activities: [
-        {
-            time: "10:30",
-            activity: "Reading newspaper",
-            duration: "45 minutes",
-            notes: longNote,
-        },
-        {
-            time: "14:00",
-            activity: "Playing cards",
-            duration: "30 minutes",
-            notes: longNote,
-        },
-        {
-            time: "19:30",
-            activity: "Watching TV",
-            duration: "60 minutes",
-            notes: longNote,
-        },
-    ],
+//     // Activities data
+//     activities: [
+//         {
+//             time: "10:30",
+//             activity: "Reading newspaper",
+//             duration: "45 minutes",
+//             notes: longNote,
+//         },
+//         {
+//             time: "14:00",
+//             activity: "Playing cards",
+//             duration: "30 minutes",
+//             notes: longNote,
+//         },
+//         {
+//             time: "19:30",
+//             activity: "Watching TV",
+//             duration: "60 minutes",
+//             notes: longNote,
+//         },
+//     ],
 
-    // Sleep data
-    sleep: [
-        {
-            type: "Night Sleep",
-            sleep_start_time: "22:00",
-            duration: "7 hours",
-            sleep_quality: "Good",
-            notes: longNote,
-            issue: "none",
-        },
-        {
-            type: "Afternoon Nap",
-            time: "14:30",
-            duration: "45 minutes",
-            sleep_quality: "Fair",
-            notes: longNote,
-            issue: "",
-        },
-    ],
+//     // Sleep data
+//     sleep: [
+//         {
+//             type: "Night Sleep",
+//             sleep_start_time: "22:00",
+//             duration: "7 hours",
+//             sleep_quality: "Good",
+//             notes: longNote,
+//             issue: "none",
+//         },
+//         {
+//             type: "Afternoon Nap",
+//             time: "14:30",
+//             duration: "45 minutes",
+//             sleep_quality: "Fair",
+//             notes: longNote,
+//             issue: "",
+//         },
+//     ],
 
-    // Sleep issues
-    sleepIssues: "Restlessness",
+//     // Sleep issues
+//     sleepIssues: "Restlessness",
 
-    // Emotional & Behavioral data
-    emotionalMood: "Other",
-    emotionalMoodOther: longNote,
-    behavioralConcerns: "None",
-    behavioralConcernsOther: longNote,
-    emotionalActionTaken: longNote,
+//     // Emotional & Behavioral data
+//     emotionalMood: "Other",
+//     emotionalMoodOther: longNote,
+//     behavioralConcerns: "None",
+//     behavioralConcernsOther: longNote,
+//     emotionalActionTaken: longNote,
 
-    // Accident data
-    accident: [
-        {
-            time: "16:45",
-            description: longNote,
-            severity: "Low",
-            action: longNote,
-        },
-    ],
+//     // Accident data
+//     accident: [
+//         {
+//             time: "16:45",
+//             description: longNote,
+//             severity: "Low",
+//             action: longNote,
+//         },
+//     ],
 
-    // Household work data
-    household: [
-        {
-            time: "15:30",
-            task: "Laundry assistance",
-            duration: "30 minutes",
-            notes: longNote,
-        },
-        {
-            task: "Light cleaning",
-            duration: "45 minutes",
-            notes: longNote,
-        },
-    ],
+//     // Household work data
+//     household: [
+//         {
+//             time: "15:30",
+//             task: "Laundry assistance",
+//             duration: "30 minutes",
+//             notes: longNote,
+//         },
+//         {
+//             task: "Light cleaning",
+//             duration: "45 minutes",
+//             notes: longNote,
+//         },
+//     ],
 
-    // Vital Signs data
-    vitalSigns: {
-        times: ["09:00", "15:00", "21:00"],
-        bloodPressureSystolic: ["135", "128", "132"],
-        bloodPressureDiastolic: ["82", "78", "80"],
-        temperature: ["36.8", "36.6", "36.7"],
-        temperatureUnit: ["C", "C", "C"],
-        pulseRate: ["78", "74", "72"],
-        respiratoryRate: ["18", "16", "17"],
-        spo2: ["98", "97", "98"],
-    },
+//     // Vital Signs data
+//     vitalSigns: {
+//         times: ["09:00", "15:00", "21:00"],
+//         bloodPressureSystolic: ["135", "128", "132"],
+//         bloodPressureDiastolic: ["82", "78", "80"],
+//         temperature: ["36.8", "36.6", "36.7"],
+//         temperatureUnit: ["C", "C", "C"],
+//         pulseRate: ["78", "74", "72"],
+//         respiratoryRate: ["18", "16", "17"],
+//         spo2: ["98", "97", "98"],
+//     },
 
-    // Blood Glucose data
-    bloodGlucose: [
-        {
-            measurement_time: "08:15",
-            glucose_level: "110",
-            timing: "fasting",
-            note: longNote,
-        },
-        {
-            measurement_time: "18:15",
-            glucose_level: "145",
-            timing: "2hpp",
-            note: longNote,
-        },
-    ],
+//     // Blood Glucose data
+//     bloodGlucose: [
+//         {
+//             measurement_time: "08:15",
+//             glucose_level: "110",
+//             timing: "fasting",
+//             note: longNote,
+//         },
+//         {
+//             measurement_time: "18:15",
+//             glucose_level: "145",
+//             timing: "2hpp",
+//             note: longNote,
+//         },
+//     ],
 
-    // Additional Notes
-    additionalNotes: longNote + " " + longNote + " " + longNote,
+//     // Additional Notes
+//     additionalNotes: longNote + " " + longNote + " " + longNote,
 
-    // Requested Supplies
-    requestedSupplies: [
-        {
-            item: "Blood pressure monitor strips",
-            quantity: "1 box",
-            purpose: longNote,
-            priority: "high",
-        },
-        {
-            item: "Incontinence pads",
-            quantity: "2 packs",
-            purpose: longNote,
-            priority: "medium",
-        },
-        {
-            item: "Non-slip bath mat",
-            quantity: "1 piece",
-            purpose: longNote,
-            priority: "high",
-        },
-    ],
+//     // Requested Supplies
+//     requestedSupplies: [
+//         {
+//             item: "Blood pressure monitor strips",
+//             quantity: "1 box",
+//             purpose: longNote,
+//             priority: "high",
+//         },
+//         {
+//             item: "Incontinence pads",
+//             quantity: "2 packs",
+//             purpose: longNote,
+//             priority: "medium",
+//         },
+//         {
+//             item: "Non-slip bath mat",
+//             quantity: "1 piece",
+//             purpose: longNote,
+//             priority: "high",
+//         },
+//     ],
 
-    // Signatures
-    caregiverSignature: "",
-    clientSignature: "",
-    clientComment: longNote,
-});
+//     // Signatures
+//     caregiverSignature: "",
+//     clientSignature: "",
+//     clientComment: longNote,
+// });
 
 // Minimal test data for quick testing
-const generateMinimalTestData = () => ({
-    date: new Date().toISOString().split("T")[0],
-    firstName: "John",
-    lastName: "Smith",
-    age: "65 years",
-    weight: "70",
-    height: "175",
+// const generateMinimalTestData = () => ({
+//     date: new Date().toISOString().split("T")[0],
+//     weight: "70",
+//     height: "175",
 
-    // Minimal required data
-    hygiene: [
-        {
-            time: "08:00",
-            activity: "Morning wash",
-            notes: "Completed independently",
-        },
-    ],
-    medication: [
-        {
-            time: "09:00",
-            medication: "Daily vitamins",
-            dosage: "1 tablet",
-            route: "Oral",
-            notes: "Taken with breakfast",
-        },
-    ],
-    mobility: [
-        {
-            time: "10:00",
-            activity: "Short walk",
-            duration: "15 min",
-            notes: "Good mobility",
-        },
-    ],
+//     // Minimal required data
+//     hygiene: [
+//         {
+//             time: "08:00",
+//             activity: "Morning wash",
+//             notes: "Completed independently",
+//         },
+//     ],
+//     medication: [
+//         {
+//             time: "09:00",
+//             medication: "Daily vitamins",
+//             dosage: "1 tablet",
+//             route: "Oral",
+//             notes: "Taken with breakfast",
+//         },
+//     ],
+//     mobility: [
+//         {
+//             time: "10:00",
+//             activity: "Short walk",
+//             duration: "15 min",
+//             notes: "Good mobility",
+//         },
+//     ],
 
-    intake: [
-        {
-            meal_type: "Breakfast",
-            meal_time: "08:30",
-            food_items: ["Toast", "Coffee"],
-            amount: "100",
-            amount_unit: "%",
-            assistance_needed: false,
-            intake_notes: "Ate well",
-        },
-    ],
+//     intake: [
+//         {
+//             meal_type: "Breakfast",
+//             meal_time: "08:30",
+//             food_items: ["Toast", "Coffee"],
+//             amount: "100",
+//             amount_unit: "%",
+//             assistance_needed: false,
+//             intake_notes: "Ate well",
+//         },
+//     ],
 
-    output: [
-        {
-            output_time: "09:30",
-            urine_volume: "200",
-            urine_volume_unit: "ml",
-            urine_color: "Yellow",
-            bowel_movement: "Yes",
-            bowel_consistency: "Normal",
-            output_notes: "Regular",
-        },
-    ],
+//     output: [
+//         {
+//             output_time: "09:30",
+//             urine_volume: "200",
+//             urine_volume_unit: "ml",
+//             urine_color: "Yellow",
+//             bowel_movement: "Yes",
+//             bowel_consistency: "Normal",
+//             output_notes: "Regular",
+//         },
+//     ],
 
-    hydration: {
-        fluid_intake: "1.5",
-        fluid_intake_unit: "l",
-        dehydration_signs: "None",
-        other_dehydration_signs: "",
-    },
+//     hydration: {
+//         fluid_intake: "1.5",
+//         fluid_intake_unit: "l",
+//         dehydration_signs: "None",
+//         other_dehydration_signs: "",
+//     },
 
-    activities: [
-        {
-            time: "14:00",
-            activity: "Reading",
-            duration: "30 min",
-            notes: "Enjoyed book",
-        },
-    ],
-    sleep: [
-        {
-            time: "22:00",
-            duration: "8 hours",
-            sleep_quality: "Good",
-            notes: "Restful sleep",
-            issue: "",
-        },
-    ],
+//     activities: [
+//         {
+//             time: "14:00",
+//             activity: "Reading",
+//             duration: "30 min",
+//             notes: "Enjoyed book",
+//         },
+//     ],
+//     sleep: [
+//         {
+//             time: "22:00",
+//             duration: "8 hours",
+//             sleep_quality: "Good",
+//             notes: "Restful sleep",
+//             issue: "",
+//         },
+//     ],
 
-    sleepIssues: "No issues observed",
-    emotionalMood: "Happy",
-    behavioralConcerns: "None",
-    emotionalActionTaken: "No action needed",
+//     sleepIssues: "No issues observed",
+//     emotionalMood: "Happy",
+//     behavioralConcerns: "None",
+//     emotionalActionTaken: "No action needed",
 
-    accident: [{ time: "", description: "", severity: "Low", action: "" }],
-    household: [
-        {
-            task: "Light tidying",
-            duration: "20 min",
-            notes: "Minimal assistance needed",
-        },
-    ],
+//     accident: [{ time: "", description: "", severity: "Low", action: "" }],
+//     household: [
+//         {
+//             task: "Light tidying",
+//             duration: "20 min",
+//             notes: "Minimal assistance needed",
+//         },
+//     ],
 
-    vitalSigns: {
-        times: ["09:00"],
-        bloodPressureSystolic: ["120"],
-        bloodPressureDiastolic: ["80"],
-        temperature: ["36.5"],
-        temperatureUnit: ["C"],
-        pulseRate: ["72"],
-        respiratoryRate: ["16"],
-        spo2: ["99"],
-    },
+//     vitalSigns: {
+//         times: ["09:00"],
+//         bloodPressureSystolic: ["120"],
+//         bloodPressureDiastolic: ["80"],
+//         temperature: ["36.5"],
+//         temperatureUnit: ["C"],
+//         pulseRate: ["72"],
+//         respiratoryRate: ["16"],
+//         spo2: ["99"],
+//     },
 
-    bloodGlucose: [
-        {
-            measurement_time: "09:00",
-            glucose_level: "100",
-            timing: "Fasting",
-            note: "Normal",
-        },
-    ],
-    additionalNotes: "Client is doing well with current care plan",
-    requestedSupplies: [
-        {
-            item: "Toiletries",
-            quantity: "1 set",
-            purpose: "Personal hygiene",
-            priority: "medium",
-        },
-    ],
-    caregiverSignature: "Test Caregiver",
-});
+//     bloodGlucose: [
+//         {
+//             measurement_time: "09:00",
+//             glucose_level: "100",
+//             timing: "Fasting",
+//             note: "Normal",
+//         },
+//     ],
+//     additionalNotes: "Client is doing well with current care plan",
+//     requestedSupplies: [
+//         {
+//             item: "Toiletries",
+//             quantity: "1 set",
+//             purpose: "Personal hygiene",
+//             priority: "medium",
+//         },
+//     ],
+//     caregiverSignature: "Test Caregiver",
+// });
 
 // Section configurations with elderly-appropriate colors and icons
 const sectionConfigs = {
@@ -919,7 +920,7 @@ const PreviewDialog = ({
                     >
                         {formatArrayData(
                             formData.requestedSupplies,
-                            "supplies"
+                            "supplies",
                         )}
                     </Typography>
                 </Box>
@@ -1001,7 +1002,15 @@ const PreviewDialog = ({
 
 const LOCAL_STORAGE_KEY = "elderlyCareLogDraft";
 
-const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
+const ElderlyCareLogs = ({
+    caregiverName,
+    lastCareLog,
+    isPublic = false,
+    lockPatientDemographics = false,
+    submitUrl,
+    historyUrl,
+    initialPatientPrefill,
+}) => {
     const [formData, setFormData] = useState({
         // Basic Information
         date: new Date().toISOString().split("T")[0],
@@ -1118,6 +1127,27 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
     const [validationErrors, setValidationErrors] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const [formLocale, setFormLocale] = useState(() => {
+        if (typeof window === "undefined") {
+            return "en";
+        }
+        return parseElderlyFormLocale(
+            window.localStorage.getItem(ELDERLY_CARE_LOG_FORM_LOCALE_KEY),
+        );
+    });
+
+    useEffect(() => {
+        if (typeof window === "undefined") {
+            return;
+        }
+        window.localStorage.setItem(
+            ELDERLY_CARE_LOG_FORM_LOCALE_KEY,
+            formLocale,
+        );
+    }, [formLocale]);
+
+    const strings = getElderlyFormStrings(formLocale);
+
     const handleInputChange = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
         if (validationErrors.length > 0) {
@@ -1129,7 +1159,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
         setFormData((prev) => ({
             ...prev,
             [section]: prev[section].map((item, i) =>
-                i === index ? { ...item, [field]: value } : item
+                i === index ? { ...item, [field]: value } : item,
             ),
         }));
     };
@@ -1186,7 +1216,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                 newVitalSigns.temperatureUnit.length,
                 newVitalSigns.pulseRate.length,
                 newVitalSigns.respiratoryRate.length,
-                newVitalSigns.spo2.length
+                newVitalSigns.spo2.length,
             );
 
             [
@@ -1201,7 +1231,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
             ].forEach((key) => {
                 while (newVitalSigns[key].length < maxLength) {
                     newVitalSigns[key].push(
-                        key === "temperatureUnit" ? "C" : ""
+                        key === "temperatureUnit" ? "C" : "",
                     );
                 }
             });
@@ -1215,17 +1245,18 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
 
     const validateForm = () => {
         const errors = [];
+        const v = strings.validation;
 
         if (!formData.firstName.trim()) {
-            errors.push("Client's name is required");
+            errors.push(v.clientNameRequired);
         }
 
         if (!formData.age.trim()) {
-            errors.push("Age is required");
+            errors.push(v.ageRequired);
         }
 
         if (!formData.date) {
-            errors.push("Date is required");
+            errors.push(v.dateRequired);
         }
 
         // At least one vital sign
@@ -1240,10 +1271,10 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                     formData.vitalSigns.temperature[i] ||
                     formData.vitalSigns.pulseRate[i] ||
                     formData.vitalSigns.respiratoryRate[i] ||
-                    formData.vitalSigns.spo2[i]
+                    formData.vitalSigns.spo2[i],
             );
         if (!hasVitalSign) {
-            errors.push("Please record vital sign");
+            errors.push(v.vitalSignRequired);
         }
         if (
             formData.vitalSigns &&
@@ -1253,11 +1284,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
             formData.vitalSigns.bloodPressureSystolic.forEach((sys, i) => {
                 const dia = formData.vitalSigns.bloodPressureDiastolic[i];
                 if ((sys && !dia) || (!sys && dia)) {
-                    errors.push(
-                        `Both systolic and diastolic blood pressure are required for vital sign entry #${
-                            i + 1
-                        }`
-                    );
+                    errors.push(v.bpPairRequired(i + 1));
                 }
             });
         }
@@ -1270,10 +1297,10 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                     item.meal_type ||
                     item.meal_time ||
                     (item.food_items && item.food_items.some(Boolean)) ||
-                    item.amount
+                    item.amount,
             );
         if (!hasIntake) {
-            errors.push("Food and fluid intake record is required");
+            errors.push(v.intakeRequired);
         }
 
         // At least one output record
@@ -1284,10 +1311,10 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                     item.output_time ||
                     item.urine_volume ||
                     item.bowel_movement ||
-                    item.urine_color
+                    item.urine_color,
             );
         if (!hasOutput) {
-            errors.push("At least one output record is required");
+            errors.push(v.outputRequired);
         }
 
         // At least one sleep/rest tracking record
@@ -1298,10 +1325,10 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                     item.type ||
                     item.sleep_start_time ||
                     item.duration ||
-                    item.sleep_quality
+                    item.sleep_quality,
             );
         if (!hasSleep) {
-            errors.push("Sleep record is required");
+            errors.push(v.sleepRequired);
         }
 
         return errors;
@@ -1325,22 +1352,66 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
 
     // ----- Local Storage Draft Management ------
 
+    const toStoredDraft = (data) => {
+        if (!isPublic) {
+            return data;
+        }
+        const { firstName, lastName, age, ...rest } = data;
+        return rest;
+    };
+
     // Load draft from localStorage on mount
     useEffect(() => {
         const savedDraft = localStorage.getItem(LOCAL_STORAGE_KEY);
         if (savedDraft) {
             try {
-                setFormData(JSON.parse(savedDraft));
+                const parsed = JSON.parse(savedDraft);
+                setFormData((prev) => ({
+                    ...prev,
+                    ...parsed,
+                    ...(isPublic
+                        ? {
+                              firstName: prev.firstName,
+                              lastName: prev.lastName,
+                              age: prev.age,
+                          }
+                        : {}),
+                }));
             } catch (e) {
                 // Ignore parse errors
             }
         }
-    }, []);
+    }, [isPublic]);
 
     // Save draft to localStorage on every change
     useEffect(() => {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formData));
-    }, [formData]);
+        localStorage.setItem(
+            LOCAL_STORAGE_KEY,
+            JSON.stringify(toStoredDraft(formData)),
+        );
+    }, [formData, isPublic]);
+
+    useEffect(() => {
+        if (!isPublic || !initialPatientPrefill) {
+            return;
+        }
+        setFormData((prev) => ({
+            ...prev,
+            firstName:
+                initialPatientPrefill.firstName !== undefined
+                    ? initialPatientPrefill.firstName
+                    : prev.firstName,
+            lastName:
+                initialPatientPrefill.lastName !== undefined
+                    ? initialPatientPrefill.lastName
+                    : prev.lastName,
+            age:
+                initialPatientPrefill.age !== undefined
+                    ? initialPatientPrefill.age
+                    : prev.age,
+            date: initialPatientPrefill.date || prev.date,
+        }));
+    }, [isPublic, initialPatientPrefill]);
 
     // Clear draft helper
     const clearDraft = () => {
@@ -1365,26 +1436,26 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
 
                 // All the section data
                 hygiene_records: formData.hygiene.filter(
-                    (item) => item.time || item.activity || item.notes
+                    (item) => item.time || item.activity || item.notes,
                 ),
                 moisturizer_applied: formData.moisturizer_applied,
                 pressure_areas_checked: formData.pressure_areas_checked,
                 skin_care_findings: formData.skin_care_findings || null,
 
                 medication_records: formData.medication.filter(
-                    (item) => item.time || item.medication || item.dosage
+                    (item) => item.time || item.medication || item.dosage,
                 ),
                 mobility_records: formData.mobility.filter(
-                    (item) => item.time || item.activity || item.duration
+                    (item) => item.time || item.activity || item.duration,
                 ),
                 intake_records: formData.intake.filter(
-                    (item) => item.meal_time || item.meal_type || item.amount
+                    (item) => item.meal_time || item.meal_type || item.amount,
                 ),
                 output_records: formData.output.filter(
                     (item) =>
                         item.output_time ||
                         item.urine_volume ||
-                        item.bowel_movement
+                        item.bowel_movement,
                 ),
                 hydration_record:
                     formData.hydration.fluid_intake ||
@@ -1392,14 +1463,14 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                         ? formData.hydration
                         : null,
                 activity_records: formData.activities.filter(
-                    (item) => item.time || item.activity || item.duration
+                    (item) => item.time || item.activity || item.duration,
                 ),
                 sleep_records: formData.sleep.filter(
                     (item) =>
                         item.type ||
                         item.sleep_start_time ||
                         item.duration ||
-                        item.sleep_quality
+                        item.sleep_quality,
                 ),
                 sleep_issues: formData.sleepIssues || null,
 
@@ -1417,7 +1488,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                 },
 
                 accident_records: formData.accident.filter(
-                    (item) => item.time || item.description || item.action
+                    (item) => item.time || item.description || item.action,
                 ),
                 household_records: formData.household
                     .filter(
@@ -1425,7 +1496,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                             item.task ||
                             item.time ||
                             item.duration ||
-                            item.notes
+                            item.notes,
                     )
                     .map((item) => ({
                         household_work: item.task || null,
@@ -1435,7 +1506,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                     })),
                 requested_supplies: formData.requestedSupplies
                     .filter(
-                        (item) => item.item || item.quantity || item.purpose
+                        (item) => item.item || item.quantity || item.purpose,
                     )
                     .map((item) => ({
                         item: item.item,
@@ -1449,13 +1520,13 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                     (item) =>
                         item.measurement_time ||
                         item.glucose_level ||
-                        item.timing
+                        item.timing,
                 ),
 
                 // Update accident_records to use the new field names and include severity
                 emergency_incidents: formData.accident
                     .filter(
-                        (item) => item.time || item.description || item.action
+                        (item) => item.time || item.description || item.action,
                     )
                     .map((item) => ({
                         incident_time: item.time || null,
@@ -1467,22 +1538,26 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                     })),
             };
 
-            router.post(route("carelogs.elderly.store"), transformedData, {
-                onSuccess: () => {
-                    setShowPreview(false);
-                    clearDraft();
+            router.post(
+                submitUrl ?? route("carelogs.elderly.store"),
+                transformedData,
+                {
+                    onSuccess: () => {
+                        setShowPreview(false);
+                        clearDraft();
+                    },
+                    onError: (errors) => {
+                        console.error("Submission errors:", errors);
+                        alert(strings.alerts.submitFailed);
+                    },
+                    onFinish: () => {
+                        setIsSubmitting(false);
+                    },
                 },
-                onError: (errors) => {
-                    console.error("Submission errors:", errors);
-                    alert("Failed to submit care log. Please try again.");
-                },
-                onFinish: () => {
-                    setIsSubmitting(false);
-                },
-            });
+            );
         } catch (error) {
             console.error("Submission error:", error);
-            alert("Failed to submit care log. Please try again.");
+            alert(strings.alerts.submitFailed);
             setIsSubmitting(false);
         }
     };
@@ -1507,7 +1582,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
             temperature.length,
             pulseRate.length,
             respiratoryRate.length,
-            spo2.length // Use spo2 instead of bloodSugar and weight
+            spo2.length, // Use spo2 instead of bloodSugar and weight
         );
 
         for (let i = 0; i < maxLength; i++) {
@@ -1548,10 +1623,11 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
     // Add these new functions for test data
     const fillWithTestData = () => {
         const testData = generateTestData();
-        setFormData({
+        setFormData((prev) => ({
+            ...prev,
             ...testData,
-            caregiverName: caregiverName || testData.caregiverName,
-        });
+            caregiverName: caregiverName || prev.caregiverName || "",
+        }));
         // Clear any validation errors
         setValidationErrors([]);
     };
@@ -1691,12 +1767,13 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
         setValidationErrors([]);
     };
 
-    return (
-        <AppLayout>
-            <Head title="Elderly Care Log" />
+    const pageBody = (
+        <>
+            <Head title={strings.page.headTitle} />
             <Container maxWidth="lg" sx={{ pb: 8 }}>
                 {/* Add Test Data Buttons */}
-                {/* <Paper
+                {/*
+                <Paper
                     sx={{
                         p: 3,
                         mb: 4,
@@ -1711,11 +1788,10 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                         gutterBottom
                         sx={{ color: "#7b1fa2", fontWeight: "bold" }}
                     >
-                        🧪 Testing Tools (Development Only)
+                        {strings.testing.title}
                     </Typography>
                     <Typography variant="body2" sx={{ mb: 2, color: "#666" }}>
-                        Use these buttons to quickly fill the form with test
-                        data instead of entering manually:
+                        {strings.testing.description}
                     </Typography>
 
                     <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
@@ -1733,7 +1809,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                                 },
                             }}
                         >
-                            Fill Complete Test Data
+                            {strings.testing.fillComplete}
                         </Button>
 
                         <Button
@@ -1750,7 +1826,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                                 },
                             }}
                         >
-                            Fill Minimal Data
+                            {strings.testing.fillMinimal}
                         </Button>
 
                         <Button
@@ -1766,16 +1842,18 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                                 },
                             }}
                         >
-                            Clear Form
+                            {strings.testing.clearForm}
                         </Button>
                     </Box>
-                </Paper> */}
+                </Paper>
+                */}
 
                 {/* Enhanced Header */}
                 <Box
                     sx={{
                         display: "flex",
                         alignItems: "center",
+                        flexWrap: "wrap",
                         gap: 2,
                         py: 3,
                         borderRadius: 3,
@@ -1794,10 +1872,47 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                                 md: "2.5rem",
                             },
                             color: "#7b1fa2",
+                            flex: "1 1 auto",
+                            minWidth: 0,
                         }}
                     >
-                        Elderly Daily Care Logs
+                        {strings.page.mainTitle}
                     </Typography>
+
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                            flexShrink: 0,
+                        }}
+                    >
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ display: { xs: "none", sm: "block" } }}
+                        >
+                            {strings.page.languageLabel}
+                        </Typography>
+                        <ToggleButtonGroup
+                            exclusive
+                            size="small"
+                            value={formLocale}
+                            onChange={(_, value) => {
+                                if (value !== null) {
+                                    setFormLocale(value);
+                                }
+                            }}
+                            aria-label={strings.page.languageLabel}
+                        >
+                            <ToggleButton value="en">
+                                {strings.page.languageEn}
+                            </ToggleButton>
+                            <ToggleButton value="my">
+                                {strings.page.languageMy}
+                            </ToggleButton>
+                        </ToggleButtonGroup>
+                    </Box>
                 </Box>
 
                 {/* Continue Care Log Feature */}
@@ -1821,7 +1936,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                                 variant="subtitle1"
                                 sx={{ fontWeight: "bold" }}
                             >
-                                Your last care log:
+                                {strings.lastLog.yourLast}
                             </Typography>
                             <Typography
                                 variant="subtitle1"
@@ -1833,19 +1948,19 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                                 variant="body2"
                                 sx={{ mb: 0.5, color: "red" }}
                             >
-                                Age: {lastCareLog.age}
+                                {strings.lastLog.age} {lastCareLog.age}
                             </Typography>
                             <Typography variant="body2" sx={{ color: "#555" }}>
-                                Last log date:{" "}
+                                {strings.lastLog.lastLogDate}{" "}
                                 {lastCareLog.date
                                     ? new Date(
-                                          lastCareLog.date
+                                          lastCareLog.date,
                                       ).toLocaleDateString(undefined, {
                                           year: "numeric",
                                           month: "short",
                                           day: "numeric",
                                       })
-                                    : "Unknown"}
+                                    : strings.lastLog.unknown}
                             </Typography>
                         </Box>
                         <Button
@@ -1863,7 +1978,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                             }}
                             size="small"
                         >
-                            Continue
+                            {strings.lastLog.continue}
                         </Button>
                     </Paper>
                 )}
@@ -1876,7 +1991,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                             fontWeight="bold"
                             gutterBottom
                         >
-                            Please fill the following fields:
+                            {strings.validation.heading}
                         </Typography>
                         <ul style={{ margin: 0, paddingLeft: "1.5rem" }}>
                             {validationErrors.map((error, index) => (
@@ -1889,13 +2004,16 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                 {/* All Form Sections */}
                 <SectionCard config={sectionConfigs.basic}>
                     <BasicInformation
+                        strings={strings}
                         formData={formData}
                         handleInputChange={handleInputChange}
+                        lockPatientDemographics={lockPatientDemographics}
                     />
                 </SectionCard>
 
                 <SectionCard config={sectionConfigs.hygiene}>
                     <HygieneSection
+                        strings={strings}
                         data={formData.hygiene}
                         moisturizer_applied={formData.moisturizer_applied}
                         pressure_areas_checked={formData.pressure_areas_checked}
@@ -1910,6 +2028,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
 
                 <SectionCard config={sectionConfigs.medication}>
                     <Medication
+                        strings={strings}
                         data={formData.medication}
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
@@ -1920,6 +2039,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
 
                 <SectionCard config={sectionConfigs.health}>
                     <HealthMonitoring
+                        strings={strings}
                         formData={formData}
                         handleVitalSignChange={handleVitalSignChange}
                         handleInputChange={handleInputChange}
@@ -1932,6 +2052,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
 
                 <SectionCard config={sectionConfigs.mobility}>
                     <MobilityExercise
+                        strings={strings}
                         data={formData.mobility}
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
@@ -1942,6 +2063,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
 
                 <SectionCard config={sectionConfigs.intake}>
                     <IntakeOutput
+                        strings={strings}
                         formData={formData} // Pass entire formData
                         handleInputChange={handleInputChange}
                         handleArrayChange={handleArrayChange}
@@ -1953,6 +2075,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
 
                 <SectionCard config={sectionConfigs.activities}>
                     <ActivitiesSection
+                        strings={strings}
                         data={formData.activities}
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
@@ -1963,6 +2086,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
 
                 <SectionCard config={sectionConfigs.sleep}>
                     <SleepSection
+                        strings={strings}
                         data={formData.sleep}
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
@@ -1975,6 +2099,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
 
                 <SectionCard config={sectionConfigs.emotional}>
                     <EmotionBehavior
+                        strings={strings}
                         formData={formData}
                         handleInputChange={handleInputChange}
                     />
@@ -1982,6 +2107,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
 
                 <SectionCard config={sectionConfigs.accident}>
                     <AccidentEmergency
+                        strings={strings}
                         data={formData.accident}
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
@@ -1992,6 +2118,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
 
                 <SectionCard config={sectionConfigs.household}>
                     <HouseholdWork
+                        strings={strings}
                         data={formData.household}
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
@@ -2002,6 +2129,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
 
                 <SectionCard config={sectionConfigs.supplies}>
                     <RequestedSuppliesSection
+                        strings={strings}
                         data={formData.requestedSupplies}
                         handleArrayChange={handleArrayChange}
                         addArrayItem={addArrayItem}
@@ -2012,6 +2140,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
 
                 <SectionCard config={sectionConfigs.notes}>
                     <AdditionalNotesSection
+                        strings={strings}
                         additionalNotes={formData.additionalNotes}
                         handleInputChange={handleInputChange}
                     />
@@ -2019,6 +2148,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
 
                 <SectionCard config={sectionConfigs.signatures}>
                     <SignaturesSection
+                        strings={strings}
                         formData={formData}
                         handleInputChange={handleInputChange}
                     />
@@ -2032,7 +2162,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                             fontWeight="bold"
                             gutterBottom
                         >
-                            Please fill the following fields:
+                            {strings.validation.heading}
                         </Typography>
                         <ul style={{ margin: 0, paddingLeft: "1.5rem" }}>
                             {validationErrors.map((error, index) => (
@@ -2073,12 +2203,16 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                             },
                         }}
                     >
-                        Preview Care Log
+                        {strings.actions.previewCareLog}
                     </Button>
 
                     <Button
                         onClick={() => {
                             clearDraft();
+                            if (isPublic && historyUrl) {
+                                router.get(historyUrl);
+                                return;
+                            }
                             router.get(route("cg.dashboard"));
                         }}
                         fullWidth={window.innerWidth < 600}
@@ -2094,7 +2228,7 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                             },
                         }}
                     >
-                        Cancel
+                        {strings.actions.cancel}
                     </Button>
                 </Box>
 
@@ -2108,8 +2242,10 @@ const ElderlyCareLogs = ({ caregiverName, lastCareLog }) => {
                     isSubmitting={isSubmitting}
                 />
             </Container>
-        </AppLayout>
+        </>
     );
+
+    return isPublic ? pageBody : <AppLayout>{pageBody}</AppLayout>;
 };
 
 export default ElderlyCareLogs;

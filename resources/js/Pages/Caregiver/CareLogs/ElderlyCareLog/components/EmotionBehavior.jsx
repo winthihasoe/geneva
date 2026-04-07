@@ -4,7 +4,6 @@ import {
     TextField,
     Card,
     CardContent,
-    Box,
     Grid2,
     MenuItem,
     FormControl,
@@ -12,9 +11,12 @@ import {
     Select,
 } from "@mui/material";
 
-const EmotionBehavior = ({ formData, handleInputChange }) => {
-    const moodOptions = ["Happy", "Calm", "Anxious", "Irritable", "Other"];
-    const behaviorOptions = ["None", "Restlessness", "Withdrawal", "Other"];
+const MOOD_KEYS = ["Happy", "Calm", "Anxious", "Irritable", "Other"];
+const BEHAVIOR_KEYS = ["None", "Restlessness", "Withdrawal", "Other"];
+
+const EmotionBehavior = ({ strings, formData, handleInputChange }) => {
+    const e = strings.emotion;
+    const opt = strings.options;
 
     return (
         <Card sx={{ borderRadius: 2, bgcolor: "transparent" }}>
@@ -25,14 +27,13 @@ const EmotionBehavior = ({ formData, handleInputChange }) => {
                     color="primary"
                     sx={{ mb: 3 }}
                 >
-                    8. Emotional & Behavioral Observation
+                    {e.sectionTitle}
                 </Typography>
 
                 <Grid2 container spacing={3}>
-                    {/* General Mood */}
                     <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
                         <FormControl fullWidth variant="standard">
-                            <InputLabel>General Mood</InputLabel>
+                            <InputLabel>{e.generalMood}</InputLabel>
                             <Select
                                 value={formData.emotionalMood || ""}
                                 onChange={(e) =>
@@ -41,24 +42,23 @@ const EmotionBehavior = ({ formData, handleInputChange }) => {
                                         e.target.value
                                     )
                                 }
-                                label="General Mood"
+                                label={e.generalMood}
                             >
-                                {moodOptions.map((option) => (
-                                    <MenuItem key={option} value={option}>
-                                        {option}
+                                {MOOD_KEYS.map((key) => (
+                                    <MenuItem key={key} value={key}>
+                                        {opt.mood[key]}
                                     </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
                     </Grid2>
 
-                    {/* Other Mood (conditional) */}
                     {formData.emotionalMood === "Other" && (
                         <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
                             <TextField
                                 fullWidth
                                 variant="standard"
-                                label="Other Mood"
+                                label={e.otherMood}
                                 value={formData.emotionalMoodOther || ""}
                                 onChange={(e) =>
                                     handleInputChange(
@@ -66,15 +66,14 @@ const EmotionBehavior = ({ formData, handleInputChange }) => {
                                         e.target.value
                                     )
                                 }
-                                placeholder="Specify other mood"
+                                placeholder={e.otherMoodPlaceholder}
                             />
                         </Grid2>
                     )}
 
-                    {/* Behavioral Concerns */}
                     <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
                         <FormControl fullWidth variant="standard">
-                            <InputLabel>Behavioral Concerns</InputLabel>
+                            <InputLabel>{e.behavioralConcerns}</InputLabel>
                             <Select
                                 value={formData.behavioralConcerns || ""}
                                 onChange={(e) =>
@@ -83,24 +82,23 @@ const EmotionBehavior = ({ formData, handleInputChange }) => {
                                         e.target.value
                                     )
                                 }
-                                label="Behavioral Concerns"
+                                label={e.behavioralConcerns}
                             >
-                                {behaviorOptions.map((option) => (
-                                    <MenuItem key={option} value={option}>
-                                        {option}
+                                {BEHAVIOR_KEYS.map((key) => (
+                                    <MenuItem key={key} value={key}>
+                                        {opt.behavior[key]}
                                     </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
                     </Grid2>
 
-                    {/* Other Behavioral Concerns (conditional) */}
                     {formData.behavioralConcerns === "Other" && (
                         <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
                             <TextField
                                 fullWidth
                                 variant="standard"
-                                label="Other Behavioral Concerns"
+                                label={e.otherBehavioral}
                                 value={formData.behavioralConcernsOther || ""}
                                 onChange={(e) =>
                                     handleInputChange(
@@ -108,17 +106,16 @@ const EmotionBehavior = ({ formData, handleInputChange }) => {
                                         e.target.value
                                     )
                                 }
-                                placeholder="Specify other behavioral concerns"
+                                placeholder={e.otherBehavioralPlaceholder}
                             />
                         </Grid2>
                     )}
 
-                    {/* Action Taken */}
                     <Grid2 size={{ xs: 12 }}>
                         <TextField
                             fullWidth
                             variant="standard"
-                            label="Action Taken"
+                            label={e.actionTaken}
                             value={formData.emotionalActionTaken || ""}
                             onChange={(e) =>
                                 handleInputChange(
@@ -128,7 +125,7 @@ const EmotionBehavior = ({ formData, handleInputChange }) => {
                             }
                             multiline
                             maxRows={4}
-                            placeholder="Describe any actions taken to address mood or behavioral concerns"
+                            placeholder={e.actionPlaceholder}
                         />
                     </Grid2>
                 </Grid2>

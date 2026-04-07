@@ -19,36 +19,32 @@ import {
 } from "@mui/icons-material";
 import SignatureCanvas from "react-signature-canvas";
 
-const SignaturesSection = ({ formData, handleInputChange }) => {
+const SignaturesSection = ({ strings, formData, handleInputChange }) => {
+    const s = strings.signatures;
+    const c = strings.common;
+
     const caregiverSigCanvasRef = useRef(null);
     const guardianSigCanvasRef = useRef(null);
     const caregiverBoxRef = useRef(null);
     const guardianBoxRef = useRef(null);
 
-    const [caregiverSignatureDataURL, setCaregiverSignatureDataURL] =
-        useState("");
-    const [guardianSignatureDataURL, setGuardianSignatureDataURL] =
-        useState("");
     const [isGuardianSectionOpen, setIsGuardianSectionOpen] = useState(false);
     const [canvasWidth, setCanvasWidth] = useState(800);
 
-    // Auto-save status states
     const [caregiverAutoSaved, setCaregiverAutoSaved] = useState(false);
     const [guardianAutoSaved, setGuardianAutoSaved] = useState(false);
 
-    // Update canvas width when component mounts or window resizes
     useEffect(() => {
         const updateCanvasWidth = () => {
             if (caregiverBoxRef.current) {
                 const boxWidth = caregiverBoxRef.current.offsetWidth;
-                setCanvasWidth(boxWidth - 2); // Subtract 2 for border
+                setCanvasWidth(boxWidth - 2);
             }
         };
 
         updateCanvasWidth();
         window.addEventListener("resize", updateCanvasWidth);
 
-        // Small delay to ensure proper rendering
         const timeout = setTimeout(updateCanvasWidth, 100);
 
         return () => {
@@ -57,60 +53,48 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
         };
     }, [isGuardianSectionOpen]);
 
-    // Auto-save function for caregiver signature
     const autoSaveCaregiverSignature = () => {
         if (
             caregiverSigCanvasRef.current &&
             !caregiverSigCanvasRef.current.isEmpty()
         ) {
             const dataURL = caregiverSigCanvasRef.current.toDataURL();
-            setCaregiverSignatureDataURL(dataURL);
             handleInputChange("caregiverSignature", dataURL);
             setCaregiverAutoSaved(true);
 
-            // Reset auto-saved indicator after 2 seconds
             setTimeout(() => setCaregiverAutoSaved(false), 2000);
         }
     };
 
-    // Auto-save function for guardian signature
     const autoSaveGuardianSignature = () => {
         if (
             guardianSigCanvasRef.current &&
             !guardianSigCanvasRef.current.isEmpty()
         ) {
             const dataURL = guardianSigCanvasRef.current.toDataURL();
-            setGuardianSignatureDataURL(dataURL);
             handleInputChange("clientSignature", dataURL);
             setGuardianAutoSaved(true);
 
-            // Reset auto-saved indicator after 2 seconds
             setTimeout(() => setGuardianAutoSaved(false), 2000);
         }
     };
 
-    // Handle caregiver signature events
     const handleCaregiverSignatureEnd = () => {
-        // Auto-save after user finishes drawing
-        setTimeout(autoSaveCaregiverSignature, 500); // Small delay to ensure stroke is complete
+        setTimeout(autoSaveCaregiverSignature, 500);
     };
 
-    // Handle guardian signature events
     const handleGuardianSignatureEnd = () => {
-        // Auto-save after user finishes drawing
-        setTimeout(autoSaveGuardianSignature, 500); // Small delay to ensure stroke is complete
+        setTimeout(autoSaveGuardianSignature, 500);
     };
 
     const clearCaregiverSignature = () => {
         caregiverSigCanvasRef.current.clear();
-        setCaregiverSignatureDataURL("");
         setCaregiverAutoSaved(false);
         handleInputChange("caregiverSignature", "");
     };
 
     const clearGuardianSignature = () => {
         guardianSigCanvasRef.current.clear();
-        setGuardianSignatureDataURL("");
         setGuardianAutoSaved(false);
         handleInputChange("clientSignature", "");
     };
@@ -128,11 +112,10 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                     mb={3}
                     color="primary"
                 >
-                    Signatures
+                    {s.sectionTitle}
                 </Typography>
 
                 <Grid2 container spacing={3}>
-                    {/* Caregiver Section */}
                     <Grid2 size={12}>
                         <Typography
                             variant="subtitle1"
@@ -140,7 +123,7 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                             gutterBottom
                             color="primary"
                         >
-                            Caregiver Information
+                            {s.caregiverInfo}
                         </Typography>
                     </Grid2>
 
@@ -148,7 +131,7 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                         <TextField
                             fullWidth
                             variant="standard"
-                            label="Caregiver Name"
+                            label={s.caregiverName}
                             value={formData.caregiverName || ""}
                             onChange={(e) =>
                                 handleInputChange(
@@ -157,7 +140,7 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                                 )
                             }
                             disabled={!!formData.caregiverName}
-                            placeholder="Enter caregiver's full name"
+                            placeholder={s.caregiverNamePlaceholder}
                         />
                     </Grid2>
 
@@ -171,12 +154,12 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                             }}
                         >
                             <Typography variant="subtitle2">
-                                Caregiver Signature
+                                {s.caregiverSignature}
                             </Typography>
                             {caregiverAutoSaved && (
                                 <Chip
                                     icon={<CheckCircle />}
-                                    label="Auto-saved"
+                                    label={s.autoSaved}
                                     size="small"
                                     color="success"
                                     variant="filled"
@@ -188,7 +171,7 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                             color="text.secondary"
                             sx={{ mb: 1, display: "block" }}
                         >
-                            Signature will be automatically saved as you draw
+                            {s.signatureAutoSaveHint}
                         </Typography>
                         <Box
                             ref={caregiverBoxRef}
@@ -206,7 +189,7 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                         >
                             <SignatureCanvas
                                 ref={caregiverSigCanvasRef}
-                                onEnd={handleCaregiverSignatureEnd} // Auto-save on signature end
+                                onEnd={handleCaregiverSignatureEnd}
                                 canvasProps={{
                                     width: canvasWidth,
                                     height: 148,
@@ -224,12 +207,11 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                                 startIcon={<Clear />}
                                 onClick={clearCaregiverSignature}
                             >
-                                Clear
+                                {c.clear}
                             </Button>
                         </Box>
                     </Grid2>
 
-                    {/* Guardian Section - Collapsible */}
                     <Grid2 size={12}>
                         <Box
                             sx={{
@@ -246,7 +228,7 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                                 color="primary"
                                 sx={{ flexGrow: 1 }}
                             >
-                                Guardian Section (Optional)
+                                {s.guardianSection}
                             </Typography>
                             <IconButton size="small">
                                 {isGuardianSectionOpen ? (
@@ -265,7 +247,7 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                                     <TextField
                                         fullWidth
                                         variant="standard"
-                                        label="Guardian Comment/Feedback"
+                                        label={s.guardianComment}
                                         multiline
                                         rows={3}
                                         value={formData.clientComment || ""}
@@ -275,7 +257,9 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                                                 e.target.value
                                             )
                                         }
-                                        placeholder="Any comments, concerns, or feedback from the guardian/parent..."
+                                        placeholder={
+                                            s.guardianCommentPlaceholder
+                                        }
                                     />
                                 </Grid2>
 
@@ -289,12 +273,12 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                                         }}
                                     >
                                         <Typography variant="subtitle2">
-                                            Guardian Signature
+                                            {s.guardianSignature}
                                         </Typography>
                                         {guardianAutoSaved && (
                                             <Chip
                                                 icon={<CheckCircle />}
-                                                label="Auto-saved"
+                                                label={s.autoSaved}
                                                 size="small"
                                                 color="success"
                                                 variant="filled"
@@ -306,8 +290,7 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                                         color="text.secondary"
                                         sx={{ mb: 1, display: "block" }}
                                     >
-                                        Signature will be automatically saved as
-                                        you draw
+                                        {s.signatureAutoSaveHint}
                                     </Typography>
                                     <Box
                                         ref={guardianBoxRef}
@@ -325,7 +308,7 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                                     >
                                         <SignatureCanvas
                                             ref={guardianSigCanvasRef}
-                                            onEnd={handleGuardianSignatureEnd} // Auto-save on signature end
+                                            onEnd={handleGuardianSignatureEnd}
                                             canvasProps={{
                                                 width: canvasWidth,
                                                 height: 148,
@@ -343,7 +326,7 @@ const SignaturesSection = ({ formData, handleInputChange }) => {
                                             startIcon={<Clear />}
                                             onClick={clearGuardianSignature}
                                         >
-                                            Clear
+                                            {c.clear}
                                         </Button>
                                     </Box>
                                 </Grid2>

@@ -17,6 +17,7 @@ import {
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 
 const HealthMonitoring = ({
+    strings,
     formData,
     handleInputChange,
     handleVitalSignChange,
@@ -25,6 +26,14 @@ const HealthMonitoring = ({
     removeArrayItem,
     entryRefs,
 }) => {
+    const c = strings.common;
+    const h = strings.health;
+    const gt = strings.options.glucoseTiming;
+    const glucoseTimingEntries = Object.keys(gt).map((value) => ({
+        value,
+        label: gt[value],
+    }));
+
     const prevLength = useRef(formData.vitalSigns.times.length);
 
     useEffect(() => {
@@ -38,7 +47,6 @@ const HealthMonitoring = ({
         prevLength.current = formData.vitalSigns.times.length;
     }, [formData.vitalSigns.times.length]);
 
-    // Handle vital signs as array entries - Updated for elderly care
     const addVitalSignEntry = () => {
         const newIndex = formData.vitalSigns.times.length;
         handleVitalSignChange("times", newIndex, "");
@@ -82,7 +90,6 @@ const HealthMonitoring = ({
                 (_, i) => i !== index
             );
 
-            // Update all vital sign arrays
             const updatedVitalSigns = {
                 times: newTimes,
                 bloodPressureSystolic: newBloodPressureSystolic,
@@ -107,10 +114,9 @@ const HealthMonitoring = ({
                     mb={3}
                     color="primary"
                 >
-                    3. Health Monitoring
+                    {h.sectionTitle}
                 </Typography>
 
-                {/* Vital Signs Section */}
                 <Box sx={{ mb: 4 }}>
                     <Box
                         sx={{
@@ -123,7 +129,7 @@ const HealthMonitoring = ({
                         }}
                     >
                         <Typography variant="subtitle1" fontWeight="bold">
-                            Vital Signs
+                            {c.vitalSigns}
                         </Typography>
                         <Button
                             startIcon={<AddIcon />}
@@ -131,7 +137,7 @@ const HealthMonitoring = ({
                             variant="outlined"
                             size="small"
                         >
-                            Add Entry
+                            {c.addEntry}
                         </Button>
                     </Box>
 
@@ -157,7 +163,7 @@ const HealthMonitoring = ({
                                     variant="subtitle2"
                                     color="text.secondary"
                                 >
-                                    Entry {index + 1}
+                                    {c.entry(index + 1)}
                                 </Typography>
                                 <IconButton
                                     onClick={() => removeVitalSignEntry(index)}
@@ -176,7 +182,7 @@ const HealthMonitoring = ({
                                     <TextField
                                         fullWidth
                                         variant="standard"
-                                        label="Time"
+                                        label={c.time}
                                         type="time"
                                         value={
                                             formData.vitalSigns.times[index] ||
@@ -197,7 +203,7 @@ const HealthMonitoring = ({
                                     <TextField
                                         fullWidth
                                         variant="standard"
-                                        label="Systolic BP"
+                                        label={c.systolicBP}
                                         type="number"
                                         value={
                                             formData.vitalSigns
@@ -220,7 +226,7 @@ const HealthMonitoring = ({
                                     <TextField
                                         fullWidth
                                         variant="standard"
-                                        label="Diastolic BP"
+                                        label={c.diastolicBP}
                                         type="number"
                                         value={
                                             formData.vitalSigns
@@ -244,7 +250,7 @@ const HealthMonitoring = ({
                                     <TextField
                                         fullWidth
                                         variant="standard"
-                                        label="Temperature"
+                                        label={c.temperature}
                                         type="number"
                                         step="0.1"
                                         value={
@@ -265,7 +271,7 @@ const HealthMonitoring = ({
 
                                 <Grid2 size={{ xs: 4, sm: 2, md: 1 }}>
                                     <FormControl fullWidth variant="standard">
-                                        <InputLabel>Unit</InputLabel>
+                                        <InputLabel>{c.unit}</InputLabel>
                                         <Select
                                             value={
                                                 formData.vitalSigns
@@ -279,7 +285,7 @@ const HealthMonitoring = ({
                                                     e.target.value
                                                 )
                                             }
-                                            label="Unit"
+                                            label={c.unit}
                                         >
                                             <MenuItem value="C">°C</MenuItem>
                                             <MenuItem value="F">°F</MenuItem>
@@ -291,7 +297,7 @@ const HealthMonitoring = ({
                                     <TextField
                                         fullWidth
                                         variant="standard"
-                                        label="Pulse Rate"
+                                        label={c.pulseRate}
                                         type="number"
                                         value={
                                             formData.vitalSigns.pulseRate[
@@ -314,7 +320,7 @@ const HealthMonitoring = ({
                                     <TextField
                                         fullWidth
                                         variant="standard"
-                                        label="Respiratory Rate"
+                                        label={c.respiratoryRate}
                                         type="number"
                                         value={
                                             formData.vitalSigns.respiratoryRate[
@@ -337,7 +343,7 @@ const HealthMonitoring = ({
                                     <TextField
                                         fullWidth
                                         variant="standard"
-                                        label="SPO2 (%)"
+                                        label={c.spo2}
                                         type="number"
                                         value={
                                             formData.vitalSigns.spo2[index] ||
@@ -367,7 +373,6 @@ const HealthMonitoring = ({
                     * * * *
                 </Typography>
 
-                {/* Blood Glucose Section */}
                 <Box sx={{ mt: 4 }}>
                     <Box
                         sx={{
@@ -380,7 +385,7 @@ const HealthMonitoring = ({
                         }}
                     >
                         <Typography variant="subtitle1" fontWeight="bold">
-                            Blood Glucose Entries
+                            {c.bloodGlucoseEntries}
                         </Typography>
                         <Button
                             startIcon={<AddIcon />}
@@ -395,7 +400,7 @@ const HealthMonitoring = ({
                             variant="outlined"
                             size="small"
                         >
-                            Add Entry
+                            {c.addEntry}
                         </Button>
                     </Box>
 
@@ -421,7 +426,7 @@ const HealthMonitoring = ({
                                     variant="subtitle2"
                                     color="text.secondary"
                                 >
-                                    Entry {index + 1}
+                                    {c.entry(index + 1)}
                                 </Typography>
                                 <IconButton
                                     onClick={() =>
@@ -442,7 +447,7 @@ const HealthMonitoring = ({
                                     <TextField
                                         fullWidth
                                         variant="standard"
-                                        label="Measurement Time"
+                                        label={c.measurementTime}
                                         type="time"
                                         value={item.measurement_time}
                                         onChange={(e) =>
@@ -461,7 +466,7 @@ const HealthMonitoring = ({
                                     <TextField
                                         fullWidth
                                         variant="standard"
-                                        label="Glucose Level (mg/dL)"
+                                        label={c.glucoseLevel}
                                         type="number"
                                         value={item.glucose_level}
                                         onChange={(e) =>
@@ -479,7 +484,7 @@ const HealthMonitoring = ({
 
                                 <Grid2 size={{ xs: 12, sm: 6, md: 2 }}>
                                     <FormControl fullWidth variant="standard">
-                                        <InputLabel>Timing</InputLabel>
+                                        <InputLabel>{c.timing}</InputLabel>
                                         <Select
                                             value={item.timing}
                                             onChange={(e) =>
@@ -491,15 +496,14 @@ const HealthMonitoring = ({
                                                 )
                                             }
                                         >
-                                            <MenuItem value="fasting">
-                                                Fasting
-                                            </MenuItem>
-                                            <MenuItem value="random">
-                                                Random
-                                            </MenuItem>
-                                            <MenuItem value="2hpp">
-                                                2H Post-Prandial (2HPP)
-                                            </MenuItem>
+                                            {glucoseTimingEntries.map((t) => (
+                                                <MenuItem
+                                                    key={t.value}
+                                                    value={t.value}
+                                                >
+                                                    {t.label}
+                                                </MenuItem>
+                                            ))}
                                         </Select>
                                     </FormControl>
                                 </Grid2>
@@ -508,7 +512,7 @@ const HealthMonitoring = ({
                                     <TextField
                                         fullWidth
                                         variant="standard"
-                                        label="Note"
+                                        label={c.note}
                                         value={item.note}
                                         onChange={(e) =>
                                             handleArrayChange(
@@ -520,7 +524,9 @@ const HealthMonitoring = ({
                                         }
                                         multiline
                                         maxRows={5}
-                                        placeholder="Any observations or notes..."
+                                        placeholder={
+                                            h.glucoseNotePlaceholder
+                                        }
                                         inputProps={{ maxLength: 255 }}
                                     />
                                 </Grid2>

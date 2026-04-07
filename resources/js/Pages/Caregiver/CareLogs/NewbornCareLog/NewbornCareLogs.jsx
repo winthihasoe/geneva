@@ -14,6 +14,8 @@ import {
     DialogContent,
     DialogActions,
     Divider,
+    ToggleButton,
+    ToggleButtonGroup,
 } from "@mui/material";
 import {
     Save as SaveIcon,
@@ -46,224 +48,223 @@ import AdditionalNotesSection from "./components/AdditionalNotesSection";
 import RequestedSuppliesSection from "./components/RequestedSuppliesSection";
 import SignaturesSection from "./components/SignaturesSection";
 import BackButton from "@/Components/BackButton";
+import {
+    NEWBORN_CARE_LOG_FORM_LOCALE_KEY,
+    getNewbornFormStrings,
+    parseNewbornFormLocale,
+} from "@/locales/careLogs/newbornCareLogForm";
 
 // Test Data Generator - Add this after imports
-const generateTestData = () => ({
-    // Basic Information
-    date: new Date().toISOString().split("T")[0],
-    firstName: "B' Emma",
-    lastName: "Johnson",
-    age: "3 months",
-    weight: "5.2",
-    height: "58",
+// const generateTestData = () => ({
+//     // Basic Information (name/age come from patient prefill)
+//     date: new Date().toISOString().split("T")[0],
+//     weight: "5.2",
+//     height: "58",
 
-    // Feeding data
-    feeding: [
-        {
-            time: "09:00",
-            type: "Breast milk",
-            amount: "120",
-            amount_unit: "ml",
-            notes: "Fed well, no issues",
-        },
-        {
-            time: "12:30",
-            type: "Formula",
-            amount: "150",
-            amount_unit: "ml",
-            notes: "Hungry baby, finished quickly",
-        },
-        {
-            time: "15:45",
-            type: "Breast milk",
-            amount: "100",
-            amount_unit: "ml",
-            notes: "Sleepy during feeding",
-        },
-    ],
+//     // Feeding data
+//     feeding: [
+//         {
+//             time: "09:00",
+//             type: "Breast milk",
+//             amount: "120",
+//             amount_unit: "ml",
+//             notes: "Fed well, no issues",
+//         },
+//         {
+//             time: "12:30",
+//             type: "Formula",
+//             amount: "150",
+//             amount_unit: "ml",
+//             notes: "Hungry baby, finished quickly",
+//         },
+//         {
+//             time: "15:45",
+//             type: "Breast milk",
+//             amount: "100",
+//             amount_unit: "ml",
+//             notes: "Sleepy during feeding",
+//         },
+//     ],
 
-    // Diaper changes
-    diaperChanges: [
-        {
-            time: "08:30",
-            content: "Wet",
-            notes: "Normal urine, no smell",
-        },
-        {
-            time: "10:15",
-            content: "Dirty",
-            notes: "Soft stool, yellowish color",
-        },
-        {
-            time: "14:20",
-            content: "Wet",
-            notes: "Heavy wet diaper",
-        },
-    ],
+//     // Diaper changes
+//     diaperChanges: [
+//         {
+//             time: "08:30",
+//             content: "Wet",
+//             notes: "Normal urine, no smell",
+//         },
+//         {
+//             time: "10:15",
+//             content: "Dirty",
+//             notes: "Soft stool, yellowish color",
+//         },
+//         {
+//             time: "14:20",
+//             content: "Wet",
+//             notes: "Heavy wet diaper",
+//         },
+//     ],
 
-    // Sleep records
-    sleep: [
-        {
-            timeStarted: "10:00",
-            timeEnded: "11:30",
-            duration: "1.5 hours",
-            notes: "Peaceful sleep, no crying",
-        },
-        {
-            timeStarted: "13:00",
-            timeEnded: "14:45",
-            duration: "1 hour 45 minutes",
-            notes: "Light sleep, woke up happy",
-        },
-    ],
+//     // Sleep records
+//     sleep: [
+//         {
+//             timeStarted: "10:00",
+//             timeEnded: "11:30",
+//             duration: "1.5 hours",
+//             notes: "Peaceful sleep, no crying",
+//         },
+//         {
+//             timeStarted: "13:00",
+//             timeEnded: "14:45",
+//             duration: "1 hour 45 minutes",
+//             notes: "Light sleep, woke up happy",
+//         },
+//     ],
 
-    // Activities
-    activities: [
-        {
-            time: "09:30",
-            activity: "Tummy time",
-            duration: "15 minutes",
-            details: "Good head control, enjoyed it",
-        },
-        {
-            time: "11:45",
-            activity: "Reading books",
-            duration: "10 minutes",
-            details: "Looked at colorful pictures",
-        },
-        {
-            time: "16:00",
-            activity: "Singing",
-            duration: "20 minutes",
-            details: "ရောင်စုံဘောလုံးသီချင်းဆိုပြတယ်။",
-        },
-    ],
+//     // Activities
+//     activities: [
+//         {
+//             time: "09:30",
+//             activity: "Tummy time",
+//             duration: "15 minutes",
+//             details: "Good head control, enjoyed it",
+//         },
+//         {
+//             time: "11:45",
+//             activity: "Reading books",
+//             duration: "10 minutes",
+//             details: "Looked at colorful pictures",
+//         },
+//         {
+//             time: "16:00",
+//             activity: "Singing",
+//             duration: "20 minutes",
+//             details: "ရောင်စုံဘောလုံးသီချင်းဆိုပြတယ်။",
+//         },
+//     ],
 
-    // Hygiene
-    hygiene: [
-        {
-            time: "08:00",
-            activity: "Diaper change",
-            products: "Baby wipes, cream",
-            notes: "Cleaned thoroughly",
-        },
-        {
-            time: "12:00",
-            activity: "Face cleaning",
-            products: "Soft cloth, warm water",
-            notes: "Cleaned after feeding",
-        },
-    ],
+//     // Hygiene
+//     hygiene: [
+//         {
+//             time: "08:00",
+//             activity: "Diaper change",
+//             products: "Baby wipes, cream",
+//             notes: "Cleaned thoroughly",
+//         },
+//         {
+//             time: "12:00",
+//             activity: "Face cleaning",
+//             products: "Soft cloth, warm water",
+//             notes: "Cleaned after feeding",
+//         },
+//     ],
 
-    // Health & Behavior
-    mood: "Happy and content",
-    symptoms: "None observed",
-    medications: "Vitamin D drops (1 drop daily)",
+//     // Health & Behavior
+//     mood: "Happy and content",
+//     symptoms: "None observed",
+//     medications: "Vitamin D drops (1 drop daily)",
 
-    // Vital Signs
-    vitalSigns: {
-        times: ["09:00", "15:00"],
-        temperature: ["36.5", "36.8"],
-        temperatureUnit: ["C", "C"],
-        pulseRate: ["120", "125"],
-        respiratoryRate: ["30", "32"],
-    },
+//     // Vital Signs
+//     vitalSigns: {
+//         times: ["09:00", "15:00"],
+//         temperature: ["36.5", "36.8"],
+//         temperatureUnit: ["C", "C"],
+//         pulseRate: ["120", "125"],
+//         respiratoryRate: ["30", "32"],
+//     },
 
-    // Additional Notes
-    additionalNotes:
-        "Baby is developing well. Good appetite, regular sleep patterns. Parents report baby is more alert during the day. Recommend continuing current routine.",
+//     // Additional Notes
+//     additionalNotes:
+//         "Baby is developing well. Good appetite, regular sleep patterns. Parents report baby is more alert during the day. Recommend continuing current routine.",
 
-    // Requested Supplies
-    requestedSupplies: [
-        {
-            item: "Diapers (Size 2)",
-            quantity: "1 pack",
-            purpose: "Daily care needs",
-            priority: "high",
-        },
-        {
-            item: "Baby wipes",
-            quantity: "2 packs",
-            purpose: "Hygiene and cleaning",
-            priority: "medium",
-        },
-        {
-            item: "Baby formula",
-            quantity: "1 can",
-            purpose: "Supplemental feeding",
-            priority: "low",
-        },
-    ],
+//     // Requested Supplies
+//     requestedSupplies: [
+//         {
+//             item: "Diapers (Size 2)",
+//             quantity: "1 pack",
+//             purpose: "Daily care needs",
+//             priority: "high",
+//         },
+//         {
+//             item: "Baby wipes",
+//             quantity: "2 packs",
+//             purpose: "Hygiene and cleaning",
+//             priority: "medium",
+//         },
+//         {
+//             item: "Baby formula",
+//             quantity: "1 can",
+//             purpose: "Supplemental feeding",
+//             priority: "low",
+//         },
+//     ],
 
-    // Signatures
-    caregiverSignature: "",
-    guardianSignature: "",
-    guardianComment: "",
-});
+//     // Signatures
+//     caregiverSignature: "",
+//     guardianSignature: "",
+//     guardianComment: "",
+// });
 
 // Minimal test data for quick testing
-const generateMinimalTestData = () => ({
-    date: new Date().toISOString().split("T")[0],
-    firstName: "Test Baby",
-    lastName: "Smith",
-    age: "2 months",
-    weight: "4.5",
-    height: "55",
-    mood: "Happy",
-    additionalNotes: "Test notes",
-    caregiverSignature: "Test Caregiver",
+// const generateMinimalTestData = () => ({
+//     date: new Date().toISOString().split("T")[0],
+//     weight: "4.5",
+//     height: "55",
+//     mood: "Happy",
+//     additionalNotes: "Test notes",
+//     caregiverSignature: "Test Caregiver",
 
-    // Keep minimal arrays
-    feeding: [
-        {
-            time: "09:00",
-            type: "Breast milk",
-            amount: "100",
-            amount_unit: "ml",
-            notes: "Good feeding",
-        },
-    ],
-    diaperChanges: [{ time: "08:30", content: "Wet", notes: "Normal" }],
-    sleep: [
-        {
-            timeStarted: "10:00",
-            timeEnded: "11:00",
-            duration: "1 hour",
-            notes: "Good sleep",
-        },
-    ],
-    activities: [
-        {
-            time: "11:30",
-            activity: "Tummy time",
-            duration: "10 min",
-            details: "Enjoyed it",
-        },
-    ],
-    hygiene: [
-        {
-            time: "08:00",
-            activity: "Diaper change",
-            products: "Wipes",
-            notes: "Clean",
-        },
-    ],
-    vitalSigns: {
-        times: ["09:00"],
-        temperature: ["36.5"],
-        temperatureUnit: ["C"],
-        pulseRate: ["120"],
-        respiratoryRate: ["30"],
-    },
-    requestedSupplies: [
-        {
-            item: "Diapers",
-            quantity: "1 pack",
-            purpose: "Daily care",
-            priority: "high",
-        },
-    ],
-});
+//     // Keep minimal arrays
+//     feeding: [
+//         {
+//             time: "09:00",
+//             type: "Breast milk",
+//             amount: "100",
+//             amount_unit: "ml",
+//             notes: "Good feeding",
+//         },
+//     ],
+//     diaperChanges: [{ time: "08:30", content: "Wet", notes: "Normal" }],
+//     sleep: [
+//         {
+//             timeStarted: "10:00",
+//             timeEnded: "11:00",
+//             duration: "1 hour",
+//             notes: "Good sleep",
+//         },
+//     ],
+//     activities: [
+//         {
+//             time: "11:30",
+//             activity: "Tummy time",
+//             duration: "10 min",
+//             details: "Enjoyed it",
+//         },
+//     ],
+//     hygiene: [
+//         {
+//             time: "08:00",
+//             activity: "Diaper change",
+//             products: "Wipes",
+//             notes: "Clean",
+//         },
+//     ],
+//     vitalSigns: {
+//         times: ["09:00"],
+//         temperature: ["36.5"],
+//         temperatureUnit: ["C"],
+//         pulseRate: ["120"],
+//         respiratoryRate: ["30"],
+//     },
+//     requestedSupplies: [
+//         {
+//             item: "Diapers",
+//             quantity: "1 pack",
+//             purpose: "Daily care",
+//             priority: "high",
+//         },
+//     ],
+// });
 
 // Section configurations with colors and icons
 const sectionConfigs = {
@@ -657,7 +658,7 @@ const PreviewDialog = ({
                     >
                         {formatArrayData(
                             formData.requestedSupplies,
-                            "supplies"
+                            "supplies",
                         )}
                     </Typography>
                 </Box>
@@ -729,7 +730,15 @@ const PreviewDialog = ({
 
 const LOCAL_STORAGE_KEY = "newbornCareLogDraft";
 
-const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
+const NewbornCareLogs = ({
+    caregiverName,
+    lastCareLog,
+    isPublic = false,
+    lockPatientDemographics = false,
+    submitUrl,
+    historyUrl,
+    initialPatientPrefill,
+}) => {
     const [formData, setFormData] = useState({
         // Basic Information (maps to care_logs table)
         date: new Date().toISOString().split("T")[0],
@@ -787,6 +796,24 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
     const [validationErrors, setValidationErrors] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const [formLocale, setFormLocale] = useState(() => {
+        if (typeof window === "undefined") {
+            return "en";
+        }
+        return parseNewbornFormLocale(
+            window.localStorage.getItem(NEWBORN_CARE_LOG_FORM_LOCALE_KEY),
+        );
+    });
+
+    useEffect(() => {
+        window.localStorage.setItem(
+            NEWBORN_CARE_LOG_FORM_LOCALE_KEY,
+            formLocale,
+        );
+    }, [formLocale]);
+
+    const strings = getNewbornFormStrings(formLocale);
+
     const handleInputChange = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
         // Clear validation errors when user starts typing
@@ -799,7 +826,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
         setFormData((prev) => ({
             ...prev,
             [section]: prev[section].map((item, i) =>
-                i === index ? { ...item, [field]: value } : item
+                i === index ? { ...item, [field]: value } : item,
             ),
         }));
     };
@@ -853,7 +880,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                 newVitalSigns.temperature.length,
                 newVitalSigns.temperatureUnit.length,
                 newVitalSigns.pulseRate.length,
-                newVitalSigns.respiratoryRate.length
+                newVitalSigns.respiratoryRate.length,
             );
 
             [
@@ -865,7 +892,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
             ].forEach((key) => {
                 while (newVitalSigns[key].length < maxLength) {
                     newVitalSigns[key].push(
-                        key === "temperatureUnit" ? "C" : ""
+                        key === "temperatureUnit" ? "C" : "",
                     );
                 }
             });
@@ -880,30 +907,29 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
     // Validation function
     const validateForm = () => {
         const errors = [];
+        const v = strings.validation;
 
         if (!formData.firstName.trim()) {
-            errors.push("Baby's name is required");
+            errors.push(v.babyNameRequired);
         }
 
         if (!formData.age.trim()) {
-            errors.push("Age is required");
+            errors.push(v.ageRequired);
         }
 
         if (!formData.date) {
-            errors.push("Date is required");
+            errors.push(v.dateRequired);
         }
 
-        // At least one feeding record
         const hasFeeding =
             Array.isArray(formData.feeding) &&
             formData.feeding.some(
-                (item) => item.time || item.type || item.amount || item.notes
+                (item) => item.time || item.type || item.amount || item.notes,
             );
         if (!hasFeeding) {
-            errors.push("Feeding record is required");
+            errors.push(v.feedingRequired);
         }
 
-        // At least one sleep record
         const hasSleep =
             Array.isArray(formData.sleep) &&
             formData.sleep.some(
@@ -911,10 +937,10 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                     item.timeStarted ||
                     item.timeEnded ||
                     item.duration ||
-                    item.notes
+                    item.notes,
             );
         if (!hasSleep) {
-            errors.push("Sleep record is required");
+            errors.push(v.sleepRequired);
         }
 
         return errors;
@@ -936,7 +962,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
             temperature.length,
             temperatureUnit.length,
             pulseRate.length,
-            respiratoryRate.length
+            respiratoryRate.length,
         );
 
         for (let i = 0; i < maxLength; i++) {
@@ -982,22 +1008,66 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
         setShowPreview(false);
     };
 
+    const toStoredDraft = (data) => {
+        if (!isPublic) {
+            return data;
+        }
+        const { firstName, lastName, age, ...rest } = data;
+        return rest;
+    };
+
     // Load draft from localStorage on mount
     useEffect(() => {
         const savedDraft = localStorage.getItem(LOCAL_STORAGE_KEY);
         if (savedDraft) {
             try {
-                setFormData(JSON.parse(savedDraft));
+                const parsed = JSON.parse(savedDraft);
+                setFormData((prev) => ({
+                    ...prev,
+                    ...parsed,
+                    ...(isPublic
+                        ? {
+                              firstName: prev.firstName,
+                              lastName: prev.lastName,
+                              age: prev.age,
+                          }
+                        : {}),
+                }));
             } catch (e) {
                 // Ignore parse errors
             }
         }
-    }, []);
+    }, [isPublic]);
 
     // Save draft to localStorage on every change
     useEffect(() => {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formData));
-    }, [formData]);
+        localStorage.setItem(
+            LOCAL_STORAGE_KEY,
+            JSON.stringify(toStoredDraft(formData)),
+        );
+    }, [formData, isPublic]);
+
+    useEffect(() => {
+        if (!isPublic || !initialPatientPrefill) {
+            return;
+        }
+        setFormData((prev) => ({
+            ...prev,
+            firstName:
+                initialPatientPrefill.firstName !== undefined
+                    ? initialPatientPrefill.firstName
+                    : prev.firstName,
+            lastName:
+                initialPatientPrefill.lastName !== undefined
+                    ? initialPatientPrefill.lastName
+                    : prev.lastName,
+            age:
+                initialPatientPrefill.age !== undefined
+                    ? initialPatientPrefill.age
+                    : prev.age,
+            date: initialPatientPrefill.date || prev.date,
+        }));
+    }, [isPublic, initialPatientPrefill]);
 
     // Clear draft helper
     const clearDraft = () => {
@@ -1013,6 +1083,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                 // Main care log data - UPDATED FIELD NAMES
                 care_date: formData.date,
                 first_name: formData.firstName,
+                last_name: formData.lastName || null,
                 age_display: formData.age,
                 weight_kg: formData.weight ? parseFloat(formData.weight) : null,
                 height_cm: formData.height ? parseFloat(formData.height) : null,
@@ -1034,7 +1105,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                 feeding_records: formData.feeding
                     .filter(
                         (item) =>
-                            item.time || item.type || item.amount || item.notes
+                            item.time || item.type || item.amount || item.notes,
                     )
                     .map((item) => ({
                         feeding_time: item.time,
@@ -1056,7 +1127,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                             item.timeStarted ||
                             item.timeEnded ||
                             item.duration ||
-                            item.notes
+                            item.notes,
                     )
                     .map((item) => ({
                         sleep_start_time: item.timeStarted,
@@ -1070,7 +1141,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                             item.time ||
                             item.activity ||
                             item.duration ||
-                            item.details
+                            item.details,
                     )
                     .map((item) => ({
                         activity_time: item.time,
@@ -1084,7 +1155,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                             item.time ||
                             item.activity ||
                             item.products ||
-                            item.notes
+                            item.notes,
                     )
                     .map((item) => ({
                         hygiene_time: item.time,
@@ -1095,7 +1166,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                 vital_signs: transformVitalSigns(),
                 requested_supplies: formData.requestedSupplies
                     .filter(
-                        (item) => item.item || item.quantity || item.purpose
+                        (item) => item.item || item.quantity || item.purpose,
                     )
                     .map((item) => ({
                         item: item.item,
@@ -1106,23 +1177,26 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
             };
 
             // Use Inertia router - this will now redirect to mycarelogs with flash message
-            router.post(route("carelogs.newborn.store"), transformedData, {
-                onSuccess: () => {
-                    // This will fire when redirected to mycarelogs page
-                    setShowPreview(false);
-                    clearDraft();
+            router.post(
+                submitUrl ?? route("carelogs.newborn.store"),
+                transformedData,
+                {
+                    onSuccess: () => {
+                        setShowPreview(false);
+                        clearDraft();
+                    },
+                    onError: (errors) => {
+                        console.error("Submission errors:", errors);
+                        alert(strings.alerts.submitFailed);
+                    },
+                    onFinish: () => {
+                        setIsSubmitting(false);
+                    },
                 },
-                onError: (errors) => {
-                    console.error("Submission errors:", errors);
-                    alert("Failed to submit care log. Please try again.");
-                },
-                onFinish: () => {
-                    setIsSubmitting(false);
-                },
-            });
+            );
         } catch (error) {
             console.error("Submission error:", error);
-            alert("Failed to submit care log. Please try again.");
+            alert(strings.alerts.submitFailed);
             setIsSubmitting(false);
         }
     };
@@ -1130,10 +1204,11 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
     // Add these new functions
     const fillWithTestData = () => {
         const testData = generateTestData();
-        setFormData({
+        setFormData((prev) => ({
+            ...prev,
             ...testData,
-            caregiverName: caregiverName || testData.caregiverName,
-        });
+            caregiverName: caregiverName || prev.caregiverName || "",
+        }));
         // Clear any validation errors
         setValidationErrors([]);
     };
@@ -1210,9 +1285,9 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
         setValidationErrors([]);
     };
 
-    return (
-        <AppLayout>
-            <Head title="Newborn Baby Daily Care Log" />
+    const pageBody = (
+        <>
+            <Head title={strings.page.headTitle} />
             <Container maxWidth="lg" sx={{ pb: 8 }}>
                 {/* Add Test Data Buttons - Insert this BEFORE the existing sections */}
                 {/* <Paper
@@ -1230,11 +1305,10 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                         gutterBottom
                         sx={{ color: "#f57c00", fontWeight: "bold" }}
                     >
-                        🧪 Testing Tools (Development Only)
+                        {strings.testing.title}
                     </Typography>
                     <Typography variant="body2" sx={{ mb: 2, color: "#666" }}>
-                        Use these buttons to quickly fill the form with test
-                        data instead of entering manually:
+                        {strings.testing.description}
                     </Typography>
 
                     <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
@@ -1252,7 +1326,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                                 },
                             }}
                         >
-                            Fill Complete Test Data
+                            {strings.testing.fillComplete}
                         </Button>
 
                         <Button
@@ -1269,7 +1343,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                                 },
                             }}
                         >
-                            Fill Minimal Data
+                            {strings.testing.fillMinimal}
                         </Button>
 
                         <Button
@@ -1285,7 +1359,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                                 },
                             }}
                         >
-                            Clear Form
+                            {strings.testing.clearForm}
                         </Button>
                     </Box>
                 </Paper> */}
@@ -1295,6 +1369,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                     sx={{
                         display: "flex",
                         alignItems: "center",
+                        flexWrap: "wrap",
                         gap: 2,
                         py: 3,
                         borderRadius: 3,
@@ -1312,10 +1387,46 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                                 md: "2.5rem",
                             },
                             color: "#e91e63",
+                            flex: "1 1 auto",
+                            minWidth: 0,
                         }}
                     >
-                        Newborn Daily Care Logs
+                        {strings.page.mainTitle}
                     </Typography>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                            flexShrink: 0,
+                        }}
+                    >
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ display: { xs: "none", sm: "block" } }}
+                        >
+                            {strings.page.languageLabel}
+                        </Typography>
+                        <ToggleButtonGroup
+                            exclusive
+                            size="small"
+                            value={formLocale}
+                            onChange={(_, value) => {
+                                if (value !== null) {
+                                    setFormLocale(value);
+                                }
+                            }}
+                            aria-label={strings.page.languageLabel}
+                        >
+                            <ToggleButton value="en">
+                                {strings.page.languageEn}
+                            </ToggleButton>
+                            <ToggleButton value="my">
+                                {strings.page.languageMy}
+                            </ToggleButton>
+                        </ToggleButtonGroup>
+                    </Box>
                 </Box>
 
                 {/* Continue Care Log Feature */}
@@ -1339,7 +1450,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                                 variant="subtitle1"
                                 sx={{ fontWeight: "bold" }}
                             >
-                                Your last care log:
+                                {strings.lastLog.yourLast}
                                 <span style={{ color: "#e91e63" }}></span>
                             </Typography>
                             <Typography
@@ -1352,19 +1463,19 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                                 variant="body2"
                                 sx={{ mb: 0.5, color: "red" }}
                             >
-                                Age: {lastCareLog.age}
+                                {strings.lastLog.age} {lastCareLog.age}
                             </Typography>
                             <Typography variant="body2" sx={{ color: "#555" }}>
-                                Last log date:{" "}
+                                {strings.lastLog.lastLogDate}{" "}
                                 {lastCareLog.date
                                     ? new Date(
-                                          lastCareLog.date
+                                          lastCareLog.date,
                                       ).toLocaleDateString(undefined, {
                                           year: "numeric",
                                           month: "short",
                                           day: "numeric",
                                       })
-                                    : "Unknown"}{" "}
+                                    : strings.lastLog.unknown}{" "}
                             </Typography>
                         </Box>
                         <Button
@@ -1382,7 +1493,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                             }}
                             size="small"
                         >
-                            Continue
+                            {strings.lastLog.continue}
                         </Button>
                     </Paper>
                 )}
@@ -1395,7 +1506,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                             fontWeight="bold"
                             gutterBottom
                         >
-                            Please fill the following fields:
+                            {strings.validation.heading}
                         </Typography>
                         <ul style={{ margin: 0, paddingLeft: "1.5rem" }}>
                             {validationErrors.map((error, index) => (
@@ -1409,6 +1520,8 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                     <BasicInformation
                         formData={formData}
                         handleInputChange={handleInputChange}
+                        lockPatientDemographics={lockPatientDemographics}
+                        strings={strings}
                     />
                 </SectionCard>
 
@@ -1419,6 +1532,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
                         entryRefs={entryRefs}
+                        strings={strings}
                     />
                 </SectionCard>
 
@@ -1429,6 +1543,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
                         entryRefs={entryRefs}
+                        strings={strings}
                     />
                 </SectionCard>
 
@@ -1439,6 +1554,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
                         entryRefs={entryRefs}
+                        strings={strings}
                     />
                 </SectionCard>
 
@@ -1449,6 +1565,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
                         entryRefs={entryRefs}
+                        strings={strings}
                     />
                 </SectionCard>
 
@@ -1459,6 +1576,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
                         entryRefs={entryRefs}
+                        strings={strings}
                     />
                 </SectionCard>
 
@@ -1468,6 +1586,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                         handleInputChange={handleInputChange}
                         handleVitalSignChange={handleVitalSignChange}
                         entryRefs={entryRefs}
+                        strings={strings}
                     />
                 </SectionCard>
 
@@ -1475,6 +1594,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                     <AdditionalNotesSection
                         additionalNotes={formData.additionalNotes}
                         handleInputChange={handleInputChange}
+                        strings={strings}
                     />
                 </SectionCard>
 
@@ -1485,6 +1605,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                         addArrayItem={addArrayItem}
                         removeArrayItem={removeArrayItem}
                         entryRefs={entryRefs}
+                        strings={strings}
                     />
                 </SectionCard>
 
@@ -1492,6 +1613,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                     <SignaturesSection
                         formData={formData}
                         handleInputChange={handleInputChange}
+                        strings={strings}
                     />
                 </SectionCard>
 
@@ -1503,7 +1625,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                             fontWeight="bold"
                             gutterBottom
                         >
-                            Please fill the following fields:
+                            {strings.validation.heading}
                         </Typography>
                         <ul style={{ margin: 0, paddingLeft: "1.5rem" }}>
                             {validationErrors.map((error, index) => (
@@ -1544,12 +1666,16 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                             },
                         }}
                     >
-                        Preview Care Log
+                        {strings.actions.previewCareLog}
                     </Button>
 
                     <Button
                         onClick={() => {
                             clearDraft();
+                            if (isPublic && historyUrl) {
+                                router.get(historyUrl);
+                                return;
+                            }
                             router.get(route("cg.dashboard"));
                         }}
                         fullWidth={window.innerWidth < 600}
@@ -1565,7 +1691,7 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                             },
                         }}
                     >
-                        Cancel
+                        {strings.actions.cancel}
                     </Button>
                 </Box>
 
@@ -1578,8 +1704,10 @@ const NewbornCareLogs = ({ caregiverName, lastCareLog }) => {
                     isSubmitting={isSubmitting}
                 />
             </Container>
-        </AppLayout>
+        </>
     );
+
+    return isPublic ? pageBody : <AppLayout>{pageBody}</AppLayout>;
 };
 
 export default NewbornCareLogs;

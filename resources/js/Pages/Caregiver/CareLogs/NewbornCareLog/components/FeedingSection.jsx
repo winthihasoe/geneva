@@ -16,13 +16,20 @@ import {
 } from "@mui/material";
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 
+const FEEDING_TYPES = ["Breastmilk", "Formula", "Weaning diet"];
+
 const FeedingSection = ({
     data,
     handleArrayChange,
     addArrayItem,
     removeArrayItem,
     entryRefs,
+    strings,
 }) => {
+    const f = strings.feeding;
+    const c = strings.common;
+    const o = strings.options;
+
     return (
         <Card sx={{ borderRadius: 2, bgcolor: "transparent" }}>
             <CardContent>
@@ -37,7 +44,7 @@ const FeedingSection = ({
                     }}
                 >
                     <Typography variant="h6" fontWeight="bold" color="primary">
-                        1. Feeding
+                        {f.sectionTitle}
                     </Typography>
                     <Button
                         startIcon={<AddIcon />}
@@ -46,14 +53,14 @@ const FeedingSection = ({
                                 time: "",
                                 type: "",
                                 amount: "",
-                                amount_unit: "oz", // Default unit
+                                amount_unit: "oz",
                                 notes: "",
                             })
                         }
                         variant="outlined"
                         size="small"
                     >
-                        Add Entry
+                        {c.addEntry}
                     </Button>
                 </Box>
 
@@ -78,7 +85,7 @@ const FeedingSection = ({
                                 variant="subtitle2"
                                 color="text.secondary"
                             >
-                                Entry {index + 1}
+                                {c.entry(index + 1)}
                             </Typography>
                             <IconButton
                                 onClick={() =>
@@ -97,7 +104,7 @@ const FeedingSection = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Time"
+                                    label={c.time}
                                     type="time"
                                     value={item.time}
                                     onChange={(e) =>
@@ -114,7 +121,7 @@ const FeedingSection = ({
 
                             <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
                                 <FormControl fullWidth variant="standard">
-                                    <InputLabel>Type</InputLabel>
+                                    <InputLabel>{c.type}</InputLabel>
                                     <Select
                                         value={item.type}
                                         onChange={(e) =>
@@ -125,17 +132,13 @@ const FeedingSection = ({
                                                 e.target.value
                                             )
                                         }
-                                        label="Type"
+                                        label={c.type}
                                     >
-                                        <MenuItem value="Breastmilk">
-                                            Breastmilk
-                                        </MenuItem>
-                                        <MenuItem value="Formula">
-                                            Formula
-                                        </MenuItem>
-                                        <MenuItem value="Weaning diet">
-                                            Weaning diet
-                                        </MenuItem>
+                                        {FEEDING_TYPES.map((key) => (
+                                            <MenuItem key={key} value={key}>
+                                                {o.feedingType[key]}
+                                            </MenuItem>
+                                        ))}
                                     </Select>
                                 </FormControl>
                             </Grid2>
@@ -144,7 +147,7 @@ const FeedingSection = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Amount"
+                                    label={c.amount}
                                     type="number"
                                     step="0.01"
                                     value={item.amount}
@@ -162,7 +165,7 @@ const FeedingSection = ({
 
                             <Grid2 size={{ xs: 12, sm: 6, md: 2 }}>
                                 <FormControl fullWidth variant="standard">
-                                    <InputLabel>Unit</InputLabel>
+                                    <InputLabel>{c.unit}</InputLabel>
                                     <Select
                                         value={item.amount_unit || "ml"}
                                         onChange={(e) =>
@@ -173,11 +176,17 @@ const FeedingSection = ({
                                                 e.target.value
                                             )
                                         }
-                                        label="Unit"
+                                        label={c.unit}
                                     >
-                                        <MenuItem value="ml">ml</MenuItem>
-                                        <MenuItem value="oz">oz</MenuItem>
-                                        <MenuItem value="l">Liter</MenuItem>
+                                        <MenuItem value="ml">
+                                            {o.amountUnit.ml}
+                                        </MenuItem>
+                                        <MenuItem value="oz">
+                                            {o.amountUnit.oz}
+                                        </MenuItem>
+                                        <MenuItem value="l">
+                                            {o.amountUnit.l}
+                                        </MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid2>
@@ -186,7 +195,7 @@ const FeedingSection = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Notes"
+                                    label={c.notes}
                                     value={item.notes}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -198,12 +207,14 @@ const FeedingSection = ({
                                     }
                                     multiline
                                     maxRows={3}
-                                    placeholder="Any observations..."
+                                    placeholder={f.notesPlaceholder}
                                 />
                             </Grid2>
                         </Grid2>
 
-                        {index < data.length - 1 && <Divider sx={{ mb: 3 }} />}
+                        {index < data.length - 1 && (
+                            <Divider sx={{ mb: 3 }} />
+                        )}
                     </Box>
                 ))}
             </CardContent>

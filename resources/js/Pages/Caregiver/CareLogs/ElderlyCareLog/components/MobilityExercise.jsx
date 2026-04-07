@@ -13,12 +13,16 @@ import {
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 
 const MobilityExercise = ({
+    strings,
     data,
     handleArrayChange,
     addArrayItem,
     removeArrayItem,
     entryRefs,
 }) => {
+    const c = strings.common;
+    const m = strings.mobility;
+
     return (
         <Card sx={{ borderRadius: 2, bgcolor: "transparent" }}>
             <CardContent>
@@ -33,7 +37,7 @@ const MobilityExercise = ({
                     }}
                 >
                     <Typography variant="h6" fontWeight="bold" color="primary">
-                        4. Mobility & Exercise
+                        {m.sectionTitle}
                     </Typography>
                     <Button
                         startIcon={<AddIcon />}
@@ -48,7 +52,7 @@ const MobilityExercise = ({
                         variant="outlined"
                         size="small"
                     >
-                        Add Entry
+                        {c.addEntry}
                     </Button>
                 </Box>
 
@@ -73,7 +77,7 @@ const MobilityExercise = ({
                                 variant="subtitle2"
                                 color="text.secondary"
                             >
-                                Entry {index + 1}
+                                {c.entry(index + 1)}
                             </Typography>
                             <IconButton
                                 onClick={() =>
@@ -92,7 +96,7 @@ const MobilityExercise = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Time"
+                                    label={c.time}
                                     type="time"
                                     value={item.time}
                                     onChange={(e) =>
@@ -111,7 +115,7 @@ const MobilityExercise = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Duration"
+                                    label={c.duration}
                                     value={item.duration}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -121,7 +125,7 @@ const MobilityExercise = ({
                                             e.target.value
                                         )
                                     }
-                                    placeholder="e.g., 30 minutes, 15 mins"
+                                    placeholder={m.durationPlaceholder}
                                 />
                             </Grid2>
 
@@ -129,7 +133,7 @@ const MobilityExercise = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Mobility Assistance/Exercises"
+                                    label={c.mobilityAssistance}
                                     value={item.activity}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -141,7 +145,7 @@ const MobilityExercise = ({
                                     }
                                     multiline
                                     rows={3}
-                                    placeholder="Describe mobility assistance provided or exercises performed (e.g., walking assistance with walker, range of motion exercises for arms, transfer assistance from bed to wheelchair, physical therapy exercises)"
+                                    placeholder={m.activityPlaceholder}
                                 />
                             </Grid2>
 
@@ -149,7 +153,7 @@ const MobilityExercise = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Notes"
+                                    label={c.notes}
                                     value={item.notes}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -161,7 +165,7 @@ const MobilityExercise = ({
                                     }
                                     multiline
                                     maxRows={3}
-                                    placeholder="Client cooperation, discomfort, improvements, limitations, safety concerns..."
+                                    placeholder={m.notesPlaceholder}
                                 />
                             </Grid2>
                         </Grid2>

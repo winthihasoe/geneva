@@ -16,14 +16,19 @@ import {
 } from "@mui/material";
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 
+const SEVERITY_KEYS = ["Low", "Medium", "High", "Critical"];
+
 const AccidentEmergency = ({
+    strings,
     data,
     handleArrayChange,
     addArrayItem,
     removeArrayItem,
     entryRefs,
 }) => {
-    const severityOptions = ["Low", "Medium", "High", "Critical"];
+    const c = strings.common;
+    const a = strings.accident;
+    const opt = strings.options.severity;
 
     return (
         <Card sx={{ borderRadius: 2, bgcolor: "transparent" }}>
@@ -39,7 +44,7 @@ const AccidentEmergency = ({
                     }}
                 >
                     <Typography variant="h6" fontWeight="bold" color="primary">
-                        11. Accident & Emergency Situations
+                        {a.sectionTitle}
                     </Typography>
                     <Button
                         startIcon={<AddIcon />}
@@ -47,14 +52,14 @@ const AccidentEmergency = ({
                             addArrayItem("accident", {
                                 time: "",
                                 description: "",
-                                severity: "",
+                                severity: "Medium",
                                 action: "",
                             })
                         }
                         variant="outlined"
                         size="small"
                     >
-                        Add Entry
+                        {c.addEntry}
                     </Button>
                 </Box>
 
@@ -79,7 +84,7 @@ const AccidentEmergency = ({
                                 variant="subtitle2"
                                 color="text.secondary"
                             >
-                                Entry {index + 1}
+                                {c.entry(index + 1)}
                             </Typography>
                             <IconButton
                                 onClick={() =>
@@ -94,12 +99,11 @@ const AccidentEmergency = ({
                         </Box>
 
                         <Grid2 container spacing={2} sx={{ mb: 3 }}>
-                            {/* Time */}
                             <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Time"
+                                    label={c.time}
                                     type="time"
                                     value={item.time}
                                     onChange={(e) =>
@@ -114,12 +118,11 @@ const AccidentEmergency = ({
                                 />
                             </Grid2>
 
-                            {/* Severity */}
                             <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
                                 <FormControl fullWidth variant="standard">
-                                    <InputLabel>Severity</InputLabel>
+                                    <InputLabel>{c.severity}</InputLabel>
                                     <Select
-                                        value={item.severity || ""}
+                                        value={item.severity || "Medium"}
                                         onChange={(e) =>
                                             handleArrayChange(
                                                 "accident",
@@ -128,26 +131,22 @@ const AccidentEmergency = ({
                                                 e.target.value
                                             )
                                         }
-                                        label="Severity"
+                                        label={c.severity}
                                     >
-                                        {severityOptions.map((option) => (
-                                            <MenuItem
-                                                key={option}
-                                                value={option}
-                                            >
-                                                {option}
+                                        {SEVERITY_KEYS.map((key) => (
+                                            <MenuItem key={key} value={key}>
+                                                {opt[key]}
                                             </MenuItem>
                                         ))}
                                     </Select>
                                 </FormControl>
                             </Grid2>
 
-                            {/* Incident Description */}
                             <Grid2 size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Incident Description"
+                                    label={c.incidentDescription}
                                     value={item.description}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -159,16 +158,15 @@ const AccidentEmergency = ({
                                     }
                                     multiline
                                     maxRows={5}
-                                    placeholder="Describe the incident in detail..."
+                                    placeholder={a.descriptionPlaceholder}
                                 />
                             </Grid2>
 
-                            {/* Actions Taken */}
                             <Grid2 size={{ xs: 12 }}>
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Actions Taken"
+                                    label={c.actionsTaken}
                                     value={item.action}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -180,7 +178,7 @@ const AccidentEmergency = ({
                                     }
                                     multiline
                                     maxRows={5}
-                                    placeholder="Describe what actions were taken in response to the incident..."
+                                    placeholder={a.actionPlaceholder}
                                 />
                             </Grid2>
                         </Grid2>

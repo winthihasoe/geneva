@@ -32,6 +32,10 @@ class Patient extends Model
         'created_by',
     ];
 
+    protected $casts = [
+        'date_of_birth' => 'date',
+    ];
+
     protected static function boot()
     {
         parent::boot();
@@ -67,14 +71,14 @@ class Patient extends Model
         }
 
         // Combine the serial and the suffix
-        return $newSerial . $suffix;
+        return $newSerial.$suffix;
     }
 
     public function newbornBabyCareLogs()
     {
         return $this->hasMany(NewbornBabyCareLog::class);
     }
-    
+
     /**
      * Relationship: A patient has many care plans.
      *

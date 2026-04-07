@@ -18,6 +18,7 @@ import {
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 
 const HygieneSection = ({
+    strings,
     data,
     moisturizer_applied,
     pressure_areas_checked,
@@ -28,6 +29,9 @@ const HygieneSection = ({
     removeArrayItem,
     entryRefs,
 }) => {
+    const c = strings.common;
+    const h = strings.hygiene;
+
     return (
         <Card sx={{ borderRadius: 2, bgcolor: "transparent" }}>
             <CardContent>
@@ -42,7 +46,7 @@ const HygieneSection = ({
                     }}
                 >
                     <Typography variant="h6" fontWeight="bold" color="primary">
-                        1. Hygiene & Grooming
+                        {h.sectionTitle}
                     </Typography>
                     <Button
                         startIcon={<AddIcon />}
@@ -56,7 +60,7 @@ const HygieneSection = ({
                         variant="outlined"
                         size="small"
                     >
-                        Add Entry
+                        {c.addEntry}
                     </Button>
                 </Box>
 
@@ -81,7 +85,7 @@ const HygieneSection = ({
                                 variant="subtitle2"
                                 color="text.secondary"
                             >
-                                Entry {index + 1}
+                                {c.entry(index + 1)}
                             </Typography>
                             <IconButton
                                 onClick={() =>
@@ -96,11 +100,11 @@ const HygieneSection = ({
                         </Box>
 
                         <Grid2 container spacing={2} sx={{ mb: 3 }}>
-                            <Grid2 item size={{ xs: 12, sm: 6, md: 3 }}>
+                            <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Time"
+                                    label={c.time}
                                     type="time"
                                     value={item.time}
                                     onChange={(e) =>
@@ -115,11 +119,11 @@ const HygieneSection = ({
                                 />
                             </Grid2>
 
-                            <Grid2 item size={{ xs: 12, sm: 6, md: 4 }}>
+                            <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Activity"
+                                    label={h.activity}
                                     value={item.activity}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -129,15 +133,15 @@ const HygieneSection = ({
                                             e.target.value
                                         )
                                     }
-                                    placeholder="e.g., Bath, Nail Trim, Hair Care, Wash Face, Oral Care, Dressing"
+                                    placeholder={h.activityPlaceholder}
                                 />
                             </Grid2>
 
-                            <Grid2 item size={{ xs: 12, sm: 12, md: 5 }}>
+                            <Grid2 size={{ xs: 12, sm: 12, md: 5 }}>
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Notes"
+                                    label={c.notes}
                                     value={item.notes}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -149,7 +153,7 @@ const HygieneSection = ({
                                     }
                                     multiline
                                     maxRows={5}
-                                    placeholder="Any observations, client cooperation, assistance needed..."
+                                    placeholder={h.notesPlaceholder}
                                 />
                             </Grid2>
                         </Grid2>
@@ -164,63 +168,62 @@ const HygieneSection = ({
                     mt={2}
                     fontWeight={600}
                 >
-                    Special Skin Care
+                    {h.specialSkinCare}
                 </Typography>
-                {/* Moisturizer applied Yes or No Radio button*/}
 
                 <Grid2 container spacing={2} sx={{ mb: 3, mt: 1 }}>
-                    <Grid2 item size={{ xs: 12, sm: 6, md: 4 }}>
+                    <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
                         <FormControl component="fieldset" sx={{ mt: 2 }}>
                             <FormLabel component="legend">
-                                Moisturizer Applied
+                                {h.moisturizerApplied}
                             </FormLabel>
                             <RadioGroup
                                 row
-                                value={String(moisturizer_applied)} // convert boolean → string
+                                value={String(moisturizer_applied)}
                                 onChange={(e) =>
                                     handleInputChange(
                                         "moisturizer_applied",
-                                        e.target.value === "true" // convert string → boolean
+                                        e.target.value === "true"
                                     )
                                 }
                             >
                                 <FormControlLabel
                                     value="true"
                                     control={<Radio size="small" />}
-                                    label="Yes"
+                                    label={c.yes}
                                 />
                                 <FormControlLabel
                                     value="false"
                                     control={<Radio size="small" />}
-                                    label="No"
+                                    label={c.no}
                                 />
                             </RadioGroup>
                         </FormControl>
                     </Grid2>
-                    <Grid2 item size={{ xs: 12, sm: 6, md: 4 }}>
+                    <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
                         <FormControl component="fieldset" sx={{ mt: 2 }}>
                             <FormLabel component="legend">
-                                Pressure Areas Checked
+                                {h.pressureAreasChecked}
                             </FormLabel>
                             <RadioGroup
                                 row
-                                value={String(pressure_areas_checked)} // convert boolean → string
+                                value={String(pressure_areas_checked)}
                                 onChange={(e) =>
                                     handleInputChange(
                                         "pressure_areas_checked",
-                                        e.target.value === "true" // convert string → boolean
+                                        e.target.value === "true"
                                     )
                                 }
                             >
                                 <FormControlLabel
                                     value="true"
                                     control={<Radio size="small" />}
-                                    label="Yes"
+                                    label={c.yes}
                                 />
                                 <FormControlLabel
                                     value="false"
                                     control={<Radio size="small" />}
-                                    label="No"
+                                    label={c.no}
                                 />
                             </RadioGroup>
                         </FormControl>
@@ -229,7 +232,7 @@ const HygieneSection = ({
                         <TextField
                             fullWidth
                             variant="standard"
-                            label="Skin Care Findings"
+                            label={h.skinCareFindings}
                             value={skin_care_findings}
                             onChange={(e) =>
                                 handleInputChange(
@@ -239,7 +242,7 @@ const HygieneSection = ({
                             }
                             multiline
                             maxRows={5}
-                            placeholder="Any skin issues, redness, irritation, dryness, wounds, rashes..."
+                            placeholder={h.skinCarePlaceholder}
                         />
                     </Grid2>
                 </Grid2>

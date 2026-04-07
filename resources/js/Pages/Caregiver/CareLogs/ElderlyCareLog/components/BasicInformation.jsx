@@ -1,7 +1,23 @@
 import React from "react";
 import { Typography, TextField, Grid2, Card, CardContent } from "@mui/material";
 
-const BasicInformation = ({ formData, handleInputChange }) => {
+const demographicFieldProps = (lockPatientDemographics) =>
+    lockPatientDemographics
+        ? {
+              InputProps: { readOnly: true },
+              sx: { "& .MuiInputBase-input": { cursor: "default" } },
+          }
+        : {};
+
+const BasicInformation = ({
+    strings,
+    formData,
+    handleInputChange,
+    lockPatientDemographics = false,
+}) => {
+    const d = demographicFieldProps(lockPatientDemographics);
+    const b = strings.basic;
+
     return (
         <Card sx={{ borderRadius: 2, bgcolor: "transparent" }}>
             <CardContent>
@@ -11,14 +27,14 @@ const BasicInformation = ({ formData, handleInputChange }) => {
                     mb={3}
                     color="primary"
                 >
-                    Basic Information
+                    {b.sectionTitle}
                 </Typography>
                 <Grid2 container spacing={3}>
                     <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
                         <TextField
                             fullWidth
                             variant="standard"
-                            label="Date *"
+                            label={b.date}
                             type="date"
                             value={formData.date}
                             onChange={(e) =>
@@ -33,12 +49,13 @@ const BasicInformation = ({ formData, handleInputChange }) => {
                         <TextField
                             fullWidth
                             variant="standard"
-                            label="Client's First Name *"
+                            label={b.firstName}
                             value={formData.firstName}
                             onChange={(e) =>
                                 handleInputChange("firstName", e.target.value)
                             }
                             required
+                            {...d}
                         />
                     </Grid2>
 
@@ -46,11 +63,12 @@ const BasicInformation = ({ formData, handleInputChange }) => {
                         <TextField
                             fullWidth
                             variant="standard"
-                            label="Client's Last Name (Optional)"
+                            label={b.lastName}
                             value={formData.lastName}
                             onChange={(e) =>
                                 handleInputChange("lastName", e.target.value)
                             }
+                            {...d}
                         />
                     </Grid2>
 
@@ -58,13 +76,14 @@ const BasicInformation = ({ formData, handleInputChange }) => {
                         <TextField
                             fullWidth
                             variant="standard"
-                            label="Age *"
+                            label={b.age}
                             value={formData.age}
                             onChange={(e) =>
                                 handleInputChange("age", e.target.value)
                             }
-                            placeholder="e.g., 75 years, 80"
+                            placeholder={b.agePlaceholder}
                             required
+                            {...d}
                         />
                     </Grid2>
 
@@ -72,28 +91,28 @@ const BasicInformation = ({ formData, handleInputChange }) => {
                         <TextField
                             fullWidth
                             variant="standard"
-                            label="Weight (kg) (Optional)"
+                            label={b.weight}
                             type="number"
                             step="0.1"
                             value={formData.weight}
                             onChange={(e) =>
                                 handleInputChange("weight", e.target.value)
                             }
-                            placeholder="e.g., 4.5"
+                            placeholder={b.weightPlaceholder}
                         />
                     </Grid2>
                     <Grid2 size={{ xs: 6, sm: 6, md: 4 }}>
                         <TextField
                             fullWidth
                             variant="standard"
-                            label="Height (cm) (Optional)"
+                            label={b.height}
                             type="number"
                             step="0.1"
                             value={formData.height}
                             onChange={(e) =>
                                 handleInputChange("height", e.target.value)
                             }
-                            placeholder="e.g., 60.5"
+                            placeholder={b.heightPlaceholder}
                         />
                     </Grid2>
                 </Grid2>

@@ -13,12 +13,16 @@ import {
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 
 const HouseholdWork = ({
+    strings,
     data,
     handleArrayChange,
     addArrayItem,
     removeArrayItem,
     entryRefs,
 }) => {
+    const c = strings.common;
+    const h = strings.household;
+
     return (
         <Card sx={{ borderRadius: 2, bgcolor: "transparent" }}>
             <CardContent>
@@ -33,7 +37,7 @@ const HouseholdWork = ({
                     }}
                 >
                     <Typography variant="h6" fontWeight="bold" color="primary">
-                        10. Household Works by Caregiver
+                        {h.sectionTitle}
                     </Typography>
                     <Button
                         startIcon={<AddIcon />}
@@ -48,7 +52,7 @@ const HouseholdWork = ({
                         variant="outlined"
                         size="small"
                     >
-                        Add Entry
+                        {c.addEntry}
                     </Button>
                 </Box>
 
@@ -73,7 +77,7 @@ const HouseholdWork = ({
                                 variant="subtitle2"
                                 color="text.secondary"
                             >
-                                Entry {index + 1}
+                                {c.entry(index + 1)}
                             </Typography>
                             <IconButton
                                 onClick={() =>
@@ -88,12 +92,11 @@ const HouseholdWork = ({
                         </Box>
 
                         <Grid2 container spacing={2} sx={{ mb: 3 }}>
-                            {/* Household Work - Full width first */}
                             <Grid2 size={{ xs: 12 }}>
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Household Work"
+                                    label={c.householdWork}
                                     value={item.task}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -105,16 +108,15 @@ const HouseholdWork = ({
                                     }
                                     multiline
                                     maxRows={5}
-                                    placeholder="Describe the household work performed..."
+                                    placeholder={h.taskPlaceholder}
                                 />
                             </Grid2>
 
-                            {/* Time */}
                             <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Time"
+                                    label={c.time}
                                     type="time"
                                     value={item.time}
                                     onChange={(e) =>
@@ -129,12 +131,11 @@ const HouseholdWork = ({
                                 />
                             </Grid2>
 
-                            {/* Duration */}
                             <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Duration"
+                                    label={c.duration}
                                     value={item.duration}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -144,16 +145,15 @@ const HouseholdWork = ({
                                             e.target.value
                                         )
                                     }
-                                    placeholder="e.g., 30 minutes"
+                                    placeholder={h.durationPlaceholder}
                                 />
                             </Grid2>
 
-                            {/* Notes */}
                             <Grid2 size={{ xs: 12, md: 4 }}>
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Notes"
+                                    label={c.notes}
                                     value={item.notes}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -165,7 +165,7 @@ const HouseholdWork = ({
                                     }
                                     multiline
                                     maxRows={3}
-                                    placeholder="Additional notes or observations..."
+                                    placeholder={h.notesPlaceholder}
                                 />
                             </Grid2>
                         </Grid2>

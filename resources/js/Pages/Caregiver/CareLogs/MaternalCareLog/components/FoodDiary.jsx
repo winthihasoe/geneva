@@ -25,6 +25,7 @@ import {
 } from "@mui/icons-material";
 
 const FoodDiary = ({
+    strings,
     formData,
     handleInputChange,
     handleArrayChange,
@@ -128,7 +129,7 @@ const FoodDiary = ({
                     mb={3}
                     color="primary"
                 >
-                    5. Food Diary
+                    {strings.foodDiary.sectionTitle}
                 </Typography>
 
                 {/* Intake Section */}

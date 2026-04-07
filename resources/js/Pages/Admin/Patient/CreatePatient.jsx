@@ -79,6 +79,7 @@ const CreatePatient = () => {
                                     <MenuItem value="Elder">Elder</MenuItem>
                                     <MenuItem value="Baby">Baby</MenuItem>
                                     <MenuItem value="Newborn">Newborn</MenuItem>
+                                    <MenuItem value="Maternal">Maternal</MenuItem>
                                 </Select>
                                 {errors.type && (
                                     <Typography color="error" variant="body2">
@@ -136,7 +137,16 @@ const CreatePatient = () => {
                                 error={!!errors.date_of_birth}
                                 helperText={errors.date_of_birth}
                                 sx={{ width: "100%" }}
+                                required
                             />
+                            <Typography
+                                fontSize={"0.7rem"}
+                                color="text.secondary"
+                            >
+                                Age will be calculated automatically based on
+                                the date of birth. If date of birth is not know,
+                                please add estimated date of birth.
+                            </Typography>
                         </Box>
 
                         {/* Gender */}
@@ -258,7 +268,7 @@ const CreatePatient = () => {
                                 onChange={(e) =>
                                     setData(
                                         "medical_conditions",
-                                        e.target.value
+                                        e.target.value,
                                     )
                                 }
                                 error={!!errors.medical_conditions}
@@ -277,7 +287,7 @@ const CreatePatient = () => {
                                 onChange={(e) =>
                                     setData(
                                         "emergency_contact_name",
-                                        e.target.value
+                                        e.target.value,
                                     )
                                 }
                                 error={!!errors.emergency_contact_name}
@@ -296,7 +306,7 @@ const CreatePatient = () => {
                                 onChange={(e) =>
                                     setData(
                                         "emergency_contact_relationship",
-                                        e.target.value
+                                        e.target.value,
                                     )
                                 }
                                 error={!!errors.emergency_contact_relationship}
@@ -318,7 +328,7 @@ const CreatePatient = () => {
                                 onChange={(e) =>
                                     setData(
                                         "emergency_contact_phone",
-                                        e.target.value
+                                        e.target.value,
                                     )
                                 }
                                 error={!!errors.emergency_contact_phone}

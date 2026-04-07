@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     Box,
     Typography,
@@ -13,8 +13,14 @@ import {
     TableRow,
     Avatar,
     Alert,
+    Button,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { usePage } from "@inertiajs/react";
+import DownloadIcon from "@mui/icons-material/Download";
+import { generateMaternalCareLogPDF } from "@/utils/maternalCareLogPdfGenerator";
+import { transformMaternalCareLogToPdfFormData } from "@/utils/careLogPdfTransforms";
+import { genevaCareLogsGeneratedLine } from "@/utils/genevaCareLogStrings";
 import PregnantIcon from "@mui/icons-material/PregnantWoman";
 import HygieneIcon from "@mui/icons-material/CleanHands";
 import MedicationIcon from "@mui/icons-material/LocalPharmacy";
@@ -30,71 +36,81 @@ import HouseholdIcon from "@mui/icons-material/CleaningServices";
 import SupplyIcon from "@mui/icons-material/Inventory";
 import "../../../../../css/a4.css";
 
-const primaryColor = "#21875C";
 const secondaryColor = "#FFC547";
 const textColor = "#333";
 const lightGray = "#808080";
 const headerBg = "#f5f5f5";
 
-const SectionTitle = ({ children, fontSize = 20 }) => (
-    <Typography
-        variant="h6"
-        sx={{
-            color: primaryColor,
-            fontWeight: "bold",
-            fontSize,
-            mt: 3,
-            mb: 2,
-            borderBottom: `2px solid ${secondaryColor}`,
-            display: "inline-block",
-            pb: 0.5,
-        }}
-    >
-        {children}
-    </Typography>
-);
+const SectionTitle = ({ children, fontSize = 20 }) => {
+    const theme = useTheme();
+    return (
+        <Typography
+            variant="h6"
+            sx={{
+                color: theme.palette.primary.main,
+                fontWeight: "bold",
+                fontSize,
+                mt: 3,
+                mb: 2,
+                borderBottom: `2px solid ${secondaryColor}`,
+                display: "inline-block",
+                pb: 0.5,
+            }}
+        >
+            {children}
+        </Typography>
+    );
+};
 
-const TableSection = ({ columns, rows, emptyMessage }) => (
-    <Box>
-        {rows && rows.length > 0 ? (
-            <TableContainer component={Paper} sx={{ boxShadow: "none" }}>
-                <Table size="small">
-                    <TableHead>
-                        <TableRow sx={{ background: primaryColor }}>
-                            {columns.map((col, idx) => (
-                                <TableCell
-                                    key={idx}
-                                    sx={{ color: "#fff", fontWeight: "bold" }}
-                                >
-                                    {col}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.map((row, idx) => (
+const TableSection = ({ columns, rows, emptyMessage }) => {
+    const theme = useTheme();
+    return (
+        <Box>
+            {rows && rows.length > 0 ? (
+                <TableContainer component={Paper} sx={{ boxShadow: "none" }}>
+                    <Table size="small">
+                        <TableHead>
                             <TableRow
-                                key={idx}
-                                sx={{
-                                    background:
-                                        idx % 2 === 0 ? headerBg : "#fff",
-                                }}
+                                sx={{ background: theme.palette.primary.main }}
                             >
-                                {row.map((cell, cidx) => (
-                                    <TableCell key={cidx}>{cell}</TableCell>
+                                {columns.map((col, idx) => (
+                                    <TableCell
+                                        key={idx}
+                                        sx={{
+                                            color: "#fff",
+                                            fontWeight: "bold",
+                                        }}
+                                    >
+                                        {col}
+                                    </TableCell>
                                 ))}
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        ) : (
-            <Typography sx={{ color: lightGray, mt: 1 }}>
-                {emptyMessage}
-            </Typography>
-        )}
-    </Box>
-);
+                        </TableHead>
+                        <TableBody>
+                            {rows.map((row, idx) => (
+                                <TableRow
+                                    key={idx}
+                                    sx={{
+                                        background:
+                                            idx % 2 === 0 ? headerBg : "#fff",
+                                    }}
+                                >
+                                    {row.map((cell, cidx) => (
+                                        <TableCell key={cidx}>{cell}</TableCell>
+                                    ))}
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            ) : (
+                <Typography sx={{ color: lightGray, mt: 1 }}>
+                    {emptyMessage}
+                </Typography>
+            )}
+        </Box>
+    );
+};
 
 const formatTime = (timeString) => {
     if (!timeString) return "-";
@@ -115,8 +131,31 @@ const formatDate = (dateString) => {
 };
 
 const ShowMaternalCareLogDetails = () => {
+    const theme = useTheme();
     const { props } = usePage();
     const { careLogData } = props;
+    const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+
+    const handleDownloadPdf = async () => {
+        if (!window.confirm("Download this care log as a PDF?")) {
+            return;
+        }
+        setIsGeneratingPdf(true);
+        try {
+            const formData = transformMaternalCareLogToPdfFormData(careLogData);
+            const result = await generateMaternalCareLogPDF(formData);
+            if (!result.success) {
+                alert(
+                    `Failed to generate PDF: ${result.error || "Unknown error"}`,
+                );
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Failed to generate PDF. Please try again.");
+        } finally {
+            setIsGeneratingPdf(false);
+        }
+    };
 
     const {
         care_log,
@@ -140,13 +179,13 @@ const ShowMaternalCareLogDetails = () => {
     const intakeRecords =
         intake_output_records?.filter(
             (record) =>
-                record.meal_type || record.meal_time || record.food_items
+                record.meal_type || record.meal_time || record.food_items,
         ) || [];
 
     // Table data helpers
     const hygieneRows = (hygiene_records || [])
         .filter(
-            (item) => item.hygiene_time || item.hygiene_activity || item.notes
+            (item) => item.hygiene_time || item.hygiene_activity || item.notes,
         )
         .map((item) => [
             formatTime(item.hygiene_time),
@@ -276,15 +315,23 @@ const ShowMaternalCareLogDetails = () => {
             <Box sx={{ textAlign: "center", mb: 2 }}>
                 <Typography
                     variant="h5"
-                    sx={{ color: primaryColor, fontWeight: "bold" }}
+                    sx={{
+                        color: theme.palette.primary.main,
+                        fontWeight: "bold",
+                    }}
                 >
                     MATERNAL CARE LOG
                 </Typography>
                 <Typography sx={{ color: lightGray, fontSize: 13 }}>
-                    Generated on {new Date().toLocaleDateString()} at{" "}
-                    {new Date().toLocaleTimeString()}
+                    {genevaCareLogsGeneratedLine()}
                 </Typography>
-                <Divider sx={{ mt: 1, mb: 2, borderColor: primaryColor }} />
+                <Divider
+                    sx={{
+                        mt: 1,
+                        mb: 2,
+                        borderColor: theme.palette.primary.main,
+                    }}
+                />
             </Box>
 
             {/* Basic Info */}
@@ -330,13 +377,13 @@ const ShowMaternalCareLogDetails = () => {
                 hygiene_records.length > 0 &&
                 (() => {
                     const anyMoisturizer = hygiene_records.some(
-                        (r) => r.moisturizer_applied
+                        (r) => r.moisturizer_applied,
                     );
                     const anyPressure = hygiene_records.some(
-                        (r) => r.pressure_areas_checked
+                        (r) => r.pressure_areas_checked,
                     );
                     const anySkinCare = hygiene_records.some(
-                        (r) => r.skin_care_findings
+                        (r) => r.skin_care_findings,
                     );
                     if (!anyMoisturizer && !anyPressure && !anySkinCare)
                         return null;
@@ -487,8 +534,8 @@ const ShowMaternalCareLogDetails = () => {
                     {fetal_health_records?.fetal_movement_detected == 1
                         ? "Yes"
                         : fetal_health_records?.fetal_movement_detected == 0
-                        ? "No"
-                        : "Not recorded"}
+                          ? "No"
+                          : "Not recorded"}
                 </Typography>
                 <Typography variant="body1">
                     Kick Count: {fetal_health_records?.kick_count || "-"}
@@ -786,10 +833,22 @@ const ShowMaternalCareLogDetails = () => {
 
             {/* Footer */}
             <Box sx={{ textAlign: "center", mt: 4 }}>
-                <Divider sx={{ mb: 1, borderColor: primaryColor }} />
+                <Divider
+                    sx={{ mb: 1, borderColor: theme.palette.primary.main }}
+                />
                 <Typography sx={{ color: lightGray, fontSize: 12 }}>
-                    Generated by Hearty Aid Care Logs System
+                    {genevaCareLogsGeneratedLine()}
                 </Typography>
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    startIcon={<DownloadIcon />}
+                    disabled={isGeneratingPdf}
+                    onClick={handleDownloadPdf}
+                    sx={{ mt: 8 }}
+                >
+                    {isGeneratingPdf ? "Generating…" : "Download"}
+                </Button>
             </Box>
         </div>
     );

@@ -16,7 +16,17 @@ import {
 } from "@mui/material";
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 
+const SLEEP_TYPES = ["Morning Nap", "Afternoon Nap", "Night Sleep"];
+const QUALITY_KEYS = ["Good", "Fair", "Poor"];
+const SLEEP_ISSUE_KEYS = [
+    "None",
+    "Restlessness",
+    "Frequent Waking",
+    "Difficulty Falling Asleep",
+];
+
 const SleepSection = ({
+    strings,
     data,
     handleArrayChange,
     addArrayItem,
@@ -25,14 +35,9 @@ const SleepSection = ({
     handleInputChange,
     entryRefs,
 }) => {
-    const qualityOptions = ["Good", "Fair", "Poor"];
-    const sleepIssuesOptions = [
-        "None",
-        "Restlessness",
-        "Frequent Waking",
-        "Difficulty Falling Asleep",
-    ];
-    const sleepTypes = ["Morning Nap", "Afternoon Nap", "Night Sleep"];
+    const c = strings.common;
+    const s = strings.sleep;
+    const opt = strings.options;
 
     return (
         <Card sx={{ borderRadius: 2, bgcolor: "transparent" }}>
@@ -48,7 +53,7 @@ const SleepSection = ({
                     }}
                 >
                     <Typography variant="h6" fontWeight="bold" color="primary">
-                        8. Sleep & Rest Tracking
+                        {s.sectionTitle}
                     </Typography>
                     <Button
                         startIcon={<AddIcon />}
@@ -65,7 +70,7 @@ const SleepSection = ({
                         variant="outlined"
                         size="small"
                     >
-                        Add Entry
+                        {c.addEntry}
                     </Button>
                 </Box>
 
@@ -90,7 +95,7 @@ const SleepSection = ({
                                 variant="subtitle2"
                                 color="text.secondary"
                             >
-                                Entry {index + 1}
+                                {c.entry(index + 1)}
                             </Typography>
                             <IconButton
                                 onClick={() => removeArrayItem("sleep", index)}
@@ -105,7 +110,7 @@ const SleepSection = ({
                         <Grid2 container spacing={2} sx={{ mb: 3 }}>
                             <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
                                 <FormControl fullWidth variant="standard">
-                                    <InputLabel>Type</InputLabel>
+                                    <InputLabel>{c.type}</InputLabel>
                                     <Select
                                         value={item.type || ""}
                                         onChange={(e) =>
@@ -116,14 +121,11 @@ const SleepSection = ({
                                                 e.target.value
                                             )
                                         }
-                                        label="Type"
+                                        label={c.type}
                                     >
-                                        {sleepTypes.map((option) => (
-                                            <MenuItem
-                                                key={option}
-                                                value={option}
-                                            >
-                                                {option}
+                                        {SLEEP_TYPES.map((key) => (
+                                            <MenuItem key={key} value={key}>
+                                                {opt.sleepType[key]}
                                             </MenuItem>
                                         ))}
                                     </Select>
@@ -133,7 +135,7 @@ const SleepSection = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Time"
+                                    label={c.time}
                                     type="time"
                                     value={item.sleep_start_time}
                                     onChange={(e) =>
@@ -152,7 +154,7 @@ const SleepSection = ({
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Duration"
+                                    label={c.duration}
                                     value={item.duration}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -162,13 +164,13 @@ const SleepSection = ({
                                             e.target.value
                                         )
                                     }
-                                    placeholder="e.g., 2 hours"
+                                    placeholder={s.durationPlaceholder}
                                 />
                             </Grid2>
 
                             <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
                                 <FormControl fullWidth variant="standard">
-                                    <InputLabel>Quality</InputLabel>
+                                    <InputLabel>{c.quality}</InputLabel>
                                     <Select
                                         value={item.sleep_quality}
                                         onChange={(e) =>
@@ -179,25 +181,22 @@ const SleepSection = ({
                                                 e.target.value
                                             )
                                         }
-                                        label="Quality"
+                                        label={c.quality}
                                     >
-                                        {qualityOptions.map((option) => (
-                                            <MenuItem
-                                                key={option}
-                                                value={option}
-                                            >
-                                                {option}
+                                        {QUALITY_KEYS.map((key) => (
+                                            <MenuItem key={key} value={key}>
+                                                {opt.sleepQuality[key]}
                                             </MenuItem>
                                         ))}
                                     </Select>
                                 </FormControl>
                             </Grid2>
 
-                            <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
+                            <Grid2 size={{ xs: 12 }}>
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    label="Notes"
+                                    label={c.notes}
                                     value={item.notes}
                                     onChange={(e) =>
                                         handleArrayChange(
@@ -209,7 +208,7 @@ const SleepSection = ({
                                     }
                                     multiline
                                     maxRows={3}
-                                    placeholder="e.g., Disturbances"
+                                    placeholder={s.notesPlaceholder}
                                 />
                             </Grid2>
                         </Grid2>
@@ -218,7 +217,6 @@ const SleepSection = ({
                     </Box>
                 ))}
 
-                {/* Sleep Issues Section */}
                 <Divider sx={{ my: 3 }} />
 
                 <Box sx={{ mt: 3 }}>
@@ -228,13 +226,13 @@ const SleepSection = ({
                         color="text.primary"
                         sx={{ mb: 2 }}
                     >
-                        Signs of Sleep Issues Observed
+                        {s.sleepIssuesHeading}
                     </Typography>
 
                     <Grid2 container spacing={2}>
                         <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
                             <FormControl fullWidth variant="standard">
-                                <InputLabel>Sleep Issues</InputLabel>
+                                <InputLabel>{s.sleepIssues}</InputLabel>
                                 <Select
                                     value={formData.sleepIssues || ""}
                                     onChange={(e) =>
@@ -243,11 +241,11 @@ const SleepSection = ({
                                             e.target.value
                                         )
                                     }
-                                    label="Sleep Issues"
+                                    label={s.sleepIssues}
                                 >
-                                    {sleepIssuesOptions.map((option) => (
-                                        <MenuItem key={option} value={option}>
-                                            {option}
+                                    {SLEEP_ISSUE_KEYS.map((key) => (
+                                        <MenuItem key={key} value={key}>
+                                            {opt.sleepIssues[key]}
                                         </MenuItem>
                                     ))}
                                 </Select>

@@ -26,6 +26,7 @@ import {
 } from "@mui/icons-material";
 
 function UrinaryBowelRecord({
+    strings,
     data,
     handleInputChange,
     handleArrayChange,
@@ -58,7 +59,7 @@ function UrinaryBowelRecord({
         >
             <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
                 <Typography variant="h6" fontWeight="bold" color="primary">
-                    6. Urinary & Bowel Health Record
+                    {strings.urinaryBowel.sectionTitle}
                 </Typography>
             </Box>
 

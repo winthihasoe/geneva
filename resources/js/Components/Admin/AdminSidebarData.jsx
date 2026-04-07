@@ -31,20 +31,26 @@ export const AdminSidebarData = [
         link: "/admin/cv",
     },
     {
-        title: "Patient",
-        icon: <AccessibleIcon />,
-        link: "/admin/patients",
+        type: "group",
+        title: "Patients",
+        items: [
+            {
+                title: "Patients",
+                icon: <AccessibleIcon />,
+                link: "/admin/patients",
+            },
+            {
+                title: "Care Logs",
+                icon: <AssignmentIcon />,
+                link: "/admin/care-logs",
+            },
+        ],
     },
     {
         title: "Care Plan",
         icon: <EventAvailableRoundedIcon />,
         link: "/admin/care-plans",
     },
-    // {
-    //     title: "Care Logs 📝",
-    //     icon: <AssignmentIcon color="primary" />,
-    //     link: "/admin/care-logs",
-    // },
     {
         title: "Job Apply",
         icon: <WorkHistoryRoundedIcon />,

@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CareLogController;
+use App\Http\Controllers\CareLogPublicLinkController;
 use App\Http\Controllers\CarePlanController;
 use App\Http\Controllers\CarePlanPhotoController;
 use App\Http\Controllers\CertificateController;
@@ -19,12 +20,12 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\PatientCaregiverAssignmentController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PhoneVerificationController;
+use App\Http\Controllers\PublicCareLogController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SocialMediaController;
 use App\Http\Controllers\TrainingCourseController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'index'])->name('home');
@@ -57,7 +58,7 @@ Route::get('training-courses', [TrainingCourseController::class, 'index'])->name
 Route::get('training-courses/{slug}', [TrainingCourseController::class, 'show'])->name('training-courses.show');
 Route::get('api/training-courses/featured', [TrainingCourseController::class, 'featured']);
 
-// Contact message 
+// Contact message
 Route::get('contact-information', [PageController::class, 'contactInfo'])->name('contact.info');
 Route::get('customer-service', [PageController::class, 'customerService'])->name('customer.service');
 Route::post('contact', [ContactMessageController::class, 'storeMessage'])->name('message.store');
@@ -69,8 +70,7 @@ Route::get('contact-messages', [ContactMessageController::class, 'contactMessage
 Route::get('/blogs/maternal-baby-healthcare', [BlogController::class, 'maternalBabyHealthCare'])->name('blog.maternal.baby.healthcare');
 Route::get('/blogs/maternal-baby-healthcare/{section}', [BlogController::class, 'maternalBabyHealthCareSection'])->name('blog.maternal.baby.healthcare.section');
 
-
-// Elder Health 
+// Elder Health
 Route::get('/blogs/elder-health', [BlogController::class, 'elderHealth'])->name('blog.elder.health');
 Route::get('/blogs/elder-health/{section}', [BlogController::class, 'elderHealthSection'])->name('blog.elder.healthcare.section');
 
@@ -109,6 +109,14 @@ Route::post('/review', [ReviewController::class, 'store'])->name('review.store')
 // if successful review submission, generate discount card and show success page
 Route::get('/success/{cardNo}', [ReviewController::class, 'reviewSuccess'])->name('review.success');
 
+// Public care log (guest; UUID scoped to an active patient–caregiver assignment)
+Route::middleware(['throttle:120,1'])->group(function () {
+    Route::get('public/care-log/{uuid}', [PublicCareLogController::class, 'show'])->name('public.care-log.show');
+    Route::post('public/care-log/{uuid}', [PublicCareLogController::class, 'store'])->name('public.care-log.store');
+    Route::get('public/care-log/{uuid}/history', [PublicCareLogController::class, 'history'])->name('public.care-log.history');
+    Route::get('public/care-log/{uuid}/history/{careLogId}', [PublicCareLogController::class, 'historyShow'])->name('public.care-log.history.show');
+});
+
 // Show Single Blog
 Route::get('blog/single-blog/{slug}', [BlogController::class, 'showSingleBlog'])->name('blog.single');
 
@@ -125,18 +133,18 @@ Route::middleware('auth', 'is.employer')->group(function () {
     Route::get('baby-care/start', [CarePlanController::class, 'startBabyCare'])->name('care.baby.start');
     Route::get('maternal-care/start', [CarePlanController::class, 'startMaternalCare'])->name('care.maternal.start');
     Route::get('elder-care/start', [CarePlanController::class, 'startElderCare'])->name('care.elder.start');
-    
+
     // Store or update Care plan
     Route::post('plan/store', [CarePlanController::class, 'store'])->name('plan.store');
 
-    // Showing Matched caregiver 
+    // Showing Matched caregiver
     Route::get('matching-caregivers/{uuid}', [CarePlanController::class, 'showCVs'])->name('care.cvs.show');
     // Newborn care
     // Route::get('baby-care/newborn', [CarePlanController::class, 'newbornCare'])->name('care.newborn.start');
-    
+
     // Option to choose in Nanny
     // Route::get('nanny-care-options', [CarePlanController::class, 'optionNanny'])->name('nanny.options.choose');
-    
+
     // Nanny service only
     // Route::get('baby-care/nanny-only', [CarePlanController::class, 'nannyOnly'])->name('care.nanny.start');
     // Route::get('baby-care/nanny-maid', [CarePlanController::class, 'nannyMaid'])->name('care.nanny.maid.start');
@@ -145,11 +153,10 @@ Route::middleware('auth', 'is.employer')->group(function () {
     // Route::get('elder-care-options', [CarePlanController::class, 'optionElder'])->name('elder.options.choose');
     Route::get('elder-care/caregiver-only', [CarePlanController::class, 'caregiverOnly'])->name('care.caregiver.start');
     // Route::get('elder-care/caregiver-maid', [CarePlanController::class, 'caregiverMaid'])->name('care.caregiver.maid.start');
-    
+
     Route::post('send-otp', [PhoneVerificationController::class, 'sendOtp'])->name('sendOtp');
     Route::post('verify-otp', [PhoneVerificationController::class, 'verifyOtp'])->name('verifyOtp');
     Route::post('save-verified-phone', [PhoneVerificationController::class, 'saveVerifiedPhone'])->name('saveVerifiedPhone');
-
 
     // Show CV to employer
     Route::get('interview/{slug}/{care_plan?}', [InterviewController::class, 'createInterview'])->name('interview.book.create');
@@ -157,25 +164,24 @@ Route::middleware('auth', 'is.employer')->group(function () {
     Route::get('book/interview/success', [InterviewController::class, 'bookSuccess'])->name('interview.book.success');
 });
 
-
 Route::middleware(['auth', 'is.caregiver'])->group(function () {
     // Caregiver dashboard
     Route::get('dashboard', [CgDashboardController::class, 'dashboard'])->name('cg.dashboard');
-    
+
     // Join our team -> create CV
     Route::get('cv/create', [CVController::class, 'createCV'])->name('cv.create');
     Route::post('cv/create', [CVController::class, 'store'])->name('cv.store');
     Route::get('cv/finish', [CVController::class, 'finishCV'])->name('cv.finish');
-    
+
     Route::get('cv/edit', [CVController::class, 'editCV'])->name('cv.edit');
     Route::get('cv', [CVController::class, 'myCV'])->name('cv.show');
-    
+
     // Certificates
     Route::get('certificates', [CertificateController::class, 'show'])->name('certificates.show');
     Route::post('certificates', [CertificateController::class, 'store'])->name('certificate.store');
     Route::put('certificates,/{certId}', [CertificateController::class, 'update'])->name('certificate.update');
     Route::delete('certificates/{certId}', [CertificateController::class, 'delete'])->name('certificate.delete');
-    
+
     // My Experiences
     Route::get('experiences', [ExperienceController::class, 'show'])->name('experiences.show');
     Route::post('experience', [ExperienceController::class, 'store'])->name('experience.store');
@@ -183,13 +189,14 @@ Route::middleware(['auth', 'is.caregiver'])->group(function () {
 
     Route::get('/seven-day-training', [PageController::class, 'sevenDaysTraining'])->name('training.sevenDays');
     Route::get('/medical-checkup', [PageController::class, 'medicalCheckup'])->name('medical.chekup');
-    
-    // Care Logs 
+
+    // Care Logs
     Route::get('care-logs/newborn', [CgDashboardController::class, 'newbornCareLogs'])->name('cg.carelogs.newborn');
-    Route::post('care-logs/newborn', [CareLogController::class, 'storeNewbornCareLog'])->name('carelogs.newborn.store'); 
+    Route::post('care-logs/newborn', [CareLogController::class, 'storeNewbornCareLog'])->name('carelogs.newborn.store');
+    Route::post('care-logs/baby', [CareLogController::class, 'storeBabyCareLog'])->name('carelogs.baby.store');
     Route::get('my-care-logs', [CgDashboardController::class, 'myCareLogs'])->name('cg.mycarelogs');
     Route::get('my-care-logs/filter', [CgDashboardController::class, 'filterCareLogs'])->name('cg.mycarelogs.filter');
-    
+
     // Care Log Details Routes - Separated by care type
     Route::get('care-log/{id}/newborn-details', [CareLogController::class, 'getNewbornCareLogDetails'])->name('cg.carelog.newborn.details');
     Route::get('care-log/{id}/newborn-details-preview', [CareLogController::class, 'showNewbornCareLogDetails'])->name('cg.carelog.newborn.details.show');
@@ -207,12 +214,12 @@ Route::middleware(['auth', 'is.caregiver'])->group(function () {
 
 Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-    
+
     // Admin Create CV for caregiver
     Route::get('cv/create', [CVController::class, 'adminCreateCV'])->name('admin.cv.create');
     Route::post('cv/create', [CVController::class, 'adminStoreCV'])->name('admin.cv.store');
     Route::get('cv/finish', [CVController::class, 'adminFinishCV'])->name('admin.cv.finish');
-    
+
     Route::get('cv/edit/{cvId}', [CVController::class, 'adminEditCV'])->name('admin.cv.edit');
     // See all CV
     Route::get('/cv', [CVController::class, 'adminCVs'])->name('admin.cv.all');
@@ -251,14 +258,18 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     // Assign Caregiver to Patient
     Route::post('/admin/patient/caregiver/assign', [PatientCaregiverAssignmentController::class, 'assign'])->name('admin.patient.caregiver.assign');
     Route::post('/patient/caregiver/assign-additional', [PatientCaregiverAssignmentController::class, 'assignAdditional'])
-    ->name('admin.patient.caregiver.assign.additional');
+        ->name('admin.patient.caregiver.assign.additional');
     Route::put('/admin/patient/caregiver/end/{id}', [PatientCaregiverAssignmentController::class, 'end'])->name('admin.patient.caregiver.end');
+    Route::post(
+        'patients/{patient}/assignments/{assignment}/public-care-log-link',
+        [CareLogPublicLinkController::class, 'store']
+    )->name('admin.patient.public-care-log-link');
 
     // Care plans
     Route::get('/care-plans', [CarePlanController::class, 'adminCarePlans'])->name('admin.care.plans');
     Route::get('/care-plans/{id}', [CarePlanController::class, 'adminSingleCarePlan'])->name('admin.care.plan.detail');
 
-    // Care Logs 
+    // Care Logs
     Route::get('care-logs', [CareLogController::class, 'adminCareLogs'])->name('admin.care.logs');
     // Admin Care Log Details Routes
     Route::get('care-logs/{id}/newborn-details', [CareLogController::class, 'adminNewbornCareLogDetails'])->name('admin.carelog.newborn.details');
@@ -273,21 +284,21 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::get('job-applies/{id}', [JobApplyController::class, 'adminSingleJobApply'])->name('admin.job.apply.single');
     Route::get('job-search-result', [JobApplyController::class, 'adminSearchJobApply'])->name('admin.job.apply.search');
     Route::put('/admin/job-applies/{id}/update-status', [JobApplyController::class, 'updateStatus'])->name('admin.job.apply.update.status');
-    
+
     // Interview when employer make appointment
     Route::get('interviews', [InterviewController::class, 'index'])->name('admin.interviews');
     Route::get('interviews/search-result', [InterviewController::class, 'adminSearchInterview'])->name('admin.interview.search');
     Route::get('interviews/{id}', [InterviewController::class, 'adminSingleInterview'])->name('admin.interview.single');
     Route::put('interviews/{id}', [InterviewController::class, 'updateInterviewStatus'])->name('admin.interview.status.update');
 
-    // Training Courses 
+    // Training Courses
     Route::get('training-courses', [TrainingCourseController::class, 'adminIndex'])->name('admin.training-courses.index');
     Route::get('training-courses/create', [TrainingCourseController::class, 'create'])->name('training-courses.create');
     Route::post('training-courses', [TrainingCourseController::class, 'store'])->name('training-courses.store');
     Route::get('training-courses/{slug}/edit', [TrainingCourseController::class, 'edit'])->name('training-courses.edit');
     Route::post('training-courses/{slug}', [TrainingCourseController::class, 'update'])->name('training-courses.update');
     Route::delete('training-courses/{slug}', [TrainingCourseController::class, 'destroy'])->name('training-courses.destroy');
-    
+
     Route::patch('training-courses/{slug}/toggle-active', [TrainingCourseController::class, 'toggleActive'])->name('training-courses.toggle-active');
     Route::patch('training-courses/{slug}/toggle-featured', [TrainingCourseController::class, 'toggleFeatured'])->name('training-courses.toggle-featured');
     Route::post('training-courses/{slug}/duplicate', [TrainingCourseController::class, 'duplicate'])->name('training-courses.duplicate');
@@ -314,7 +325,7 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     // edit
     Route::get('admin/blogs/{blog}/edit', [BlogController::class, 'edit'])->name('admin.blogs.edit');
     Route::post('admin/blogs/{blog}', [BlogController::class, 'update'])->name('admin.blogs.update');
-    
+
     Route::get('blogs/{slug}/edit', [BlogController::class, 'edit'])->name('blogs.edit');
     Route::post('blogs/{slug}', [BlogController::class, 'update'])->name('blogs.update');
     Route::delete('blogs/{slug}', [BlogController::class, 'destroy'])->name('blogs.destroy');
@@ -331,16 +342,16 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::delete('salary/{id}', [ServiceController::class, 'deleteSalary'])->name('admin.salary.delete');
     Route::put('service-fee/{id}', [ServiceController::class, 'updateServiceFee'])->name('admin.service_fee.update');
     Route::delete('service-fee/{id}', [ServiceController::class, 'deleteServiceFee'])->name('admin.service_fee.delete');
-    
+
     // ---- Social Media Management ----
     Route::get('social-media', [SocialMediaController::class, 'index'])->name('admin.social.media');
     Route::post('social-media', [SocialMediaController::class, 'store'])->name('admin.social_media.store');
     Route::put('social-media/{id}', [SocialMediaController::class, 'update'])->name('admin.social_media.update');
     Route::delete('social-media/{id}', [SocialMediaController::class, 'destroy'])->name('admin.social_media.delete');
-    
+
     // ---- Reviews Management ----
     Route::get('review-management', [ReviewController::class, 'adminReviews'])->name('admin.reviews');
-    
+
     // ---- Discount Card Management ----
     Route::get('/discount-cards', [DiscountCardController::class, 'index'])->name('admin.discount.index');
     Route::post('/discount-cards', [DiscountCardController::class, 'store'])->name('admin.discount.store');
@@ -350,12 +361,12 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     // ---- contact message ----
     Route::get('contact-message', [ContactMessageController::class, 'contactMessage'])->name('admin.messages');
     Route::get('contact-message/{id}', [ContactMessageController::class, 'adminSingleMessage'])->name('admin.single.message');
-      // Mark as Unread
+    // Mark as Unread
     Route::put('mark-as-unread/{id}', [ContactMessageController::class, 'markAsUnread'])->name('markAsUnread');
-    
+
     // Delete message
     Route::delete('contact-message/{id}', [ContactMessageController::class, 'adminDeleteMessage'])->name('admin.message.delete');
-    
+
     // Store reply message
     Route::post('reply-message/{id}', [ContactMessageController::class, 'storeReplyMessage'])->name('admin.message.reply');
     Route::delete('reply-message/{id}', [ContactMessageController::class, 'adminDeleteReplyMessage'])->name('admin.message.reply.delete');

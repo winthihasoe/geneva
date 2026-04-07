@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
     Box,
     Typography,
@@ -33,6 +34,7 @@ import NoData from "@/Components/util/NoData";
 import Avatar from "@mui/material/Avatar";
 import ReviewLinkButton from "@/Components/ReviewLinkButton";
 import { Edit } from "@mui/icons-material";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import EditPatient from "./components/EditPatient";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -47,6 +49,11 @@ function AdminSinglePatient({
     const [showAdditionalForm, setShowAdditionalForm] = useState(false);
     const [endDialogOpen, setEndDialogOpen] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [publicCareLogLinkLoadingId, setPublicCareLogLinkLoadingId] =
+        useState(null);
+    const [publicCareLogLinkCopiedId, setPublicCareLogLinkCopiedId] =
+        useState(null);
+    const [publicCareLogLinkError, setPublicCareLogLinkError] = useState(null);
     const { data, setData, post, processing, reset } = useForm({
         patient_id: patient.id,
         photos: [],
@@ -137,7 +144,7 @@ function AdminSinglePatient({
                     additionalAssignmentForm.reset();
                     setShowAdditionalForm(false);
                 },
-            }
+            },
         );
     };
 
@@ -149,7 +156,7 @@ function AdminSinglePatient({
             endAssignmentForm.put(
                 route(
                     "admin.patient.caregiver.end",
-                    selectedAssignmentToEnd.id
+                    selectedAssignmentToEnd.id,
                 ),
                 {
                     onSuccess: () => {
@@ -157,7 +164,7 @@ function AdminSinglePatient({
                         setSelectedAssignmentToEnd(null);
                         endAssignmentForm.reset();
                     },
-                }
+                },
             );
         }
     };
@@ -165,6 +172,32 @@ function AdminSinglePatient({
     const openEndDialog = (assignment) => {
         setSelectedAssignmentToEnd(assignment);
         setEndDialogOpen(true);
+    };
+
+    const handleCopyPublicCareLogLink = async (assignment) => {
+        setPublicCareLogLinkError(null);
+        setPublicCareLogLinkLoadingId(assignment.id);
+        try {
+            const { data } = await axios.post(
+                route("admin.patient.public-care-log-link", {
+                    patient: patient.id,
+                    assignment: assignment.id,
+                }),
+                {},
+                { headers: { Accept: "application/json" } },
+            );
+            await navigator.clipboard.writeText(data.url);
+            setPublicCareLogLinkCopiedId(assignment.id);
+            setTimeout(() => setPublicCareLogLinkCopiedId(null), 3000);
+        } catch (err) {
+            const message =
+                err.response?.data?.message ||
+                err.response?.data?.error ||
+                "Failed to create or copy the public care log link.";
+            setPublicCareLogLinkError(message);
+        } finally {
+            setPublicCareLogLinkLoadingId(null);
+        }
     };
 
     // Helper function to format date
@@ -206,8 +239,8 @@ function AdminSinglePatient({
     const currentAssignments = Array.isArray(currentAssignment)
         ? currentAssignment
         : currentAssignment
-        ? [currentAssignment]
-        : [];
+          ? [currentAssignment]
+          : [];
 
     const canAssignMore = currentAssignments.length < 3;
 
@@ -278,7 +311,7 @@ function AdminSinglePatient({
                                                 sx={{
                                                     mb: 2,
                                                     p: 2,
-                                                    bgcolor: "white",
+                                                    bgcolor: "background.paper",
                                                     borderRadius: 2,
                                                     border: "1px solid",
                                                     borderColor: "grey.300",
@@ -362,7 +395,7 @@ function AdminSinglePatient({
                                                 >
                                                     <strong>Start Date:</strong>{" "}
                                                     {formatDate(
-                                                        assignment.start_date
+                                                        assignment.start_date,
                                                     )}
                                                 </Typography>
                                                 {assignment.assignment_reason && (
@@ -376,7 +409,98 @@ function AdminSinglePatient({
                                                         }
                                                     </Typography>
                                                 )}
-                                                {/* Add Review Link Button */}
+                                                <Box
+                                                    sx={{
+                                                        mt: 2,
+                                                        mb: 2,
+                                                        p: 2,
+                                                        borderRadius: 2,
+                                                        bgcolor: "primary.50",
+                                                        border: "2px solid",
+                                                        borderColor:
+                                                            "primary.main",
+                                                    }}
+                                                >
+                                                    <Typography
+                                                        variant="subtitle2"
+                                                        fontWeight="bold"
+                                                        color="primary"
+                                                        gutterBottom
+                                                    >
+                                                        Care log link
+                                                    </Typography>
+                                                    <Typography
+                                                        variant="body2"
+                                                        color="text.secondary"
+                                                        sx={{ mb: 2 }}
+                                                    >
+                                                        When duty starts, the
+                                                        supervisor must send
+                                                        this link to the
+                                                        caregiver. They can
+                                                        submit care logs without
+                                                        signing in. The link
+                                                        stops working when the
+                                                        assignment ends.
+                                                    </Typography>
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        size="large"
+                                                        fullWidth
+                                                        onClick={() =>
+                                                            handleCopyPublicCareLogLink(
+                                                                assignment,
+                                                            )
+                                                        }
+                                                        disabled={
+                                                            publicCareLogLinkLoadingId ===
+                                                            assignment.id
+                                                        }
+                                                        startIcon={
+                                                            <ContentCopyIcon />
+                                                        }
+                                                        sx={{
+                                                            py: 1.5,
+                                                            fontWeight: 700,
+                                                            fontSize: "1rem",
+                                                            borderRadius: 2,
+                                                            boxShadow: 3,
+                                                            background:
+                                                                "linear-gradient(45deg, #1565c0 30%, #42a5f5 90%)",
+                                                            "&:hover": {
+                                                                boxShadow: 6,
+                                                                background:
+                                                                    "linear-gradient(45deg, #0d47a1 30%, #1976d2 90%)",
+                                                            },
+                                                            "&.Mui-disabled": {
+                                                                background:
+                                                                    "action.disabledBackground",
+                                                            },
+                                                        }}
+                                                    >
+                                                        {publicCareLogLinkCopiedId ===
+                                                        assignment.id
+                                                            ? "Link copied!"
+                                                            : publicCareLogLinkLoadingId ===
+                                                                assignment.id
+                                                              ? "Working…"
+                                                              : "Copy CareLog Link"}
+                                                    </Button>
+                                                    {publicCareLogLinkError ? (
+                                                        <Typography
+                                                            variant="caption"
+                                                            color="error"
+                                                            display="block"
+                                                            sx={{ mt: 1.5 }}
+                                                        >
+                                                            {
+                                                                publicCareLogLinkError
+                                                            }
+                                                        </Typography>
+                                                    ) : null}
+                                                </Box>
+                                                {/* Review link */}
                                                 <Box sx={{ mt: 2, mb: 2 }}>
                                                     <ReviewLinkButton
                                                         patientSlug={
@@ -388,7 +512,7 @@ function AdminSinglePatient({
                                                         }
                                                         isReviewed={reviewedCaregiverIds.includes(
                                                             assignment.caregiver
-                                                                .id
+                                                                .id,
                                                         )}
                                                     />
                                                 </Box>
@@ -398,7 +522,7 @@ function AdminSinglePatient({
                                                     size="small"
                                                     onClick={() =>
                                                         openEndDialog(
-                                                            assignment
+                                                            assignment,
                                                         )
                                                     }
                                                     disabled={
@@ -412,7 +536,7 @@ function AdminSinglePatient({
                                                     End Assignment
                                                 </Button>
                                             </Box>
-                                        )
+                                        ),
                                     )}
 
                                     {/* Assign More Caregiver Button */}
@@ -497,7 +621,7 @@ function AdminSinglePatient({
                                                 onChange={(e) =>
                                                     additionalAssignmentForm.setData(
                                                         "cv_id",
-                                                        e.target.value
+                                                        e.target.value,
                                                     )
                                                 }
                                                 error={
@@ -566,7 +690,7 @@ function AdminSinglePatient({
                                             onChange={(e) =>
                                                 additionalAssignmentForm.setData(
                                                     "start_date",
-                                                    e.target.value
+                                                    e.target.value,
                                                 )
                                             }
                                             InputLabelProps={{ shrink: true }}
@@ -585,7 +709,7 @@ function AdminSinglePatient({
                                             onChange={(e) =>
                                                 additionalAssignmentForm.setData(
                                                     "end_date",
-                                                    e.target.value
+                                                    e.target.value,
                                                 )
                                             }
                                             InputLabelProps={{ shrink: true }}
@@ -605,7 +729,7 @@ function AdminSinglePatient({
                                             onChange={(e) =>
                                                 additionalAssignmentForm.setData(
                                                     "assignment_reason",
-                                                    e.target.value
+                                                    e.target.value,
                                                 )
                                             }
                                             sx={{ mb: 2 }}
@@ -708,11 +832,11 @@ function AdminSinglePatient({
                                             >
                                                 <strong>Period:</strong>{" "}
                                                 {formatDate(
-                                                    assignment.start_date
+                                                    assignment.start_date,
                                                 )}{" "}
                                                 -{" "}
                                                 {formatDate(
-                                                    assignment.end_date
+                                                    assignment.end_date,
                                                 )}
                                             </Typography>
                                             {assignment.assignment_reason && (
@@ -751,7 +875,7 @@ function AdminSinglePatient({
                                                             .slug
                                                     }
                                                     isReviewed={reviewedCaregiverIds.includes(
-                                                        assignment.caregiver.id
+                                                        assignment.caregiver.id,
                                                     )}
                                                 />
                                             </Box>
@@ -790,7 +914,7 @@ function AdminSinglePatient({
                                             onChange={(e) =>
                                                 assignmentForm.setData(
                                                     "cv_id",
-                                                    e.target.value
+                                                    e.target.value,
                                                 )
                                             }
                                             error={
@@ -855,7 +979,7 @@ function AdminSinglePatient({
                                         onChange={(e) =>
                                             assignmentForm.setData(
                                                 "start_date",
-                                                e.target.value
+                                                e.target.value,
                                             )
                                         }
                                         InputLabelProps={{ shrink: true }}
@@ -871,7 +995,7 @@ function AdminSinglePatient({
                                         onChange={(e) =>
                                             assignmentForm.setData(
                                                 "end_date",
-                                                e.target.value
+                                                e.target.value,
                                             )
                                         }
                                         InputLabelProps={{ shrink: true }}
@@ -890,7 +1014,7 @@ function AdminSinglePatient({
                                         onChange={(e) =>
                                             assignmentForm.setData(
                                                 "assignment_reason",
-                                                e.target.value
+                                                e.target.value,
                                             )
                                         }
                                         sx={{ mb: 2 }}
@@ -938,7 +1062,7 @@ function AdminSinglePatient({
                                     onChange={(e) =>
                                         endAssignmentForm.setData(
                                             "end_reason",
-                                            e.target.value
+                                            e.target.value,
                                         )
                                     }
                                     placeholder="e.g., Patient no longer needs care, caregiver requested change, etc."
@@ -1024,7 +1148,7 @@ function AdminSinglePatient({
                                                 "id",
                                                 "slug",
                                                 "care_plan_photos",
-                                            ].includes(key)
+                                            ].includes(key),
                                     )
                                     .map(([key, value]) => (
                                         <Box
