@@ -1,0 +1,1 @@
+import{g as t}from"./getThemeProps-UNChtA-6.js";import{x as p}from"./app-DHIE2lYc.js";function i({props:o,name:m,defaultTheme:s,themeId:r}){let e=p(s);return r&&(e=e[r]||e),t({theme:e,name:m,props:o})}export{i as u};

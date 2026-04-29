@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { router } from "@inertiajs/react";
 import AgeCalculator from "@/Components/util/AgeCalculator";
+import dayjs from "dayjs";
 
 function AdminJobApplyTable({ applications }) {
     return (
@@ -35,7 +36,7 @@ function AdminJobApplyTable({ applications }) {
                                 fontWeight="bold"
                                 color={"#fff"}
                             >
-                                Gender
+                                Status
                             </Typography>
                         </TableCell>
                         <TableCell>
@@ -44,7 +45,7 @@ function AdminJobApplyTable({ applications }) {
                                 fontWeight="bold"
                                 color={"#fff"}
                             >
-                                Status
+                                Date of Apply
                             </Typography>
                         </TableCell>
                     </TableRow>
@@ -55,7 +56,7 @@ function AdminJobApplyTable({ applications }) {
                             key={index}
                             onClick={() =>
                                 router.get(
-                                    route("admin.job.apply.single", apply.id)
+                                    route("admin.job.apply.single", apply.id),
                                 )
                             }
                             sx={{ cursor: "pointer" }}
@@ -64,6 +65,8 @@ function AdminJobApplyTable({ applications }) {
                                 <Typography variant="body2" fontSize={"0.8rem"}>
                                     {index + 1}.{" "}
                                     <strong>{apply.name || "N/A"}</strong>
+                                    <br />
+                                    {apply.gender || "N/A"}
                                     <br />
                                     <span
                                         style={{
@@ -78,25 +81,23 @@ function AdminJobApplyTable({ applications }) {
                                         {apply.service_area == "Mandalay"
                                             ? "MDY"
                                             : apply.service_area == "Yangon"
-                                            ? "YGN"
-                                            : "Service Area ?"}
+                                              ? "YGN"
+                                              : "Service Area ?"}
                                         )
                                     </span>
                                 </Typography>
                             </TableCell>
 
                             <TableCell>
-                                <Typography
-                                    variant="body2"
-                                    fontSize={"0.7rem"}
-                                    color={"grey.600"}
-                                >
-                                    {apply.gender || "N/A"}
+                                <Typography variant="body2" fontSize={"0.8rem"}>
+                                    {apply.status || "N/A"}
                                 </Typography>
                             </TableCell>
                             <TableCell>
-                                <Typography variant="body2" fontSize={"0.8rem"}>
-                                    {apply.status || "N/A"}
+                                <Typography variant="body2" fontSize={"0.7rem"}>
+                                    {dayjs(apply.created_at).format(
+                                        "DD-MM-YYYY HH:mm",
+                                    ) || "N/A"}
                                 </Typography>
                             </TableCell>
                         </TableRow>

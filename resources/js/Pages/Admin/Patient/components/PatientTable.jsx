@@ -74,8 +74,30 @@ function PatientTable({ patients }) {
                                         {pt.gender == "Male"
                                             ? "M"
                                             : pt.gender == "Female"
-                                            ? "F"
-                                            : "Gender?"}
+                                              ? "F"
+                                              : "Gender?"}
+                                    </span>
+                                    <br />
+                                    <span
+                                        style={{
+                                            color: "gray",
+                                            fontSize: "0.72rem",
+                                        }}
+                                    >
+                                        Cg Assigned:{" "}
+                                        {pt.active_caregivers?.length > 0
+                                            ? pt.active_caregivers.join(", ")
+                                            : "No active caregiver"}
+                                    </span>
+                                    <br />
+                                    <span
+                                        style={{
+                                            color: "gray",
+                                            fontSize: "0.72rem",
+                                        }}
+                                    >
+                                        Service:{" "}
+                                        {pt.service_status_text || "Ongoing"}
                                     </span>
                                 </Typography>
                             </TableCell>
@@ -85,8 +107,8 @@ function PatientTable({ patients }) {
                                     {pt.service_area == "Mandalay"
                                         ? "MDY"
                                         : pt.service_area == "Yangon"
-                                        ? "YGN"
-                                        : "N/A"}
+                                          ? "YGN"
+                                          : "N/A"}
                                 </Typography>
                             </TableCell>
                         </TableRow>

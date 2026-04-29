@@ -1,1 +1,0 @@
-import{j as r}from"./app-Bg9bGGU-.js";import{T as i}from"./Typography-DV6St5Sp.js";function n({children:t}){return r.jsx(i,{variant:"h5",fontSize:{xs:30,sm:33,md:45},fontWeight:600,mb:2,color:"primary",textAlign:"center",lineHeight:1.2,children:t})}export{n as default};

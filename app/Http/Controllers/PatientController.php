@@ -8,6 +8,7 @@ use App\Models\PatientCaregiverAssignment;
 use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use Inertia\Inertia;
 
 class PatientController extends Controller
@@ -15,7 +16,14 @@ class PatientController extends Controller
     // See by admin
     public function index(Request $request)
     {
-        $query = Patient::with(['currentCaregiver.cv:id,full_name']);
+        $query = Patient::with([
+            'caregiverAssignments' => function ($assignmentQuery) {
+                $assignmentQuery->with('cv:id,full_name')
+                    ->orderByDesc('end_date')
+                    ->orderByDesc('id');
+            },
+            'currentCaregiver.cv:id,full_name',
+        ]);
 
         // Apply service area filter if present
         if ($request->has('service_area') && $request->service_area) {
@@ -24,11 +32,27 @@ class PatientController extends Controller
 
         $patients = $query->orderBy('id', 'desc')->paginate(15);
         
-        // Transform the data to include caregiver name
+        // Transform the data to include caregiver details and service status.
         $patients->getCollection()->transform(function ($patient) {
+            $activeCaregivers = $patient->caregiverAssignments
+                ->filter(fn ($assignment) => $assignment->end_date === null && $assignment->cv)
+                ->map(fn ($assignment) => $assignment->cv->full_name)
+                ->values()
+                ->all();
+
+            $latestEndedAssignment = $patient->caregiverAssignments
+                ->first(fn ($assignment) => $assignment->end_date !== null);
+
+            $latestAssignmentEndDate = $latestEndedAssignment?->end_date
+                ? Carbon::parse($latestEndedAssignment->end_date)->format('d-m-Y')
+                : null;
+
             return [
                 ...$patient->toArray(),
                 'current_caregiver_name' => $patient->currentCaregiver?->cv?->full_name ?? 'Not Assigned',
+                'active_caregivers' => $activeCaregivers,
+                'latest_assignment_end_date' => $latestAssignmentEndDate,
+                'service_status_text' => $latestAssignmentEndDate ?? 'Ongoing',
             ];
         });
 
