@@ -56,7 +56,7 @@ import SleepSection from "./components/SleepSection";
 import EmotionBehavior from "./components/EmotionBehavior";
 import AccidentEmergency from "./components/AccidentEmergency";
 import HouseholdWork from "./components/HouseholdWork";
-import Backbutton from "@/Components/Backbutton";
+import BackButton from "@/Components/BackButton";
 import {
     ELDERLY_CARE_LOG_FORM_LOCALE_KEY,
     getElderlyFormStrings,
@@ -1860,7 +1860,7 @@ const ElderlyCareLogs = ({
                         color: "gray.600",
                     }}
                 >
-                    <Backbutton />
+                    <BackButton />
 
                     <Typography
                         variant="h4"
