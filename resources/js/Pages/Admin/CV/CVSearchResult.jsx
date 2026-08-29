@@ -1,6 +1,6 @@
 import AdminResumeTable from "@/Components/Admin/CV/AdminResumeTable";
 import BackButton from "@/Components/BackButton";
-import NoData from "@/Components/Util/NoData";
+import NoData from "@/Components/util/NoData";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { Head } from "@inertiajs/react";
 import { Box, Container, Typography } from "@mui/material";

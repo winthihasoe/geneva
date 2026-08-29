@@ -15,7 +15,7 @@ import {
 import AdminLayout from "@/Layouts/AdminLayout";
 import { Head, router } from "@inertiajs/react";
 import Title from "@/Components/Typo/Title";
-import NoData from "@/Components/Util/NoData";
+import NoData from "@/Components/util/NoData";
 import MarkEmailUnreadRoundedIcon from "@mui/icons-material/MarkEmailUnreadRounded";
 import MarkEmailReadRoundedIcon from "@mui/icons-material/MarkEmailReadRounded";
 import DateTimeFormatter from "@/Components/util/DateTimeFormatter";
