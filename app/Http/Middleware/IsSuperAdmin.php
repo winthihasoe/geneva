@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class IsAdmin
+class IsSuperAdmin
 {
     /**
      * Handle an incoming request.
@@ -16,10 +16,10 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->isAdmin()) {
+        if (Auth::check() && Auth::user()->isSuperAdmin()) {
             return $next($request);
         }
 
-        return redirect('/')->with('error', 'You are not an Admin');
+        return redirect('/admin/dashboard')->with('error', 'Only Super Admins can manage users.');
     }
 }

@@ -104,4 +104,9 @@ class Patient extends Model
         return $this->hasOne(PatientCaregiverAssignment::class)
             ->whereNull('end_date');
     }
+
+    public function careLogs()
+    {
+        return $this->hasMany(CareLog::class);
+    }
 }

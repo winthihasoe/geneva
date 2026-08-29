@@ -17,8 +17,8 @@ class IsCaregiver
     public function handle(Request $request, Closure $next): Response
     {
         // Check if the authenticated user is a caregiver
-        if (Auth::check() && (Auth::user()->is_caregiver || Auth::user()->is_admin)) {
-            return $next($request); // Allow the request to continue
+        if (Auth::check() && (Auth::user()->is_caregiver || Auth::user()->isAdmin())) {
+            return $next($request);
         }
 
         // If the user is not a caregiver, redirect back with a message

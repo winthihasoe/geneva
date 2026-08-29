@@ -22,7 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'phone',
-        'address', 
+        'address',
         'profile_photo',
         'uid',
         'is_employer',
@@ -30,6 +30,7 @@ class User extends Authenticatable
         'is_caregiver',
         'cg_status',
         'is_admin',
+        'is_super_admin',
         'email_verified_at',
         'last_active_at',
     ];
@@ -53,6 +54,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'last_active_at' => 'datetime',
+        'is_admin' => 'boolean',
+        'is_super_admin' => 'boolean',
+        'is_caregiver' => 'boolean',
+        'is_employer' => 'boolean',
     ];
 
     public function cv()
@@ -66,8 +71,13 @@ class User extends Authenticatable
         return $this->hasMany(Interview::class);
     }
 
-    public function isAdmin()
+    public function isAdmin(): bool
     {
-        return $this->is_admin == 1;
+        return $this->is_admin || $this->isSuperAdmin();
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return (bool) $this->is_super_admin;
     }
 }

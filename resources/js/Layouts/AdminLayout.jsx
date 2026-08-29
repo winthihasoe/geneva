@@ -12,7 +12,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { AdminSidebarData } from "@/Components/Admin/AdminSidebarData";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import FlashMessage from "@/Components/FlashMessage";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Drawer from "@mui/material/Drawer";
@@ -112,6 +112,10 @@ export default function AdminLayout({ children }) {
             : lightTheme.breakpoints.down("sm")
     );
     const pathname = window.location.pathname;
+    const user = usePage().props.auth?.user;
+    const sidebarItems = AdminSidebarData.filter(
+        (menuItem) => !menuItem.superAdminOnly || user?.is_super_admin
+    );
 
     const isPatientsGroupChildActive = (link) => {
         if (link === "/admin/patients") {
@@ -155,7 +159,7 @@ export default function AdminLayout({ children }) {
             </DrawerHeader>
             <Divider />
             <List>
-                {AdminSidebarData.map((menuItem) => {
+                {sidebarItems.map((menuItem) => {
                     if (menuItem.type === "group") {
                         return (
                             <React.Fragment key={menuItem.title}>

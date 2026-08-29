@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CareLogController;
@@ -216,6 +217,11 @@ Route::middleware(['auth', 'is.caregiver'])->group(function () {
 
 Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+
+    Route::middleware('is.super.admin')->group(function () {
+        Route::get('users', [AdminUserController::class, 'index'])->name('admin.users');
+        Route::put('users/{user}/roles', [AdminUserController::class, 'updateRoles'])->name('admin.users.roles.update');
+    });
 
     // Admin Create CV for caregiver
     Route::get('cv/create', [CVController::class, 'adminCreateCV'])->name('admin.cv.create');

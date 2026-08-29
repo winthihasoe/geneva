@@ -423,7 +423,7 @@ const Navbar = () => {
                             )}
 
                             {/* Get into the Admin site */}
-                            {user && user.is_admin && (
+                            {user && (user.is_admin || user.is_super_admin) && (
                                 <Button
                                     variant="contained"
                                     sx={{
@@ -716,7 +716,7 @@ const Navbar = () => {
                             </>
                         ) : (
                             <>
-                                {user && user.is_admin ? (
+                                {user && (user.is_admin || user.is_super_admin) ? (
                                     <ListItem
                                         sx={{
                                             mt: 2,

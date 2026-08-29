@@ -36,29 +36,68 @@ import {
 } from "@mui/icons-material";
 import ChildCareIcon from "@mui/icons-material/ChildCare";
 
+function getServiceAreaChip(serviceArea) {
+    if (serviceArea === "Yangon") {
+        return (
+            <Chip size="small" label="YGN" color="info" variant="outlined" />
+        );
+    }
+
+    if (serviceArea === "Mandalay") {
+        return (
+            <Chip size="small" label="MDY" color="warning" variant="outlined" />
+        );
+    }
+
+    return null;
+}
+
 function AdminCareLogs() {
     const { props } = usePage();
-    const { careLogs, filters } = props;
+    const { careLogs, filters = {} } = props;
     const careTypeCounts = props.careTypeCounts || {};
 
     // Filter states
-    const [searchTerm, setSearchTerm] = useState("");
-    const [selectedCareType, setSelectedCareType] = useState("");
+    const [searchTerm, setSearchTerm] = useState(filters.search || "");
+    const [selectedCareType, setSelectedCareType] = useState(
+        filters.care_type || "",
+    );
     const [selectedCaregiver, setSelectedCaregiver] = useState("");
-    const [dateFrom, setDateFrom] = useState("");
-    const [dateTo, setDateTo] = useState("");
+    const [dateFrom, setDateFrom] = useState(filters.date_from || "");
+    const [dateTo, setDateTo] = useState(filters.date_to || "");
+    const [selectedServiceArea, setSelectedServiceArea] = useState(
+        filters.service_area || "",
+    );
     const [showFilters, setShowFilters] = useState(false);
+
+    const buildFilterParams = (overrides = {}) => {
+        const params = {
+            search: searchTerm,
+            care_type: selectedCareType,
+            caregiver: selectedCaregiver,
+            date_from: dateFrom,
+            date_to: dateTo,
+            service_area: selectedServiceArea,
+            ...overrides,
+        };
+
+        return Object.fromEntries(
+            Object.entries(params).filter(([, value]) => Boolean(value)),
+        );
+    };
 
     const handleSearch = (e) => {
         e.preventDefault();
-        const params = new URLSearchParams();
-        if (searchTerm) params.append("search", searchTerm);
-        if (selectedCareType) params.append("care_type", selectedCareType);
-        if (selectedCaregiver) params.append("caregiver", selectedCaregiver);
-        if (dateFrom) params.append("date_from", dateFrom);
-        if (dateTo) params.append("date_to", dateTo);
+        router.get(route("admin.care.logs"), buildFilterParams());
+    };
 
-        router.get(route("admin.care.logs"), Object.fromEntries(params));
+    const handleServiceAreaClick = (area) => {
+        const nextArea = selectedServiceArea === area ? "" : area;
+        setSelectedServiceArea(nextArea);
+        router.get(
+            route("admin.care.logs"),
+            buildFilterParams({ service_area: nextArea }),
+        );
     };
 
     const clearFilters = () => {
@@ -67,6 +106,7 @@ function AdminCareLogs() {
         setSelectedCaregiver("");
         setDateFrom("");
         setDateTo("");
+        setSelectedServiceArea("");
         router.get(route("admin.care.logs"));
     };
 
@@ -124,6 +164,7 @@ function AdminCareLogs() {
         !!searchTerm ||
         !!selectedCareType ||
         !!selectedCaregiver ||
+        !!selectedServiceArea ||
         !!dateFrom ||
         !!dateTo ||
         window.location.search.length > 1;
@@ -155,29 +196,58 @@ function AdminCareLogs() {
                         justifyContent: "space-between",
                         alignItems: "center",
                         mb: 2,
+                        gap: 1,
+                        flexWrap: "wrap",
                     }}
                 >
                     <Typography variant="body1" color="textSecondary">
                         Total: {careLogs?.total || 0} logs
                     </Typography>
 
-                    <Button
-                        startIcon={<FilterIcon />}
-                        onClick={() => setShowFilters(!showFilters)}
-                        variant="outlined"
-                        size="small"
-                    >
-                        {showFilters ? "Hide Filters" : "Show Filters"}
-                    </Button>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Button
+                            variant={
+                                selectedServiceArea === "Mandalay"
+                                    ? "contained"
+                                    : "outlined"
+                            }
+                            size="small"
+                            onClick={() => handleServiceAreaClick("Mandalay")}
+                        >
+                            Mandalay
+                        </Button>
+                        <Button
+                            variant={
+                                selectedServiceArea === "Yangon"
+                                    ? "contained"
+                                    : "outlined"
+                            }
+                            size="small"
+                            onClick={() => handleServiceAreaClick("Yangon")}
+                        >
+                            Yangon
+                        </Button>
+                        <Button
+                            startIcon={<FilterIcon />}
+                            onClick={() => setShowFilters(!showFilters)}
+                            variant="outlined"
+                            size="small"
+                        >
+                            {showFilters ? "Hide Filters" : "Show Filters"}
+                        </Button>
+                    </Box>
                 </Box>
                 {showFilters && (
                     <Grid container spacing={1} mb={3}>
                         <Grid size={{ xs: 4 }}>
                             <Card
                                 onClick={() => {
-                                    router.get(route("admin.care.logs"), {
-                                        care_type: "newborn",
-                                    });
+                                    router.get(
+                                        route("admin.care.logs"),
+                                        buildFilterParams({
+                                            care_type: "newborn",
+                                        }),
+                                    );
                                 }}
                                 sx={{ cursor: "pointer" }}
                             >
@@ -207,9 +277,12 @@ function AdminCareLogs() {
                         <Grid size={{ xs: 4 }}>
                             <Card
                                 onClick={() => {
-                                    router.get(route("admin.care.logs"), {
-                                        care_type: "maternal",
-                                    });
+                                    router.get(
+                                        route("admin.care.logs"),
+                                        buildFilterParams({
+                                            care_type: "maternal",
+                                        }),
+                                    );
                                 }}
                                 sx={{ cursor: "pointer" }}
                             >
@@ -239,9 +312,12 @@ function AdminCareLogs() {
                         <Grid size={{ xs: 4 }}>
                             <Card
                                 onClick={() => {
-                                    router.get(route("admin.care.logs"), {
-                                        care_type: "elder",
-                                    });
+                                    router.get(
+                                        route("admin.care.logs"),
+                                        buildFilterParams({
+                                            care_type: "elder",
+                                        }),
+                                    );
                                 }}
                                 sx={{ cursor: "pointer" }}
                             >
@@ -308,7 +384,7 @@ function AdminCareLogs() {
                                             value={selectedCareType}
                                             onChange={(e) =>
                                                 setSelectedCareType(
-                                                    e.target.value
+                                                    e.target.value,
                                                 )
                                             }
                                             label="Care Type"
@@ -454,10 +530,10 @@ function AdminCareLogs() {
                                             onClick={() => {
                                                 const routeName =
                                                     getDetailsRoute(
-                                                        log.care_type
+                                                        log.care_type,
                                                     );
                                                 router.get(
-                                                    route(routeName, log.id)
+                                                    route(routeName, log.id),
                                                 );
                                             }}
                                         >
@@ -473,13 +549,25 @@ function AdminCareLogs() {
                                                 </Box>
                                             </TableCell>
                                             <TableCell>
-                                                <Typography
-                                                    fontWeight="medium"
-                                                    variant="body2"
+                                                <Box
+                                                    sx={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        gap: 1,
+                                                        flexWrap: "wrap",
+                                                    }}
                                                 >
-                                                    {log.first_name}{" "}
-                                                    {log.last_name}
-                                                </Typography>
+                                                    <Typography
+                                                        fontWeight="medium"
+                                                        variant="body2"
+                                                    >
+                                                        {log.first_name}{" "}
+                                                        {log.last_name}
+                                                    </Typography>
+                                                    {getServiceAreaChip(
+                                                        log.service_area,
+                                                    )}
+                                                </Box>
                                             </TableCell>
                                             <TableCell>
                                                 {log.age_display}
@@ -487,11 +575,11 @@ function AdminCareLogs() {
                                             <TableCell>
                                                 <Chip
                                                     icon={getCareTypeIcon(
-                                                        log.care_type
+                                                        log.care_type,
                                                     )}
                                                     label={log.care_type}
                                                     color={getCareTypeColor(
-                                                        log.care_type
+                                                        log.care_type,
                                                     )}
                                                     size="small"
                                                 />
@@ -522,13 +610,13 @@ function AdminCareLogs() {
                                     page={careLogs.current_page}
                                     onChange={(event, page) => {
                                         const params = new URLSearchParams(
-                                            window.location.search
+                                            window.location.search,
                                         );
                                         params.set("page", page);
                                         router.get(
                                             route("admin.care.logs") +
                                                 "?" +
-                                                params.toString()
+                                                params.toString(),
                                         );
                                     }}
                                     color="primary"

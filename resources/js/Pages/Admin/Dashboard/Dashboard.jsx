@@ -17,6 +17,7 @@ import WorkIcon from "@mui/icons-material/Work";
 import PersonIcon from "@mui/icons-material/Person";
 import MessageIcon from "@mui/icons-material/Message";
 import AssignmentIcon from "@mui/icons-material/Assignment";
+import CareLogSection from "./components/CareLogSection";
 
 function Dashboard({
     totalCaregivers,
@@ -24,12 +25,15 @@ function Dashboard({
     totalPatients,
     totalContactMessages,
     totalCareLogs,
+    recentCareLogs = [],
+    missingCareLogWarnings = [],
+    recentCareLogDays = 3,
 }) {
     const stats = [
         {
             title: "Total Caregivers",
             value: totalCaregivers,
-            icon: <PeopleAltIcon sx={{ fontSize: 40 }} />,
+            icon: <PeopleAltIcon sx={{ fontSize: { xs: 22, sm: 32, lg: 40 } }} />,
             color: "#4CAF50",
             bgColor: "#E8F5E8",
             route: "admin.cv.all",
@@ -37,23 +41,23 @@ function Dashboard({
         {
             title: "Job Applications",
             value: totalJobApplies,
-            icon: <WorkIcon sx={{ fontSize: 40 }} />,
+            icon: <WorkIcon sx={{ fontSize: { xs: 22, sm: 32, lg: 40 } }} />,
             color: "#2196F3",
             bgColor: "#E3F2FD",
             route: "admin.job.apply",
         },
-        // {
-        //     title: "Total Care Logs",
-        //     value: totalCareLogs,
-        //     icon: <AssignmentIcon sx={{ fontSize: 40 }} />,
-        //     color: "#FF9800",
-        //     bgColor: "#FFF3E0",
-        //     route: "admin.care.logs",
-        // },
+        {
+            title: "Total Care Logs",
+            value: totalCareLogs,
+            icon: <AssignmentIcon sx={{ fontSize: { xs: 22, sm: 32, lg: 40 } }} />,
+            color: "#FF9800",
+            bgColor: "#FFF3E0",
+            route: "admin.care.logs",
+        },
         {
             title: "Messages",
             value: totalContactMessages,
-            icon: <MessageIcon sx={{ fontSize: 40 }} />,
+            icon: <MessageIcon sx={{ fontSize: { xs: 22, sm: 32, lg: 40 } }} />,
             color: "#9C27B0",
             bgColor: "#F3E5F5",
             route: "admin.messages",
@@ -81,9 +85,9 @@ function Dashboard({
                     Admin Dashboard
                 </Typography>
 
-                <Grid2 container spacing={3} mb={4}>
+                <Grid2 container spacing={{ xs: 1.5, sm: 2, lg: 3 }} mb={4}>
                     {stats.map((stat, index) => (
-                        <Grid2 key={index} size={{ xs: 12, sm: 6, md: 3 }}>
+                        <Grid2 key={index} size={{ xs: 6, lg: 3 }}>
                             <Card
                                 sx={{
                                     cursor: "pointer",
@@ -99,21 +103,23 @@ function Dashboard({
                                 }}
                                 onClick={() => router.get(route(stat.route))}
                             >
-                                <CardContent sx={{ p: 3 }}>
+                                <CardContent
+                                    sx={{ p: { xs: 1.5, sm: 2, lg: 3 } }}
+                                >
                                     <Box
                                         sx={{
                                             display: "flex",
                                             alignItems: "center",
-                                            mb: 2,
+                                            mb: { xs: 1, sm: 2 },
                                         }}
                                     >
                                         <Avatar
                                             sx={{
                                                 bgcolor: stat.bgColor,
                                                 color: stat.color,
-                                                width: 60,
-                                                height: 60,
-                                                mr: 2,
+                                                width: { xs: 40, sm: 52, lg: 60 },
+                                                height: { xs: 40, sm: 52, lg: 60 },
+                                                mr: { xs: 1, sm: 2 },
                                             }}
                                         >
                                             {stat.icon}
@@ -123,6 +129,13 @@ function Dashboard({
                                                 variant="h3"
                                                 fontWeight="bold"
                                                 color={stat.color}
+                                                sx={{
+                                                    fontSize: {
+                                                        xs: "1.5rem",
+                                                        sm: "2rem",
+                                                        lg: "3rem",
+                                                    },
+                                                }}
                                             >
                                                 {stat.value}
                                             </Typography>
@@ -132,6 +145,13 @@ function Dashboard({
                                         variant="h6"
                                         color="text.secondary"
                                         fontWeight={500}
+                                        sx={{
+                                            fontSize: {
+                                                xs: "0.85rem",
+                                                sm: "1rem",
+                                                lg: "1.25rem",
+                                            },
+                                        }}
                                     >
                                         {stat.title}
                                     </Typography>
@@ -140,6 +160,12 @@ function Dashboard({
                         </Grid2>
                     ))}
                 </Grid2>
+
+                <CareLogSection
+                    recentCareLogs={recentCareLogs}
+                    missingCareLogWarnings={missingCareLogWarnings}
+                    recentCareLogDays={recentCareLogDays}
+                />
 
                 {/* Additional Dashboard Content */}
                 <Grid2 container spacing={3}>
@@ -176,7 +202,7 @@ function Dashboard({
                                         </Typography>
                                     </Box>
                                 </Grid2>
-                                {/* <Grid2 size={6}>
+                                <Grid2 size={6}>
                                     <Box
                                         sx={{
                                             p: 2,
@@ -196,7 +222,7 @@ function Dashboard({
                                             View Care Logs
                                         </Typography>
                                     </Box>
-                                </Grid2> */}
+                                </Grid2>
                             </Grid2>
                         </Paper>
                     </Grid2>

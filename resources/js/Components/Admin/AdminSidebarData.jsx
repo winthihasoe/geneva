@@ -72,11 +72,12 @@ export const AdminSidebarData = [
     //     icon: <StorefrontRoundedIcon />,
     //     link: "/admin/admin-shops",
     // },
-    // {
-    //     title: "User management",
-    //     icon: <PeopleRoundedIcon />,
-    //     link: "/admin/users",
-    // },
+    {
+        title: "User management",
+        icon: <PeopleRoundedIcon />,
+        link: "/admin/users",
+        superAdminOnly: true,
+    },
     // {
     //     title: "Blog management",
     //     icon: <NewspaperRoundedIcon />,

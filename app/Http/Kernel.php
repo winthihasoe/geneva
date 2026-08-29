@@ -5,6 +5,7 @@ namespace App\Http;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsCaregiver;
 use App\Http\Middleware\IsEmployer;
+use App\Http\Middleware\IsSuperAdmin;
 use App\Http\Middleware\TrackLastActiveAt;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -74,5 +75,6 @@ class Kernel extends HttpKernel
         'is.caregiver' => IsCaregiver::class,
         'is.employer' => IsEmployer::class,
         'is.admin' => IsAdmin::class,
+        'is.super.admin' => IsSuperAdmin::class,
     ];
 }

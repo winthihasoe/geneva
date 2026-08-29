@@ -48,7 +48,7 @@ export default function AdminSingleTrainingCourse({
     course,
     relatedCourses,
 }) {
-    const isAdmin = auth.user?.is_admin;
+    const isAdmin = auth.user?.is_admin || auth.user?.is_super_admin;
 
     const toggleActive = () => {
         router.patch(route("training-courses.toggle-active", course.slug));

@@ -1553,8 +1553,10 @@ class CareLogController extends Controller
             ->select([
                 'care_logs.*',
                 'c_v_s.full_name as caregiver_full_name',
+                'patients.service_area as service_area',
             ])
             ->leftJoin('c_v_s', 'care_logs.cv_id', '=', 'c_v_s.id')
+            ->leftJoin('patients', 'care_logs.patient_id', '=', 'patients.id')
             ->orderBy('care_date', 'desc');
 
         // Apply filters
@@ -1570,6 +1572,10 @@ class CareLogController extends Controller
 
         if ($request->filled('care_type')) {
             $query->where('care_logs.care_type', $request->care_type);
+        }
+
+        if ($request->filled('service_area') && in_array($request->service_area, ['Yangon', 'Mandalay'], true)) {
+            $query->where('patients.service_area', $request->service_area);
         }
 
         if ($request->filled('date_from')) {
@@ -1611,6 +1617,7 @@ class CareLogController extends Controller
             'filters' => [
                 'search' => $request->search,
                 'care_type' => $request->care_type,
+                'service_area' => $request->service_area,
                 'date_from' => $request->date_from,
                 'date_to' => $request->date_to,
             ],
