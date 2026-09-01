@@ -62,6 +62,11 @@ import {
     getMaternalFormStrings,
     parseMaternalFormLocale,
 } from "@/locales/careLogs/maternalCareLogForm";
+import {
+    getLocalStorage,
+    removeLocalStorage,
+    setLocalStorage,
+} from "@/utils/safeLocalStorage";
 
 const longNote =
     "This is a detailed observation note. The client responded well to care and showed positive engagement throughout the activity. No adverse reactions were observed. Continued monitoring is recommended for optimal health and well-being. Family members were informed and are supportive of the current care plan. Further updates will be provided as needed.";
@@ -553,20 +558,14 @@ const MaternalCareLogs = ({
     const [validationErrors, setValidationErrors] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const [formLocale, setFormLocale] = useState(() => {
-        if (typeof window === "undefined") {
-            return "en";
-        }
-        return parseMaternalFormLocale(
-            window.localStorage.getItem(MATERNAL_CARE_LOG_FORM_LOCALE_KEY),
-        );
-    });
+    const [formLocale, setFormLocale] = useState(() =>
+        parseMaternalFormLocale(
+            getLocalStorage(MATERNAL_CARE_LOG_FORM_LOCALE_KEY),
+        ),
+    );
 
     useEffect(() => {
-        window.localStorage.setItem(
-            MATERNAL_CARE_LOG_FORM_LOCALE_KEY,
-            formLocale,
-        );
+        setLocalStorage(MATERNAL_CARE_LOG_FORM_LOCALE_KEY, formLocale);
     }, [formLocale]);
 
     const strings = getMaternalFormStrings(formLocale);
@@ -730,7 +729,7 @@ const MaternalCareLogs = ({
 
     // Load draft from localStorage on mount
     useEffect(() => {
-        const savedDraft = localStorage.getItem(LOCAL_STORAGE_KEY);
+        const savedDraft = getLocalStorage(LOCAL_STORAGE_KEY);
         if (savedDraft) {
             try {
                 const parsed = JSON.parse(savedDraft);
@@ -753,7 +752,7 @@ const MaternalCareLogs = ({
 
     // Save draft to localStorage on every change
     useEffect(() => {
-        localStorage.setItem(
+        setLocalStorage(
             LOCAL_STORAGE_KEY,
             JSON.stringify(toStoredDraft(formData)),
         );
@@ -783,7 +782,7 @@ const MaternalCareLogs = ({
 
     // Clear draft helper
     const clearDraft = () => {
-        localStorage.removeItem(LOCAL_STORAGE_KEY);
+        removeLocalStorage(LOCAL_STORAGE_KEY);
     };
 
     const handleSubmit = async () => {

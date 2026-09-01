@@ -31,6 +31,15 @@ createInertiaApp({
                 </EmailProvider>
             </ThemeProvider>
         );
+
+        const hideFallback = () => {
+            const fallback = document.getElementById("app-fallback");
+            if (fallback && el.childNodes.length > 0) {
+                fallback.remove();
+            }
+        };
+        hideFallback();
+        requestAnimationFrame(hideFallback);
     },
     progress: {
         color: "#4B5563",

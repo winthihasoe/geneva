@@ -15,6 +15,10 @@ import {
     InputLabel,
 } from "@mui/material";
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import {
+    handleNonNegativeNumberChange,
+    nonNegativeNumberFieldProps,
+} from "@/utils/nonNegativeNumberField";
 
 const FEEDING_TYPES = ["Breastmilk", "Formula", "Juice", "Water"];
 const MEAL_TIMES = [
@@ -168,20 +172,19 @@ const FeedingSection = ({
                                         fullWidth
                                         variant="standard"
                                         label={c.amount}
-                                        type="number"
-                                        inputProps={{
-                                            min: 0,
+                                        {...nonNegativeNumberFieldProps({
                                             step: "1",
-                                        }}
+                                        })}
                                         value={item.amount}
-                                        onChange={(e) =>
-                                            handleArrayChange(
-                                                "feeding",
-                                                index,
-                                                "amount",
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={handleNonNegativeNumberChange(
+                                            (value) =>
+                                                handleArrayChange(
+                                                    "feeding",
+                                                    index,
+                                                    "amount",
+                                                    value
+                                                )
+                                        )}
                                         placeholder="120"
                                     />
                                 </Grid2>

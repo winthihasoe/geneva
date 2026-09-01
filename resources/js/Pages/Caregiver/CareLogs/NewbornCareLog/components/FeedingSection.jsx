@@ -15,6 +15,10 @@ import {
     InputLabel,
 } from "@mui/material";
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import {
+    handleNonNegativeNumberChange,
+    nonNegativeNumberFieldProps,
+} from "@/utils/nonNegativeNumberField";
 
 const FEEDING_TYPES = ["Breastmilk", "Formula", "Weaning diet"];
 
@@ -148,17 +152,19 @@ const FeedingSection = ({
                                     fullWidth
                                     variant="standard"
                                     label={c.amount}
-                                    type="number"
-                                    step="0.01"
+                                    {...nonNegativeNumberFieldProps({
+                                        step: "0.01",
+                                    })}
                                     value={item.amount}
-                                    onChange={(e) =>
-                                        handleArrayChange(
-                                            "feeding",
-                                            index,
-                                            "amount",
-                                            e.target.value
-                                        )
-                                    }
+                                    onChange={handleNonNegativeNumberChange(
+                                        (value) =>
+                                            handleArrayChange(
+                                                "feeding",
+                                                index,
+                                                "amount",
+                                                value
+                                            )
+                                    )}
                                     placeholder="120"
                                 />
                             </Grid2>

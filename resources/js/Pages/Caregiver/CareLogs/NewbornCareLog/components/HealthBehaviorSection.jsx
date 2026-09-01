@@ -15,6 +15,10 @@ import {
     InputLabel,
 } from "@mui/material";
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import {
+    handleNonNegativeNumberChange,
+    nonNegativeNumberFieldProps,
+} from "@/utils/nonNegativeNumberField";
 
 const HealthBehaviorSection = ({
     formData,
@@ -221,18 +225,22 @@ const HealthBehaviorSection = ({
                                         fullWidth
                                         variant="standard"
                                         label={h.temperature}
+                                        {...nonNegativeNumberFieldProps({
+                                            step: "0.1",
+                                        })}
                                         value={
                                             formData.vitalSigns.temperature[
                                                 index
                                             ] || ""
                                         }
-                                        onChange={(e) =>
-                                            handleVitalSignChange(
-                                                "temperature",
-                                                index,
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={handleNonNegativeNumberChange(
+                                            (value) =>
+                                                handleVitalSignChange(
+                                                    "temperature",
+                                                    index,
+                                                    value
+                                                )
+                                        )}
                                         placeholder={h.tempPlaceholder}
                                     />
                                 </Grid2>
@@ -270,18 +278,20 @@ const HealthBehaviorSection = ({
                                         fullWidth
                                         variant="standard"
                                         label={h.pulseRate}
+                                        {...nonNegativeNumberFieldProps()}
                                         value={
                                             formData.vitalSigns.pulseRate[
                                                 index
                                             ] || ""
                                         }
-                                        onChange={(e) =>
-                                            handleVitalSignChange(
-                                                "pulseRate",
-                                                index,
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={handleNonNegativeNumberChange(
+                                            (value) =>
+                                                handleVitalSignChange(
+                                                    "pulseRate",
+                                                    index,
+                                                    value
+                                                )
+                                        )}
                                         placeholder={h.pulsePlaceholder}
                                     />
                                 </Grid2>
@@ -291,18 +301,20 @@ const HealthBehaviorSection = ({
                                         fullWidth
                                         variant="standard"
                                         label={h.respiratoryRate}
+                                        {...nonNegativeNumberFieldProps()}
                                         value={
                                             formData.vitalSigns.respiratoryRate[
                                                 index
                                             ] || ""
                                         }
-                                        onChange={(e) =>
-                                            handleVitalSignChange(
-                                                "respiratoryRate",
-                                                index,
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={handleNonNegativeNumberChange(
+                                            (value) =>
+                                                handleVitalSignChange(
+                                                    "respiratoryRate",
+                                                    index,
+                                                    value
+                                                )
+                                        )}
                                         placeholder={h.respPlaceholder}
                                     />
                                 </Grid2>

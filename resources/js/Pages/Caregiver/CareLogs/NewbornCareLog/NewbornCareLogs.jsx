@@ -53,6 +53,11 @@ import {
     getNewbornFormStrings,
     parseNewbornFormLocale,
 } from "@/locales/careLogs/newbornCareLogForm";
+import {
+    getLocalStorage,
+    removeLocalStorage,
+    setLocalStorage,
+} from "@/utils/safeLocalStorage";
 
 // Test Data Generator - Add this after imports
 // const generateTestData = () => ({
@@ -796,20 +801,14 @@ const NewbornCareLogs = ({
     const [validationErrors, setValidationErrors] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const [formLocale, setFormLocale] = useState(() => {
-        if (typeof window === "undefined") {
-            return "en";
-        }
-        return parseNewbornFormLocale(
-            window.localStorage.getItem(NEWBORN_CARE_LOG_FORM_LOCALE_KEY),
-        );
-    });
+    const [formLocale, setFormLocale] = useState(() =>
+        parseNewbornFormLocale(
+            getLocalStorage(NEWBORN_CARE_LOG_FORM_LOCALE_KEY),
+        ),
+    );
 
     useEffect(() => {
-        window.localStorage.setItem(
-            NEWBORN_CARE_LOG_FORM_LOCALE_KEY,
-            formLocale,
-        );
+        setLocalStorage(NEWBORN_CARE_LOG_FORM_LOCALE_KEY, formLocale);
     }, [formLocale]);
 
     const strings = getNewbornFormStrings(formLocale);
@@ -1018,7 +1017,7 @@ const NewbornCareLogs = ({
 
     // Load draft from localStorage on mount
     useEffect(() => {
-        const savedDraft = localStorage.getItem(LOCAL_STORAGE_KEY);
+        const savedDraft = getLocalStorage(LOCAL_STORAGE_KEY);
         if (savedDraft) {
             try {
                 const parsed = JSON.parse(savedDraft);
@@ -1041,7 +1040,7 @@ const NewbornCareLogs = ({
 
     // Save draft to localStorage on every change
     useEffect(() => {
-        localStorage.setItem(
+        setLocalStorage(
             LOCAL_STORAGE_KEY,
             JSON.stringify(toStoredDraft(formData)),
         );
@@ -1071,7 +1070,7 @@ const NewbornCareLogs = ({
 
     // Clear draft helper
     const clearDraft = () => {
-        localStorage.removeItem(LOCAL_STORAGE_KEY);
+        removeLocalStorage(LOCAL_STORAGE_KEY);
     };
 
     const handleSubmit = async () => {

@@ -62,6 +62,11 @@ import {
     getElderlyFormStrings,
     parseElderlyFormLocale,
 } from "@/locales/careLogs/elderlyCareLogForm";
+import {
+    getLocalStorage,
+    removeLocalStorage,
+    setLocalStorage,
+} from "@/utils/safeLocalStorage";
 
 // Test Data Generator - Add this after imports
 const longNote =
@@ -618,6 +623,13 @@ const PreviewDialog = ({
                     return item.task || item.duration || item.notes;
                 case "supplies":
                     return item.item || item.quantity || item.purpose;
+                case "bloodGlucose":
+                    return (
+                        item.measurement_time ||
+                        item.glucose_level ||
+                        item.timing ||
+                        item.note
+                    );
                 default:
                     return true;
             }
@@ -704,6 +716,24 @@ const PreviewDialog = ({
                         }, Quantity: ${item.quantity || "N/A"}, Purpose: ${
                             item.purpose || "N/A"
                         }, Priority: ${item.priority || "N/A"}`;
+                    case "bloodGlucose": {
+                        const timingLabels = {
+                            fasting: "Fasting",
+                            random: "Random",
+                            "2hpp": "2H Post-Prandial (2HPP)",
+                        };
+                        const timingLabel =
+                            timingLabels[item.timing] ||
+                            item.timing ||
+                            "N/A";
+                        return `${index + 1}. Time: ${
+                            item.measurement_time || "N/A"
+                        }, Glucose: ${
+                            item.glucose_level || "N/A"
+                        } mg/dL, Timing: ${timingLabel}, Note: ${
+                            item.note || "None"
+                        }`;
+                    }
                     default:
                         return JSON.stringify(item);
                 }
@@ -752,6 +782,11 @@ const PreviewDialog = ({
                 .join("\n") || "No complete entries"
         );
     };
+
+    const bloodGlucosePreview = formatArrayData(
+        formData.bloodGlucose,
+        "bloodGlucose",
+    );
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -875,6 +910,30 @@ const PreviewDialog = ({
                 </Box>
 
                 <Divider sx={{ my: 2 }} />
+
+                {bloodGlucosePreview !== "No entries" && (
+                    <>
+                        <Box sx={{ mb: 3 }}>
+                            <Typography
+                                variant="h6"
+                                color="primary"
+                                gutterBottom
+                            >
+                                Blood Glucose Entries
+                            </Typography>
+                            <Typography
+                                component="pre"
+                                sx={{
+                                    whiteSpace: "pre-line",
+                                    fontSize: "0.875rem",
+                                }}
+                            >
+                                {bloodGlucosePreview}
+                            </Typography>
+                        </Box>
+                        <Divider sx={{ my: 2 }} />
+                    </>
+                )}
 
                 {/* Skin Care finding */}
                 <Box sx={{ mb: 3 }}>
@@ -1127,23 +1186,14 @@ const ElderlyCareLogs = ({
     const [validationErrors, setValidationErrors] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const [formLocale, setFormLocale] = useState(() => {
-        if (typeof window === "undefined") {
-            return "en";
-        }
-        return parseElderlyFormLocale(
-            window.localStorage.getItem(ELDERLY_CARE_LOG_FORM_LOCALE_KEY),
-        );
-    });
+    const [formLocale, setFormLocale] = useState(() =>
+        parseElderlyFormLocale(
+            getLocalStorage(ELDERLY_CARE_LOG_FORM_LOCALE_KEY),
+        ),
+    );
 
     useEffect(() => {
-        if (typeof window === "undefined") {
-            return;
-        }
-        window.localStorage.setItem(
-            ELDERLY_CARE_LOG_FORM_LOCALE_KEY,
-            formLocale,
-        );
+        setLocalStorage(ELDERLY_CARE_LOG_FORM_LOCALE_KEY, formLocale);
     }, [formLocale]);
 
     const strings = getElderlyFormStrings(formLocale);
@@ -1362,7 +1412,7 @@ const ElderlyCareLogs = ({
 
     // Load draft from localStorage on mount
     useEffect(() => {
-        const savedDraft = localStorage.getItem(LOCAL_STORAGE_KEY);
+        const savedDraft = getLocalStorage(LOCAL_STORAGE_KEY);
         if (savedDraft) {
             try {
                 const parsed = JSON.parse(savedDraft);
@@ -1385,7 +1435,7 @@ const ElderlyCareLogs = ({
 
     // Save draft to localStorage on every change
     useEffect(() => {
-        localStorage.setItem(
+        setLocalStorage(
             LOCAL_STORAGE_KEY,
             JSON.stringify(toStoredDraft(formData)),
         );
@@ -1415,7 +1465,7 @@ const ElderlyCareLogs = ({
 
     // Clear draft helper
     const clearDraft = () => {
-        localStorage.removeItem(LOCAL_STORAGE_KEY);
+        removeLocalStorage(LOCAL_STORAGE_KEY);
     };
 
     const handleSubmit = async () => {
@@ -1516,12 +1566,20 @@ const ElderlyCareLogs = ({
                     })),
 
                 vital_signs: transformVitalSigns(),
-                blood_glucose_records: formData.bloodGlucose.filter(
-                    (item) =>
-                        item.measurement_time ||
-                        item.glucose_level ||
-                        item.timing,
-                ),
+                blood_glucose_records: (formData.bloodGlucose || [])
+                    .filter(
+                        (item) =>
+                            item.measurement_time ||
+                            item.glucose_level ||
+                            item.timing ||
+                            item.note,
+                    )
+                    .map((item) => ({
+                        measurement_time: item.measurement_time || null,
+                        glucose_level: item.glucose_level || null,
+                        timing: item.timing || null,
+                        notes: item.note || null,
+                    })),
 
                 // Update accident_records to use the new field names and include severity
                 emergency_incidents: formData.accident

@@ -19,10 +19,34 @@
         <meta name="twitter:description" content="Geneva provides trusted nanny and caregiver services in Myanmar, including professional training for caregivers, baby care, elderly care, and maternal care. Book a qualified caregiver or join our training programs today!" />
         <meta name="twitter:image" content="{{ asset('/images/og-image.png') }}" />
 
-        <!-- Fonts -->
-       <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Outfit:wght@100..900&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+        <style>
+            #app-fallback {
+                min-height: 100vh;
+                margin: 0;
+                padding: 24px 16px;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                font-family: Lato, sans-serif;
+                color: #334155;
+                background: #f8fafc;
+            }
+            #app-fallback p {
+                margin: 0 0 8px;
+                font-size: 16px;
+                line-height: 1.5;
+            }
+            #app-fallback .app-fallback-hint {
+                font-size: 14px;
+                color: #64748b;
+            }
+            #app:not(:empty) + #app-fallback {
+                display: none;
+            }
+        </style>
         @routes
         @viteReactRefresh
         @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
@@ -34,5 +58,12 @@
     </head>
     <body class="font-sans antialiased">
         @inertia
+        <div id="app-fallback" role="status">
+            <p>Loading care log…</p>
+            <p class="app-fallback-hint">If this stays blank, open this link in Chrome.</p>
+        </div>
+        <noscript>
+            <p>This page needs JavaScript. Please enable it or open this link in Chrome.</p>
+        </noscript>
     </body>
 </html>

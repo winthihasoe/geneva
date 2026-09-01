@@ -21,6 +21,10 @@ import {
     Delete as DeleteIcon,
     Remove as RemoveFoodIcon,
 } from "@mui/icons-material";
+import {
+    handleNonNegativeNumberChange,
+    nonNegativeNumberFieldProps,
+} from "@/utils/nonNegativeNumberField";
 
 const MEAL_TYPE_ORDER = [
     "breakfast",
@@ -251,16 +255,17 @@ const IntakeOutput = ({
                                         fullWidth
                                         variant="standard"
                                         label={c.amount}
-                                        type="number"
+                                        {...nonNegativeNumberFieldProps()}
                                         value={item.amount}
-                                        onChange={(e) =>
-                                            handleArrayChange(
-                                                "intake",
-                                                index,
-                                                "amount",
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={handleNonNegativeNumberChange(
+                                            (value) =>
+                                                handleArrayChange(
+                                                    "intake",
+                                                    index,
+                                                    "amount",
+                                                    value
+                                                )
+                                        )}
                                         placeholder={io.intakeAmountPlaceholder}
                                     />
                                 </Grid2>
@@ -521,16 +526,17 @@ const IntakeOutput = ({
                                         fullWidth
                                         variant="standard"
                                         label={c.urineVolume}
-                                        type="number"
+                                        {...nonNegativeNumberFieldProps()}
                                         value={item.urine_volume}
-                                        onChange={(e) =>
-                                            handleArrayChange(
-                                                "output",
-                                                index,
-                                                "urine_volume",
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={handleNonNegativeNumberChange(
+                                            (value) =>
+                                                handleArrayChange(
+                                                    "output",
+                                                    index,
+                                                    "urine_volume",
+                                                    value
+                                                )
+                                        )}
                                         placeholder="500"
                                     />
                                 </Grid2>
@@ -698,14 +704,15 @@ const IntakeOutput = ({
                                 fullWidth
                                 variant="standard"
                                 label={c.totalFluidConsumed}
-                                type="number"
+                                {...nonNegativeNumberFieldProps()}
                                 value={formData.hydration.fluid_intake}
-                                onChange={(e) =>
-                                    handleInputChange("hydration", {
-                                        ...formData.hydration,
-                                        fluid_intake: e.target.value,
-                                    })
-                                }
+                                onChange={handleNonNegativeNumberChange(
+                                    (value) =>
+                                        handleInputChange("hydration", {
+                                            ...formData.hydration,
+                                            fluid_intake: value,
+                                        })
+                                )}
                                 placeholder={io.fluidPlaceholder}
                             />
                         </Grid2>

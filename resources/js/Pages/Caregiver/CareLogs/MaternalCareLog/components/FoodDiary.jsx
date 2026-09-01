@@ -23,6 +23,10 @@ import {
     Add as AddFoodIcon,
     Remove as RemoveFoodIcon,
 } from "@mui/icons-material";
+import {
+    handleNonNegativeNumberChange,
+    nonNegativeNumberFieldProps,
+} from "@/utils/nonNegativeNumberField";
 
 const FoodDiary = ({
     strings,
@@ -253,16 +257,17 @@ const FoodDiary = ({
                                         fullWidth
                                         variant="standard"
                                         label="Amount"
-                                        type="number"
+                                        {...nonNegativeNumberFieldProps()}
                                         value={item.amount}
-                                        onChange={(e) =>
-                                            handleArrayChange(
-                                                "intake",
-                                                index,
-                                                "amount",
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={handleNonNegativeNumberChange(
+                                            (value) =>
+                                                handleArrayChange(
+                                                    "intake",
+                                                    index,
+                                                    "amount",
+                                                    value
+                                                )
+                                        )}
                                         placeholder="250"
                                     />
                                 </Grid2>

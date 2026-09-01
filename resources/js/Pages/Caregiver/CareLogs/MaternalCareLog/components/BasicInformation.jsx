@@ -1,5 +1,9 @@
 import React from "react";
 import { Typography, TextField, Grid2, Card, CardContent } from "@mui/material";
+import {
+    handleNonNegativeNumberChange,
+    nonNegativeNumberFieldProps,
+} from "@/utils/nonNegativeNumberField";
 
 const demographicFieldProps = (lockPatientDemographics) =>
     lockPatientDemographics
@@ -112,12 +116,11 @@ const BasicInformation = ({
                             fullWidth
                             variant="standard"
                             label={b.weight}
-                            type="number"
-                            step="0.1"
+                            {...nonNegativeNumberFieldProps({ step: "0.1" })}
                             value={formData.weight}
-                            onChange={(e) =>
-                                handleInputChange("weight", e.target.value)
-                            }
+                            onChange={handleNonNegativeNumberChange((value) =>
+                                handleInputChange("weight", value)
+                            )}
                             placeholder={b.weightPlaceholder}
                         />
                     </Grid2>
@@ -126,12 +129,11 @@ const BasicInformation = ({
                             fullWidth
                             variant="standard"
                             label={b.height}
-                            type="number"
-                            step="0.1"
+                            {...nonNegativeNumberFieldProps({ step: "0.1" })}
                             value={formData.height}
-                            onChange={(e) =>
-                                handleInputChange("height", e.target.value)
-                            }
+                            onChange={handleNonNegativeNumberChange((value) =>
+                                handleInputChange("height", value)
+                            )}
                             placeholder={b.heightPlaceholder}
                         />
                     </Grid2>

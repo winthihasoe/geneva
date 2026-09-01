@@ -716,13 +716,14 @@ class CareLogController extends Controller
                 \Log::info('Processing blood glucose records...', ['count' => count($request->blood_glucose_records)]);
                 $glucoseRecords = [];
                 foreach ($request->blood_glucose_records as $glucose) {
-                    if (! empty($glucose['measurement_time']) || ! empty($glucose['glucose_level'])) {
+                    $glucoseNotes = $glucose['notes'] ?? $glucose['note'] ?? null;
+                    if (! empty($glucose['measurement_time']) || ! empty($glucose['glucose_level']) || ! empty($glucose['timing']) || ! empty($glucoseNotes)) {
                         $glucoseRecords[] = [
                             'care_log_id' => $careLog,
-                            'measurement_time' => $glucose['measurement_time'] ?? null,
+                            'measurement_time' => ! empty($glucose['measurement_time']) ? $glucose['measurement_time'] : null,
                             'glucose_level' => ! empty($glucose['glucose_level']) ? (float) $glucose['glucose_level'] : null,
-                            'timing' => $glucose['timing'] ?? null,
-                            'notes' => $glucose['notes'] ?? null,
+                            'timing' => ! empty($glucose['timing']) ? $glucose['timing'] : null,
+                            'notes' => ! empty($glucoseNotes) ? $glucoseNotes : null,
                             'created_at' => now(),
                             'updated_at' => now(),
                         ];
@@ -1222,13 +1223,14 @@ class CareLogController extends Controller
                 \Log::info('Processing blood glucose records...', ['count' => count($request->blood_glucose_records)]);
                 $glucoseRecords = [];
                 foreach ($request->blood_glucose_records as $glucose) {
-                    if (! empty($glucose['measurement_time']) || ! empty($glucose['glucose_level'])) {
+                    $glucoseNotes = $glucose['notes'] ?? $glucose['note'] ?? null;
+                    if (! empty($glucose['measurement_time']) || ! empty($glucose['glucose_level']) || ! empty($glucose['timing']) || ! empty($glucoseNotes)) {
                         $glucoseRecords[] = [
                             'care_log_id' => $careLog,
-                            'measurement_time' => $glucose['measurement_time'] ?? null,
+                            'measurement_time' => ! empty($glucose['measurement_time']) ? $glucose['measurement_time'] : null,
                             'glucose_level' => ! empty($glucose['glucose_level']) ? (float) $glucose['glucose_level'] : null,
-                            'timing' => $glucose['timing'] ?? null,
-                            'notes' => $glucose['notes'] ?? null,
+                            'timing' => ! empty($glucose['timing']) ? $glucose['timing'] : null,
+                            'notes' => ! empty($glucoseNotes) ? $glucoseNotes : null,
                             'created_at' => now(),
                             'updated_at' => now(),
                         ];

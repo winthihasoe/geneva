@@ -53,6 +53,11 @@ import {
     getBabyFormStrings,
     parseBabyFormLocale,
 } from "@/locales/careLogs/babyCareLogForm";
+import {
+    getLocalStorage,
+    removeLocalStorage,
+    setLocalStorage,
+} from "@/utils/safeLocalStorage";
 
 // Test Data Generator - Add this after imports
 // const generateTestData = () => ({
@@ -948,17 +953,12 @@ const BabyCareLogs = ({
     const [validationErrors, setValidationErrors] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const [formLocale, setFormLocale] = useState(() => {
-        if (typeof window === "undefined") {
-            return "en";
-        }
-        return parseBabyFormLocale(
-            window.localStorage.getItem(BABY_CARE_LOG_FORM_LOCALE_KEY),
-        );
-    });
+    const [formLocale, setFormLocale] = useState(() =>
+        parseBabyFormLocale(getLocalStorage(BABY_CARE_LOG_FORM_LOCALE_KEY)),
+    );
 
     useEffect(() => {
-        window.localStorage.setItem(BABY_CARE_LOG_FORM_LOCALE_KEY, formLocale);
+        setLocalStorage(BABY_CARE_LOG_FORM_LOCALE_KEY, formLocale);
     }, [formLocale]);
 
     const strings = getBabyFormStrings(formLocale);
@@ -1167,7 +1167,7 @@ const BabyCareLogs = ({
 
     // Load draft from localStorage on mount
     useEffect(() => {
-        const savedDraft = localStorage.getItem(LOCAL_STORAGE_KEY);
+        const savedDraft = getLocalStorage(LOCAL_STORAGE_KEY);
         if (savedDraft) {
             try {
                 const parsed = JSON.parse(savedDraft);
@@ -1190,7 +1190,7 @@ const BabyCareLogs = ({
 
     // Save draft to localStorage on every change
     useEffect(() => {
-        localStorage.setItem(
+        setLocalStorage(
             LOCAL_STORAGE_KEY,
             JSON.stringify(toStoredDraft(formData)),
         );
@@ -1220,7 +1220,7 @@ const BabyCareLogs = ({
 
     // Clear draft helper
     const clearDraft = () => {
-        localStorage.removeItem(LOCAL_STORAGE_KEY);
+        removeLocalStorage(LOCAL_STORAGE_KEY);
     };
 
     const handleSubmit = async () => {

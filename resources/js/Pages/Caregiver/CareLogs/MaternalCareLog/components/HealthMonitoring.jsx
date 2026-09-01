@@ -15,6 +15,10 @@ import {
     InputLabel,
 } from "@mui/material";
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import {
+    handleNonNegativeNumberChange,
+    nonNegativeNumberFieldProps,
+} from "@/utils/nonNegativeNumberField";
 
 const HealthMonitoring = ({
     strings,
@@ -204,21 +208,23 @@ const HealthMonitoring = ({
                                         fullWidth
                                         variant="standard"
                                         label={c.systolicBP}
-                                        type="number"
+                                        {...nonNegativeNumberFieldProps({
+                                            max: 300,
+                                        })}
                                         value={
                                             formData.vitalSigns
                                                 .bloodPressureSystolic[index] ||
                                             ""
                                         }
-                                        onChange={(e) =>
-                                            handleVitalSignChange(
-                                                "bloodPressureSystolic",
-                                                index,
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={handleNonNegativeNumberChange(
+                                            (value) =>
+                                                handleVitalSignChange(
+                                                    "bloodPressureSystolic",
+                                                    index,
+                                                    value
+                                                )
+                                        )}
                                         placeholder="120"
-                                        inputProps={{ min: 0, max: 300 }}
                                     />
                                 </Grid2>
 
@@ -227,22 +233,24 @@ const HealthMonitoring = ({
                                         fullWidth
                                         variant="standard"
                                         label={c.diastolicBP}
-                                        type="number"
+                                        {...nonNegativeNumberFieldProps({
+                                            max: 200,
+                                        })}
                                         value={
                                             formData.vitalSigns
                                                 .bloodPressureDiastolic[
                                                 index
                                             ] || ""
                                         }
-                                        onChange={(e) =>
-                                            handleVitalSignChange(
-                                                "bloodPressureDiastolic",
-                                                index,
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={handleNonNegativeNumberChange(
+                                            (value) =>
+                                                handleVitalSignChange(
+                                                    "bloodPressureDiastolic",
+                                                    index,
+                                                    value
+                                                )
+                                        )}
                                         placeholder="80"
-                                        inputProps={{ min: 0, max: 200 }}
                                     />
                                 </Grid2>
 
@@ -251,20 +259,22 @@ const HealthMonitoring = ({
                                         fullWidth
                                         variant="standard"
                                         label={c.temperature}
-                                        type="number"
-                                        step="0.1"
+                                        {...nonNegativeNumberFieldProps({
+                                            step: "0.1",
+                                        })}
                                         value={
                                             formData.vitalSigns.temperature[
                                                 index
                                             ] || ""
                                         }
-                                        onChange={(e) =>
-                                            handleVitalSignChange(
-                                                "temperature",
-                                                index,
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={handleNonNegativeNumberChange(
+                                            (value) =>
+                                                handleVitalSignChange(
+                                                    "temperature",
+                                                    index,
+                                                    value
+                                                )
+                                        )}
                                         placeholder="37.0"
                                     />
                                 </Grid2>
@@ -298,21 +308,23 @@ const HealthMonitoring = ({
                                         fullWidth
                                         variant="standard"
                                         label={c.pulseRate}
-                                        type="number"
+                                        {...nonNegativeNumberFieldProps({
+                                            max: 200,
+                                        })}
                                         value={
                                             formData.vitalSigns.pulseRate[
                                                 index
                                             ] || ""
                                         }
-                                        onChange={(e) =>
-                                            handleVitalSignChange(
-                                                "pulseRate",
-                                                index,
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={handleNonNegativeNumberChange(
+                                            (value) =>
+                                                handleVitalSignChange(
+                                                    "pulseRate",
+                                                    index,
+                                                    value
+                                                )
+                                        )}
                                         placeholder="70"
-                                        inputProps={{ min: 0, max: 200 }}
                                     />
                                 </Grid2>
 
@@ -321,21 +333,23 @@ const HealthMonitoring = ({
                                         fullWidth
                                         variant="standard"
                                         label={c.respiratoryRate}
-                                        type="number"
+                                        {...nonNegativeNumberFieldProps({
+                                            max: 100,
+                                        })}
                                         value={
                                             formData.vitalSigns.respiratoryRate[
                                                 index
                                             ] || ""
                                         }
-                                        onChange={(e) =>
-                                            handleVitalSignChange(
-                                                "respiratoryRate",
-                                                index,
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={handleNonNegativeNumberChange(
+                                            (value) =>
+                                                handleVitalSignChange(
+                                                    "respiratoryRate",
+                                                    index,
+                                                    value
+                                                )
+                                        )}
                                         placeholder="16"
-                                        inputProps={{ min: 0, max: 100 }}
                                     />
                                 </Grid2>
 
@@ -344,20 +358,22 @@ const HealthMonitoring = ({
                                         fullWidth
                                         variant="standard"
                                         label={c.spo2}
-                                        type="number"
+                                        {...nonNegativeNumberFieldProps({
+                                            max: 100,
+                                        })}
                                         value={
                                             formData.vitalSigns.spo2[index] ||
                                             ""
                                         }
-                                        onChange={(e) =>
-                                            handleVitalSignChange(
-                                                "spo2",
-                                                index,
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={handleNonNegativeNumberChange(
+                                            (value) =>
+                                                handleVitalSignChange(
+                                                    "spo2",
+                                                    index,
+                                                    value
+                                                )
+                                        )}
                                         placeholder="98"
-                                        inputProps={{ min: 0, max: 100 }}
                                     />
                                 </Grid2>
                             </Grid2>
@@ -467,18 +483,20 @@ const HealthMonitoring = ({
                                         fullWidth
                                         variant="standard"
                                         label={c.glucoseLevel}
-                                        type="number"
+                                        {...nonNegativeNumberFieldProps({
+                                            max: 1000,
+                                        })}
                                         value={item.glucose_level}
-                                        onChange={(e) =>
-                                            handleArrayChange(
-                                                "bloodGlucose",
-                                                index,
-                                                "glucose_level",
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={handleNonNegativeNumberChange(
+                                            (value) =>
+                                                handleArrayChange(
+                                                    "bloodGlucose",
+                                                    index,
+                                                    "glucose_level",
+                                                    value
+                                                )
+                                        )}
                                         placeholder="100"
-                                        inputProps={{ min: 0, max: 1000 }}
                                     />
                                 </Grid2>
 
