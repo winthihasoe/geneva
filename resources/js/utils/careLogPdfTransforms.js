@@ -2,6 +2,8 @@
  * Map API `careLogData` (care_log + related rows) into the shape expected by PDF generators.
  */
 
+import { caregiverNameFromCareLog } from "@/utils/genevaCareLogStrings";
+
 function parseFoodItemsJson(raw) {
     if (raw == null || raw === "") {
         return [];
@@ -77,7 +79,7 @@ export function transformNewbornCareLogToPdfFormData(careLogData) {
         weight: care_log.weight_kg,
         height: care_log.height_cm,
         additionalNotes: care_log.additional_notes,
-        caregiverName: care_log.caregiver_name,
+        caregiverName: caregiverNameFromCareLog(care_log, ""),
         caregiverSignature: care_log.caregiver_signature,
         guardianSignature: care_log.guardian_signature,
         guardianComment: care_log.guardian_comment,
@@ -153,7 +155,7 @@ export function transformBabyCareLogToPdfFormData(careLogData) {
         weight: care_log.weight_kg,
         height: care_log.height_cm,
         additionalNotes: care_log.additional_notes,
-        caregiverName: care_log.caregiver_name,
+        caregiverName: caregiverNameFromCareLog(care_log, ""),
         caregiverSignature: care_log.caregiver_signature,
         guardianSignature: care_log.guardian_signature,
         guardianComment: care_log.guardian_comment,
@@ -253,7 +255,7 @@ export function transformMaternalCareLogToPdfFormData(careLogData) {
         weight: care_log.weight_kg,
         height: care_log.height_cm,
         additionalNotes: care_log.additional_notes,
-        caregiverName: care_log.caregiver_name,
+        caregiverName: caregiverNameFromCareLog(care_log, ""),
         caregiverSignature: care_log.caregiver_signature,
         guardianSignature: care_log.guardian_signature,
         guardianComment: care_log.guardian_comment,
@@ -396,7 +398,7 @@ export function transformElderlyCareLogToPdfFormData(careLogData) {
         weight: care_log.weight_kg,
         height: care_log.height_cm,
         additionalNotes: care_log.additional_notes,
-        caregiverName: care_log.caregiver_name,
+        caregiverName: caregiverNameFromCareLog(care_log, ""),
         caregiverSignature: care_log.caregiver_signature,
         guardianSignature: care_log.guardian_signature,
         guardianComment: care_log.guardian_comment,

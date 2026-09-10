@@ -58,4 +58,7 @@ jobs:
             cd /var/www/geneva
             test -f public/build/manifest.json
             php artisan optimize
+            # artisan optimize runs as the SSH user; PHP-FPM must own compiled views
+            chown -R www-data:www-data storage bootstrap/cache
+            chmod -R ug+rwx storage bootstrap/cache
             systemctl reload php8.2-fpm

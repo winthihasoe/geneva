@@ -20,7 +20,10 @@ import { usePage } from "@inertiajs/react";
 import DownloadIcon from "@mui/icons-material/Download";
 import { generateMaternalCareLogPDF } from "@/utils/maternalCareLogPdfGenerator";
 import { transformMaternalCareLogToPdfFormData } from "@/utils/careLogPdfTransforms";
-import { genevaCareLogsGeneratedLine } from "@/utils/genevaCareLogStrings";
+import {
+    caregiverNameFromCareLog,
+    genevaCareLogsGeneratedLine,
+} from "@/utils/genevaCareLogStrings";
 import PregnantIcon from "@mui/icons-material/PregnantWoman";
 import HygieneIcon from "@mui/icons-material/CleanHands";
 import MedicationIcon from "@mui/icons-material/LocalPharmacy";
@@ -744,7 +747,7 @@ const ShowMaternalCareLogDetails = () => {
                                 Caregiver Name
                             </Typography>
                             <Typography variant="body1" mb={2}>
-                                {care_log.caregiver_name || "Not provided"}
+                                {caregiverNameFromCareLog(care_log)}
                             </Typography>
                         </Box>
                     </Grid>

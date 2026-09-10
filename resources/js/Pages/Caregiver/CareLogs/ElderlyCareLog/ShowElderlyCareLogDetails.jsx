@@ -22,7 +22,10 @@ import { usePage } from "@inertiajs/react";
 import DownloadIcon from "@mui/icons-material/Download";
 import { generateElderlyCareLogPDF } from "@/utils/elderlyCareLogPdfGenerator";
 import { transformElderlyCareLogToPdfFormData } from "@/utils/careLogPdfTransforms";
-import { genevaCareLogsGeneratedLine } from "@/utils/genevaCareLogStrings";
+import {
+    caregiverNameFromCareLog,
+    genevaCareLogsGeneratedLine,
+} from "@/utils/genevaCareLogStrings";
 import ElderlyIcon from "@mui/icons-material/Elderly";
 import HygieneIcon from "@mui/icons-material/CleanHands";
 import MedicationIcon from "@mui/icons-material/LocalPharmacy";
@@ -871,7 +874,7 @@ const ShowElderlyCareLogDetails = () => {
                                 Caregiver Name
                             </Typography>
                             <Typography variant="body1" mb={2}>
-                                {care_log.caregiver_name || "Not provided"}
+                                {caregiverNameFromCareLog(care_log)}
                             </Typography>
                         </Box>
                     </Grid>

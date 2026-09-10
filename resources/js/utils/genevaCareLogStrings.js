@@ -1,4 +1,13 @@
 /** Shared Geneva Care Logs branding line for detail views and PDFs. */
+export function caregiverNameFromCareLog(careLog, fallback = "Not provided") {
+    const fromAssignedCv =
+        careLog?.caregiver_display_name || careLog?.caregiver_full_name;
+    if (fromAssignedCv && fromAssignedCv !== "Not specified") {
+        return fromAssignedCv;
+    }
+    return careLog?.caregiver_name || fallback;
+}
+
 export function genevaCareLogsGeneratedLine() {
     const dateStr = new Date().toLocaleDateString("en-US", {
         year: "numeric",

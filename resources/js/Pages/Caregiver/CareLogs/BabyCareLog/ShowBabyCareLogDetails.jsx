@@ -21,7 +21,10 @@ import { usePage } from "@inertiajs/react";
 import DownloadIcon from "@mui/icons-material/Download";
 import { generateBabyCareLogPDF } from "@/utils/babyCareLogPdfGenerator";
 import { transformBabyCareLogToPdfFormData } from "@/utils/careLogPdfTransforms";
-import { genevaCareLogsGeneratedLine } from "@/utils/genevaCareLogStrings";
+import {
+    caregiverNameFromCareLog,
+    genevaCareLogsGeneratedLine,
+} from "@/utils/genevaCareLogStrings";
 import ChildCareIcon from "@mui/icons-material/ChildCare";
 import FeedingIcon from "@mui/icons-material/RestaurantMenu";
 import DiaperIcon from "@mui/icons-material/ChangeCircle";
@@ -562,7 +565,7 @@ const ShowBabyCareLogDetails = () => {
                                 Caregiver Name
                             </Typography>
                             <Typography variant="body1" mb={2}>
-                                {care_log.caregiver_name || "Not provided"}
+                                {caregiverNameFromCareLog(care_log)}
                             </Typography>
                         </Box>
                     </Grid>

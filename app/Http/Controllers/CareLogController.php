@@ -1390,15 +1390,23 @@ class CareLogController extends Controller
     public function getCareLogDataForPublic(int $careLogId, int $cvId, int $patientId, string $careType): array
     {
         $careLog = DB::table('care_logs')
-            ->where('id', $careLogId)
-            ->where('cv_id', $cvId)
-            ->where('patient_id', $patientId)
-            ->where('care_type', $careType)
+            ->select([
+                'care_logs.*',
+                'c_v_s.full_name as caregiver_full_name',
+            ])
+            ->leftJoin('c_v_s', 'care_logs.cv_id', '=', 'c_v_s.id')
+            ->where('care_logs.id', $careLogId)
+            ->where('care_logs.cv_id', $cvId)
+            ->where('care_logs.patient_id', $patientId)
+            ->where('care_logs.care_type', $careType)
             ->first();
 
         if (! $careLog) {
             abort(404, 'Care log not found or access denied');
         }
+
+        // Add caregiver name for display (assigned CV, not the typed form field)
+        $careLog->caregiver_display_name = $careLog->caregiver_full_name ?: 'Not specified';
 
         return array_merge(
             ['care_log' => $careLog],
@@ -1412,14 +1420,19 @@ class CareLogController extends Controller
         $user = Auth::user();
         $cvId = $user->cv ? $user->cv->id : null;
 
-        // Fetch the main care log
+        // Fetch the main care log with assigned caregiver info
         $careLogQuery = DB::table('care_logs')
-            ->where('id', $id)
-            ->where('cv_id', $cvId); // Ensure caregiver can only view their own logs
+            ->select([
+                'care_logs.*',
+                'c_v_s.full_name as caregiver_full_name',
+            ])
+            ->leftJoin('c_v_s', 'care_logs.cv_id', '=', 'c_v_s.id')
+            ->where('care_logs.id', $id)
+            ->where('care_logs.cv_id', $cvId); // Ensure caregiver can only view their own logs
 
         // Optional: Verify care type if provided
         if ($expectedCareType) {
-            $careLogQuery->where('care_type', $expectedCareType);
+            $careLogQuery->where('care_logs.care_type', $expectedCareType);
         }
 
         $careLog = $careLogQuery->first();
@@ -1427,6 +1440,9 @@ class CareLogController extends Controller
         if (! $careLog) {
             abort(404, 'Care log not found or access denied');
         }
+
+        // Add caregiver name for display (assigned CV, not the typed form field)
+        $careLog->caregiver_display_name = $careLog->caregiver_full_name ?: 'Not specified';
 
         return array_merge(
             ['care_log' => $careLog],
