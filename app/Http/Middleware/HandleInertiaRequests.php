@@ -32,13 +32,18 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        return [
+        $isPublicCareLog = $request->is('public/care-log*');
+        $ziggy = $isPublicCareLog
+            ? (new Ziggy('public-care-log'))->toArray()
+            : (new Ziggy)->toArray();
+
+        $shared = [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $isPublicCareLog ? null : $request->user(),
             ],
             'ziggy' => fn () => [
-                ...(new Ziggy)->toArray(),
+                ...$ziggy,
                 'location' => $request->url(),
             ],
             'flash' => function () use ($request) {
@@ -47,19 +52,21 @@ class HandleInertiaRequests extends Middleware
                     'error' => $request->session()->get('error'),
                 ];
             },
-            'carePlans' => $this->getCarePlan($request),
-            
-            // Get Services title from services table
-            'services' => DB::table('services')->pluck('name')->toArray(),
+        ];
 
-            // Get social media links from social_media table and cache for 12 hours
+        if ($isPublicCareLog) {
+            return $shared;
+        }
+
+        return [
+            ...$shared,
+            'carePlans' => $this->getCarePlan($request),
+            'services' => DB::table('services')->pluck('name')->toArray(),
             'socialMediaLinks' => cache()->remember(
                 'social_media_links',
                 1800,
                 fn () => DB::table('social_media')->pluck('name', 'url')->toArray()
             ),
-
-            // Add this for LINE ID
             'lineId' => DB::table('social_media')->where('name', 'LINE')->value('line_id'),
         ];
     }

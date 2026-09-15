@@ -1,11 +1,27 @@
-import React, { useMemo } from "react";
+import React, { lazy, Suspense, useMemo } from "react";
 import { Head, usePage } from "@inertiajs/react";
 import GuestCareLogLayout from "@/Layouts/GuestCareLogLayout";
 import { Alert, Box, Typography } from "@mui/material";
-import NewbornCareLogs from "@/Pages/Caregiver/CareLogs/NewbornCareLog/NewbornCareLogs";
-import BabyCareLogs from "@/Pages/Caregiver/CareLogs/BabyCareLog/BabyCareLogs";
-import MaternalCareLogs from "@/Pages/Caregiver/CareLogs/MaternalCareLog/MaternalCareLogs";
-import ElderlyCareLogs from "@/Pages/Caregiver/CareLogs/ElderlyCareLog/ElderlyCareLogs";
+
+const NewbornCareLogs = lazy(() =>
+    import("@/Pages/Caregiver/CareLogs/NewbornCareLog/NewbornCareLogs")
+);
+const BabyCareLogs = lazy(() =>
+    import("@/Pages/Caregiver/CareLogs/BabyCareLog/BabyCareLogs")
+);
+const MaternalCareLogs = lazy(() =>
+    import("@/Pages/Caregiver/CareLogs/MaternalCareLog/MaternalCareLogs")
+);
+const ElderlyCareLogs = lazy(() =>
+    import("@/Pages/Caregiver/CareLogs/ElderlyCareLog/ElderlyCareLogs")
+);
+
+const FORM_BY_TYPE = {
+    newborn: NewbornCareLogs,
+    baby: BabyCareLogs,
+    maternal: MaternalCareLogs,
+    elder: ElderlyCareLogs,
+};
 
 export default function PublicCareLogFill() {
     const { props } = usePage();
@@ -43,27 +59,20 @@ export default function PublicCareLogFill() {
         initialPatientPrefill: patientPrefill,
     };
 
-    let form = null;
-    switch (careType) {
-        case "newborn":
-            form = <NewbornCareLogs {...formProps} />;
-            break;
-        case "baby":
-            form = <BabyCareLogs {...formProps} />;
-            break;
-        case "maternal":
-            form = <MaternalCareLogs {...formProps} />;
-            break;
-        case "elder":
-            form = <ElderlyCareLogs {...formProps} />;
-            break;
-        default:
-            form = (
-                <Typography color="error">
-                    Unsupported care type for this patient.
-                </Typography>
-            );
-    }
+    const FormComponent = FORM_BY_TYPE[careType];
+    const form = FormComponent ? (
+        <Suspense
+            fallback={
+                <Typography color="text.secondary">Loading form…</Typography>
+            }
+        >
+            <FormComponent {...formProps} />
+        </Suspense>
+    ) : (
+        <Typography color="error">
+            Unsupported care type for this patient.
+        </Typography>
+    );
 
     return (
         <>
