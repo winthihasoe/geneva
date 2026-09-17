@@ -63,7 +63,7 @@ export default {
         firstName: "Baby's First Name *",
         lastName: "Baby's Last Name (Optional)",
         age: "Age *",
-        agePlaceholder: "e.g., 3 months, 2 weeks",
+        agePlaceholder: "e.g., 3 months, 1 year & 2 months",
         weight: "Weight (kg) (Optional)",
         weightPlaceholder: "e.g., 4.5",
         height: "Height (cm) (Optional)",

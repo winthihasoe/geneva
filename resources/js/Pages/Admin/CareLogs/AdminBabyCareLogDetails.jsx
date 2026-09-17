@@ -35,9 +35,11 @@ import {
     Mood as MoodIcon,
     AdminPanelSettings as AdminIcon,
 } from "@mui/icons-material";
-import { generateCareLogPDF } from "@/utils/pdfGenerator";
+import { generateBabyCareLogPDF } from "@/utils/babyCareLogPdfGenerator";
+import { transformBabyCareLogToPdfFormData } from "@/utils/careLogPdfTransforms";
 import ChildCareIcon from "@mui/icons-material/ChildCare";
 import FastfoodOutlinedIcon from "@mui/icons-material/FastfoodOutlined";
+import WcOutlinedIcon from "@mui/icons-material/WcOutlined";
 import BackButton from "@/Components/BackButton";
 
 function AdminBabyCareLogDetails() {
@@ -51,6 +53,7 @@ function AdminBabyCareLogDetails() {
         feeding_records,
         food_offered_records,
         diaper_changes,
+        toileting_training_records,
         sleep_records,
         activity_records,
         hygiene_records,
@@ -63,8 +66,8 @@ function AdminBabyCareLogDetails() {
 
         try {
             // Transform the care log data to the format expected by PDF generator
-            const formData = transformCareLogToFormData();
-            const result = await generateCareLogPDF(formData);
+            const formData = transformBabyCareLogToPdfFormData(careLogData);
+            const result = await generateBabyCareLogPDF(formData);
 
             if (result.success) {
                 alert(
@@ -79,89 +82,6 @@ function AdminBabyCareLogDetails() {
         } finally {
             setIsGeneratingPDF(false);
         }
-    };
-
-    const transformCareLogToFormData = () => {
-        return {
-            date: care_log.care_date,
-            firstName: care_log.first_name,
-            lastName: care_log.last_name || "",
-            age: care_log.age_display,
-            weight: care_log.weight_kg,
-            height: care_log.height_cm,
-            additionalNotes: care_log.additional_notes,
-            caregiverName:
-                care_log.caregiver_display_name || care_log.caregiver_name,
-            caregiverSignature: care_log.caregiver_signature,
-            guardianSignature: care_log.guardian_signature,
-            guardianComment: care_log.guardian_comment,
-            mood: emotion_behavior?.mood,
-            symptoms: emotion_behavior?.symptoms,
-            medications: emotion_behavior?.medications,
-            feeding:
-                feeding_records?.map((record) => ({
-                    time: record.feeding_time,
-                    type: record.feeding_type,
-                    amount: record.amount,
-                    amount_unit: record.amount_unit,
-                    notes: record.notes,
-                })) || [],
-            diaperChanges:
-                diaper_changes?.map((record) => ({
-                    time: record.change_time,
-                    content: record.diaper_content,
-                    notes: record.notes,
-                })) || [],
-            sleep:
-                sleep_records?.map((record) => ({
-                    timeStarted: record.sleep_start_time,
-                    timeEnded: record.sleep_end_time,
-                    duration: record.duration,
-                    notes: record.notes,
-                })) || [],
-            activities:
-                activity_records?.map((record) => ({
-                    time: record.activity_time,
-                    activity: record.activity_type,
-                    duration: record.duration,
-                    details: record.notes,
-                })) || [],
-            hygiene:
-                hygiene_records?.map((record) => ({
-                    time: record.hygiene_time,
-                    activity: record.hygiene_activity,
-                    products: record.products_used,
-                    notes: record.notes,
-                })) || [],
-            vitalSigns: transformVitalSigns(),
-            requestedSupplies:
-                supply_requests?.map((record) => ({
-                    item: record.item,
-                    quantity: record.quantity,
-                    purpose: record.purpose,
-                    priority: record.priority,
-                })) || [],
-        };
-    };
-
-    const transformVitalSigns = () => {
-        const vitalSigns = {
-            times: [],
-            temperature: [],
-            temperatureUnit: [],
-            pulseRate: [],
-            respiratoryRate: [],
-        };
-
-        vital_signs?.forEach((sign) => {
-            vitalSigns.times.push(sign.measurement_time || "");
-            vitalSigns.temperature.push(sign.temperature || "");
-            vitalSigns.temperatureUnit.push(sign.temperature_unit || "C");
-            vitalSigns.pulseRate.push(sign.pulse_rate || "");
-            vitalSigns.respiratoryRate.push(sign.respiratory_rate || "");
-        });
-
-        return vitalSigns;
     };
 
     const formatDate = (dateString) => {
@@ -487,15 +407,11 @@ function AdminBabyCareLogDetails() {
                         {renderTableData(
                             food_offered_records || [],
                             [
-                                {
-                                    key: "meal_time",
-                                    label: "Time",
-                                    format: formatTime,
-                                },
+                                { key: "meal_time", label: "Meal Time" },
                                 { key: "food_offered", label: "Food" },
                                 { key: "quantity", label: "Quantity" },
                                 { key: "texture", label: "Texture" },
-                                { key: "reaction_notes", label: "Notes" },
+                                { key: "reaction_notes", label: "Reaction" },
                             ],
                             "No food offered records found"
                         )}
@@ -535,6 +451,49 @@ function AdminBabyCareLogDetails() {
                                 { key: "notes", label: "Notes" },
                             ],
                             "No diaper change records found"
+                        )}
+                    </CardContent>
+                </Card>
+
+                {/* Toileting and Training Records */}
+                <Card sx={{ mb: 3 }}>
+                    <CardContent>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 2,
+                                mb: 3,
+                            }}
+                        >
+                            <Avatar
+                                sx={{ bgcolor: "#e8eaf6", color: "#3f51b5" }}
+                            >
+                                <WcOutlinedIcon />
+                            </Avatar>
+                            <Typography variant="h5" fontWeight="bold">
+                                Toileting and Training Report
+                            </Typography>
+                        </Box>
+
+                        {renderTableData(
+                            toileting_training_records || [],
+                            [
+                                {
+                                    key: "time",
+                                    label: "Time",
+                                    format: formatTime,
+                                },
+                                {
+                                    key: "toilet_attempt",
+                                    label: "Toilet Attempt",
+                                },
+                                { key: "result", label: "Result" },
+                                { key: "type", label: "Type" },
+                                { key: "reaction", label: "Reaction" },
+                                { key: "notes", label: "Notes" },
+                            ],
+                            "No toileting training records found"
                         )}
                     </CardContent>
                 </Card>

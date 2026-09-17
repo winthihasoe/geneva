@@ -77,6 +77,16 @@ class CareLog extends Model
         return $this->hasMany(DiaperChange::class);
     }
 
+    public function foodOfferedRecords()
+    {
+        return $this->hasMany(FoodOfferedRecord::class);
+    }
+
+    public function toiletingTrainingRecords()
+    {
+        return $this->hasMany(ToiletingTrainingRecord::class);
+    }
+
     public function sleepRecords()
     {
         return $this->hasMany(SleepRecord::class);

@@ -260,6 +260,65 @@ class CareLogController extends Controller
                 }
             }
 
+            // Store weaning diet / food offered records (baby care log)
+            if ($request->food_offered_records && count($request->food_offered_records) > 0) {
+                $foodOfferedRecords = [];
+                foreach ($request->food_offered_records as $food) {
+                    if (
+                        ! empty($food['meal_time']) ||
+                        ! empty($food['food_offered']) ||
+                        ! empty($food['quantity']) ||
+                        ! empty($food['texture']) ||
+                        ! empty($food['reaction_notes'])
+                    ) {
+                        $foodOfferedRecords[] = [
+                            'care_log_id' => $careLog,
+                            'meal_time' => $food['meal_time'] ?? null,
+                            'food_offered' => $food['food_offered'] ?? null,
+                            'quantity' => $food['quantity'] ?? null,
+                            'texture' => $food['texture'] ?? null,
+                            'reaction_notes' => $food['reaction_notes'] ?? null,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                }
+                if (! empty($foodOfferedRecords)) {
+                    DB::table('food_offered_records')->insert($foodOfferedRecords);
+                }
+            }
+
+            // Store toileting training records (baby care log)
+            $toiletingPayload = $request->toileting_records ?? $request->toileting_training_records;
+            if ($toiletingPayload && count($toiletingPayload) > 0) {
+                $toiletingRecords = [];
+                foreach ($toiletingPayload as $toileting) {
+                    if (
+                        ! empty($toileting['time']) ||
+                        ! empty($toileting['toilet_attempt']) ||
+                        ! empty($toileting['result']) ||
+                        ! empty($toileting['type']) ||
+                        ! empty($toileting['reaction']) ||
+                        ! empty($toileting['notes'])
+                    ) {
+                        $toiletingRecords[] = [
+                            'care_log_id' => $careLog,
+                            'time' => $toileting['time'] ?? null,
+                            'toilet_attempt' => $toileting['toilet_attempt'] ?? null,
+                            'result' => $toileting['result'] ?? null,
+                            'type' => $toileting['type'] ?? null,
+                            'reaction' => $toileting['reaction'] ?? null,
+                            'notes' => $toileting['notes'] ?? null,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                }
+                if (! empty($toiletingRecords)) {
+                    DB::table('toileting_training_records')->insert($toiletingRecords);
+                }
+            }
+
             DB::commit();
             \Log::info('Transaction committed successfully');
 
@@ -1544,8 +1603,25 @@ class CareLogController extends Controller
             ->orderBy('record_time')
             ->get();
 
+        $loadBabyWeaningToileting = $expectedCareType === 'baby';
+        if ($loadBabyWeaningToileting) {
+            $foodOfferedRecords = DB::table('food_offered_records')
+                ->where('care_log_id', $id)
+                ->orderBy('id')
+                ->get();
+            $toiletingTrainingRecords = DB::table('toileting_training_records')
+                ->where('care_log_id', $id)
+                ->orderBy('time')
+                ->get();
+        } else {
+            $foodOfferedRecords = [];
+            $toiletingTrainingRecords = [];
+        }
+
         return [
             'feeding_records' => $feedingRecords,
+            'food_offered_records' => $foodOfferedRecords,
+            'toileting_training_records' => $toiletingTrainingRecords,
             'diaper_changes' => $diaperChangeRecords,
             'emotion_behavior' => $emotionBehavior,
             'hygiene_records' => $hygieneRecords,

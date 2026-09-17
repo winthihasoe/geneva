@@ -63,7 +63,7 @@ export default {
         firstName: "ကလေး အမည် (ပထမ) *",
         lastName: "ကလေး အမည် (နောက်ဆုံး) — မထည့်လည်း ရ",
         age: "အသက် *",
-        agePlaceholder: "ဥပမာ — 3 လ၊ 2 ပတ်",
+        agePlaceholder: "ဥပမာ — 3 လ၊ 1 year & 2 months",
         weight: "ကိုယ်အလေးချိန် (kg) — မထည့်လည်း ရ",
         weightPlaceholder: "ဥပမာ — 4.5",
         height: "အရပ် (cm) — မထည့်လည်း ရ",
