@@ -9,67 +9,81 @@ import {
     Paper,
     Avatar,
     Container,
+    alpha,
 } from "@mui/material";
 import { Head } from "@inertiajs/react";
 import { router } from "@inertiajs/react";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import WorkIcon from "@mui/icons-material/Work";
-import PersonIcon from "@mui/icons-material/Person";
-import MessageIcon from "@mui/icons-material/Message";
-import AssignmentIcon from "@mui/icons-material/Assignment";
+import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+import AccessibleIcon from "@mui/icons-material/Accessible";
 import CareLogSection from "./components/CareLogSection";
+import MonthlyColumnChart from "./components/MonthlyColumnChart";
+import RecentNotesSection from "./components/RecentNotesSection";
+import { dashboardPaperSx, dashboardShadow } from "./dashboardSurface";
 
 function Dashboard({
-    totalCaregivers,
-    totalJobApplies,
-    totalPatients,
-    totalContactMessages,
-    totalCareLogs,
+    occupiedCaregivers = 0,
+    availableCaregivers = 0,
+    recruitJobApplies = 0,
+    pendingJobApplies = 0,
+    openInquiries = 0,
+    confirmedCases = 0,
+    childCarePatients = 0,
+    elderlyCarePatients = 0,
     recentCareLogs = [],
     missingCareLogWarnings = [],
     recentCareLogDays = 3,
+    latestComplaints = [],
+    latestFeedbacks = [],
+    caseTrend = [],
+    recruitmentTrend = [],
 }) {
     const stats = [
         {
-            title: "Total Caregivers",
-            value: totalCaregivers,
-            icon: <PeopleAltIcon sx={{ fontSize: { xs: 22, sm: 32, lg: 40 } }} />,
-            color: "#4CAF50",
-            bgColor: "#E8F5E8",
+            title: "Caregivers",
+            icon: <PeopleAltIcon sx={{ fontSize: { xs: 18, sm: 28 } }} />,
+            color: "#2E7D32",
+            darkColor: "#81C784",
             route: "admin.cv.all",
+            metrics: [
+                { label: "Occupied", value: occupiedCaregivers },
+                { label: "Available", value: availableCaregivers },
+            ],
         },
         {
             title: "Job Applications",
-            value: totalJobApplies,
-            icon: <WorkIcon sx={{ fontSize: { xs: 22, sm: 32, lg: 40 } }} />,
-            color: "#2196F3",
-            bgColor: "#E3F2FD",
+            icon: <WorkIcon sx={{ fontSize: { xs: 18, sm: 28 } }} />,
+            color: "#1565C0",
+            darkColor: "#64B5F6",
             route: "admin.job.apply",
+            metrics: [
+                { label: "Recruit", value: recruitJobApplies },
+                { label: "Pending", value: pendingJobApplies },
+            ],
         },
         {
-            title: "Total Care Logs",
-            value: totalCareLogs,
-            icon: <AssignmentIcon sx={{ fontSize: { xs: 22, sm: 32, lg: 40 } }} />,
-            color: "#FF9800",
-            bgColor: "#FFF3E0",
-            route: "admin.care.logs",
+            title: "Inquiries",
+            icon: <AssignmentIndIcon sx={{ fontSize: { xs: 18, sm: 28 } }} />,
+            color: "#EF6C00",
+            darkColor: "#FFB74D",
+            route: "admin.cases.index",
+            metrics: [
+                { label: "Open", value: openInquiries },
+                { label: "Confirmed", value: confirmedCases },
+            ],
         },
         {
-            title: "Messages",
-            value: totalContactMessages,
-            icon: <MessageIcon sx={{ fontSize: { xs: 22, sm: 32, lg: 40 } }} />,
-            color: "#9C27B0",
-            bgColor: "#F3E5F5",
-            route: "admin.messages",
+            title: "Patients",
+            icon: <AccessibleIcon sx={{ fontSize: { xs: 18, sm: 28 } }} />,
+            color: "#7B1FA2",
+            darkColor: "#CE93D8",
+            route: "admin.patients",
+            metrics: [
+                { label: "Child Care", value: childCarePatients },
+                { label: "Elderly Care", value: elderlyCarePatients },
+            ],
         },
-        // {
-        //     title: "Total Patients",
-        //     value: totalPatients,
-        //     icon: <PersonIcon sx={{ fontSize: 40 }} />,
-        //     color: "#FF9800",
-        //     bgColor: "#FFF3E0",
-        //     route: "admin.patients",
-        // },
     ];
 
     return (
@@ -79,32 +93,37 @@ function Dashboard({
                 <Typography
                     variant="h4"
                     fontWeight="bold"
-                    mb={4}
+                    mb={{ xs: 2, sm: 4 }}
                     color="primary"
+                    sx={{ fontSize: { xs: "1.5rem", sm: "2rem" } }}
                 >
                     Admin Dashboard
                 </Typography>
 
-                <Grid2 container spacing={{ xs: 1.5, sm: 2, lg: 3 }} mb={4}>
-                    {stats.map((stat, index) => (
-                        <Grid2 key={index} size={{ xs: 6, lg: 3 }}>
+                <Grid2 container spacing={{ xs: 1, sm: 2, lg: 3 }} mb={2}>
+                    {stats.map((stat) => (
+                        <Grid2 key={stat.title} size={{ xs: 6, lg: 3 }}>
                             <Card
                                 sx={{
+                                    ...dashboardPaperSx,
                                     cursor: "pointer",
                                     height: "100%",
-                                    borderRadius: 3,
-                                    boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
                                     transition: "all 0.3s ease",
                                     "&:hover": {
-                                        transform: "translateY(-5px)",
-                                        boxShadow:
-                                            "0 8px 30px rgba(0,0,0,0.12)",
+                                        transform: "translateY(-4px)",
+                                        boxShadow: (theme) =>
+                                            dashboardShadow(theme, true),
                                     },
                                 }}
                                 onClick={() => router.get(route(stat.route))}
                             >
                                 <CardContent
-                                    sx={{ p: { xs: 1.5, sm: 2, lg: 3 } }}
+                                    sx={{
+                                        p: { xs: 1.25, sm: 2.5 },
+                                        "&:last-child": {
+                                            pb: { xs: 1.25, sm: 2.5 },
+                                        },
+                                    }}
                                 >
                                     <Box
                                         sx={{
@@ -115,51 +134,148 @@ function Dashboard({
                                     >
                                         <Avatar
                                             sx={{
-                                                bgcolor: stat.bgColor,
-                                                color: stat.color,
-                                                width: { xs: 40, sm: 52, lg: 60 },
-                                                height: { xs: 40, sm: 52, lg: 60 },
-                                                mr: { xs: 1, sm: 2 },
+                                                bgcolor: (theme) =>
+                                                    alpha(
+                                                        theme.palette.mode ===
+                                                            "dark"
+                                                            ? stat.darkColor
+                                                            : stat.color,
+                                                        theme.palette.mode ===
+                                                            "dark"
+                                                            ? 0.24
+                                                            : 0.14,
+                                                    ),
+                                                color: (theme) =>
+                                                    theme.palette.mode ===
+                                                    "dark"
+                                                        ? stat.darkColor
+                                                        : stat.color,
+                                                width: { xs: 28, sm: 48 },
+                                                height: { xs: 28, sm: 48 },
+                                                mr: { xs: 0.75, sm: 1.5 },
                                             }}
                                         >
                                             {stat.icon}
                                         </Avatar>
-                                        <Box>
-                                            <Typography
-                                                variant="h3"
-                                                fontWeight="bold"
-                                                color={stat.color}
+                                        <Typography
+                                            fontWeight={600}
+                                            color="text.primary"
+                                            sx={{
+                                                fontSize: {
+                                                    xs: "0.78rem",
+                                                    sm: "1.05rem",
+                                                },
+                                                lineHeight: 1.2,
+                                            }}
+                                        >
+                                            {stat.title}
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ display: "flex" }}>
+                                        {stat.metrics.map((metric, index) => (
+                                            <Box
+                                                key={metric.label}
                                                 sx={{
-                                                    fontSize: {
-                                                        xs: "1.5rem",
-                                                        sm: "2rem",
-                                                        lg: "3rem",
-                                                    },
+                                                    flex: 1,
+                                                    minWidth: 0,
+                                                    pl: index === 0 ? 0 : { xs: 0.75, sm: 1.5 },
+                                                    ml: index === 0 ? 0 : { xs: 0.75, sm: 1.5 },
+                                                    borderLeft:
+                                                        index === 0
+                                                            ? "none"
+                                                            : "1px solid",
+                                                    borderColor: "divider",
                                                 }}
                                             >
-                                                {stat.value}
-                                            </Typography>
-                                        </Box>
+                                                <Typography
+                                                    fontWeight={700}
+                                                    sx={{
+                                                        color: (theme) =>
+                                                            theme.palette
+                                                                .mode === "dark"
+                                                                ? stat.darkColor
+                                                                : stat.color,
+                                                        fontSize: {
+                                                            xs: "1.25rem",
+                                                            sm: "2rem",
+                                                        },
+                                                        lineHeight: 1.1,
+                                                    }}
+                                                >
+                                                    {metric.value}
+                                                </Typography>
+                                                <Typography
+                                                    color="text.secondary"
+                                                    sx={{
+                                                        mt: 0.25,
+                                                        fontSize: {
+                                                            xs: "0.68rem",
+                                                            sm: "0.85rem",
+                                                        },
+                                                        lineHeight: 1.2,
+                                                    }}
+                                                >
+                                                    {metric.label}
+                                                </Typography>
+                                            </Box>
+                                        ))}
                                     </Box>
-                                    <Typography
-                                        variant="h6"
-                                        color="text.secondary"
-                                        fontWeight={500}
-                                        sx={{
-                                            fontSize: {
-                                                xs: "0.85rem",
-                                                sm: "1rem",
-                                                lg: "1.25rem",
-                                            },
-                                        }}
-                                    >
-                                        {stat.title}
-                                    </Typography>
                                 </CardContent>
                             </Card>
                         </Grid2>
                     ))}
                 </Grid2>
+
+                <Grid2 container spacing={{ xs: 1.5, sm: 2 }} mb={2}>
+                    <Grid2 size={{ xs: 12, md: 6 }}>
+                        <MonthlyColumnChart
+                            title="Inquiries and confirmations"
+                            caption="Last 6 months. Percent is confirmed ÷ cases."
+                            series={[
+                                {
+                                    key: "inquiries",
+                                    label: "Inquiries",
+                                    color: "#EF6C00",
+                                },
+                                {
+                                    key: "confirmed",
+                                    label: "Confirmed",
+                                    color: "#875cd1",
+                                },
+                                {
+                                    key: "cancelled",
+                                    label: "Cancelled",
+                                    color: "#9E9E9E",
+                                },
+                            ]}
+                            months={caseTrend}
+                        />
+                    </Grid2>
+                    <Grid2 size={{ xs: 12, md: 6 }}>
+                        <MonthlyColumnChart
+                            title="Recruitment and CVs"
+                            caption="Last 6 months. Percent is the CV rate."
+                            series={[
+                                {
+                                    key: "recruit",
+                                    label: "Recruitment",
+                                    color: "#2196F3",
+                                },
+                                {
+                                    key: "cvs",
+                                    label: "CV",
+                                    color: "#4CAF50",
+                                },
+                            ]}
+                            months={recruitmentTrend}
+                        />
+                    </Grid2>
+                </Grid2>
+
+                <RecentNotesSection
+                    complaints={latestComplaints}
+                    feedbacks={latestFeedbacks}
+                />
 
                 <CareLogSection
                     recentCareLogs={recentCareLogs}
@@ -168,15 +284,9 @@ function Dashboard({
                 />
 
                 {/* Additional Dashboard Content */}
-                <Grid2 container spacing={3}>
+                <Grid2 container spacing={2}>
                     <Grid2 size={{ xs: 12, md: 8 }}>
-                        <Paper
-                            sx={{
-                                p: 3,
-                                borderRadius: 3,
-                                boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-                            }}
-                        >
+                        <Paper sx={{ ...dashboardPaperSx, p: { xs: 2, sm: 3 } }}>
                             <Typography variant="h6" fontWeight="bold" mb={2}>
                                 Quick Actions
                             </Typography>
@@ -185,10 +295,13 @@ function Dashboard({
                                     <Box
                                         sx={{
                                             p: 2,
-                                            bgcolor: "gray.100",
+                                            bgcolor: "action.hover",
+                                            color: "text.primary",
                                             borderRadius: 2,
                                             cursor: "pointer",
-                                            "&:hover": { bgcolor: "#EEEEEE" },
+                                            "&:hover": {
+                                                bgcolor: "action.selected",
+                                            },
                                         }}
                                         onClick={() =>
                                             router.get(route("admin.cv.all"))
@@ -206,10 +319,13 @@ function Dashboard({
                                     <Box
                                         sx={{
                                             p: 2,
-                                            bgcolor: "gray.100",
+                                            bgcolor: "action.hover",
+                                            color: "text.primary",
                                             borderRadius: 2,
                                             cursor: "pointer",
-                                            "&:hover": { bgcolor: "#EEEEEE" },
+                                            "&:hover": {
+                                                bgcolor: "action.selected",
+                                            },
                                         }}
                                         onClick={() =>
                                             router.get(route("admin.care.logs"))
@@ -227,13 +343,7 @@ function Dashboard({
                         </Paper>
                     </Grid2>
                     <Grid2 size={{ xs: 12, md: 4 }}>
-                        <Paper
-                            sx={{
-                                p: 3,
-                                borderRadius: 3,
-                                boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-                            }}
-                        >
+                        <Paper sx={{ ...dashboardPaperSx, p: { xs: 2, sm: 3 }, height: "100%" }}>
                             <Typography variant="h6" fontWeight="bold" mb={2}>
                                 System Status
                             </Typography>

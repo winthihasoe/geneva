@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CV;
+use App\Models\JobApply;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -264,12 +265,27 @@ class CVController extends Controller
     }
 
     // Admin Create CV for caregiver
-    public function adminCreateCV()
+    public function adminCreateCV(Request $request)
     {
         // check is the user is admin
         if (auth()->user()->isAdmin()) {
+            $cvData = null;
+
+            if ($request->filled('job_apply_id')) {
+                $apply = JobApply::findOrFail($request->input('job_apply_id'));
+
+                if ($apply->cv_id) {
+                    return redirect()
+                        ->route('admin.cv.single', $apply->cv_id)
+                        ->with('success', 'This candidate is already linked to a CV.');
+                }
+
+                abort_unless($apply->canLinkCv(), 403);
+                $cvData = $apply->cvFormDefaults();
+            }
+
             return Inertia::render('Admin/CV/AdminCreateCV', [
-                'cvData' =>  null,
+                'cvData' => $cvData,
                 'newbornBasicCare' => DB::table('newborn_basic_care')->get(),
                 'newbornAdvancedCare' => DB::table('newborn_advanced_care')->get(),
                 'nannyBasicCare' => DB::table('nanny_basic_care')->get(),
@@ -385,7 +401,19 @@ class CVController extends Controller
 
 
             // Remove unnecessary fields from existing CV data
-            unset($data['id'], $data['created_at'], $data['updated_at']);
+            unset($data['id'], $data['created_at'], $data['updated_at'], $data['job_apply_id']);
+
+            $jobApplyToLink = null;
+            if (! $request->input('cv_id') && $request->filled('job_apply_id')) {
+                $jobApplyToLink = JobApply::query()->find($request->input('job_apply_id'));
+
+                if (! $jobApplyToLink || ! $jobApplyToLink->canLinkCv()) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'This candidate cannot be linked to a new CV.',
+                    ], $jobApplyToLink ? 403 : 404);
+                }
+            }
 
             Log::info('Data to be saved:', $data);
 
@@ -397,6 +425,10 @@ class CVController extends Controller
             } else {
                 // If the last cv is completed, create a new row for a new resume
                $cv = CV::create($data);
+
+               if ($jobApplyToLink) {
+                   $jobApplyToLink->update(['cv_id' => $cv->id]);
+               }
 
                // Ensure geneva_id is saved
                 if (empty($cv->geneva_id)) {
@@ -483,13 +515,82 @@ class CVController extends Controller
             $query->whereJsonContains('services', $service);
         }
         
-        $cvs = $query->orderBy('id', 'desc')->paginate(20);
+        $cvs = $query->orderBy('id', 'desc')->paginate(50)->withQueryString();
+
+        $filters = $request->only(['status', 'service_area', 'services']);
+        $list = $request->input('view') === 'list'
+            ? $this->cvListPayload($request)
+            : null;
+
+        if ($list) {
+            $filters['view'] = 'list';
+        }
 
         return Inertia::render('Admin/CV/AdminCVs', [
             'cvs' => $cvs,
             'cvCount' => $cvCount,
-            'filters' => $request->only(['status', 'service_area', 'services']),
+            'filters' => $filters,
+            'listCvs' => $list['records'] ?? null,
+            'byArea' => $list['byArea'] ?? [],
         ]);
+    }
+
+    /**
+     * @return array{records: \Illuminate\Contracts\Pagination\LengthAwarePaginator, byArea: \Illuminate\Support\Collection}
+     */
+    private function cvListPayload(Request $request): array
+    {
+        $query = CV::query();
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('services')) {
+            $query->whereJsonContains('services', $request->services);
+        }
+
+        $byArea = (clone $query)
+            ->select('service_area', DB::raw('count(*) as total'))
+            ->groupBy('service_area')
+            ->pluck('total', 'service_area');
+
+        $records = (clone $query)
+            ->when($request->filled('service_area'), fn ($q) => $q->where('service_area', $request->service_area))
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->paginate(50)
+            ->withQueryString()
+            ->through(fn (CV $cv) => $this->listRecord($cv));
+
+        return [
+            'records' => $records,
+            'byArea' => $byArea,
+        ];
+    }
+
+    private function listRecord(CV $cv): array
+    {
+        return [
+            'id' => $cv->id,
+            'full_name' => $cv->full_name,
+            'created_at' => optional($cv->created_at)->format('Y-m-d H:i:s'),
+            'status' => $cv->status,
+            'gender' => $cv->gender,
+            'date_of_birth' => $cv->date_of_birth
+                ? Carbon::parse($cv->date_of_birth)->format('Y-m-d')
+                : null,
+            'service_area' => $cv->service_area,
+            'services' => $cv->services ?? [],
+            'level' => $cv->level,
+            'phone' => $cv->phone,
+            'height' => $cv->height,
+            'weight' => $cv->weight,
+            'reviews_avg_rating' => $cv->reviews_avg_rating,
+            'reviews_count' => $cv->reviews_count,
+        ];
     }
 
     // approve caregiver resume by admin
@@ -538,6 +639,8 @@ class CVController extends Controller
             ->orWhere('full_name', 'like', "%{$search}%")
             ->orWhere('nickname', 'like', "%{$search}%")
             ->orWhere('geneva_id', $search)
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
             ->get();
 
         return Inertia::render('Admin/CV/CVSearchResult', [

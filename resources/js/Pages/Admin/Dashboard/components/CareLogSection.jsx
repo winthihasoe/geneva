@@ -13,6 +13,7 @@ import {
     TableRow,
     Typography,
     Grid2,
+    alpha,
 } from "@mui/material";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
@@ -20,6 +21,7 @@ import ChildCareIcon from "@mui/icons-material/ChildCare";
 import ElderlyIcon from "@mui/icons-material/Elderly";
 import PersonIcon from "@mui/icons-material/Person";
 import PregnantWomanIcon from "@mui/icons-material/PregnantWoman";
+import { dashboardPaperSx } from "../dashboardSurface";
 
 function getCareTypeIcon(careType) {
     switch (careType) {
@@ -70,16 +72,9 @@ function CareLogSection({
     recentCareLogDays = 3,
 }) {
     return (
-        <Grid2 container spacing={3} mb={4}>
+        <Grid2 container spacing={2} mb={2}>
             <Grid2 size={{ xs: 12, md: 7 }}>
-                <Paper
-                    sx={{
-                        p: 3,
-                        borderRadius: 3,
-                        boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-                        height: "100%",
-                    }}
-                >
+                <Paper sx={{ ...dashboardPaperSx, p: { xs: 1.5, sm: 2 }, height: "100%" }}>
                     <Box
                         sx={{
                             display: "flex",
@@ -90,7 +85,13 @@ function CareLogSection({
                             flexWrap: "wrap",
                         }}
                     >
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
+                            }}
+                        >
                             <AssignmentIcon color="primary" />
                             <Typography variant="h6" fontWeight="bold">
                                 Recent Care Logs
@@ -109,16 +110,16 @@ function CareLogSection({
                             <Table size="small">
                                 <TableHead sx={{ bgcolor: "primary.main" }}>
                                     <TableRow>
-                                        <TableCell sx={{ color: "#fff" }}>
+                                        <TableCell sx={{ color: "primary.contrastText" }}>
                                             Date
                                         </TableCell>
-                                        <TableCell sx={{ color: "#fff" }}>
+                                        <TableCell sx={{ color: "primary.contrastText" }}>
                                             Patient
                                         </TableCell>
-                                        <TableCell sx={{ color: "#fff" }}>
+                                        <TableCell sx={{ color: "primary.contrastText" }}>
                                             Type
                                         </TableCell>
-                                        <TableCell sx={{ color: "#fff" }}>
+                                        <TableCell sx={{ color: "primary.contrastText" }}>
                                             Caregiver
                                         </TableCell>
                                     </TableRow>
@@ -132,17 +133,17 @@ function CareLogSection({
                                                 backgroundColor:
                                                     idx % 2 === 0
                                                         ? "background.paper"
-                                                        : "grey.50",
+                                                        : "background.default",
                                                 cursor: "pointer",
                                             }}
                                             onClick={() =>
                                                 router.get(
                                                     route(
                                                         getDetailsRoute(
-                                                            log.care_type
+                                                            log.care_type,
                                                         ),
-                                                        log.id
-                                                    )
+                                                        log.id,
+                                                    ),
                                                 )
                                             }
                                         >
@@ -170,11 +171,11 @@ function CareLogSection({
                                             <TableCell>
                                                 <Chip
                                                     icon={getCareTypeIcon(
-                                                        log.care_type
+                                                        log.care_type,
                                                     )}
                                                     label={log.care_type}
                                                     color={getCareTypeColor(
-                                                        log.care_type
+                                                        log.care_type,
                                                     )}
                                                     size="small"
                                                 />
@@ -198,14 +199,7 @@ function CareLogSection({
             </Grid2>
 
             <Grid2 size={{ xs: 12, md: 5 }}>
-                <Paper
-                    sx={{
-                        p: 3,
-                        borderRadius: 3,
-                        boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-                        height: "100%",
-                    }}
-                >
+                <Paper sx={{ ...dashboardPaperSx, p: { xs: 1.5, sm: 2 }, height: "100%" }}>
                     <Box
                         sx={{
                             display: "flex",
@@ -246,22 +240,54 @@ function CareLogSection({
                                             router.get(
                                                 route(
                                                     "admin.patient",
-                                                    warning.id
-                                                )
+                                                    warning.id,
+                                                ),
                                             )
                                         }
                                         sx={{
-                                            p: 1.5,
-                                            borderRadius: 2,
-                                            bgcolor:
-                                                warning.warning_type === "none"
-                                                    ? "#FFEBEE"
-                                                    : "#FFF8E1",
+                                            p: 1,
+                                            borderRadius: 1.5,
+                                            border: "1px solid",
+                                            borderColor: (theme) =>
+                                                alpha(
+                                                    theme.palette[
+                                                        warning.warning_type ===
+                                                        "none"
+                                                            ? "error"
+                                                            : "warning"
+                                                    ].main,
+                                                    0.4,
+                                                ),
+                                            bgcolor: (theme) =>
+                                                alpha(
+                                                    theme.palette[
+                                                        warning.warning_type ===
+                                                        "none"
+                                                            ? "error"
+                                                            : "warning"
+                                                    ].main,
+                                                    theme.palette.mode === "dark"
+                                                        ? 0.16
+                                                        : 0.08,
+                                                ),
                                             cursor: "pointer",
                                             "&:hover": {
-                                                opacity: 0.9,
+                                                bgcolor: (theme) =>
+                                                    alpha(
+                                                        theme.palette[
+                                                            warning.warning_type ===
+                                                            "none"
+                                                                ? "error"
+                                                                : "warning"
+                                                        ].main,
+                                                        theme.palette.mode ===
+                                                            "dark"
+                                                            ? 0.24
+                                                            : 0.14,
+                                                    ),
                                             },
                                         }}
+                                        hover
                                     >
                                         <Typography
                                             variant="body2"
@@ -287,7 +313,7 @@ function CareLogSection({
                                             color={
                                                 warning.warning_type === "none"
                                                     ? "error.main"
-                                                    : "warning.dark"
+                                                    : "warning.main"
                                             }
                                             fontWeight={600}
                                         >

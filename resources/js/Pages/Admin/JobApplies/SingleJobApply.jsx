@@ -1,44 +1,68 @@
 import BackButton from "@/Components/BackButton";
-import AgeCalculator from "@/Components/util/AgeCalculator";
 import ImageDialog from "@/Components/util/ImageDialog";
 import AdminLayout from "@/Layouts/AdminLayout";
-import { Head, router } from "@inertiajs/react";
-import {
-    Box,
-    Typography,
-    FormControl,
-    Select,
-    MenuItem,
-    Button,
-    Chip,
-} from "@mui/material";
+import JobApplyCvPanel from "@/Pages/Admin/JobApplies/components/JobApplyCvPanel";
+import JobApplyPipelineFields, {
+    interviewerNames,
+} from "@/Pages/Admin/JobApplies/components/JobApplyPipelineFields";
+import { Head, useForm } from "@inertiajs/react";
+import { Box, Typography, Button, Chip } from "@mui/material";
 import React, { useState } from "react";
 
-function SingleJobApply({ apply }) {
+function SingleJobApply({
+    apply,
+    branches = [],
+    genders = [],
+    staff = [],
+    decisions = [],
+    matchingCvs = [],
+}) {
     const [openImage, setOpenImage] = useState(false);
     const handleOpenImage = () => setOpenImage(true);
     const handleCloseImage = () => setOpenImage(false);
 
     const [selectedImage, setSelectedImage] = useState("");
-    const [status, setStatus] = useState(apply.status || "Pending");
+    const listUrl =
+        (typeof window !== "undefined" &&
+            sessionStorage.getItem("admin.job.apply.return")) ||
+        route("admin.job.apply");
+    const { data, setData, put, processing, errors } = useForm({
+        name: apply.name || "",
+        service_area: apply.service_area || "Yangon",
+        phone: apply.phone || "",
+        gender: apply.gender || "",
+        date_of_birth: apply.date_of_birth || "",
+        coordinated_by: apply.coordinated_by || "",
+        interviewed_by: interviewerNames(apply.interviewed_by),
+        cv_reported_date: apply.cv_reported_date || "",
+        interview_date: apply.interview_date || "",
+        training_start_date: apply.training_start_date || "",
+        assessment_date: apply.assessment_date || "",
+        interview_score: apply.interview_score || "",
+        interview_score_note: apply.interview_score_note || "",
+        interview_note: apply.interview_note || "",
+        decision: apply.decision || "pending",
+        assessment_score: apply.assessment_score || "",
+        training_note: apply.training_note || "",
+        assessment_note: apply.assessment_note || "",
+        notes: apply.notes || "",
+    });
 
-    const handleStatusUpdate = () => {
-        router.put(
-            route("admin.job.apply.update.status", apply.id),
-            { status },
-            {
-                preserveScroll: true,
-            }
-        );
+    const handlePipelineSubmit = (event) => {
+        event.preventDefault();
+        put(route("admin.job.apply.update", apply.id), {
+            preserveScroll: true,
+        });
     };
 
     const InfoRow = ({ label, value }) => (
         <Box
             sx={{
                 display: "flex",
-                mb: 2,
+                mb: 1.25,
                 borderBottom: "1px solid #e0e0e0",
-                pb: 1,
+                pb: 0.75,
+                gap: 1,
             }}
         >
             <Typography
@@ -46,7 +70,7 @@ function SingleJobApply({ apply }) {
                     fontSize: "0.875rem",
                     fontWeight: 600,
                     color: "text.secondary",
-                    minWidth: "140px",
+                    minWidth: "128px",
                 }}
             >
                 {label}:
@@ -66,89 +90,48 @@ function SingleJobApply({ apply }) {
     return (
         <AdminLayout>
             <Head title={apply.name} />
-            <BackButton />
+            <BackButton route={listUrl} label="Job Applies" />
             <Box
                 sx={{
-                    maxWidth: 700,
-                    boxShadow: 3,
-                    p: { xs: 2, sm: 3, md: 4 },
-                    borderRadius: 2,
-                    margin: "auto",
+                    display: "grid",
+                    gridTemplateColumns: {
+                        xs: "1fr",
+                        lg: "minmax(280px, 0.9fr) minmax(0, 1.15fr)",
+                    },
+                    gap: 2,
+                    alignItems: "start",
                     my: 2,
+                }}
+            >
+            <Box
+                sx={{
+                    order: { xs: 2, lg: 1 },
+                    boxShadow: 3,
+                    p: { xs: 2, sm: 2.5 },
+                    borderRadius: 2,
                     bgcolor: "background.paper",
+                    minWidth: 0,
                 }}
             >
                 <Typography
                     sx={{
                         textAlign: "center",
                         fontFamily: "Roboto Slab",
-                        fontSize: { xs: "1.25rem", sm: "1.5rem" },
+                        fontSize: { xs: "1.15rem", sm: "1.3rem" },
                         fontWeight: "bold",
                         color: "primary.main",
-                        mb: 3,
+                        mb: 2,
                     }}
                 >
                     Job Application Details
                 </Typography>
 
-                {/* Status Update Section */}
-                <Box
-                    sx={{
-                        mb: 4,
-                        p: 2,
-                        bgcolor: "grey.50",
-                        borderRadius: 2,
-                    }}
-                >
-                    <Typography
-                        sx={{
-                            fontSize: "0.875rem",
-                            fontWeight: 600,
-                            mb: 2,
-                            color: "text.secondary",
-                        }}
-                    >
-                        Application Status
-                    </Typography>
-                    <Box
-                        sx={{
-                            display: "flex",
-                            gap: 2,
-                            alignItems: "center",
-                            flexWrap: "wrap",
-                        }}
-                    >
-                        <FormControl size="small" sx={{ minWidth: 180 }}>
-                            <Select
-                                value={status}
-                                onChange={(e) => setStatus(e.target.value)}
-                            >
-                                <MenuItem value="Pending">Pending</MenuItem>
-                                <MenuItem value="Contacted">Contacted</MenuItem>
-                                <MenuItem value="Uncontactable">
-                                    Uncontactable
-                                </MenuItem>
-                                <MenuItem value="Refuse job">
-                                    Refuse Job
-                                </MenuItem>
-                            </Select>
-                        </FormControl>
-                        <Button
-                            variant="contained"
-                            size="small"
-                            onClick={handleStatusUpdate}
-                        >
-                            Save
-                        </Button>
-                    </Box>
-                </Box>
-
                 {/* Personal Information */}
                 <Typography
                     sx={{
-                        fontSize: "1rem",
+                        fontSize: "0.95rem",
                         fontWeight: 600,
-                        mb: 2,
+                        mb: 1.25,
                         color: "primary.main",
                     }}
                 >
@@ -175,10 +158,10 @@ function SingleJobApply({ apply }) {
                 {/* Contact Information */}
                 <Typography
                     sx={{
-                        fontSize: "1rem",
+                        fontSize: "0.95rem",
                         fontWeight: 600,
-                        mb: 2,
-                        mt: 3,
+                        mb: 1.25,
+                        mt: 2.5,
                         color: "primary.main",
                     }}
                 >
@@ -188,9 +171,10 @@ function SingleJobApply({ apply }) {
                 <Box
                     sx={{
                         display: "flex",
-                        mb: 2,
+                        mb: 1.25,
                         borderBottom: "1px solid #e0e0e0",
-                        pb: 1,
+                        pb: 0.75,
+                        gap: 1,
                     }}
                 >
                     <Typography
@@ -198,7 +182,7 @@ function SingleJobApply({ apply }) {
                             fontSize: "0.875rem",
                             fontWeight: 600,
                             color: "text.secondary",
-                            minWidth: "140px",
+                            minWidth: "128px",
                         }}
                     >
                         Phone Number:
@@ -230,10 +214,10 @@ function SingleJobApply({ apply }) {
                 {/* Service Area */}
                 <Typography
                     sx={{
-                        fontSize: "1rem",
+                        fontSize: "0.95rem",
                         fontWeight: 600,
-                        mb: 2,
-                        mt: 3,
+                        mb: 1.25,
+                        mt: 2.5,
                         color: "primary.main",
                     }}
                 >
@@ -279,10 +263,10 @@ function SingleJobApply({ apply }) {
                 {/* Professional Information */}
                 <Typography
                     sx={{
-                        fontSize: "1rem",
+                        fontSize: "0.95rem",
                         fontWeight: 600,
-                        mb: 2,
-                        mt: 3,
+                        mb: 1.25,
+                        mt: 2.5,
                         color: "primary.main",
                     }}
                 >
@@ -298,10 +282,10 @@ function SingleJobApply({ apply }) {
                 {/* Documents */}
                 <Typography
                     sx={{
-                        fontSize: "1rem",
+                        fontSize: "0.95rem",
                         fontWeight: 600,
-                        mb: 2,
-                        mt: 3,
+                        mb: 1.25,
+                        mt: 2.5,
                         color: "primary.main",
                     }}
                 >
@@ -434,7 +418,80 @@ function SingleJobApply({ apply }) {
                     )}
                 </Box>
             </Box>
-            <BackButton />
+
+            <Box
+                component="form"
+                onSubmit={handlePipelineSubmit}
+                autoComplete="off"
+                sx={{
+                    order: { xs: 1, lg: 2 },
+                    boxShadow: 3,
+                    p: { xs: 2, sm: 2.5 },
+                    borderRadius: 2,
+                    bgcolor: "background.paper",
+                    minWidth: 0,
+                }}
+            >
+                <Typography
+                    sx={{
+                        fontFamily: "Roboto Slab",
+                        fontSize: { xs: "1.1rem", sm: "1.25rem" },
+                        fontWeight: "bold",
+                        color: "primary.main",
+                        mb: 1,
+                    }}
+                >
+                    Recruitment process
+                </Typography>
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 1 }}
+                >
+                    Interview, status, training, and assessment stay on this
+                    same record.
+                </Typography>
+                <JobApplyPipelineFields
+                    data={data}
+                    setData={setData}
+                    errors={errors}
+                    branches={branches}
+                    genders={genders}
+                    staff={staff}
+                    decisions={decisions}
+                    includeProfile
+                    afterStatus={
+                        <JobApplyCvPanel
+                            apply={apply}
+                            matchingCvs={matchingCvs}
+                            embedded
+                        />
+                    }
+                />
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: { xs: "stretch", sm: "flex-end" },
+                        pt: 3,
+                        borderTop: "1px solid",
+                        borderColor: "divider",
+                    }}
+                >
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        disabled={processing}
+                        sx={{
+                            width: { xs: "100%", sm: "auto" },
+                            minWidth: { sm: 180 },
+                        }}
+                    >
+                        Save process
+                    </Button>
+                </Box>
+            </Box>
+            </Box>
+            <BackButton route={listUrl} label="Job Applies" />
 
             {/* Image Dialog */}
             <ImageDialog

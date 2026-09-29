@@ -8,6 +8,7 @@ use App\Http\Controllers\CareLogController;
 use App\Http\Controllers\CareLogPublicLinkController;
 use App\Http\Controllers\CarePlanController;
 use App\Http\Controllers\CarePlanPhotoController;
+use App\Models\CarePlanPhoto;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\CgDashboardController;
 use App\Http\Controllers\ContactMessageController;
@@ -18,7 +19,9 @@ use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\JobApplyController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\PerformanceRecordImportController;
 use App\Http\Controllers\PatientCaregiverAssignmentController;
+use App\Http\Controllers\CaseRecordController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PhoneVerificationController;
 use App\Http\Controllers\PublicCareLogController;
@@ -258,16 +261,25 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::get('patients/create', [PatientController::class, 'createPatient'])->name('admin.patient.create');
     Route::post('patients/create', [PatientController::class, 'store'])->name('admin.patient.store');
     Route::put('patients/{id}/update', [PatientController::class, 'update'])->name('admin.patient.update');
+    Route::post('patients/{id}/feedbacks', [PatientController::class, 'storeFeedback'])->name('admin.patient.feedbacks.store');
+    Route::delete('patients/feedbacks/{feedback}', [PatientController::class, 'destroyFeedback'])->name('admin.patient.feedbacks.destroy');
     Route::get('patients/search-result', [PatientController::class, 'adminSearchPatient'])->name('admin.patient.search');
+    Route::post('patients/{patient}/documents/{kind}', [CarePlanPhotoController::class, 'store'])
+        ->whereIn('kind', CarePlanPhoto::KINDS)
+        ->name('admin.patient.documents.store');
+    Route::get('patients/documents/{photo}', [CarePlanPhotoController::class, 'show'])
+        ->name('admin.patient.documents.show');
+    Route::delete('patients/documents/{photo}', [CarePlanPhotoController::class, 'destroy'])
+        ->name('admin.patient.documents.destroy');
     Route::get('patients/{id}', [PatientController::class, 'adminSinglePatient'])->name('admin.patient');
-    Route::post('patients/{patientId}', [CarePlanPhotoController::class, 'uploadPhotos'])->name('admin.carePlan.photo.upload');
-    Route::delete('care-plans-photos/{id}', [CarePlanPhotoController::class, 'deleteCarePlanPhoto'])->name('care.plan.delete');
 
     // Assign Caregiver to Patient
     Route::post('/admin/patient/caregiver/assign', [PatientCaregiverAssignmentController::class, 'assign'])->name('admin.patient.caregiver.assign');
     Route::post('/patient/caregiver/assign-additional', [PatientCaregiverAssignmentController::class, 'assignAdditional'])
         ->name('admin.patient.caregiver.assign.additional');
     Route::put('/admin/patient/caregiver/end/{id}', [PatientCaregiverAssignmentController::class, 'end'])->name('admin.patient.caregiver.end');
+    Route::post('/admin/patient/caregiver/{id}/notes', [PatientCaregiverAssignmentController::class, 'storeNote'])->name('admin.patient.caregiver.notes.store');
+    Route::delete('/admin/patient/caregiver/notes/{note}', [PatientCaregiverAssignmentController::class, 'destroyNote'])->name('admin.patient.caregiver.notes.destroy');
     Route::post(
         'patients/{patient}/assignments/{assignment}/public-care-log-link',
         [CareLogPublicLinkController::class, 'store']
@@ -289,9 +301,31 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::get('care-logs/{id}/elderly-details', [CareLogController::class, 'adminElderlyCareLogDetails'])->name('admin.carelog.elderly.details');
     Route::get('care-logs/{id}/elderly-details-preview', [CareLogController::class, 'adminShowElderlyCareLogDetails'])->name('admin.carelog.elderly.details.show');
 
+    Route::post('performance-records/import', [PerformanceRecordImportController::class, 'store'])
+        ->name('admin.performance-records.import');
+
+    Route::redirect('recruitment', '/admin/job-applies');
+    Route::get('recruitment/{any}', fn () => redirect()->route('admin.job.apply'))
+        ->where('any', '.*');
+
+    Route::get('cases', [CaseRecordController::class, 'index'])->name('admin.cases.index');
+    Route::get('cases/create', [CaseRecordController::class, 'create'])->name('admin.cases.create');
+    Route::post('cases', [CaseRecordController::class, 'store'])->name('admin.cases.store');
+    Route::get('cases/{case}/edit', [CaseRecordController::class, 'edit'])->name('admin.cases.edit');
+    Route::put('cases/{case}', [CaseRecordController::class, 'update'])->name('admin.cases.update');
+    Route::get('cases/{case}/patients/search', [CaseRecordController::class, 'searchPatients'])->name('admin.cases.patients.search');
+    Route::post('cases/{case}/patient', [CaseRecordController::class, 'linkPatient'])->name('admin.cases.link-patient');
+    Route::delete('cases/{case}/patient', [CaseRecordController::class, 'unlinkPatient'])->name('admin.cases.unlink-patient');
+
     // Job applies
     Route::get('job-applies', [JobApplyController::class, 'adminJobApplies'])->name('admin.job.apply');
+    Route::get('job-applies/create', [JobApplyController::class, 'adminCreate'])->name('admin.job.apply.create');
+    Route::post('job-applies', [JobApplyController::class, 'adminStore'])->name('admin.job.apply.store');
+    Route::get('job-applies/{id}/cvs/search', [JobApplyController::class, 'searchCvs'])->name('admin.job.apply.cvs.search');
+    Route::post('job-applies/{id}/cv', [JobApplyController::class, 'linkCv'])->name('admin.job.apply.link-cv');
+    Route::delete('job-applies/{id}/cv', [JobApplyController::class, 'unlinkCv'])->name('admin.job.apply.unlink-cv');
     Route::get('job-applies/{id}', [JobApplyController::class, 'adminSingleJobApply'])->name('admin.job.apply.single');
+    Route::put('job-applies/{id}', [JobApplyController::class, 'adminUpdate'])->name('admin.job.apply.update');
     Route::get('job-search-result', [JobApplyController::class, 'adminSearchJobApply'])->name('admin.job.apply.search');
     Route::put('/admin/job-applies/{id}/update-status', [JobApplyController::class, 'updateStatus'])->name('admin.job.apply.update.status');
 

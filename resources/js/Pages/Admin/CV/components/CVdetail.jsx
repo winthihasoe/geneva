@@ -2,6 +2,7 @@ import { Box, Divider, Grid2, Typography } from "@mui/material";
 import React from "react";
 import logo from "../../../../../../public/images/logo/logo.png";
 import AgeCalculator from "@/Components/util/AgeCalculator";
+import { CV_PHOTO_ASPECT_RATIO } from "@/Components/Forms/Media/cvPhotoFrame";
 
 const ResumeText = ({ children }) => (
     <Typography
@@ -51,7 +52,6 @@ function CVdetail({ cv }) {
                         <Box sx={{ m: { xs: 0.5, sm: 2, md: 3 } }}>
                             <Box
                                 sx={{
-                                    height: { xs: 160, sm: 250, md: 280 },
                                     backgroundColor: "primary.main",
                                     borderColor: "primary.main",
                                     borderWidth: 5,
@@ -60,18 +60,26 @@ function CVdetail({ cv }) {
                                     overflow: "hidden",
                                 }}
                             >
-                                <img
-                                    src={`/storage/${cv.profile_photo}`}
-                                    alt="Profile"
-                                    style={{
-                                        height: "100%",
+                                <Box
+                                    sx={{
+                                        position: "relative",
                                         width: "100%",
-                                        objectFit: "cover",
-                                        backgroundRepeat: "no-repeat",
-                                        backgroundPosition: "center",
-                                        backgroundColor: "gray",
+                                        aspectRatio: CV_PHOTO_ASPECT_RATIO,
                                     }}
-                                />
+                                >
+                                    <img
+                                        src={`/storage/${cv.profile_photo}`}
+                                        alt="Profile"
+                                        style={{
+                                            position: "absolute",
+                                            inset: 0,
+                                            height: "100%",
+                                            width: "100%",
+                                            objectFit: "cover",
+                                            objectPosition: "center",
+                                        }}
+                                    />
+                                </Box>
                             </Box>
                             <Typography
                                 textAlign={"center"}

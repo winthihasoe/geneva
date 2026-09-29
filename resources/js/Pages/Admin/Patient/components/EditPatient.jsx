@@ -16,6 +16,7 @@ import {
     FormControlLabel,
     Radio,
 } from "@mui/material";
+import { PATIENT_TYPE_OPTIONS } from "@/utils/careTypeLabel";
 import { useForm } from "@inertiajs/react";
 
 function EditPatient({ open, onClose, patient }) {
@@ -90,10 +91,14 @@ function EditPatient({ open, onClose, patient }) {
                                     required
                                     label="Type *"
                                 >
-                                    <MenuItem value="Elder">Elder</MenuItem>
-                                    <MenuItem value="Baby">Baby</MenuItem>
-                                    <MenuItem value="Newborn">Newborn</MenuItem>
-                                    <MenuItem value="Maternal">Maternal</MenuItem>
+                                    {PATIENT_TYPE_OPTIONS.map((option) => (
+                                        <MenuItem
+                                            key={option.value}
+                                            value={option.value}
+                                        >
+                                            {option.label}
+                                        </MenuItem>
+                                    ))}
                                 </Select>
                             </FormControl>
                         </Grid2>

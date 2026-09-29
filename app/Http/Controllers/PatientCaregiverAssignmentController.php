@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CaregiverAssignmentNote;
 use App\Models\PatientCaregiverAssignment;
 use App\Models\CV;
 use Illuminate\Http\Request;
@@ -92,13 +93,17 @@ class PatientCaregiverAssignmentController extends Controller
 
     public function end(Request $request, $id)
     {
+        $assignment = PatientCaregiverAssignment::findOrFail($id);
+
         $validated = $request->validate([
             'end_reason' => 'required|string|max:500',
+            'end_date' => 'required|date|after_or_equal:'.$assignment->start_date->toDateString(),
+        ], [
+            'end_date.after_or_equal' => 'End date must be on or after the assignment start date.',
         ]);
 
-        $assignment = PatientCaregiverAssignment::findOrFail($id);
         $assignment->update([
-            'end_date' => now(),
+            'end_date' => $validated['end_date'],
             'end_reason' => $validated['end_reason'],
         ]);
 
@@ -106,5 +111,37 @@ class PatientCaregiverAssignmentController extends Controller
         CV::where('id', $assignment->cv_id)->update(['status' => 'Available']);
 
         return redirect()->back()->with('success', 'Assignment ended successfully');
+    }
+
+    public function storeNote(Request $request, $id)
+    {
+        $assignment = PatientCaregiverAssignment::findOrFail($id);
+
+        $request->merge([
+            'body' => trim((string) $request->input('body')),
+        ]);
+
+        $validated = $request->validate([
+            'kind' => 'required|in:feedback,complaint',
+            'body' => 'required|string|max:5000',
+        ]);
+
+        $assignment->notes()->create([
+            'kind' => $validated['kind'],
+            'body' => $validated['body'],
+            'recorded_by' => Auth::id(),
+        ]);
+
+        $label = $validated['kind'] === 'complaint' ? 'Complaint' : 'Feedback';
+
+        return redirect()->back()->with('success', $label.' saved.');
+    }
+
+    public function destroyNote(CaregiverAssignmentNote $note)
+    {
+        $label = $note->kind === 'complaint' ? 'Complaint' : 'Feedback';
+        $note->delete();
+
+        return redirect()->back()->with('success', $label.' deleted.');
     }
 }

@@ -5,9 +5,6 @@ import {
     Typography,
     Button,
     IconButton,
-    Card,
-    CardMedia,
-    CardActions,
     FormControl,
     InputLabel,
     Select,
@@ -23,20 +20,49 @@ import {
     Container,
     Collapse,
 } from "@mui/material";
-import { Head, useForm } from "@inertiajs/react";
+import { Head, Link, useForm } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import Title from "@/Components/Typo/Title";
 import BackButton from "@/Components/BackButton";
 import CloseIcon from "@mui/icons-material/Close";
-import Subtitle from "@/Components/Typo/Subtitle";
-import CarePlanPhoto from "./components/CarePlanPhoto";
-import NoData from "@/Components/util/NoData";
+import PatientDocumentSection from "./components/PatientDocumentSection";
+import UnsavedPhotosDialog from "@/Components/util/UnsavedPhotosDialog";
 import Avatar from "@mui/material/Avatar";
 import ReviewLinkButton from "@/Components/ReviewLinkButton";
-import { Edit } from "@mui/icons-material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import EditPatient from "./components/EditPatient";
+import PatientBanner from "./components/PatientBanner";
+import PatientDetails from "./components/PatientDetails";
+import { careTypeLabel } from "@/utils/careTypeLabel";
 import AddIcon from "@mui/icons-material/Add";
+import {
+    AssignmentNotes,
+    PatientFeedbackNotes,
+} from "./components/CareNotes";
+
+const caseStatusLabel = {
+    open: "Open",
+    cv_sent: "CV sent",
+    interviewing: "Interviewing",
+    confirmed: "Confirmed",
+    on_duty: "On duty",
+    cancelled: "Cancelled",
+};
+
+function localDateInputValue(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
+
+function dateInputValue(value) {
+    if (!value) {
+        return undefined;
+    }
+    const match = String(value).match(/^(\d{4}-\d{2}-\d{2})/);
+    return match ? match[1] : undefined;
+}
 
 function AdminSinglePatient({
     patient,
@@ -44,8 +70,14 @@ function AdminSinglePatient({
     currentAssignment,
     history,
     reviewedCaregiverIds = [],
+    caseRecords = [],
+    patientFeedbacks = [],
+    documentPhotos = {
+        care_plan: [],
+        caregiver_agreement: [],
+        caregiver_service_agreement: [],
+    },
 }) {
-    const [previews, setPreviews] = useState([]);
     const [showAdditionalForm, setShowAdditionalForm] = useState(false);
     const [endDialogOpen, setEndDialogOpen] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -54,10 +86,6 @@ function AdminSinglePatient({
     const [publicCareLogLinkCopiedId, setPublicCareLogLinkCopiedId] =
         useState(null);
     const [publicCareLogLinkError, setPublicCareLogLinkError] = useState(null);
-    const { data, setData, post, processing, reset } = useForm({
-        patient_id: patient.id,
-        photos: [],
-    });
     const [selectedAssignmentToEnd, setSelectedAssignmentToEnd] =
         useState(null);
 
@@ -83,48 +111,11 @@ function AdminSinglePatient({
         assignment_reason: "", // Now it store the duty
     });
 
-    // End assignment form
+    // End assignment form. Date is chosen in the dialog; today is only the starting value.
     const endAssignmentForm = useForm({
         end_reason: "",
+        end_date: localDateInputValue(),
     });
-
-    const handleFileChange = (e) => {
-        const files = Array.from(e.target.files);
-
-        files.forEach((file) => {
-            setData("photos", [...data.photos, file]);
-            setPreviews((prev) => [...prev, URL.createObjectURL(file)]);
-        });
-    };
-
-    const handleRemovePhoto = (index) => {
-        const updatedPhotos = data.photos.filter((_, i) => i !== index);
-        const updatedPreviews = previews.filter((_, i) => i !== index);
-
-        setData("photos", updatedPhotos);
-        setPreviews(updatedPreviews);
-    };
-
-    const handleUpload = () => {
-        const formData = new FormData();
-        formData.append("patient_id", data.patient_id);
-        data.photos.forEach((photo) => {
-            formData.append("photos[]", photo);
-        });
-
-        post(route("admin.carePlan.photo.upload", patient.id), {
-            data: formData,
-            processData: false,
-            contentType: false,
-            onSuccess: () => {
-                reset();
-                setPreviews([]);
-            },
-            onError: (errors) => {
-                console.error(errors);
-            },
-        });
-    };
 
     const handleAssignCaregiver = (e) => {
         e.preventDefault();
@@ -151,6 +142,7 @@ function AdminSinglePatient({
     const handleEndAssignment = () => {
         if (
             endAssignmentForm.data.end_reason.trim() &&
+            endAssignmentForm.data.end_date &&
             selectedAssignmentToEnd
         ) {
             endAssignmentForm.put(
@@ -171,6 +163,11 @@ function AdminSinglePatient({
 
     const openEndDialog = (assignment) => {
         setSelectedAssignmentToEnd(assignment);
+        endAssignmentForm.clearErrors();
+        endAssignmentForm.setData({
+            end_reason: "",
+            end_date: localDateInputValue(),
+        });
         setEndDialogOpen(true);
     };
 
@@ -211,30 +208,6 @@ function AdminSinglePatient({
         });
     };
 
-    // Helper function to format value (handles dates)
-    const formatValue = (key, value) => {
-        if (!value) return "-";
-
-        // Check if the key suggests it's a date field
-        const dateFields = [
-            "date_of_birth",
-            "created_at",
-            "updated_at",
-            "phone_verify_at",
-        ];
-
-        if (dateFields.includes(key)) {
-            return formatDate(value);
-        }
-
-        // Check if value looks like a date string (YYYY-MM-DD or ISO format)
-        if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}/.test(value)) {
-            return formatDate(value);
-        }
-
-        return value;
-    };
-
     // Convert currentAssignment to array if it's not already
     const currentAssignments = Array.isArray(currentAssignment)
         ? currentAssignment
@@ -268,7 +241,8 @@ function AdminSinglePatient({
             <Container maxWidth="lg" sx={{ mb: 4, px: { xs: 0, sm: 2 } }}>
                 <Head title="Patient Detail" />
                 <BackButton />
-                <Grid2 container spacing={2} mb={3} mt={1}>
+                <PatientBanner patient={patient} />
+                <Grid2 container spacing={2} mb={3}>
                     <Grid2 item size={{ xs: 12, sm: 6 }}>
                         {/* Caregiver Assignment Section */}
                         <Box
@@ -409,6 +383,10 @@ function AdminSinglePatient({
                                                         }
                                                     </Typography>
                                                 )}
+                                                <AssignmentNotes
+                                                    assignmentId={assignment.id}
+                                                    notes={assignment.notes || []}
+                                                />
                                                 <Box
                                                     sx={{
                                                         mt: 2,
@@ -865,6 +843,10 @@ function AdminSinglePatient({
                                                     {assignment.end_reason}
                                                 </Typography>
                                             )}
+                                            <AssignmentNotes
+                                                assignmentId={assignment.id}
+                                                notes={assignment.notes || []}
+                                            />
 
                                             {/* Add Review Link Button for history */}
                                             <Box sx={{ mt: 1 }}>
@@ -1037,6 +1019,39 @@ function AdminSinglePatient({
                             )}
                         </Box>
 
+                        <Box
+                            sx={{
+                                maxWidth: 600,
+                                margin: "auto",
+                                padding: 2,
+                                boxShadow: 3,
+                                borderRadius: 4,
+                                mb: 3,
+                            }}
+                        >
+                            <Typography
+                                variant="h6"
+                                fontWeight="bold"
+                                mb={0.5}
+                                fontFamily={"Roboto Slab"}
+                                color="primary"
+                            >
+                                Feedback
+                            </Typography>
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{ mb: 2 }}
+                            >
+                                Notes from a customer service call with this
+                                patient.
+                            </Typography>
+                            <PatientFeedbackNotes
+                                patientId={patient.id}
+                                notes={patientFeedbacks}
+                            />
+                        </Box>
+
                         {/* Edit Patient Dialog */}
                         <EditPatient
                             open={editDialogOpen}
@@ -1052,7 +1067,35 @@ function AdminSinglePatient({
                             <DialogTitle>End Assignment</DialogTitle>
                             <DialogContent>
                                 <TextField
+                                    variant="standard"
+                                    margin="dense"
+                                    label="End date"
+                                    type="date"
+                                    fullWidth
+                                    required
+                                    value={endAssignmentForm.data.end_date}
+                                    onChange={(e) =>
+                                        endAssignmentForm.setData(
+                                            "end_date",
+                                            e.target.value,
+                                        )
+                                    }
+                                    InputLabelProps={{ shrink: true }}
+                                    inputProps={{
+                                        min: dateInputValue(
+                                            selectedAssignmentToEnd?.start_date,
+                                        ),
+                                    }}
+                                    error={!!endAssignmentForm.errors.end_date}
+                                    helperText={
+                                        endAssignmentForm.errors.end_date ||
+                                        "Date this caregiver stopped. It can be earlier than today."
+                                    }
+                                    sx={{ mb: 1 }}
+                                />
+                                <TextField
                                     autoFocus
+                                    variant="standard"
                                     margin="dense"
                                     label="Reason for ending assignment"
                                     fullWidth
@@ -1091,6 +1134,7 @@ function AdminSinglePatient({
                                     color="error"
                                     disabled={
                                         !endAssignmentForm.data.end_reason.trim() ||
+                                        !endAssignmentForm.data.end_date ||
                                         endAssignmentForm.processing
                                     }
                                     sx={{ fontSize: { xs: 12, sm: 14 } }}
@@ -1104,23 +1148,20 @@ function AdminSinglePatient({
                     </Grid2>
 
                     <Grid2 item size={{ xs: 12, sm: 6 }}>
-                        {/* Patient Detail Section  */}
-                        <Box
-                            sx={{
-                                maxWidth: 600,
-                                margin: "auto",
-                                padding: 2,
-                                boxShadow: 3,
-                                borderRadius: 4,
-                                mb: 3,
-                            }}
-                        >
+                        <PatientDetails
+                            patient={patient}
+                            onEdit={handleUpdatePatient}
+                        />
+
+                        {caseRecords.length > 0 ? (
                             <Box
                                 sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    mb: 2,
-                                    justifyContent: "space-between",
+                                    maxWidth: 600,
+                                    margin: "auto",
+                                    padding: 2,
+                                    boxShadow: 3,
+                                    borderRadius: 4,
+                                    mb: 3,
                                 }}
                             >
                                 <Typography
@@ -1128,223 +1169,101 @@ function AdminSinglePatient({
                                     fontWeight="bold"
                                     fontFamily={"Roboto Slab"}
                                     color="primary"
+                                    sx={{ mb: 2 }}
                                 >
-                                    Patient Details
+                                    Cases
                                 </Typography>
-                                <IconButton
-                                    sx={{ bgcolor: "grey.300" }}
-                                    size="small"
-                                    onClick={handleUpdatePatient}
-                                >
-                                    <Edit fontSize="small" color="info" />
-                                </IconButton>
-                            </Box>
-
-                            <Box>
-                                {Object.entries(patient)
-                                    .filter(
-                                        ([key]) =>
-                                            ![
-                                                "id",
-                                                "slug",
-                                                "care_plan_photos",
-                                            ].includes(key),
-                                    )
-                                    .map(([key, value]) => (
-                                        <Box
-                                            key={key}
-                                            sx={{
-                                                display: "flex",
-                                                justifyContent: "space-between",
-                                                marginBottom: 1.5,
-                                                p: { xs: 0, sm: 1 },
-                                                borderBottom: "1px solid",
-                                                borderColor: "divider",
-                                            }}
-                                        >
+                                {caseRecords.map((caseRecord) => (
+                                    <Box
+                                        key={caseRecord.id}
+                                        sx={{
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            gap: 1.5,
+                                            mb: 1.5,
+                                            pb: 1.5,
+                                            borderBottom: "1px solid",
+                                            borderColor: "divider",
+                                            "&:last-of-type": {
+                                                mb: 0,
+                                                pb: 0,
+                                                borderBottom: 0,
+                                            },
+                                        }}
+                                    >
+                                        <Box>
                                             <Typography
-                                                variant="body1"
-                                                sx={{
-                                                    fontWeight: "bold",
-                                                    fontSize: {
-                                                        xs: "0.7rem",
-                                                        sm: "1rem",
-                                                    },
-                                                }}
+                                                variant="body2"
+                                                fontWeight={700}
                                             >
-                                                {formatKey(key)}:{" "}
+                                                {caseRecord.inquiry_at || "-"}
                                             </Typography>
                                             <Typography
-                                                variant="body1"
-                                                sx={{
-                                                    fontSize: {
-                                                        xs: "0.7rem",
-                                                        sm: "0.9rem",
-                                                    },
-                                                }}
+                                                variant="caption"
+                                                color="text.secondary"
+                                                display="block"
                                             >
-                                                {formatValue(key, value)}
+                                                {[
+                                                    caseRecord.branch,
+                                                    caseStatusLabel[
+                                                        caseRecord.status
+                                                    ] || caseRecord.status,
+                                                    careTypeLabel(
+                                                        caseRecord.care_type,
+                                                    ),
+                                                ]
+                                                    .filter(Boolean)
+                                                    .join(" · ")}
                                             </Typography>
                                         </Box>
-                                    ))}
+                                        <Box
+                                            component={Link}
+                                            href={route(
+                                                "admin.cases.edit",
+                                                caseRecord.id,
+                                            )}
+                                            sx={{
+                                                color: "primary.main",
+                                                fontSize: 13,
+                                                fontWeight: 600,
+                                                textDecoration: "none",
+                                                whiteSpace: "nowrap",
+                                                "&:hover": {
+                                                    textDecoration: "underline",
+                                                },
+                                            }}
+                                        >
+                                            Open case
+                                        </Box>
+                                    </Box>
+                                ))}
                             </Box>
-                        </Box>
+                        ) : null}
                     </Grid2>
                 </Grid2>
 
-                {/* Care Plan Photo Upload Section */}
-                {/* <Box
-                    sx={{
-                        maxWidth: 600,
-                        margin: "auto",
-                        mb: 3,
-                    }}
-                >
-                    <Box textAlign={"left"} mb={2}>
-                        <Button
-                            size="small"
-                            sx={{ borderRadius: 20 }}
-                            variant="outlined"
-                            component="label"
-                        >
-                            <Typography
-                                variant="h6"
-                                fontSize={{ xs: "0.8rem", sm: "1rem" }}
-                                fontWeight={600}
-                                color="grey.800"
-                            >
-                                Upload Photos
-                            </Typography>
-                            <input
-                                type="file"
-                                hidden
-                                accept="image/*,.heic,.heif"
-                                multiple
-                                onChange={handleFileChange}
-                            />
-                        </Button>
-                    </Box>
-
-                    {previews.length > 0 && (
-                        <Box
-                            my={2}
-                            sx={{
-                                maxWidth: 600,
-                                margin: "auto",
-                                padding: 2,
-                                border: "1px solid",
-                                borderColor: "primary.main",
-                                borderRadius: 4,
-                                mb: 3,
-                            }}
-                        >
-                            <Subtitle>Selected Photos</Subtitle>
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    flexWrap: "wrap",
-                                    gap: 1,
-                                    mb: 1,
-                                }}
-                            >
-                                {previews.map((preview, index) => (
-                                    <Card
-                                        key={index}
-                                        sx={{ width: 90, position: "relative" }}
-                                    >
-                                        <CardMedia
-                                            component="img"
-                                            image={preview}
-                                            alt={`Selected photo ${index + 1}`}
-                                            sx={{
-                                                height: 90,
-                                                objectFit: "cover",
-                                            }}
-                                        />
-                                        <CardActions
-                                            sx={{
-                                                position: "absolute",
-                                                top: 0,
-                                                right: 0,
-                                            }}
-                                        >
-                                            <IconButton
-                                                size="small"
-                                                color="error"
-                                                sx={{ bgcolor: "#fff" }}
-                                                onClick={() =>
-                                                    handleRemovePhoto(index)
-                                                }
-                                            >
-                                                <CloseIcon fontSize="small" />
-                                            </IconButton>
-                                        </CardActions>
-                                    </Card>
-                                ))}
-                            </Box>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={handleUpload}
-                                disabled={processing}
-                                sx={{
-                                    borderRadius: 20,
-                                    fontSize: { xs: 12, sm: 14 },
-                                }}
-                            >
-                                {processing ? "Uploading..." : "Save Photos"}
-                            </Button>
-                        </Box>
-                    )}
-                </Box> */}
-
-                {/* Care Plan Photos Section */}
-                {/* <Box
-                    sx={{
-                        maxWidth: 600,
-                        margin: "auto",
-                        padding: 2,
-                        border: "1px solid",
-                        borderColor: "primary.main",
-                        borderRadius: 4,
-                        mb: 3,
-                    }}
-                >
-                    <Typography
-                        variant="h6"
-                        fontWeight="bold"
-                        mb={2}
-                        fontFamily={"Roboto Slab"}
-                        color="primary"
-                    >
-                        Uploaded Care Plans
-                    </Typography>
-                    <Box
-                        sx={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                            justifyContent: "center",
-                            gap: 1,
-                        }}
-                    >
-                        {patient?.care_plan_photos.length > 0 ? (
-                            patient.care_plan_photos.map((item, index) => (
-                                <CarePlanPhoto key={index} photo={item} />
-                            ))
-                        ) : (
-                            <NoData />
-                        )}
-                    </Box>
-                </Box> */}
+                <PatientDocumentSection
+                    patientId={patient.id}
+                    kind="care_plan"
+                    title="Care Plan"
+                    photos={documentPhotos.care_plan}
+                />
+                <PatientDocumentSection
+                    patientId={patient.id}
+                    kind="caregiver_agreement"
+                    title="Caregiver Agreement"
+                    photos={documentPhotos.caregiver_agreement}
+                />
+                <PatientDocumentSection
+                    patientId={patient.id}
+                    kind="caregiver_service_agreement"
+                    title="Caregiver Service Agreement"
+                    photos={documentPhotos.caregiver_service_agreement}
+                />
+                <UnsavedPhotosDialog />
             </Container>
         </AdminLayout>
     );
-}
-
-function formatKey(key) {
-    return key
-        .replace(/_/g, " ")
-        .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 export default AdminSinglePatient;

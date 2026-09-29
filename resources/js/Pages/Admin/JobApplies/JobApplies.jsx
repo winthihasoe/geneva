@@ -1,99 +1,199 @@
 import AdminLayout from "@/Layouts/AdminLayout";
+import PerformanceExcelImport from "@/Components/Admin/PerformanceExcelImport";
 import { Head, router } from "@inertiajs/react";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import CloseIcon from "@mui/icons-material/Close";
+import SearchIcon from "@mui/icons-material/Search";
 import {
     Box,
-    Container,
-    Pagination,
-    Typography,
     Button,
+    Container,
+    Dialog,
+    DialogContent,
+    DialogTitle,
+    IconButton,
+    InputAdornment,
     TextField,
-    Collapse,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    Chip,
+    Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import dayjs from "dayjs";
+import React, { useEffect, useState } from "react";
 import AdminJobApplyTable from "./components/AdminJobApplyTable";
-import NoData from "@/Components/util/NoData";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
-function JobApplies({ jobApplies, count, filters: initialFilters = {} }) {
-    const handlePageChange = (event, value) => {
-        router.get(route("admin.job.apply"), { page: value });
-    };
+const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+];
 
-    const [search, setSearch] = useState("");
-    const [filterOpen, setFilterOpen] = useState(false);
-    const [filters, setFilters] = useState({
-        status: initialFilters.status || "",
-        service_area: initialFilters.service_area || "",
-    });
+function MonthJumpDialog({
+    open,
+    month,
+    year,
+    availableMonths,
+    onClose,
+    onYearChange,
+    onSelect,
+}) {
+    const available = new Set(availableMonths);
 
-    const handleSearchChange = (e) => {
-        setSearch(e.target.value);
-    };
+    return (
+        <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
+            <DialogTitle sx={{ pb: 1 }}>Jump to month</DialogTitle>
+            <DialogContent>
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 1,
+                        mb: 2,
+                    }}
+                >
+                    <IconButton
+                        aria-label="Previous year"
+                        onClick={() => onYearChange(year - 1)}
+                    >
+                        <ChevronLeftIcon />
+                    </IconButton>
+                    <Typography fontWeight={700} sx={{ minWidth: 72, textAlign: "center" }}>
+                        {year}
+                    </Typography>
+                    <IconButton
+                        aria-label="Next year"
+                        onClick={() => onYearChange(year + 1)}
+                    >
+                        <ChevronRightIcon />
+                    </IconButton>
+                </Box>
+                <Box
+                    sx={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(3, 1fr)",
+                        gap: 1,
+                        pb: 1,
+                    }}
+                >
+                    {monthNames.map((name, index) => {
+                        const value = `${year}-${String(index + 1).padStart(2, "0")}`;
+                        const selected = value === month;
+                        const hasRecords = available.has(value);
 
-    const handleSearchSubmit = (e) => {
-        e.preventDefault();
-        console.log("search", search);
+                        return (
+                            <Button
+                                key={value}
+                                variant={selected ? "contained" : "outlined"}
+                                onClick={() => onSelect(value)}
+                                sx={{
+                                    textTransform: "none",
+                                    flexDirection: "column",
+                                    py: 1,
+                                }}
+                            >
+                                {name}
+                                <Box
+                                    sx={{
+                                        width: 6,
+                                        height: 6,
+                                        mt: 0.5,
+                                        borderRadius: "50%",
+                                        bgcolor: hasRecords
+                                            ? selected
+                                                ? "#fff"
+                                                : "primary.main"
+                                            : "transparent",
+                                    }}
+                                />
+                            </Button>
+                        );
+                    })}
+                </Box>
+            </DialogContent>
+        </Dialog>
+    );
+}
 
-        router.get(route("admin.job.apply.search"), { search: search.trim() });
-    };
+function JobApplies({
+    jobApplies = [],
+    count = 0,
+    filters = {},
+    availableMonths = [],
+    byArea = {},
+    serviceAreas = [],
+}) {
+    const month = filters.month || dayjs().format("YYYY-MM");
+    const serviceArea = filters.service_area || "";
+    const search = filters.search || "";
+    const searching = search !== "";
+    const [searchInput, setSearchInput] = useState(search);
+    const [monthDialogOpen, setMonthDialogOpen] = useState(false);
+    const [pickerYear, setPickerYear] = useState(() => Number(month.slice(0, 4)));
 
-    const handleFilterChange = (field, value) => {
-        setFilters((prev) => ({
-            ...prev,
-            [field]: value,
-        }));
-    };
+    useEffect(() => {
+        setSearchInput(search);
+    }, [search]);
 
-    const handleApplyFilters = () => {
-        const params = {};
-        if (filters.status) params.status = filters.status;
-        if (filters.service_area) params.service_area = filters.service_area;
+    useEffect(() => {
+        sessionStorage.setItem(
+            "admin.job.apply.return",
+            window.location.pathname + window.location.search
+        );
+    }, [month, serviceArea, search]);
 
-        router.get(route("admin.job.apply"), params);
-    };
-
-    const handleClearFilters = () => {
-        setFilters({
-            status: "",
-            service_area: "",
-        });
-        router.get(route("admin.job.apply"));
-    };
-
-    const handleServiceAreaClick = (area) => {
-        if (filters.service_area === area) {
-            setFilters((prev) => ({
-                ...prev,
-                service_area: "",
-            }));
-
-            const params = {};
-            if (filters.status) params.status = filters.status;
-
-            router.get(route("admin.job.apply"), params);
-        } else {
-            setFilters((prev) => ({
-                ...prev,
-                service_area: area,
-            }));
-
-            const params = { ...filters, service_area: area };
-            router.get(route("admin.job.apply"), params);
+    const visit = (next) => {
+        const params = { month: next.month || month };
+        const area = Object.prototype.hasOwnProperty.call(next, "service_area")
+            ? next.service_area
+            : serviceArea;
+        const nextSearch = Object.prototype.hasOwnProperty.call(next, "search")
+            ? next.search
+            : search;
+        if (area) {
+            params.service_area = area;
         }
+        if (nextSearch) {
+            params.search = nextSearch;
+        }
+
+        router.get(route("admin.job.apply"), params, {
+            preserveState: true,
+            replace: true,
+        });
     };
 
-    const hasActiveFilters = filters.status || filters.service_area;
+    const handleSearchSubmit = (event) => {
+        event.preventDefault();
+        visit({
+            month,
+            service_area: serviceArea,
+            search: searchInput.trim(),
+        });
+    };
+
+    const clearSearch = () => {
+        setSearchInput("");
+        visit({ month, service_area: serviceArea, search: "" });
+    };
+
+    const shiftMonth = (amount) => {
+        visit({
+            month: dayjs(`${month}-01`).add(amount, "month").format("YYYY-MM"),
+        });
+    };
 
     return (
         <AdminLayout>
-            <Container maxWidth="lg" sx={{ pb: 4, px: { xs: 0 } }}>
+            <Container maxWidth={false} sx={{ pb: 0, px: { xs: 0 }, minWidth: 0 }}>
                 <Head title="Job Applies" />
                 <Box
                     sx={{
@@ -104,23 +204,15 @@ function JobApplies({ jobApplies, count, filters: initialFilters = {} }) {
                         mb: 2,
                     }}
                 >
-                    <Box
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 2,
-                        }}
-                    >
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                         <Typography
                             fontWeight="bold"
                             color="primary"
-                            mb={1}
                             variant="h4"
                             fontFamily={"Roboto Slab"}
                         >
                             Job Applies
                         </Typography>
-
                         <Box
                             sx={{
                                 bgcolor: "red",
@@ -130,7 +222,6 @@ function JobApplies({ jobApplies, count, filters: initialFilters = {} }) {
                                 alignItems: "center",
                                 borderRadius: "50%",
                                 display: "flex",
-                                mb: 1,
                             }}
                         >
                             <Typography fontSize={11} color={"#fff"}>
@@ -138,202 +229,176 @@ function JobApplies({ jobApplies, count, filters: initialFilters = {} }) {
                             </Typography>
                         </Box>
                     </Box>
-                    <form onSubmit={handleSearchSubmit}>
-                        <TextField
-                            placeholder="Search by name"
+                    <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+                        <PerformanceExcelImport />
+                        <Button
                             size="small"
-                            value={search}
-                            onChange={handleSearchChange}
-                        />
-                        <Button type="submit">Search</Button>
-                    </form>
+                            variant="contained"
+                            sx={{ borderRadius: 20 }}
+                            onClick={() =>
+                                router.get(route("admin.job.apply.create"))
+                            }
+                        >
+                            Add candidate
+                        </Button>
+                    </Box>
                 </Box>
 
-                {/* Filter section */}
                 <Box
                     sx={{
-                        mb: 2,
                         display: "flex",
-                        flexDirection: "row",
-                        justifyContent: {
-                            xs: "space-between",
-                            sm: "flex-start",
-                            md: "flex-start",
-                        },
+                        gap: 1,
+                        flexWrap: "wrap",
+                        mb: 1.5,
                         alignItems: "center",
-                        gap: { xs: 0, sm: 2, md: 3 },
+                        justifyContent: "space-between",
                     }}
                 >
-                    <Button
-                        startIcon={<FilterListIcon />}
-                        endIcon={
-                            filterOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />
-                        }
-                        onClick={() => setFilterOpen(!filterOpen)}
-                        variant="outlined"
-                        size="small"
+                    <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+                        {serviceAreas.map((area) => (
+                            <Button
+                                key={area}
+                                size="small"
+                                variant={serviceArea === area ? "contained" : "outlined"}
+                                onClick={() =>
+                                    visit({
+                                        service_area:
+                                            serviceArea === area ? "" : area,
+                                    })
+                                }
+                            >
+                                {area} ({byArea[area] || 0})
+                            </Button>
+                        ))}
+                    </Box>
+                    <Box
+                        component="form"
+                        onSubmit={handleSearchSubmit}
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                            width: { xs: "100%", sm: "auto" },
+                        }}
                     >
-                        Filters{" "}
-                        {hasActiveFilters &&
-                            `(${
-                                Object.values(filters).filter(Boolean).length
-                            })`}
-                    </Button>
-                    <Box>
-                        <Button
-                            variant={
-                                filters.service_area === "Mandalay"
-                                    ? "contained"
-                                    : "outlined"
-                            }
+                        <TextField
                             size="small"
-                            onClick={() => handleServiceAreaClick("Mandalay")}
-                        >
-                            Mandalay
-                        </Button>
-                        <Button
-                            variant={
-                                filters.service_area === "Yangon"
-                                    ? "contained"
-                                    : "outlined"
+                            placeholder="Name, phone, or interviewer"
+                            value={searchInput}
+                            onChange={(event) =>
+                                setSearchInput(event.target.value)
                             }
-                            size="small"
-                            onClick={() => handleServiceAreaClick("Yangon")}
-                            sx={{ ml: 1 }}
-                        >
-                            Yangon
+                            sx={{
+                                width: { xs: "100%", sm: 280 },
+                                bgcolor: "background.paper",
+                            }}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <SearchIcon
+                                            fontSize="small"
+                                            sx={{ color: "text.secondary" }}
+                                        />
+                                    </InputAdornment>
+                                ),
+                                endAdornment: searchInput ? (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            type="button"
+                                            size="small"
+                                            aria-label="Clear search"
+                                            onClick={clearSearch}
+                                            edge="end"
+                                        >
+                                            <CloseIcon fontSize="small" />
+                                        </IconButton>
+                                    </InputAdornment>
+                                ) : null,
+                            }}
+                        />
+                        <Button type="submit" size="small" variant="contained">
+                            Search
                         </Button>
                     </Box>
                 </Box>
 
-                <Collapse in={filterOpen}>
+                {searching ? (
                     <Box
                         sx={{
-                            my: 2,
-                            p: 2,
-                            border: "1px solid #939393ff",
-                            borderRadius: 2,
-                            bgcolor: "paper.main",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: 1,
+                            mb: 1,
+                            flexWrap: "wrap",
                         }}
                     >
-                        <Box>
-                            <FormControl
-                                size="small"
-                                sx={{
-                                    minWidth: { xs: "100%", sm: 200 },
-                                    mb: 1,
-                                }}
-                            >
-                                <InputLabel>Status</InputLabel>
-                                <Select
-                                    value={filters.status}
-                                    label="Status"
-                                    onChange={(e) =>
-                                        handleFilterChange(
-                                            "status",
-                                            e.target.value
-                                        )
-                                    }
-                                >
-                                    <MenuItem value="">All</MenuItem>
-                                    <MenuItem value="Pending">Pending</MenuItem>
-                                    <MenuItem value="Contacted">
-                                        Contacted
-                                    </MenuItem>
-                                    <MenuItem value="Uncontactable">
-                                        Uncontactable
-                                    </MenuItem>
-                                    <MenuItem value="Refuse Job">
-                                        Refuse Job
-                                    </MenuItem>
-                                </Select>
-                            </FormControl>
-
-                            {hasActiveFilters && (
-                                <Box
-                                    sx={{
-                                        mb: 2,
-                                        display: "flex",
-                                        gap: 1,
-                                        flexWrap: "wrap",
-                                    }}
-                                >
-                                    {filters.status && (
-                                        <Chip
-                                            label={`Status: ${filters.status}`}
-                                            onDelete={() =>
-                                                handleFilterChange("status", "")
-                                            }
-                                            size="small"
-                                        />
-                                    )}
-                                    {filters.service_area && (
-                                        <Chip
-                                            label={`Service Area: ${filters.service_area}`}
-                                            onDelete={() =>
-                                                handleFilterChange(
-                                                    "service_area",
-                                                    ""
-                                                )
-                                            }
-                                            size="small"
-                                        />
-                                    )}
-                                </Box>
-                            )}
-
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    gap: 1,
-                                    justifyContent: {
-                                        xs: "center",
-                                        sm: "flex-start",
-                                    },
-                                    alignItems: "center",
-                                    flex: 1,
-                                }}
-                            >
-                                <Button
-                                    variant="contained"
-                                    onClick={handleApplyFilters}
-                                    size="small"
-                                >
-                                    Apply
-                                </Button>
-                                <Button
-                                    variant="outlined"
-                                    onClick={handleClearFilters}
-                                    size="small"
-                                    disabled={!hasActiveFilters}
-                                >
-                                    Clear
-                                </Button>
-                            </Box>
-                        </Box>
+                        <Typography fontWeight={700} color="primary">
+                            {count || 0} matches for "{search}" across all months
+                        </Typography>
+                        <Button size="small" onClick={clearSearch}>
+                            Clear search
+                        </Button>
                     </Box>
-                </Collapse>
-
-                {jobApplies.data.length > 0 ? (
-                    <>
-                        <AdminJobApplyTable applications={jobApplies.data} />
-                        <Box
+                ) : (
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: 0.5,
+                            mb: 1,
+                        }}
+                    >
+                        <IconButton
+                            aria-label="Previous month"
+                            onClick={() => shiftMonth(-1)}
+                            color="primary"
+                        >
+                            <ChevronLeftIcon />
+                        </IconButton>
+                        <Button
+                            onClick={() => {
+                                setPickerYear(Number(month.slice(0, 4)));
+                                setMonthDialogOpen(true);
+                            }}
+                            color="primary"
                             sx={{
-                                display: "flex",
-                                justifyContent: "center",
-                                my: 3,
+                                textTransform: "none",
+                                fontWeight: 700,
+                                fontSize: 18,
+                                minWidth: 180,
                             }}
                         >
-                            <Pagination
-                                count={jobApplies.last_page}
-                                page={jobApplies.current_page}
-                                onChange={handlePageChange}
-                            />
-                        </Box>
-                    </>
-                ) : (
-                    <NoData />
+                            {dayjs(`${month}-01`).format("MMMM YYYY")}
+                        </Button>
+                        <IconButton
+                            aria-label="Next month"
+                            onClick={() => shiftMonth(1)}
+                            color="primary"
+                        >
+                            <ChevronRightIcon />
+                        </IconButton>
+                    </Box>
                 )}
+
+                <AdminJobApplyTable
+                    key={`${month}-${serviceArea}-${search}`}
+                    applications={jobApplies}
+                />
+
+                <MonthJumpDialog
+                    open={monthDialogOpen}
+                    month={month}
+                    year={pickerYear}
+                    availableMonths={availableMonths}
+                    onClose={() => setMonthDialogOpen(false)}
+                    onYearChange={setPickerYear}
+                    onSelect={(value) => {
+                        setMonthDialogOpen(false);
+                        visit({ month: value });
+                    }}
+                />
             </Container>
         </AdminLayout>
     );

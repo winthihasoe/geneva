@@ -1,9 +1,16 @@
 import React from "react";
 import { Modal, Box, Typography, Button } from "@mui/material";
 
-const YesOrNoModal = ({ open, onClose, title, onConfirm }) => {
+const YesOrNoModal = ({
+    open,
+    onClose,
+    title,
+    onConfirm,
+    confirming = false,
+    confirmingLabel = "Deleting...",
+}) => {
     return (
-        <Modal open={open} onClose={onClose}>
+        <Modal open={open} onClose={confirming ? () => {} : onClose}>
             <Box
                 sx={{
                     position: "absolute",
@@ -31,14 +38,18 @@ const YesOrNoModal = ({ open, onClose, title, onConfirm }) => {
                         sx={{ borderRadius: 20 }}
                         variant="contained"
                         onClick={onConfirm}
+                        disabled={confirming}
                     >
-                        <Typography fontSize={12}>Yes</Typography>
+                        <Typography fontSize={12}>
+                            {confirming ? confirmingLabel : "Yes"}
+                        </Typography>
                     </Button>
                     <Button
                         size="small"
                         sx={{ borderRadius: 20 }}
                         variant="outlined"
                         onClick={onClose}
+                        disabled={confirming}
                     >
                         <Typography fontSize={12}>No</Typography>
                     </Button>

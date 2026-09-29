@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Head, usePage, router } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
+import CareLogTable from "./components/CareLogTable";
 import {
     Container,
     Typography,
@@ -9,14 +10,6 @@ import {
     Card,
     CardContent,
     Grid2 as Grid,
-    Chip,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
     TextField,
     FormControl,
     InputLabel,
@@ -32,25 +25,8 @@ import {
     FilterList as FilterIcon,
     Elderly as ElderlyIcon,
     Person as PersonIcon,
-    PregnantWoman as PregnantIcon,
 } from "@mui/icons-material";
 import ChildCareIcon from "@mui/icons-material/ChildCare";
-
-function getServiceAreaChip(serviceArea) {
-    if (serviceArea === "Yangon") {
-        return (
-            <Chip size="small" label="YGN" color="info" variant="outlined" />
-        );
-    }
-
-    if (serviceArea === "Mandalay") {
-        return (
-            <Chip size="small" label="MDY" color="warning" variant="outlined" />
-        );
-    }
-
-    return null;
-}
 
 function AdminCareLogs() {
     const { props } = usePage();
@@ -110,55 +86,6 @@ function AdminCareLogs() {
         router.get(route("admin.care.logs"));
     };
 
-    const getCareTypeIcon = (careType) => {
-        switch (careType) {
-            case "newborn":
-                return <ChildCareIcon />;
-            case "elder":
-                return <ElderlyIcon />;
-            case "maternal":
-                return <PregnantIcon />;
-            default:
-                return <PersonIcon />;
-        }
-    };
-
-    const getCareTypeColor = (careType) => {
-        switch (careType) {
-            case "newborn":
-                return "primary";
-            case "elder":
-                return "warning";
-            case "maternal":
-                return "secondary";
-            default:
-                return "default";
-        }
-    };
-
-    const formatDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-        });
-    };
-
-    const getDetailsRoute = (careType) => {
-        switch (careType) {
-            case "baby":
-                return "admin.carelog.baby.details";
-            case "newborn":
-                return "admin.carelog.newborn.details";
-            case "maternal":
-                return "admin.carelog.maternal.details";
-            case "elder":
-                return "admin.carelog.elderly.details";
-            default:
-                return "admin.carelog.newborn.details";
-        }
-    };
-
     // Check if any filter is applied via URL query string
     const hasFilter =
         !!searchTerm ||
@@ -173,7 +100,7 @@ function AdminCareLogs() {
         <AdminLayout>
             <Head title="Care Logs Management" />
 
-            <Container maxWidth="lg" sx={{ pb: 4, px: { xs: 0 } }}>
+            <Container maxWidth={false} sx={{ pb: 0, px: { xs: 0, sm: 2 } }}>
                 {/* Header */}
                 <Box
                     sx={{
@@ -486,115 +413,10 @@ function AdminCareLogs() {
 
                 {careLogs?.data?.length > 0 ? (
                     <>
-                        <TableContainer component={Paper} elevation={0}>
-                            <Table>
-                                <TableHead
-                                    sx={{
-                                        bgcolor: "primary.main",
-                                    }}
-                                >
-                                    <TableRow>
-                                        <TableCell sx={{ color: "#fff" }}>
-                                            Date
-                                        </TableCell>
-                                        <TableCell sx={{ color: "#fff" }}>
-                                            Patient Name
-                                        </TableCell>
-                                        <TableCell sx={{ color: "#fff" }}>
-                                            Age
-                                        </TableCell>
-                                        <TableCell sx={{ color: "#fff" }}>
-                                            Care Type
-                                        </TableCell>
-                                        <TableCell sx={{ color: "#fff" }}>
-                                            Caregiver
-                                        </TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {careLogs.data.map((log, idx) => (
-                                        <TableRow
-                                            key={log.id}
-                                            hover
-                                            sx={{
-                                                backgroundColor:
-                                                    idx % 2 === 0
-                                                        ? "background.paper"
-                                                        : "gray.100", // alternate color
-                                                "&:hover": {
-                                                    backgroundColor:
-                                                        "rgba(0, 0, 0, 0.04)",
-                                                },
-                                                cursor: "pointer",
-                                            }}
-                                            onClick={() => {
-                                                const routeName =
-                                                    getDetailsRoute(
-                                                        log.care_type,
-                                                    );
-                                                router.get(
-                                                    route(routeName, log.id),
-                                                );
-                                            }}
-                                        >
-                                            <TableCell>
-                                                <Box
-                                                    sx={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        gap: 1,
-                                                    }}
-                                                >
-                                                    {formatDate(log.care_date)}
-                                                </Box>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Box
-                                                    sx={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        gap: 1,
-                                                        flexWrap: "wrap",
-                                                    }}
-                                                >
-                                                    <Typography
-                                                        fontWeight="medium"
-                                                        variant="body2"
-                                                    >
-                                                        {log.first_name}{" "}
-                                                        {log.last_name}
-                                                    </Typography>
-                                                    {getServiceAreaChip(
-                                                        log.service_area,
-                                                    )}
-                                                </Box>
-                                            </TableCell>
-                                            <TableCell>
-                                                {log.age_display}
-                                            </TableCell>
-                                            <TableCell>
-                                                <Chip
-                                                    icon={getCareTypeIcon(
-                                                        log.care_type,
-                                                    )}
-                                                    label={log.care_type}
-                                                    color={getCareTypeColor(
-                                                        log.care_type,
-                                                    )}
-                                                    size="small"
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <Typography variant="body2">
-                                                    {log.caregiver_name ||
-                                                        "Not specified"}
-                                                </Typography>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+                        <CareLogTable
+                            logs={careLogs.data}
+                            startNo={careLogs.from || 1}
+                        />
 
                         {/* Pagination */}
                         {careLogs.last_page > 1 && (
@@ -602,7 +424,8 @@ function AdminCareLogs() {
                                 sx={{
                                     display: "flex",
                                     justifyContent: "center",
-                                    mt: 3,
+                                    mt: 1.5,
+                                    mb: 0,
                                 }}
                             >
                                 <Pagination

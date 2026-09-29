@@ -2,6 +2,22 @@ import { router } from "@inertiajs/react";
 import axios from "axios";
 import React, { createContext, useState } from "react";
 
+const SERVICE_AREAS = ["Yangon", "Mandalay"];
+
+function savedServiceArea(initialData) {
+    const area = String(initialData.service_area ?? "").trim();
+    if (SERVICE_AREAS.includes(area)) {
+        return area;
+    }
+
+    const address = String(initialData.current_address ?? "").trim();
+    if (SERVICE_AREAS.includes(address)) {
+        return address;
+    }
+
+    return "";
+}
+
 // Create the context
 const CvContext = createContext();
 
@@ -19,6 +35,7 @@ export const CvProvider = ({
     // Merge `initialData` with default values
     const [data, setData] = useState({
         cv_id: initialData.id || null,
+        job_apply_id: initialData.job_apply_id || "",
         geneva_id: initialData.geneva_id || "",
         // Personal Info
         full_name: initialData.full_name || "",
@@ -106,7 +123,7 @@ export const CvProvider = ({
         duty: initialData.duty || [],
         maid_service: initialData.maid_service || false,
         package_duration: initialData.package_duration || [],
-        service_area: initialData.service_area || "",
+        service_area: savedServiceArea(initialData),
 
         current_step: initialData.current_step || 1,
         agree_to_terms: initialData.agree_to_terms ?? false,

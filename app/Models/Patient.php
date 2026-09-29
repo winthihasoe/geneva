@@ -91,12 +91,21 @@ class Patient extends Model
 
     public function carePlanPhotos()
     {
-        return $this->hasMany(CarePlanPhoto::class);
+        return $this->hasMany(CarePlanPhoto::class)
+            ->orderBy('position')
+            ->orderBy('id');
     }
 
     public function caregiverAssignments()
     {
         return $this->hasMany(PatientCaregiverAssignment::class);
+    }
+
+    public function feedbackEntries()
+    {
+        return $this->hasMany(PatientFeedback::class)
+            ->orderByDesc('created_at')
+            ->orderByDesc('id');
     }
 
     public function currentCaregiver()
@@ -108,5 +117,64 @@ class Patient extends Model
     public function careLogs()
     {
         return $this->hasMany(CareLog::class);
+    }
+
+    public function caseRecords()
+    {
+        return $this->hasMany(CaseRecord::class);
+    }
+
+    public function scopeMatchingCase($query, CaseRecord $case)
+    {
+        $name = trim((string) $case->name);
+        $digits = preg_replace('/\D+/', '', (string) $case->phone) ?? '';
+
+        if ($name === '' && strlen($digits) < 4) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        return $query->where(function ($inner) use ($name, $digits) {
+            if ($name !== '') {
+                $like = '%'.$name.'%';
+                $inner->where('first_name', 'like', $like)
+                    ->orWhere('last_name', 'like', $like);
+            }
+
+            if (strlen($digits) >= 4) {
+                $method = $name === '' ? 'whereRaw' : 'orWhereRaw';
+                $inner->{$method}(
+                    "REPLACE(REPLACE(REPLACE(REPLACE(COALESCE(emergency_contact_phone, ''), ' ', ''), '-', ''), CHAR(10), ''), CHAR(13), '') LIKE ?",
+                    ['%'.$digits.'%']
+                );
+            }
+        });
+    }
+
+    public function scopeMatchingSearch($query, string $search)
+    {
+        $term = trim($search);
+        $digits = preg_replace('/\D+/', '', $term) ?? '';
+
+        if ($term === '' && strlen($digits) < 4) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        $like = '%'.$term.'%';
+
+        return $query->where(function ($inner) use ($like, $term, $digits) {
+            if ($term !== '') {
+                $inner->where('first_name', 'like', $like)
+                    ->orWhere('last_name', 'like', $like)
+                    ->orWhere('pt_id', 'like', $like);
+            }
+
+            if (strlen($digits) >= 4) {
+                $method = $term !== '' ? 'orWhereRaw' : 'whereRaw';
+                $inner->{$method}(
+                    "REPLACE(REPLACE(REPLACE(REPLACE(COALESCE(emergency_contact_phone, ''), ' ', ''), '-', ''), CHAR(10), ''), CHAR(13), '') LIKE ?",
+                    ['%'.$digits.'%']
+                );
+            }
+        });
     }
 }

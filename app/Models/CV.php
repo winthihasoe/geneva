@@ -206,4 +206,61 @@ class CV extends Model
     {
         return $this->hasMany(Review::class, 'cv_id');
     }
+
+    public function jobApplies()
+    {
+        return $this->hasMany(JobApply::class, 'cv_id');
+    }
+
+    public function scopeMatchingJobApply($query, JobApply $apply)
+    {
+        $name = trim((string) $apply->name);
+        $digits = preg_replace('/\D+/', '', (string) $apply->phone) ?? '';
+
+        if ($name === '' && strlen($digits) < 4) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        return $query->where(function ($inner) use ($name, $digits) {
+            if ($name !== '') {
+                $inner->where('full_name', 'like', '%'.$name.'%');
+            }
+
+            if (strlen($digits) >= 4) {
+                $method = $name === '' ? 'whereRaw' : 'orWhereRaw';
+                $inner->{$method}(
+                    "REPLACE(REPLACE(REPLACE(REPLACE(COALESCE(phone, ''), ' ', ''), '-', ''), CHAR(10), ''), CHAR(13), '') LIKE ?",
+                    ['%'.$digits.'%']
+                );
+            }
+        });
+    }
+
+    public function scopeMatchingSearch($query, string $search)
+    {
+        $term = trim($search);
+        $digits = preg_replace('/\D+/', '', $term) ?? '';
+
+        if ($term === '' && strlen($digits) < 4) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        $like = '%'.$term.'%';
+
+        return $query->where(function ($inner) use ($like, $term, $digits) {
+            if ($term !== '') {
+                $inner->where('full_name', 'like', $like)
+                    ->orWhere('geneva_id', 'like', $like)
+                    ->orWhere('nickname', 'like', $like);
+            }
+
+            if (strlen($digits) >= 4) {
+                $method = $term !== '' ? 'orWhereRaw' : 'whereRaw';
+                $inner->{$method}(
+                    "REPLACE(REPLACE(REPLACE(REPLACE(COALESCE(phone, ''), ' ', ''), '-', ''), CHAR(10), ''), CHAR(13), '') LIKE ?",
+                    ['%'.$digits.'%']
+                );
+            }
+        });
+    }
 }

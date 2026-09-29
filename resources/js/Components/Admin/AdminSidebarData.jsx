@@ -18,6 +18,7 @@ import MonetizationOnRoundedIcon from "@mui/icons-material/MonetizationOnRounded
 import FacebookRoundedIcon from "@mui/icons-material/FacebookRounded";
 import RateReviewIcon from "@mui/icons-material/RateReview";
 import PaymentIcon from "@mui/icons-material/Payment";
+import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 
 export const AdminSidebarData = [
     {
@@ -26,35 +27,46 @@ export const AdminSidebarData = [
         link: "/admin/dashboard",
     },
     {
-        title: "CV",
-        icon: <DescriptionRoundedIcon />,
-        link: "/admin/cv",
+        type: "group",
+        title: "Caregivers",
+        items: [
+            {
+                title: "Job Apply",
+                icon: <WorkHistoryRoundedIcon />,
+                link: "/admin/job-applies",
+            },
+            {
+                title: "CV",
+                icon: <DescriptionRoundedIcon />,
+                link: "/admin/cv",
+            },
+        ],
     },
     {
         type: "group",
         title: "Patients",
         items: [
             {
+                title: "New Cases",
+                icon: <AssignmentIndIcon />,
+                link: "/admin/cases",
+            },
+            {
                 title: "Patients",
                 icon: <AccessibleIcon />,
                 link: "/admin/patients",
             },
+            // {
+            //     title: "Care Plan",
+            //     icon: <EventAvailableRoundedIcon />,
+            //     link: "/admin/care-plans",
+            // },
             {
                 title: "Care Logs",
                 icon: <AssignmentIcon />,
                 link: "/admin/care-logs",
             },
         ],
-    },
-    {
-        title: "Care Plan",
-        icon: <EventAvailableRoundedIcon />,
-        link: "/admin/care-plans",
-    },
-    {
-        title: "Job Apply",
-        icon: <WorkHistoryRoundedIcon />,
-        link: "/admin/job-applies",
     },
     // {
     //     title: "Interview",

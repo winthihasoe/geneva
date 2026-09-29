@@ -1,49 +1,99 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Box, Button, LinearProgress, Typography } from "@mui/material";
-import Compressor from "compressorjs";
 import CvContext from "@/Context/CvContext";
+import CvPhotoCropDialog from "./CvPhotoCropDialog";
+import { CV_PHOTO_ASPECT_RATIO } from "./cvPhotoFrame";
+
+const frameSx = {
+    width: 210,
+    maxWidth: "100%",
+    aspectRatio: CV_PHOTO_ASPECT_RATIO,
+    border: "2px dashed gray",
+    borderRadius: "12px",
+    overflow: "hidden",
+    position: "relative",
+    marginBottom: "1rem",
+    bgcolor: "grey.100",
+};
+
+async function fileToImageUrl(file) {
+    const isHeic =
+        /heic|heif/i.test(file.type) || /\.heic$|\.heif$/i.test(file.name);
+
+    if (isHeic) {
+        const heic2any = (await import("heic2any")).default;
+        const converted = await heic2any({
+            blob: file,
+            toType: "image/jpeg",
+            quality: 0.92,
+        });
+        const blob = Array.isArray(converted) ? converted[0] : converted;
+        return URL.createObjectURL(blob);
+    }
+
+    return URL.createObjectURL(file);
+}
 
 const PhotoUploadField = ({ oldPhoto }) => {
     const { data, setData } = useContext(CvContext);
-
-    // Display either the current photo or a previously saved photo URL
     const initialPhotoURL =
         typeof data.profile_photo === "string" && data.profile_photo !== ""
             ? `/storage/${data.profile_photo}`
             : oldPhoto || null;
     const [photoURL, setPhotoURL] = useState(initialPhotoURL);
-    const [uploading, setUploading] = useState(false);
+    const [cropSource, setCropSource] = useState(null);
+    const [cropIsNewFile, setCropIsNewFile] = useState(false);
+    const [preparing, setPreparing] = useState(false);
 
-    const handlePhotoChange = (e) => {
-        const file = e.target.files[0];
-
-        if (file) {
-            setUploading(true);
-
-            // Compress the image using Compressor.js
-            new Compressor(file, {
-                quality: 0.6,
-                maxWidth: 600,
-                success(compressedFile) {
-                    if (compressedFile instanceof Blob) {
-                        // Create a URL for the compressed image
-                        setPhotoURL(URL.createObjectURL(compressedFile));
-                        // Set the compressed image to the form data (don't upload immediately)
-                        setData((prevData) => ({
-                            ...prevData,
-                            profile_photo: compressedFile,
-                        }));
-                    } else {
-                        console.error("Compressed file is not a valid Blob");
-                    }
-                    setUploading(false);
-                },
-                error(err) {
-                    console.error("Compression error:", err.message);
-                    setUploading(false);
-                },
-            });
+    const handlePhotoChange = async (event) => {
+        const file = event.target.files?.[0];
+        event.target.value = "";
+        if (!file) {
+            return;
         }
+
+        setPreparing(true);
+        try {
+            const url = await fileToImageUrl(file);
+            // Wait until the file picker click has finished, otherwise that
+            // click closes the adjust window as soon as it opens.
+            window.setTimeout(() => {
+                setCropIsNewFile(true);
+                setCropSource(url);
+                setPreparing(false);
+            }, 300);
+        } catch (error) {
+            console.error("Could not open photo:", error);
+            setPreparing(false);
+        }
+    };
+
+    const closeCrop = () => {
+        if (cropIsNewFile && cropSource) {
+            URL.revokeObjectURL(cropSource);
+        }
+        setCropSource(null);
+        setCropIsNewFile(false);
+    };
+
+    const openAdjust = () => {
+        const currentPhoto = photoURL || oldPhoto;
+        if (!currentPhoto) {
+            return;
+        }
+        setCropIsNewFile(false);
+        setCropSource(currentPhoto);
+    };
+
+    const handleCropConfirm = (blob) => {
+        const file = new File([blob], "profile-photo.jpg", {
+            type: "image/jpeg",
+        });
+        setData((prevData) => ({
+            ...prevData,
+            profile_photo: file,
+        }));
+        closeCrop();
     };
 
     useEffect(() => {
@@ -51,14 +101,12 @@ const PhotoUploadField = ({ oldPhoto }) => {
             const newPhotoURL = URL.createObjectURL(data.profile_photo);
             setPhotoURL(newPhotoURL);
 
-            // Clean up the object URL when the component unmounts
             return () => {
                 URL.revokeObjectURL(newPhotoURL);
             };
         }
     }, [data.profile_photo]);
 
-    // Check if we have a valid photo to display
     const hasPhoto =
         (data.profile_photo && data.profile_photo !== "") ||
         photoURL ||
@@ -73,31 +121,26 @@ const PhotoUploadField = ({ oldPhoto }) => {
             }}
         >
             {hasPhoto ? (
-                <img
-                    src={photoURL || oldPhoto}
-                    alt="Profile Photo"
-                    style={{
-                        width: "200px",
-                        height: "280px",
-                        border: "2px dashed gray",
-                        borderRadius: "8px",
-                        objectFit: "cover",
-                        objectPosition: "center",
-                        marginBottom: "1rem",
-                    }}
-                />
+                <Box sx={frameSx}>
+                    <img
+                        src={photoURL || oldPhoto}
+                        alt="Profile Photo"
+                        style={{
+                            position: "absolute",
+                            inset: 0,
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                        }}
+                    />
+                </Box>
             ) : (
                 <Box
                     sx={{
-                        width: "200px",
-                        height: "280px",
-                        border: "2px dashed gray",
-                        borderRadius: "8px",
+                        ...frameSx,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        backgroundColor: "grey.50",
-                        marginBottom: "1rem",
                     }}
                 >
                     <Typography variant="body2" color="text.secondary">
@@ -106,19 +149,18 @@ const PhotoUploadField = ({ oldPhoto }) => {
                 </Box>
             )}
 
-            {/* Status Bar for Compression */}
-            {uploading && (
+            {preparing && (
                 <>
                     <Typography variant="body2" sx={{ marginBottom: 1 }}>
-                        Compressing photo...
+                        Opening photo...
                     </Typography>
                     <LinearProgress
-                        sx={{ width: "200px", marginBottom: "1rem" }}
+                        sx={{ width: "210px", marginBottom: "1rem" }}
                     />
                 </>
             )}
 
-            {!hasPhoto && !uploading && (
+            {!hasPhoto && !preparing && (
                 <Button
                     variant="outlined"
                     component="label"
@@ -134,15 +176,11 @@ const PhotoUploadField = ({ oldPhoto }) => {
                 </Button>
             )}
 
-            <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 2,
-                    alignItems: "center",
-                }}
-            >
-                {hasPhoto && !uploading && (
+            {hasPhoto && !preparing && (
+                <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+                    <Button variant="outlined" size="small" onClick={openAdjust}>
+                        Adjust photo
+                    </Button>
                     <Button variant="outlined" component="label" size="small">
                         Change Photo
                         <input
@@ -152,8 +190,15 @@ const PhotoUploadField = ({ oldPhoto }) => {
                             onChange={handlePhotoChange}
                         />
                     </Button>
-                )}
-            </Box>
+                </Box>
+            )}
+
+            <CvPhotoCropDialog
+                open={Boolean(cropSource)}
+                imageUrl={cropSource || ""}
+                onCancel={closeCrop}
+                onConfirm={handleCropConfirm}
+            />
         </Box>
     );
 };

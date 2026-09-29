@@ -1,24 +1,38 @@
 import React from "react";
 import ArrowCircleLeftOutlinedIcon from "@mui/icons-material/ArrowCircleLeftOutlined";
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import { router } from "@inertiajs/react";
+import { isLeaveBlocked, requestLeave } from "@/hooks/useLeaveGuard";
 
 export default function BackButton({ route = null, label = "" }) {
-    const handleGoBack = () => {
+    const leave = () => {
         if (route) {
             router.visit(route);
         } else {
-            // Go back to the previous page in the browser history
             window.history.back();
         }
     };
 
+    const handleGoBack = () => {
+        if (isLeaveBlocked()) {
+            requestLeave(leave);
+            return;
+        }
+
+        leave();
+    };
+
     return (
-        <IconButton sx={{ mr: 0.5, p: 0 }} onClick={handleGoBack}>
+        <Button
+            variant="text"
+            aria-label="Back"
+            sx={{ mr: 0.5, p: 1 }}
+            onClick={handleGoBack}
+        >
             <ArrowCircleLeftOutlinedIcon />
             <Typography ml={1} variant="caption" color="text.secondary">
                 {label}
             </Typography>
-        </IconButton>
+        </Button>
     );
 }

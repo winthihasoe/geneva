@@ -4,78 +4,110 @@ namespace App\Http\Controllers;
 
 use App\Models\CarePlanPhoto;
 use App\Models\Patient;
-use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Spatie\Image\Image;
-use Spatie\ImageOptimizer\OptimizerChainFactory;
 
 class CarePlanPhotoController extends Controller
 {
-    public function uploadPhotos(Request $request, $patientId)
-{
-    try {
-        // Validate that each file in 'photos' is an image
+    public const MAX_EDGE = 1600;
+
+    public const JPEG_QUALITY = 75;
+
+    public function store(Request $request, Patient $patient, string $kind)
+    {
+        abort_unless(in_array($kind, CarePlanPhoto::KINDS, true), 404);
+
         $request->validate([
-            'photos' => 'required|array',
+            'photo' => ['required', 'file', 'image', 'mimes:jpeg,jpg,png,webp', 'max:10240'],
+        ], [
+            'photo.required' => 'Choose a photo to upload.',
+            'photo.image' => 'Upload a JPEG, PNG, or WebP photo.',
+            'photo.mimes' => 'Upload a JPEG, PNG, or WebP photo.',
+            'photo.max' => 'Each photo must be 10 MB or smaller.',
         ]);
 
-        $patient = Patient::findOrFail($patientId);
+        $filename = Str::uuid()->toString().'.jpg';
+        $relativePath = "patient-documents/{$patient->id}/{$kind}/{$filename}";
+        $upload = $request->file('photo');
+        $upload->storeAs("patient-documents/{$patient->id}/{$kind}", $filename, 'local');
 
-        foreach ($request->file('photos') as $photo) {
-            // Generate a unique filename
-            $filename = uniqid() . '_' . $photo->getClientOriginalName();
+        $uploadedBy = $request->user()?->name ?? 'Admin';
 
-            // Move the uploaded photo to 'storage/app/public/photos/carePlans'
-            $relativePath = 'photos/carePlans/' . $filename;
-            $photo->storeAs('photos/carePlans', $filename, 'public');
+        try {
+            $this->compressToJpeg(Storage::disk('local')->path($relativePath));
 
-            // Get the full path of the stored photo
-            $filePath = storage_path('app/public/' . $relativePath);
+            $photo = DB::transaction(function () use ($patient, $kind, $relativePath, $uploadedBy) {
+                Patient::query()->whereKey($patient->id)->lockForUpdate()->first();
 
-            // Resize the image to a width of 600px while maintaining aspect ratio
-            Image::load($filePath)
-                ->width(600)
-                ->save();
+                $position = (int) CarePlanPhoto::query()
+                    ->where('patient_id', $patient->id)
+                    ->where('kind', $kind)
+                    ->max('position') + 1;
 
-            // Optimize the resized photo to reduce file size
-            $optimizerChain = OptimizerChainFactory::create();
-            $optimizerChain->optimize($filePath);
+                return CarePlanPhoto::create([
+                    'patient_id' => $patient->id,
+                    'kind' => $kind,
+                    'position' => $position,
+                    'photo_path' => $relativePath,
+                    'uploaded_by' => $uploadedBy,
+                ]);
+            });
+        } catch (\Throwable $exception) {
+            Storage::disk('local')->delete($relativePath);
+            report($exception);
 
-            // Save the photo record in the database
-            CarePlanPhoto::create([
-                'patient_id' => $patient->id,
-                'photo_path' => $relativePath, 
-                'uploaded_by' => auth()->user()->name ?? 'Admin',
-            ]);
+            return response()->json([
+                'message' => 'This photo could not be saved. Try another image.',
+            ], 422);
         }
 
-        return back()->with('success', 'Photos uploaded successfully!');
-    } catch (\Exception $e) {
-        return back()->with('error', $e->getMessage());
-    }
-}
-
-
-    public function getPhotos($patientId)
-    {
-        $photos = CarePlanPhoto::where('patient_id', $patientId)->get();
-
-        return response()->json($photos);
+        return response()->json($photo->toPresentation());
     }
 
-    public function deleteCarePlanPhoto($id)
+    public function show(CarePlanPhoto $photo)
     {
-        $photo = CarePlanPhoto::findOrFail($id);
+        $disk = $this->diskName($photo);
+        abort_unless(Storage::disk($disk)->exists($photo->photo_path), 404);
 
-        // Delete file from storage
-        Storage::disk('public')->delete($photo->photo_path);
+        return Storage::disk($disk)->response($photo->photo_path, null, [
+            'Cache-Control' => 'private, max-age=3600',
+        ]);
+    }
 
-        // Delete from database
+    public function destroy(CarePlanPhoto $photo)
+    {
+        Storage::disk($this->diskName($photo))->delete($photo->photo_path);
         $photo->delete();
 
-        return back()->with('success', 'Care Plan Photo deleted');
+        return back()->with('success', 'Photo deleted.');
     }
 
+    private function compressToJpeg(string $absolutePath): void
+    {
+        $loaded = Image::load($absolutePath);
+        $width = $loaded->getWidth();
+        $height = $loaded->getHeight();
 
+        $pipeline = Image::load($absolutePath)
+            ->format('jpg')
+            ->quality(self::JPEG_QUALITY);
+
+        if ($width >= $height && $width > self::MAX_EDGE) {
+            $pipeline->width(self::MAX_EDGE);
+        } elseif ($height > self::MAX_EDGE) {
+            $pipeline->height(self::MAX_EDGE);
+        }
+
+        $pipeline->save($absolutePath);
+    }
+
+    private function diskName(CarePlanPhoto $photo): string
+    {
+        return str_starts_with($photo->photo_path, 'patient-documents/')
+            ? 'local'
+            : 'public';
+    }
 }

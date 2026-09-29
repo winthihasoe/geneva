@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Typography, Divider, Grid2, Button } from "@mui/material";
 import logo from "../../../../../../public/images/logo/logo.png";
 import AgeCalculator from "@/Components/util/AgeCalculator";
+import { CV_PHOTO_ASPECT_RATIO } from "@/Components/Forms/Media/cvPhotoFrame";
 function OldCV({ cv }) {
     const renderStars = (count) => {
         const stars = [];
@@ -45,24 +46,27 @@ function OldCV({ cv }) {
                     >
                         <Box
                             sx={{
+                                position: "relative",
                                 width: {
                                     xs: "100%",
                                     sm: "90%",
                                     md: "70%",
                                 },
-                                height: { xs: 150, sm: 250, md: 300 },
+                                aspectRatio: CV_PHOTO_ASPECT_RATIO,
+                                overflow: "hidden",
+                                bgcolor: "grey.300",
                             }}
                         >
                             <img
                                 src={`/storage/${cv.profile_photo}`}
                                 alt="Profile"
                                 style={{
+                                    position: "absolute",
+                                    inset: 0,
                                     height: "100%",
                                     width: "100%",
                                     objectFit: "cover",
-                                    backgroundRepeat: "no-repeat",
-                                    backgroundPosition: "center",
-                                    backgroundColor: "gray",
+                                    objectPosition: "center",
                                 }}
                             />
                         </Box>

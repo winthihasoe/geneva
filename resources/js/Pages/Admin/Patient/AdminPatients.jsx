@@ -55,7 +55,7 @@ export default function AdminPatients({
     return (
         <AdminLayout>
             <Head title="Patients" />
-            <Container maxWidth="lg" sx={{ pb: 4, px: { xs: 0 } }}>
+            <Container maxWidth={false} sx={{ pb: 0, px: { xs: 0, sm: 2 } }}>
                 <Box
                     sx={{
                         display: "flex",
@@ -165,18 +165,23 @@ export default function AdminPatients({
 
                 {patients.data.length > 0 ? (
                     <>
-                        <PatientTable patients={patients.data} />
+                        <PatientTable
+                            patients={patients.data}
+                            startNo={patients.from || 1}
+                        />
                         <Box
                             sx={{
                                 display: "flex",
                                 justifyContent: "center",
-                                my: 3,
+                                mt: 1.5,
+                                mb: 0,
                             }}
                         >
                             <Pagination
                                 count={patients.last_page}
                                 page={patients.current_page}
                                 onChange={handlePageChange}
+                                color="primary"
                             />
                         </Box>
                     </>

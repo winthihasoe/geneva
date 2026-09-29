@@ -14,6 +14,7 @@ import { router } from "@inertiajs/react";
 import AgeCalculator from "@/Components/util/AgeCalculator";
 import ReusableModal from "@/Components/util/ReusableModal";
 import YesOrNoModal from "@/Components/util/YesOrNoModal";
+import { CV_PHOTO_ASPECT_RATIO } from "@/Components/Forms/Media/cvPhotoFrame";
 
 export default function ResumeCard({ resume }) {
     return (
@@ -34,22 +35,28 @@ export default function ResumeCard({ resume }) {
                 router.visit(route("admin.cv.single", { cvId: resume.id }))
             }
         >
-            <CardMedia sx={{ height: { xs: 120, sm: 150 } }}>
+            <CardMedia>
                 {resume.profile_photo ? (
                     <Box
                         sx={{
-                            height: "100%",
+                            position: "relative",
+                            width: "100%",
+                            aspectRatio: CV_PHOTO_ASPECT_RATIO,
                             overflow: "hidden",
                             borderRadius: "8px 8px 0 0",
+                            bgcolor: "grey.200",
                         }}
                     >
                         <img
                             src={`/storage/${resume.profile_photo}`}
                             alt={resume.full_name}
                             style={{
+                                position: "absolute",
+                                inset: 0,
                                 width: "100%",
                                 height: "100%",
                                 objectFit: "cover",
+                                objectPosition: "center",
                             }}
                         />
                     </Box>
@@ -60,7 +67,7 @@ export default function ResumeCard({ resume }) {
                             justifyContent: "center",
                             alignItems: "center",
                             width: "100%",
-                            height: "100%",
+                            aspectRatio: CV_PHOTO_ASPECT_RATIO,
                             background:
                                 "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                             borderRadius: "8px 8px 0 0",

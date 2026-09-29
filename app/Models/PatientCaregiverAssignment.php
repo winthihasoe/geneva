@@ -39,6 +39,13 @@ class PatientCaregiverAssignment extends Model
         return $this->belongsTo(User::class, 'assigned_by');
     }
 
+    public function notes()
+    {
+        return $this->hasMany(CaregiverAssignmentNote::class)
+            ->orderByDesc('created_at')
+            ->orderByDesc('id');
+    }
+
     public function isActive(): bool
     {
         return $this->end_date === null;

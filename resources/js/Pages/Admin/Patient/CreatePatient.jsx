@@ -1,5 +1,9 @@
-import React from "react";
-import { Head, useForm } from "@inertiajs/react";
+import React, { useState } from "react";
+import AdminLayout from "@/Layouts/AdminLayout";
+import TitleCenter from "@/Components/Typo/TitleCenter";
+import BackButton from "@/Components/BackButton";
+import { PATIENT_TYPE_OPTIONS, careTypeLabel, patientDisplayName } from "@/utils/careTypeLabel";
+import { Head, router, useForm } from "@inertiajs/react";
 import {
     TextField,
     Button,
@@ -13,19 +17,21 @@ import {
     RadioGroup,
     FormControlLabel,
     Radio,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
 } from "@mui/material";
-import AdminLayout from "@/Layouts/AdminLayout";
-import TitleCenter from "@/Components/Typo/TitleCenter";
-import BackButton from "@/Components/BackButton";
-import { Label } from "@mui/icons-material";
 
-const CreatePatient = () => {
+const CreatePatient = ({ fromCase = null, matchingPatients = [] }) => {
+    const [linkingId, setLinkingId] = useState(null);
+    const [pendingPatient, setPendingPatient] = useState(null);
     const { data, setData, post, processing, errors } = useForm({
-        type: "Elder", // Default value
-        first_name: "",
+        type: fromCase?.type || "Elder",
+        first_name: fromCase?.first_name || "",
         last_name: "",
         date_of_birth: "",
-        gender: "Male", // Default value
+        gender: "Male",
         weight_kg: "",
         height_cm: "",
         blood_type: "",
@@ -33,11 +39,12 @@ const CreatePatient = () => {
         medical_conditions: "",
         emergency_contact_name: "",
         emergency_contact_relationship: "",
-        emergency_contact_phone: "",
-        address: "",
-        service_area: "",
-        notes: "",
+        emergency_contact_phone: fromCase?.emergency_contact_phone || "",
+        address: fromCase?.address || "",
+        service_area: fromCase?.service_area || "",
+        notes: fromCase?.notes || "",
         created_by: "",
+        case_id: fromCase?.id || "",
     });
 
     const handleSubmit = (e) => {
@@ -45,11 +52,34 @@ const CreatePatient = () => {
         post(route("admin.patient.store"));
     };
 
+    const handleLinkExisting = (patientId) => {
+        if (!fromCase?.id) {
+            return;
+        }
+
+        setLinkingId(patientId);
+        router.post(
+            route("admin.cases.link-patient", fromCase.id),
+            { patient_id: patientId },
+            {
+                onFinish: () => setLinkingId(null),
+                onSuccess: () => setPendingPatient(null),
+            }
+        );
+    };
+
     return (
         <AdminLayout>
             <Head title="Create Patient" />
             <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
-                <BackButton />
+                <BackButton
+                    route={
+                        fromCase
+                            ? route("admin.cases.edit", fromCase.id)
+                            : null
+                    }
+                    label={fromCase ? "Case" : ""}
+                />
                 <Box
                     sx={{
                         maxWidth: 500,
@@ -60,6 +90,115 @@ const CreatePatient = () => {
                     }}
                 >
                     <TitleCenter>Create Patient</TitleCenter>
+                    {fromCase ? (
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ mb: 2, textAlign: "center" }}
+                        >
+                            Prefilling from the confirmed case. Complete date of
+                            birth, gender, and service area before saving.
+                        </Typography>
+                    ) : null}
+
+                    {fromCase && matchingPatients.length > 0 ? (
+                        <Box
+                            sx={{
+                                mb: 3,
+                                p: 2,
+                                border: "1px solid",
+                                borderColor: "divider",
+                                borderRadius: 2,
+                            }}
+                        >
+                            <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1 }}>
+                                Possible existing patients
+                            </Typography>
+                            {matchingPatients.map((patient) => (
+                                <Box
+                                    key={patient.id}
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "flex-start",
+                                        gap: 1,
+                                        py: 1,
+                                        borderBottom: "1px solid",
+                                        borderColor: "divider",
+                                        "&:last-of-type": { borderBottom: 0 },
+                                    }}
+                                >
+                                    <Box>
+                                        <Typography variant="body2" fontWeight={700}>
+                                            {patientDisplayName(patient)}
+                                        </Typography>
+                                        <Typography variant="caption" color="text.secondary">
+                                            {[
+                                                patient.pt_id,
+                                                careTypeLabel(patient.type),
+                                                patient.emergency_contact_phone,
+                                            ]
+                                                .filter(Boolean)
+                                                .join(" · ")}
+                                        </Typography>
+                                    </Box>
+                                    <Button
+                                        size="small"
+                                        variant="outlined"
+                                        disabled={linkingId === patient.id}
+                                        onClick={() => setPendingPatient(patient)}
+                                    >
+                                        {linkingId === patient.id
+                                            ? "Linking"
+                                            : "Link this patient"}
+                                    </Button>
+                                </Box>
+                            ))}
+                        </Box>
+                    ) : null}
+
+                    <Dialog
+                        open={Boolean(pendingPatient)}
+                        onClose={() => {
+                            if (!linkingId) {
+                                setPendingPatient(null);
+                            }
+                        }}
+                        fullWidth
+                        maxWidth="xs"
+                    >
+                        <DialogTitle>Link this patient?</DialogTitle>
+                        <DialogContent>
+                            <Typography variant="body2">
+                                Link{" "}
+                                {patientDisplayName(pendingPatient) ||
+                                    "this patient"}
+                                {pendingPatient?.pt_id
+                                    ? ` (${pendingPatient.pt_id})`
+                                    : ""}{" "}
+                                to {fromCase?.first_name || "this case"}. You
+                                can unlink them later if this is the wrong
+                                patient.
+                            </Typography>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button
+                                onClick={() => setPendingPatient(null)}
+                                disabled={Boolean(linkingId)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                variant="contained"
+                                disabled={!pendingPatient || Boolean(linkingId)}
+                                onClick={() =>
+                                    handleLinkExisting(pendingPatient.id)
+                                }
+                            >
+                                {linkingId ? "Linking" : "Link"}
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
 
                     <form onSubmit={handleSubmit}>
                         {/* Patient Type */}
@@ -76,10 +215,14 @@ const CreatePatient = () => {
                                         setData("type", e.target.value)
                                     }
                                 >
-                                    <MenuItem value="Elder">Elder</MenuItem>
-                                    <MenuItem value="Baby">Baby</MenuItem>
-                                    <MenuItem value="Newborn">Newborn</MenuItem>
-                                    <MenuItem value="Maternal">Maternal</MenuItem>
+                                    {PATIENT_TYPE_OPTIONS.map((option) => (
+                                        <MenuItem
+                                            key={option.value}
+                                            value={option.value}
+                                        >
+                                            {option.label}
+                                        </MenuItem>
+                                    ))}
                                 </Select>
                                 {errors.type && (
                                     <Typography color="error" variant="body2">
