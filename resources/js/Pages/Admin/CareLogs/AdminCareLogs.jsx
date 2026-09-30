@@ -7,26 +7,86 @@ import {
     Typography,
     Button,
     Box,
-    Card,
-    CardContent,
-    Grid2 as Grid,
     TextField,
     FormControl,
-    InputLabel,
     Select,
     MenuItem,
     Pagination,
-    Stack,
-    Avatar,
-    Alert,
+    InputAdornment,
+    ToggleButton,
+    ToggleButtonGroup,
 } from "@mui/material";
-import {
-    Search as SearchIcon,
-    FilterList as FilterIcon,
-    Elderly as ElderlyIcon,
-    Person as PersonIcon,
-} from "@mui/icons-material";
-import ChildCareIcon from "@mui/icons-material/ChildCare";
+import { Search as SearchIcon } from "@mui/icons-material";
+
+const SERVICE_AREAS = ["Mandalay", "Yangon"];
+
+const CARE_TYPES = [
+    { value: "newborn", label: "Newborn" },
+    { value: "maternal", label: "Maternal" },
+    { value: "elder", label: "Elder" },
+];
+
+const outlineBorderColor = (theme) =>
+    theme.palette.mode === "dark"
+        ? "rgba(255, 255, 255, 0.23)"
+        : "rgba(0, 0, 0, 0.23)";
+
+const matchingOutlineSx = {
+    borderBottom: "none",
+    "& fieldset": {
+        borderStyle: "solid",
+        borderWidth: "1px",
+        borderColor: outlineBorderColor,
+    },
+    "&:hover fieldset": {
+        borderColor: outlineBorderColor,
+    },
+    "&.Mui-focused fieldset": {
+        borderWidth: "1px",
+        borderColor: (theme) => theme.palette.primary.main,
+    },
+};
+
+const typeFieldSx = {
+    width: { xs: 118, sm: 136 },
+    flex: "0 0 auto",
+    "& .MuiOutlinedInput-root": {
+        height: 36,
+        ...matchingOutlineSx,
+    },
+    "& .MuiSelect-select": {
+        py: 0,
+        display: "flex",
+        alignItems: "center",
+        fontSize: 13,
+    },
+};
+
+const dateFieldSx = {
+    width: { xs: "calc(50% - 4px)", sm: 122 },
+    flex: { xs: "1 1 calc(50% - 4px)", sm: "0 0 auto" },
+    "& .MuiOutlinedInput-root": {
+        height: 36,
+        ...matchingOutlineSx,
+    },
+    "& .MuiOutlinedInput-input": {
+        py: 0,
+        fontSize: 13,
+    },
+    "& .MuiInputLabel-root": {
+        fontSize: 13,
+    },
+};
+
+const searchActionSx = {
+    minWidth: 0,
+    px: { xs: 0.75, sm: 1.1 },
+    py: 0.15,
+    fontSize: 12,
+    lineHeight: 1.4,
+    textTransform: "none",
+    boxShadow: "none",
+};
 
 function AdminCareLogs() {
     const { props } = usePage();
@@ -38,19 +98,16 @@ function AdminCareLogs() {
     const [selectedCareType, setSelectedCareType] = useState(
         filters.care_type || "",
     );
-    const [selectedCaregiver, setSelectedCaregiver] = useState("");
     const [dateFrom, setDateFrom] = useState(filters.date_from || "");
     const [dateTo, setDateTo] = useState(filters.date_to || "");
     const [selectedServiceArea, setSelectedServiceArea] = useState(
         filters.service_area || "",
     );
-    const [showFilters, setShowFilters] = useState(false);
 
     const buildFilterParams = (overrides = {}) => {
         const params = {
             search: searchTerm,
             care_type: selectedCareType,
-            caregiver: selectedCaregiver,
             date_from: dateFrom,
             date_to: dateTo,
             service_area: selectedServiceArea,
@@ -67,348 +124,271 @@ function AdminCareLogs() {
         router.get(route("admin.care.logs"), buildFilterParams());
     };
 
-    const handleServiceAreaClick = (area) => {
-        const nextArea = selectedServiceArea === area ? "" : area;
-        setSelectedServiceArea(nextArea);
+    const handleServiceAreaChange = (_event, nextArea) => {
+        const area = nextArea || "";
+        setSelectedServiceArea(area);
         router.get(
             route("admin.care.logs"),
-            buildFilterParams({ service_area: nextArea }),
+            buildFilterParams({ service_area: area }),
+        );
+    };
+
+    const searchDateRange = (nextFrom, nextTo) => {
+        if (!nextFrom || !nextTo) {
+            return;
+        }
+
+        router.get(
+            route("admin.care.logs"),
+            buildFilterParams({
+                date_from: nextFrom,
+                date_to: nextTo,
+            }),
+        );
+    };
+
+    const handleDateFromChange = (event) => {
+        const nextFrom = event.target.value;
+        setDateFrom(nextFrom);
+        searchDateRange(nextFrom, dateTo);
+    };
+
+    const handleDateToChange = (event) => {
+        const nextTo = event.target.value;
+        setDateTo(nextTo);
+        searchDateRange(dateFrom, nextTo);
+    };
+
+    const handleCareTypeChange = (event) => {
+        const nextType = event.target.value;
+        setSelectedCareType(nextType);
+        router.get(
+            route("admin.care.logs"),
+            buildFilterParams({ care_type: nextType }),
         );
     };
 
     const clearFilters = () => {
         setSearchTerm("");
         setSelectedCareType("");
-        setSelectedCaregiver("");
         setDateFrom("");
         setDateTo("");
         setSelectedServiceArea("");
         router.get(route("admin.care.logs"));
     };
 
-    // Check if any filter is applied via URL query string
-    const hasFilter =
-        !!searchTerm ||
-        !!selectedCareType ||
-        !!selectedCaregiver ||
-        !!selectedServiceArea ||
-        !!dateFrom ||
-        !!dateTo ||
-        window.location.search.length > 1;
-
     return (
         <AdminLayout>
             <Head title="Care Logs Management" />
 
-            <Container maxWidth={false} sx={{ pb: 0, px: { xs: 0, sm: 2 } }}>
-                {/* Header */}
+            <Container maxWidth={false} sx={{ pb: 0, px: { xs: 0, sm: 1 } }}>
                 <Box
                     sx={{
                         display: "flex",
-                        justifyContent: "space-between",
                         alignItems: "center",
+                        gap: 1,
                         mb: 2,
                     }}
                 >
-                    <Typography variant="h4" fontWeight="bold" color="primary">
+                    <Typography
+                        component="h1"
+                        color="primary"
+                        fontWeight="bold"
+                        sx={{
+                            fontSize: { xs: "1.15rem", sm: "1.35rem" },
+                            lineHeight: 1.2,
+                        }}
+                    >
                         Care Logs
                     </Typography>
-                </Box>
-
-                {/* Filters */}
-
-                <Box
-                    sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        mb: 2,
-                        gap: 1,
-                        flexWrap: "wrap",
-                    }}
-                >
-                    <Typography variant="body1" color="textSecondary">
-                        Total: {careLogs?.total || 0} logs
-                    </Typography>
-
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        <Button
-                            variant={
-                                selectedServiceArea === "Mandalay"
-                                    ? "contained"
-                                    : "outlined"
-                            }
-                            size="small"
-                            onClick={() => handleServiceAreaClick("Mandalay")}
-                        >
-                            Mandalay
-                        </Button>
-                        <Button
-                            variant={
-                                selectedServiceArea === "Yangon"
-                                    ? "contained"
-                                    : "outlined"
-                            }
-                            size="small"
-                            onClick={() => handleServiceAreaClick("Yangon")}
-                        >
-                            Yangon
-                        </Button>
-                        <Button
-                            startIcon={<FilterIcon />}
-                            onClick={() => setShowFilters(!showFilters)}
-                            variant="outlined"
-                            size="small"
-                        >
-                            {showFilters ? "Hide Filters" : "Show Filters"}
-                        </Button>
-                    </Box>
-                </Box>
-                {showFilters && (
-                    <Grid container spacing={1} mb={3}>
-                        <Grid size={{ xs: 4 }}>
-                            <Card
-                                onClick={() => {
-                                    router.get(
-                                        route("admin.care.logs"),
-                                        buildFilterParams({
-                                            care_type: "newborn",
-                                        }),
-                                    );
-                                }}
-                                sx={{ cursor: "pointer" }}
-                            >
-                                <CardContent sx={{ textAlign: "center" }}>
-                                    <Avatar
-                                        sx={{
-                                            bgcolor: "#e3f2fd",
-                                            color: "#1976d2",
-                                            mx: "auto",
-                                            mb: 1,
-                                        }}
-                                    >
-                                        <ChildCareIcon />
-                                    </Avatar>
-                                    <Typography variant="h6" color="primary">
-                                        {careTypeCounts.newborn || 0}
-                                    </Typography>
-                                    <Typography
-                                        variant="body2"
-                                        color="textSecondary"
-                                    >
-                                        Newborn Care Logs
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                        <Grid size={{ xs: 4 }}>
-                            <Card
-                                onClick={() => {
-                                    router.get(
-                                        route("admin.care.logs"),
-                                        buildFilterParams({
-                                            care_type: "maternal",
-                                        }),
-                                    );
-                                }}
-                                sx={{ cursor: "pointer" }}
-                            >
-                                <CardContent sx={{ textAlign: "center" }}>
-                                    <Avatar
-                                        sx={{
-                                            bgcolor: "#f3e5f5",
-                                            color: "#9c27b0",
-                                            mx: "auto",
-                                            mb: 1,
-                                        }}
-                                    >
-                                        <PersonIcon />
-                                    </Avatar>
-                                    <Typography variant="h6" color="secondary">
-                                        {careTypeCounts.maternal || 0}
-                                    </Typography>
-                                    <Typography
-                                        variant="body2"
-                                        color="textSecondary"
-                                    >
-                                        Maternal Care Logs
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                        <Grid size={{ xs: 4 }}>
-                            <Card
-                                onClick={() => {
-                                    router.get(
-                                        route("admin.care.logs"),
-                                        buildFilterParams({
-                                            care_type: "elder",
-                                        }),
-                                    );
-                                }}
-                                sx={{ cursor: "pointer" }}
-                            >
-                                <CardContent sx={{ textAlign: "center" }}>
-                                    <Avatar
-                                        sx={{
-                                            bgcolor: "#fff3e0",
-                                            color: "#f57c00",
-                                            mx: "auto",
-                                            mb: 1,
-                                        }}
-                                    >
-                                        <ElderlyIcon />
-                                    </Avatar>
-                                    <Typography
-                                        variant="h6"
-                                        sx={{
-                                            color: "#f57c00",
-                                        }}
-                                    >
-                                        {careTypeCounts.elder || 0}
-                                    </Typography>
-                                    <Typography
-                                        variant="body2"
-                                        color="textSecondary"
-                                    >
-                                        Elderly Care Logs
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    </Grid>
-                )}
-
-                <form onSubmit={handleSearch}>
-                    <Grid container spacing={2} mb={3}>
-                        <Grid size={{ xs: 12, md: 6 }}>
-                            <TextField
-                                fullWidth
-                                variant="standard"
-                                label="Search"
-                                placeholder="Search by patient name, caregiver..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                InputProps={{
-                                    startAdornment: (
-                                        <SearchIcon
-                                            sx={{
-                                                mr: 1,
-                                                color: "action.active",
-                                            }}
-                                        />
-                                    ),
-                                }}
-                            />
-                        </Grid>
-
-                        {showFilters && (
-                            <>
-                                <Grid size={{ xs: 12, md: 6 }}>
-                                    <FormControl fullWidth>
-                                        <InputLabel>Care Type</InputLabel>
-                                        <Select
-                                            value={selectedCareType}
-                                            onChange={(e) =>
-                                                setSelectedCareType(
-                                                    e.target.value,
-                                                )
-                                            }
-                                            label="Care Type"
-                                        >
-                                            <MenuItem value="">
-                                                All Types
-                                            </MenuItem>
-                                            <MenuItem value="newborn">
-                                                Newborn
-                                            </MenuItem>
-                                            <MenuItem value="maternal">
-                                                Maternal
-                                            </MenuItem>
-                                            <MenuItem value="elder">
-                                                Elder
-                                            </MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                </Grid>
-
-                                <Grid size={{ xs: 12, md: 6 }}>
-                                    <TextField
-                                        fullWidth
-                                        type="date"
-                                        label="Date From"
-                                        variant="standard"
-                                        value={dateFrom}
-                                        onChange={(e) =>
-                                            setDateFrom(e.target.value)
-                                        }
-                                        InputLabelProps={{ shrink: true }}
-                                    />
-                                </Grid>
-
-                                <Grid size={{ xs: 12, md: 6 }}>
-                                    <TextField
-                                        fullWidth
-                                        type="date"
-                                        label="Date To"
-                                        variant="standard"
-                                        value={dateTo}
-                                        onChange={(e) =>
-                                            setDateTo(e.target.value)
-                                        }
-                                        InputLabelProps={{ shrink: true }}
-                                    />
-                                </Grid>
-                            </>
-                        )}
-
-                        <Grid size={{ xs: 12 }}>
-                            <Stack
-                                direction="row"
-                                spacing={1}
-                                justifyContent="flex-end"
-                            >
-                                <Button
-                                    variant="contained"
-                                    type="submit"
-                                    size="small"
-                                    disabled={
-                                        !dateFrom &&
-                                        !dateTo &&
-                                        !searchTerm &&
-                                        !selectedCareType
-                                    }
-                                >
-                                    Search
-                                </Button>
-                                <Button
-                                    variant="outlined"
-                                    onClick={clearFilters}
-                                    size="small"
-                                >
-                                    Clear
-                                </Button>
-                            </Stack>
-                        </Grid>
-                    </Grid>
-                </form>
-
-                {/* Show Alert if filter applied */}
-                {hasFilter && (
-                    <Alert severity="info" sx={{ mb: 1 }}>
-                        Filters are applied. To see all the care logs, please{" "}
-                        <span
-                            onClick={clearFilters}
-                            style={{
-                                cursor: "pointer",
-                                color: "blue",
-                                textDecoration: "underline",
+                    <Box
+                        aria-label={`${careLogs?.total || 0} logs`}
+                        sx={{
+                            bgcolor: "red",
+                            minWidth: 26,
+                            height: 26,
+                            px: 0.75,
+                            borderRadius: "999px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
+                        }}
+                    >
+                        <Typography
+                            component="span"
+                            sx={{
+                                fontSize: 11,
+                                color: "#fff",
+                                fontWeight: 700,
+                                lineHeight: 1,
                             }}
                         >
-                            clear the filters.
-                        </span>
-                    </Alert>
-                )}
+                            {careLogs?.total || 0}
+                        </Typography>
+                    </Box>
+                </Box>
+
+                <Box
+                    component="form"
+                    onSubmit={handleSearch}
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 0.75,
+                        flexWrap: "wrap",
+                        mb: 2,
+                    }}
+                >
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 0.75,
+                            flexWrap: "wrap",
+                            flex: { xs: "1 1 100%", sm: "0 1 auto" },
+                        }}
+                    >
+                        <ToggleButtonGroup
+                            exclusive
+                            size="small"
+                            value={selectedServiceArea || null}
+                            onChange={handleServiceAreaChange}
+                            aria-label="Service area"
+                            sx={{
+                                height: 36,
+                                "& .MuiToggleButton-root": {
+                                    height: 36,
+                                    px: { xs: 1.25, sm: 1.5 },
+                                    py: 0,
+                                    textTransform: "none",
+                                    fontSize: { xs: 12, sm: 13 },
+                                    lineHeight: 1.4,
+                                    color: "text.primary",
+                                    borderColor: outlineBorderColor,
+                                    "&.Mui-selected": {
+                                        color: "primary.contrastText",
+                                        bgcolor: "primary.main",
+                                        boxShadow: 3,
+                                        zIndex: 1,
+                                        "&:hover": {
+                                            bgcolor: "primary.dark",
+                                            boxShadow: 4,
+                                        },
+                                    },
+                                },
+                            }}
+                        >
+                            {SERVICE_AREAS.map((area) => (
+                                <ToggleButton key={area} value={area}>
+                                    {area}
+                                </ToggleButton>
+                            ))}
+                        </ToggleButtonGroup>
+                        <FormControl size="small" sx={typeFieldSx}>
+                            <Select
+                                value={selectedCareType}
+                                displayEmpty
+                                onChange={handleCareTypeChange}
+                                inputProps={{ "aria-label": "Care type" }}
+                                renderValue={(value) => {
+                                    const type = CARE_TYPES.find(
+                                        (item) => item.value === value,
+                                    );
+
+                                    return type ? type.label : "All";
+                                }}
+                            >
+                                <MenuItem value="">All</MenuItem>
+                                {CARE_TYPES.map((type) => (
+                                    <MenuItem
+                                        key={type.value}
+                                        value={type.value}
+                                    >
+                                        {`${type.label} (${careTypeCounts[type.value] || 0})`}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <TextField
+                            size="small"
+                            type="date"
+                            label="From"
+                            value={dateFrom}
+                            onChange={handleDateFromChange}
+                            InputLabelProps={{ shrink: true }}
+                            sx={dateFieldSx}
+                        />
+                        <TextField
+                            size="small"
+                            type="date"
+                            label="To"
+                            value={dateTo}
+                            onChange={handleDateToChange}
+                            InputLabelProps={{ shrink: true }}
+                            sx={dateFieldSx}
+                        />
+                    </Box>
+
+                    <TextField
+                        size="small"
+                        placeholder="Patient or caregiver"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        sx={{
+                            flex: { xs: "1 1 100%", sm: "1 1 280px" },
+                            minWidth: { xs: "100%", sm: 240 },
+                            maxWidth: { sm: 440 },
+                            ml: { sm: "auto" },
+                            "& .MuiOutlinedInput-root": {
+                                pr: 0.5,
+                                height: 36,
+                                ...matchingOutlineSx,
+                            },
+                            "& .MuiOutlinedInput-input": {
+                                py: 0,
+                                fontSize: 13,
+                            },
+                        }}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon
+                                        sx={{
+                                            fontSize: 18,
+                                            color: "text.secondary",
+                                        }}
+                                    />
+                                </InputAdornment>
+                            ),
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <Button
+                                        type="submit"
+                                        size="small"
+                                        variant="contained"
+                                        sx={searchActionSx}
+                                    >
+                                        Search
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        size="small"
+                                        variant="outlined"
+                                        onClick={clearFilters}
+                                        sx={{
+                                            ...searchActionSx,
+                                            ml: 0.5,
+                                        }}
+                                    >
+                                        Clear
+                                    </Button>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                </Box>
+
                 {/* Care Logs Table */}
 
                 {careLogs?.data?.length > 0 ? (
@@ -443,6 +423,8 @@ function AdminCareLogs() {
                                         );
                                     }}
                                     color="primary"
+                                    size="small"
+                                    siblingCount={0}
                                 />
                             </Box>
                         )}

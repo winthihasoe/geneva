@@ -1681,7 +1681,7 @@ class CareLogController extends Controller
         }
 
         // Get paginated results
-        $careLogs = $query->paginate(20);
+        $careLogs = $query->paginate(100)->withQueryString();
 
         // Transform caregiver name for display
         $careLogs->through(function ($log) {

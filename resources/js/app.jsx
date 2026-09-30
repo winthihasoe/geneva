@@ -19,6 +19,7 @@ const RELOAD_ON_BACK_PAGES = new Set([
     "Admin/CV/CVSearchResult",
     "Admin/JobApplies/JobApplies",
     "Admin/JobApplies/JobApplySearchResult",
+    "Admin/Patient/AdminFeedbacks",
 ]);
 
 if (typeof window !== "undefined") {

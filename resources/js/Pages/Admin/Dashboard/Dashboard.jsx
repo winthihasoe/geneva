@@ -89,7 +89,7 @@ function Dashboard({
     return (
         <AdminLayout>
             <Head title="Dashboard" />
-            <Container maxWidth="lg" sx={{ pb: 3, px: { xs: 0 } }}>
+            <Container maxWidth={false} sx={{ pb: 3, px: { xs: 0 } }}>
                 <Typography
                     variant="h4"
                     fontWeight="bold"
@@ -178,8 +178,20 @@ function Dashboard({
                                                 sx={{
                                                     flex: 1,
                                                     minWidth: 0,
-                                                    pl: index === 0 ? 0 : { xs: 0.75, sm: 1.5 },
-                                                    ml: index === 0 ? 0 : { xs: 0.75, sm: 1.5 },
+                                                    pl:
+                                                        index === 0
+                                                            ? 0
+                                                            : {
+                                                                  xs: 0.75,
+                                                                  sm: 1.5,
+                                                              },
+                                                    ml:
+                                                        index === 0
+                                                            ? 0
+                                                            : {
+                                                                  xs: 0.75,
+                                                                  sm: 1.5,
+                                                              },
                                                     borderLeft:
                                                         index === 0
                                                             ? "none"
@@ -286,7 +298,9 @@ function Dashboard({
                 {/* Additional Dashboard Content */}
                 <Grid2 container spacing={2}>
                     <Grid2 size={{ xs: 12, md: 8 }}>
-                        <Paper sx={{ ...dashboardPaperSx, p: { xs: 2, sm: 3 } }}>
+                        <Paper
+                            sx={{ ...dashboardPaperSx, p: { xs: 2, sm: 3 } }}
+                        >
                             <Typography variant="h6" fontWeight="bold" mb={2}>
                                 Quick Actions
                             </Typography>
@@ -343,7 +357,13 @@ function Dashboard({
                         </Paper>
                     </Grid2>
                     <Grid2 size={{ xs: 12, md: 4 }}>
-                        <Paper sx={{ ...dashboardPaperSx, p: { xs: 2, sm: 3 }, height: "100%" }}>
+                        <Paper
+                            sx={{
+                                ...dashboardPaperSx,
+                                p: { xs: 2, sm: 3 },
+                                height: "100%",
+                            }}
+                        >
                             <Typography variant="h6" fontWeight="bold" mb={2}>
                                 System Status
                             </Typography>
