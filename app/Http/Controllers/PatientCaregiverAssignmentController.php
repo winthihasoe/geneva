@@ -7,6 +7,7 @@ use App\Models\PatientCaregiverAssignment;
 use App\Models\CV;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class PatientCaregiverAssignmentController extends Controller
 {
@@ -53,7 +54,9 @@ class PatientCaregiverAssignmentController extends Controller
             'cv_id' => 'required|exists:c_v_s,id',
             'start_date' => 'required|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
-            'assignment_reason' => 'nullable|string|max:500',
+            'level' => ['required', Rule::in(PatientCaregiverAssignment::LEVELS)],
+            'duration' => ['required', Rule::in(PatientCaregiverAssignment::DURATIONS)],
+            'assignment_reason' => ['required', Rule::in(PatientCaregiverAssignment::DUTIES)],
         ]);
 
         // Check if caregiver is already assigned to this patient
@@ -81,7 +84,9 @@ class PatientCaregiverAssignmentController extends Controller
             'cv_id' => $validated['cv_id'],
             'assigned_by' => Auth::id(),
             'start_date' => $validated['start_date'],
-            'end_date' => $validated['end_date'],
+            'end_date' => $validated['end_date'] ?? null,
+            'level' => $validated['level'],
+            'duration' => $validated['duration'],
             'assignment_reason' => $validated['assignment_reason'],
         ]);
 
@@ -89,6 +94,33 @@ class PatientCaregiverAssignmentController extends Controller
         CV::where('id', $validated['cv_id'])->update(['status' => 'Occupied']);
 
         return redirect()->back()->with('success', 'Additional caregiver assigned successfully');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $assignment = PatientCaregiverAssignment::findOrFail($id);
+
+        $validated = $request->validate([
+            'start_date' => 'required|date',
+            'level' => ['required', Rule::in(PatientCaregiverAssignment::LEVELS)],
+            'duration' => ['required', Rule::in(PatientCaregiverAssignment::DURATIONS)],
+            'assignment_reason' => ['required', Rule::in(PatientCaregiverAssignment::DUTIES)],
+        ]);
+
+        if ($assignment->end_date && $validated['start_date'] > $assignment->end_date->toDateString()) {
+            return redirect()->back()->withErrors([
+                'start_date' => 'Start date must be on or before the assignment end date.',
+            ]);
+        }
+
+        $assignment->update([
+            'start_date' => $validated['start_date'],
+            'level' => $validated['level'],
+            'duration' => $validated['duration'],
+            'assignment_reason' => $validated['assignment_reason'],
+        ]);
+
+        return redirect()->back()->with('success', 'Assignment updated.');
     }
 
     public function end(Request $request, $id)

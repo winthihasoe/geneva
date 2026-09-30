@@ -165,6 +165,7 @@ class AdminDashboardController extends Controller
                     'id' => 'patient-'.$feedback->id,
                     'patient_id' => $feedback->patient_id,
                     'text' => $feedback->body,
+                    'label' => $feedback->scheduleLabel(),
                     'patient_name' => $this->patientName($feedback->patient),
                     'caregiver_name' => null,
                     'staff_name' => $feedback->recorder->name ?? 'Unknown',

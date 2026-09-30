@@ -12,6 +12,7 @@ use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 use Inertia\Inertia;
 
@@ -183,13 +184,41 @@ class PatientController extends Controller
             'body' => trim((string) $request->input('body')),
         ]);
 
+        $feedbackType = is_string($request->input('feedback_type'))
+            ? $request->input('feedback_type')
+            : '';
+
         $validated = $request->validate([
             'body' => 'required|string|max:5000',
+            'feedback_type' => ['required', Rule::in(array_keys(PatientFeedback::TYPES))],
+            'follow_up' => [
+                'required',
+                Rule::in(array_keys(PatientFeedback::FOLLOW_UPS[$feedbackType] ?? [])),
+            ],
         ]);
 
         $patient->feedbackEntries()->create([
             'body' => $validated['body'],
+            'feedback_type' => $validated['feedback_type'],
+            'follow_up' => $validated['follow_up'],
             'recorded_by' => Auth::id(),
+        ]);
+
+        return back()->with('success', 'Feedback saved.');
+    }
+
+    public function updateFeedback(Request $request, PatientFeedback $feedback)
+    {
+        $request->merge([
+            'body' => trim((string) $request->input('body')),
+        ]);
+
+        $validated = $request->validate([
+            'body' => 'required|string|max:5000',
+        ]);
+
+        $feedback->update([
+            'body' => $validated['body'],
         ]);
 
         return back()->with('success', 'Feedback saved.');
@@ -200,6 +229,58 @@ class PatientController extends Controller
         $feedback->delete();
 
         return back()->with('success', 'Feedback deleted.');
+    }
+
+    public function feedbacks(Request $request)
+    {
+        $validated = $request->validate([
+            'search' => 'nullable|string|max:100',
+            'service_area' => 'nullable|in:Mandalay,Yangon',
+            'type' => 'nullable|in:Elder,Baby,Newborn,Maternal',
+        ]);
+
+        $search = trim((string) ($validated['search'] ?? ''));
+        $serviceArea = $validated['service_area'] ?? '';
+        $type = $validated['type'] ?? '';
+
+        $query = Patient::query()
+            ->with([
+                'feedbackEntries.recorder:id,name',
+                'caregiverAssignments.cv:id,full_name',
+            ])
+            ->orderByDesc('created_at')
+            ->orderByDesc('id');
+
+        if ($search !== '') {
+            $query->where(function ($builder) use ($search) {
+                $builder->where('first_name', 'like', '%'.$search.'%')
+                    ->orWhere('last_name', 'like', '%'.$search.'%')
+                    ->orWhere('pt_id', 'like', '%'.$search.'%');
+            });
+        }
+
+        if ($serviceArea !== '') {
+            $query->where('service_area', $serviceArea);
+        }
+
+        if ($type !== '') {
+            $query->where('type', $type);
+        }
+
+        $patients = $query
+            ->paginate(50)
+            ->withQueryString()
+            ->through(fn (Patient $patient) => $this->presentFeedbackRow($patient));
+
+        return Inertia::render('Admin/Patient/AdminFeedbacks', [
+            'patients' => $patients,
+            'columns' => PatientFeedback::sheetColumns(),
+            'filters' => [
+                'search' => $search,
+                'service_area' => $serviceArea,
+                'type' => $type,
+            ],
+        ]);
     }   
 
 
@@ -235,6 +316,8 @@ class PatientController extends Controller
                     'cv_id' => $assignment->cv_id,
                     'start_date' => $assignment->start_date,
                     'end_date' => $assignment->end_date,
+                    'level' => $assignment->level,
+                    'duration' => $assignment->duration,
                     'assignment_reason' => $assignment->assignment_reason,
                     'notes' => $assignment->notes->map->toPresentation()->values()->all(),
                     'caregiver' => [
@@ -263,6 +346,8 @@ class PatientController extends Controller
                     'id' => $assignment->id,
                     'start_date' => $assignment->start_date,
                     'end_date' => $assignment->end_date,
+                    'level' => $assignment->level,
+                    'duration' => $assignment->duration,
                     'assignment_reason' => $assignment->assignment_reason,
                     'end_reason' => $assignment->end_reason,
                     'notes' => $assignment->notes->map->toPresentation()->values()->all(),
@@ -345,6 +430,123 @@ class PatientController extends Controller
             ->all();
     }
 
+    private function presentFeedbackRow(Patient $patient): array
+    {
+        $feedbacks = [];
+
+        foreach ($patient->feedbackEntries as $feedback) {
+            if ($feedback->sheetKey() === null) {
+                continue;
+            }
+
+            if (isset($feedbacks[$feedback->feedback_type][$feedback->follow_up])) {
+                continue;
+            }
+
+            $feedbacks[$feedback->feedback_type][$feedback->follow_up] = [
+                'id' => $feedback->id,
+                'body' => $feedback->body,
+                'staff_name' => $feedback->recorder->name ?? 'Unknown',
+                'recorded_at' => $feedback->created_at?->format('d-m-Y'),
+            ];
+        }
+
+        $name = trim($patient->first_name.' '.($patient->last_name ?? ''));
+
+        return [
+            'id' => $patient->id,
+            'pt_id' => $patient->pt_id,
+            'name' => $name !== '' ? $name : ($patient->pt_id ?: 'Unknown patient'),
+            'type' => $patient->type,
+            'service_area' => $patient->service_area,
+            'feedbacks' => $feedbacks,
+            ...$this->feedbackAssignmentSummary($patient),
+        ];
+    }
+
+    /**
+     * Caregiver, dates, level, duty, and duration for the feedback sheet.
+     * An open assignment wins. Otherwise the last ended assignment is shown.
+     * Start date is the first assignment. End date is shown only when nobody is on duty.
+     *
+     * @return array{on_duty: bool, caregiver_name: ?string, start_date: ?string, end_date: ?string, level: ?string, duty: ?string, duration: ?string}
+     */
+    private function feedbackAssignmentSummary(Patient $patient): array
+    {
+        $assignments = $patient->caregiverAssignments;
+
+        $active = $assignments
+            ->filter(fn (PatientCaregiverAssignment $assignment) => $assignment->end_date === null)
+            ->sortBy('id')
+            ->values();
+
+        $lastAssigned = $assignments
+            ->sortByDesc(function (PatientCaregiverAssignment $assignment) {
+                $date = $assignment->end_date?->format('Y-m-d')
+                    ?? $assignment->start_date?->format('Y-m-d')
+                    ?? '';
+
+                return $date.sprintf('%010d', $assignment->id);
+            })
+            ->first();
+
+        $shown = $active->isNotEmpty()
+            ? $active
+            : collect([$lastAssigned])->filter();
+
+        $firstStart = $assignments
+            ->filter(fn (PatientCaregiverAssignment $assignment) => $assignment->start_date !== null)
+            ->sortBy(fn (PatientCaregiverAssignment $assignment) => $assignment->start_date->format('Y-m-d'))
+            ->first();
+
+        $ended = $active->isEmpty() ? $shown->first() : null;
+
+        return [
+            'on_duty' => $active->isNotEmpty(),
+            'caregiver_name' => $this->assignmentNames($shown),
+            'start_date' => $firstStart?->start_date?->format('d-m-Y'),
+            'end_date' => $ended?->end_date?->format('d-m-Y'),
+            'level' => $this->assignmentValues($shown, 'level'),
+            'duty' => $this->assignmentValues($shown, 'assignment_reason'),
+            'duration' => $this->assignmentValues($shown, 'duration'),
+        ];
+    }
+
+    private function assignmentNames($assignments): ?string
+    {
+        $names = $assignments
+            ->map(fn (PatientCaregiverAssignment $assignment) => $assignment->cv?->full_name)
+            ->filter(fn ($name) => is_string($name) && trim($name) !== '')
+            ->implode(', ');
+
+        return $names !== '' ? $names : null;
+    }
+
+    private function assignmentValues($assignments, string $field): ?string
+    {
+        $values = $assignments
+            ->map(fn (PatientCaregiverAssignment $assignment) => $assignment->{$field})
+            ->filter(fn ($value) => is_string($value) && trim($value) !== '')
+            ->unique()
+            ->implode(', ');
+
+        return $values !== '' ? $values : null;
+    }
+
+    private function joinedAssignmentField($assignments, string $field): ?string
+    {
+        $values = $assignments
+            ->map(function (PatientCaregiverAssignment $assignment) use ($field) {
+                $value = $assignment->{$field};
+
+                return is_string($value) ? trim($value) : '';
+            })
+            ->filter(fn (string $value) => $value !== '')
+            ->implode(', ');
+
+        return $values !== '' ? $values : null;
+    }
+
     private function patientsWithCaregivers()
     {
         return Patient::with([
@@ -359,10 +561,12 @@ class PatientController extends Controller
 
     private function presentPatient(Patient $patient): array
     {
-        $activeCaregivers = $patient->caregiverAssignments
+        $activeAssignments = $patient->caregiverAssignments
             ->filter(fn ($assignment) => $assignment->end_date === null && $assignment->cv)
+            ->values();
+
+        $activeCaregivers = $activeAssignments
             ->map(fn ($assignment) => $assignment->cv->full_name)
-            ->values()
             ->all();
 
         $latestEndedAssignment = $patient->caregiverAssignments
@@ -376,6 +580,9 @@ class PatientController extends Controller
             ...$patient->toArray(),
             'current_caregiver_name' => $patient->currentCaregiver?->cv?->full_name,
             'active_caregivers' => $activeCaregivers,
+            'assignment_duration' => $this->joinedAssignmentField($activeAssignments, 'duration'),
+            'assignment_level' => $this->joinedAssignmentField($activeAssignments, 'level'),
+            'assignment_duty' => $this->joinedAssignmentField($activeAssignments, 'assignment_reason'),
             'latest_assignment_end_date' => $latestAssignmentEndDate,
             'service_status_text' => $activeCaregivers
                 ? 'Ongoing'

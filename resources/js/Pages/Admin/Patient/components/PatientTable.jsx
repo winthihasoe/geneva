@@ -119,6 +119,30 @@ const columns = [
         getValue: (record) => displayText(record.service_area),
     },
     {
+        key: "duration",
+        label: "Duration",
+        minWidth: 120,
+        wrap: true,
+        maxWidth: 180,
+        getValue: (record) => displayText(record.assignment_duration),
+    },
+    {
+        key: "level",
+        label: "Level",
+        minWidth: 140,
+        wrap: true,
+        maxWidth: 220,
+        getValue: (record) => displayText(record.assignment_level),
+    },
+    {
+        key: "duty",
+        label: "Duty",
+        minWidth: 110,
+        wrap: true,
+        maxWidth: 160,
+        getValue: (record) => displayText(record.assignment_duty),
+    },
+    {
         key: "age",
         label: "Age",
         minWidth: 64,
@@ -488,7 +512,7 @@ export default function PatientTable({ patients = [], startNo = 1 }) {
                     stickyHeader
                     size="small"
                     sx={{
-                        minWidth: 1820,
+                        minWidth: 2200,
                         borderCollapse: "separate",
                         borderSpacing: 0,
                     }}

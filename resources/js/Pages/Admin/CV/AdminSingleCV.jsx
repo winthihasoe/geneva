@@ -125,7 +125,7 @@ const AdminSingleCV = ({ cv }) => {
             formData.append(
                 "certificate_photo",
                 data.certificate_photo,
-                data.certificate_photo.name
+                data.certificate_photo.name,
             );
         }
 
@@ -298,14 +298,14 @@ const AdminSingleCV = ({ cv }) => {
 
                 {/* Edit caregiver level and approved status  */}
                 <Grid2 container sx={{ my: 2 }} spacing={3}>
-                    {/* <Grid2 size={{ xs: 12, sm: 6 }}>
+                    <Grid2 size={{ xs: 12, sm: 6 }}>
                         <Card sx={{ mb: 3 }}>
                             <CardContent>
                                 <EditLevel cv={cv} />
-                                <EditApprove cv={cv} />
+                                {/* <EditApprove cv={cv} /> */}
                             </CardContent>
                         </Card>
-                    </Grid2> */}
+                    </Grid2>
                     <Grid2 size={{ xs: 12, sm: 6 }}>
                         <Card sx={{ mb: 3 }}>
                             <CardContent>

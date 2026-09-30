@@ -19,6 +19,7 @@ import FacebookRoundedIcon from "@mui/icons-material/FacebookRounded";
 import RateReviewIcon from "@mui/icons-material/RateReview";
 import PaymentIcon from "@mui/icons-material/Payment";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+import FeedbackOutlinedIcon from "@mui/icons-material/FeedbackOutlined";
 
 export const AdminSidebarData = [
     {
@@ -55,6 +56,11 @@ export const AdminSidebarData = [
                 title: "Patients",
                 icon: <AccessibleIcon />,
                 link: "/admin/patients",
+            },
+            {
+                title: "Feedbacks",
+                icon: <FeedbackOutlinedIcon />,
+                link: "/admin/patients/feedbacks",
             },
             // {
             //     title: "Care Plan",

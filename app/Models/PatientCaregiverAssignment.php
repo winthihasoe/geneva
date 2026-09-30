@@ -9,12 +9,20 @@ class PatientCaregiverAssignment extends Model
 {
     use HasFactory;
 
+    public const LEVELS = ['Skilled', 'Advanced', 'Special Nurse'];
+
+    public const DURATIONS = ['Daily', 'Monthly'];
+
+    public const DUTIES = ['Day', 'Night', '24 hr'];
+
     protected $fillable = [
         'patient_id',
         'cv_id',
         'assigned_by',
         'start_date',
         'end_date',
+        'level',
+        'duration',
         'assignment_reason',
         'end_reason',
     ];

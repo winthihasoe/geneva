@@ -258,6 +258,8 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
 
     // Patients
     Route::get('patients', [PatientController::class, 'index'])->name('admin.patients');
+    Route::get('patients/feedbacks', [PatientController::class, 'feedbacks'])->name('admin.patient.feedbacks');
+    Route::put('patients/feedbacks/{feedback}', [PatientController::class, 'updateFeedback'])->name('admin.patient.feedbacks.update');
     Route::get('patients/create', [PatientController::class, 'createPatient'])->name('admin.patient.create');
     Route::post('patients/create', [PatientController::class, 'store'])->name('admin.patient.store');
     Route::put('patients/{id}/update', [PatientController::class, 'update'])->name('admin.patient.update');
@@ -277,6 +279,7 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::post('/admin/patient/caregiver/assign', [PatientCaregiverAssignmentController::class, 'assign'])->name('admin.patient.caregiver.assign');
     Route::post('/patient/caregiver/assign-additional', [PatientCaregiverAssignmentController::class, 'assignAdditional'])
         ->name('admin.patient.caregiver.assign.additional');
+    Route::put('/admin/patient/caregiver/{id}', [PatientCaregiverAssignmentController::class, 'update'])->name('admin.patient.caregiver.update');
     Route::put('/admin/patient/caregiver/end/{id}', [PatientCaregiverAssignmentController::class, 'end'])->name('admin.patient.caregiver.end');
     Route::post('/admin/patient/caregiver/{id}/notes', [PatientCaregiverAssignmentController::class, 'storeNote'])->name('admin.patient.caregiver.notes.store');
     Route::delete('/admin/patient/caregiver/notes/{note}', [PatientCaregiverAssignmentController::class, 'destroyNote'])->name('admin.patient.caregiver.notes.destroy');

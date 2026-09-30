@@ -499,9 +499,9 @@ class CVController extends Controller
             ->withAvg('reviews', 'rating')
             ->withCount('reviews');
         
-        // Apply status filter
-        if ($request->has('status') && $request->status != '') {
-            $query->where('status', $request->status);
+        $statuses = $this->requestedStatuses($request);
+        if ($statuses !== []) {
+            $query->whereIn('status', $statuses);
         }
         
         // Apply caregiver level filter (resume_level)
@@ -517,7 +517,11 @@ class CVController extends Controller
         
         $cvs = $query->orderBy('id', 'desc')->paginate(50)->withQueryString();
 
-        $filters = $request->only(['status', 'service_area', 'services']);
+        $filters = [
+            'status' => $statuses,
+            'service_area' => $request->input('service_area', ''),
+            'services' => $request->input('services', ''),
+        ];
         $list = $request->input('view') === 'list'
             ? $this->cvListPayload($request)
             : null;
@@ -541,9 +545,10 @@ class CVController extends Controller
     private function cvListPayload(Request $request): array
     {
         $query = CV::query();
+        $statuses = $this->requestedStatuses($request);
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
+        if ($statuses !== []) {
+            $query->whereIn('status', $statuses);
         }
 
         if ($request->filled('services')) {
@@ -555,20 +560,129 @@ class CVController extends Controller
             ->groupBy('service_area')
             ->pluck('total', 'service_area');
 
-        $records = (clone $query)
+        $recordsQuery = (clone $query)
             ->when($request->filled('service_area'), fn ($q) => $q->where('service_area', $request->service_area))
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->orderByDesc('created_at')
-            ->orderByDesc('id')
-            ->paginate(50)
-            ->withQueryString()
-            ->through(fn (CV $cv) => $this->listRecord($cv));
+            ->orderByDesc('id');
+
+        if ($this->listFiltersApplied($request)) {
+            $rows = $recordsQuery
+                ->get()
+                ->map(fn (CV $cv) => $this->listRecord($cv))
+                ->values();
+
+            $records = [
+                'data' => $rows,
+                'current_page' => 1,
+                'last_page' => 1,
+                'from' => $rows->isEmpty() ? null : 1,
+            ];
+        } else {
+            $records = $recordsQuery
+                ->paginate(50)
+                ->withQueryString()
+                ->through(fn (CV $cv) => $this->listRecord($cv));
+        }
 
         return [
             'records' => $records,
             'byArea' => $byArea,
         ];
+    }
+
+    private function requestedStatuses(Request $request): array
+    {
+        $status = $request->input('status', []);
+
+        if (is_string($status)) {
+            $status = $status === '' ? [] : explode(',', $status);
+        }
+
+        if (! is_array($status)) {
+            return [];
+        }
+
+        $allowed = ['Available', 'Occupied', 'Leave', 'Resigned', 'Blacklisted'];
+
+        return array_values(array_unique(array_filter(
+            $status,
+            fn ($value) => is_string($value) && in_array($value, $allowed, true)
+        )));
+    }
+
+    private function listFiltersApplied(Request $request): bool
+    {
+        return $this->requestedStatuses($request) !== []
+            || $request->filled('service_area')
+            || $request->filled('services');
+    }
+
+    private function dutyLabels(mixed $value): array
+    {
+        $found = [];
+        $this->collectDutyLabels($value, $found);
+
+        return array_values(array_filter(
+            ['Day duty', 'Night duty'],
+            fn (string $label) => in_array($label, $found, true)
+        ));
+    }
+
+    private function collectDutyLabels(mixed $value, array &$found): void
+    {
+        if (is_array($value)) {
+            $pieces = [];
+
+            foreach ($value as $item) {
+                if (is_string($item) && in_array($item, ['Day duty', 'Night duty'], true)) {
+                    $found[] = $item;
+                    continue;
+                }
+
+                if (is_string($item) || $item === null) {
+                    $pieces[] = $item === null ? ' ' : $item;
+                    continue;
+                }
+
+                $this->collectDutyLabels($item, $found);
+            }
+
+            if ($pieces !== []) {
+                $this->collectDutyLabels(implode('', $pieces), $found);
+            }
+
+            return;
+        }
+
+        if (! is_string($value)) {
+            return;
+        }
+
+        $trimmed = trim($value);
+        if ($trimmed === '' || $trimmed === '[]') {
+            return;
+        }
+
+        if (in_array($trimmed, ['Day duty', 'Night duty'], true)) {
+            $found[] = $trimmed;
+
+            return;
+        }
+
+        $decoded = json_decode($trimmed, true);
+        if (json_last_error() === JSON_ERROR_NONE && $decoded !== $trimmed) {
+            $this->collectDutyLabels($decoded, $found);
+
+            return;
+        }
+
+        foreach (['Day duty', 'Night duty'] as $label) {
+            if (str_contains($trimmed, $label)) {
+                $found[] = $label;
+            }
+        }
     }
 
     private function listRecord(CV $cv): array
@@ -582,6 +696,7 @@ class CVController extends Controller
             'date_of_birth' => $cv->date_of_birth
                 ? Carbon::parse($cv->date_of_birth)->format('Y-m-d')
                 : null,
+            'duty' => $this->dutyLabels($cv->duty),
             'service_area' => $cv->service_area,
             'services' => $cv->services ?? [],
             'level' => $cv->level,

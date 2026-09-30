@@ -6,6 +6,7 @@ import {
     Badge,
     Box,
     Button,
+    Checkbox,
     Chip,
     Container,
     Divider,
@@ -28,15 +29,40 @@ import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import CvListSheet from "./components/CvListSheet";
 
+const STATUS_OPTIONS = [
+    "Available",
+    "Occupied",
+    "Leave",
+    "Resigned",
+    "Blacklisted",
+];
+
 const EMPTY_FILTERS = {
-    status: "",
+    status: [],
     service_area: "",
     services: "",
 };
 
+function statusList(source = {}) {
+    const status = source.status;
+
+    if (Array.isArray(status)) {
+        return status.filter(Boolean);
+    }
+
+    if (typeof status === "string" && status.trim() !== "") {
+        return status
+            .split(",")
+            .map((item) => item.trim())
+            .filter(Boolean);
+    }
+
+    return [];
+}
+
 function filtersFromProps(source = {}) {
     return {
-        status: source.status || "",
+        status: statusList(source),
         service_area: source.service_area || "",
         services: source.services || "",
     };
@@ -44,9 +70,10 @@ function filtersFromProps(source = {}) {
 
 function filtersToQuery(source, page) {
     const params = {};
+    const statuses = statusList(source);
 
-    if (source.status) {
-        params.status = source.status;
+    if (statuses.length > 0) {
+        params.status = statuses;
     }
     if (source.services) {
         params.services = source.services;
@@ -62,8 +89,11 @@ function filtersToQuery(source, page) {
 }
 
 function activeFilterCount(source) {
-    return [source.status, source.service_area, source.services].filter(Boolean)
-        .length;
+    return [
+        statusList(source).length > 0,
+        Boolean(source.service_area),
+        Boolean(source.services),
+    ].filter(Boolean).length;
 }
 
 const EMPTY_LIST = {
@@ -96,13 +126,11 @@ export default function AdminCVs({
         localStorage.setItem("cvViewMode", viewMode);
     }, [viewMode]);
 
+    const appliedStatusKey = statusList(initialFilters).join("|");
+
     useEffect(() => {
         setFilters(filtersFromProps(initialFilters));
-    }, [
-        initialFilters.status,
-        initialFilters.service_area,
-        initialFilters.services,
-    ]);
+    }, [appliedStatusKey, initialFilters.service_area, initialFilters.services]);
 
     const requestedList = useRef(false);
 
@@ -208,7 +236,7 @@ export default function AdminCVs({
             <Container
                 maxWidth={false}
                 sx={{
-                    pb: viewMode === "list" ? 0 : 4,
+                    pb: 4,
                     px: { xs: 0, sm: 2 },
                     minWidth: 0,
                 }}
@@ -493,18 +521,32 @@ export default function AdminCVs({
                     <FormControl fullWidth size="small" sx={{ mb: 1.5 }}>
                         <InputLabel>Status</InputLabel>
                         <Select
+                            multiple
                             value={filters.status}
                             label="Status"
-                            onChange={(event) =>
-                                handleFilterChange("status", event.target.value)
+                            renderValue={(selected) =>
+                                selected.length > 0 ? selected.join(", ") : ""
                             }
+                            onChange={(event) => {
+                                const value = event.target.value;
+                                handleFilterChange(
+                                    "status",
+                                    typeof value === "string"
+                                        ? value.split(",")
+                                        : value,
+                                );
+                            }}
                         >
-                            <MenuItem value="">All</MenuItem>
-                            <MenuItem value="Available">Available</MenuItem>
-                            <MenuItem value="Occupied">Occupied</MenuItem>
-                            <MenuItem value="Leave">Leave</MenuItem>
-                            <MenuItem value="Resigned">Resigned</MenuItem>
-                            <MenuItem value="Blacklisted">Blacklisted</MenuItem>
+                            {STATUS_OPTIONS.map((status) => (
+                                <MenuItem key={status} value={status}>
+                                    <Checkbox
+                                        size="small"
+                                        checked={filters.status.includes(status)}
+                                        sx={{ p: 0.5, mr: 1 }}
+                                    />
+                                    {status}
+                                </MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
 
@@ -579,15 +621,23 @@ export default function AdminCVs({
                                 }
                             />
                         )}
-                        {appliedFilters.status && (
+                        {statusList(appliedFilters).map((status) => (
                             <Chip
+                                key={status}
                                 size="small"
                                 color="primary"
                                 variant="outlined"
-                                label={`Status: ${appliedFilters.status}`}
-                                onDelete={() => removeAppliedFilter("status")}
+                                label={`Status: ${status}`}
+                                onDelete={() =>
+                                    visitList({
+                                        ...appliedFilters,
+                                        status: statusList(appliedFilters).filter(
+                                            (item) => item !== status,
+                                        ),
+                                    })
+                                }
                             />
-                        )}
+                        ))}
                         {appliedFilters.services && (
                             <Chip
                                 size="small"
@@ -627,7 +677,7 @@ export default function AdminCVs({
                             ))}
                         </Box>
                         <CvListSheet
-                            key={`${listPage.current_page}-${appliedFilters.service_area}-${appliedFilters.status}-${appliedFilters.services}`}
+                            key={`${listPage.current_page}-${appliedFilters.service_area}-${appliedStatusKey}-${appliedFilters.services}`}
                             cvs={listPage.data}
                             startNo={listPage.from || 1}
                         />

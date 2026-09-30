@@ -143,10 +143,14 @@ export default function AdminLayout({ children }) {
     );
 
     const isPatientsGroupChildActive = (link) => {
+        if (link === "/admin/patients/feedbacks") {
+            return pathname.startsWith("/admin/patients/feedbacks");
+        }
         if (link === "/admin/patients") {
             return (
                 pathname === "/admin/patients" ||
-                pathname.startsWith("/admin/patients/")
+                (pathname.startsWith("/admin/patients/") &&
+                    !pathname.startsWith("/admin/patients/feedbacks"))
             );
         }
         if (link === "/admin/care-logs") {

@@ -8,7 +8,11 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
+    FormControl,
     IconButton,
+    InputLabel,
+    MenuItem,
+    Select,
     TextField,
     ToggleButton,
     ToggleButtonGroup,
@@ -98,15 +102,39 @@ export function AssignmentNotes({ assignmentId, notes = [] }) {
     );
 }
 
+const FEEDBACK_FOLLOW_UPS = {
+    daily: [
+        { value: "after_1_duty", label: "After 1 duty" },
+        {
+            value: "one_day_before_completion",
+            label: "1 day before duty completion",
+        },
+        { value: "after_duty_finished", label: "After duty is finished" },
+    ],
+    monthly: [
+        { value: "after_1_duty", label: "After 1 duty" },
+        {
+            value: "three_days_before_month",
+            label: "3 days before 1 month",
+        },
+        { value: "after_duty_finished", label: "After duty is finished" },
+    ],
+};
+
 export function PatientFeedbackNotes({ patientId, notes = [] }) {
-    const form = useForm({ body: "" });
+    const form = useForm({
+        feedback_type: "",
+        follow_up: "",
+        body: "",
+    });
     const [pendingDelete, setPendingDelete] = useState(null);
+    const followUps = FEEDBACK_FOLLOW_UPS[form.data.feedback_type] ?? [];
 
     const save = (event) => {
         event.preventDefault();
         form.post(route("admin.patient.feedbacks.store", patientId), {
             preserveScroll: true,
-            onSuccess: () => form.reset("body"),
+            onSuccess: () => form.reset(),
         });
     };
 
@@ -118,6 +146,68 @@ export function PatientFeedbackNotes({ patientId, notes = [] }) {
                 onDelete={setPendingDelete}
             />
             <Box component="form" onSubmit={save} sx={{ mt: 1.5 }}>
+                <ToggleButtonGroup
+                    exclusive
+                    size="small"
+                    value={form.data.feedback_type || null}
+                    onChange={(_, value) => {
+                        if (!value) {
+                            return;
+                        }
+                        const stillValid = (
+                            FEEDBACK_FOLLOW_UPS[value] ?? []
+                        ).some((option) => option.value === form.data.follow_up);
+                        form.setData({
+                            ...form.data,
+                            feedback_type: value,
+                            follow_up: stillValid ? form.data.follow_up : "",
+                        });
+                    }}
+                    sx={{ mb: 1.5 }}
+                >
+                    <ToggleButton value="daily">Daily feedback</ToggleButton>
+                    <ToggleButton value="monthly">Monthly feedback</ToggleButton>
+                </ToggleButtonGroup>
+                {form.errors.feedback_type && (
+                    <Typography
+                        variant="caption"
+                        color="error"
+                        display="block"
+                        sx={{ mb: 1 }}
+                    >
+                        {form.errors.feedback_type}
+                    </Typography>
+                )}
+                <FormControl
+                    fullWidth
+                    size="small"
+                    disabled={!form.data.feedback_type}
+                    error={!!form.errors.follow_up}
+                    sx={{ mb: 1.5 }}
+                >
+                    <InputLabel id="patient-feedback-follow-up">
+                        Follow up
+                    </InputLabel>
+                    <Select
+                        labelId="patient-feedback-follow-up"
+                        label="Follow up"
+                        value={form.data.follow_up}
+                        onChange={(event) =>
+                            form.setData("follow_up", event.target.value)
+                        }
+                    >
+                        {followUps.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                    {form.errors.follow_up && (
+                        <Typography variant="caption" color="error" sx={{ mt: 0.5 }}>
+                            {form.errors.follow_up}
+                        </Typography>
+                    )}
+                </FormControl>
                 <TextField
                     fullWidth
                     label=""
@@ -135,7 +225,12 @@ export function PatientFeedbackNotes({ patientId, notes = [] }) {
                     type="submit"
                     variant="outlined"
                     size="small"
-                    disabled={form.processing || !form.data.body.trim()}
+                    disabled={
+                        form.processing ||
+                        !form.data.feedback_type ||
+                        !form.data.follow_up ||
+                        !form.data.body.trim()
+                    }
                     sx={{ mt: 1, borderRadius: 20 }}
                 >
                     {form.processing ? "Saving..." : "Save feedback"}
@@ -190,12 +285,31 @@ function NoteList({ notes, emptyText, onDelete }) {
                     gap: 1,
                 }}
             >
-                <Chip
-                    size="small"
-                    label={note.kind === "complaint" ? "Complaint" : "Feedback"}
-                    color={note.kind === "complaint" ? "warning" : "primary"}
-                    variant="outlined"
-                />
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 0.75,
+                        flexWrap: "wrap",
+                    }}
+                >
+                    <Chip
+                        size="small"
+                        label={
+                            note.feedback_type_label ||
+                            (note.kind === "complaint" ? "Complaint" : "Feedback")
+                        }
+                        color={note.kind === "complaint" ? "warning" : "primary"}
+                        variant="outlined"
+                    />
+                    {note.follow_up_label && (
+                        <Chip
+                            size="small"
+                            label={note.follow_up_label}
+                            variant="outlined"
+                        />
+                    )}
+                </Box>
                 <IconButton
                     size="small"
                     aria-label={`Delete ${note.kind === "complaint" ? "complaint" : "feedback"}`}

@@ -58,6 +58,7 @@ function NoteList({ title, icon, items, emptyText }) {
             ) : (
                 items.map((item) => {
                     const detail = [
+                        item.label,
                         item.caregiver_name,
                         item.patient_name,
                         item.staff_name,

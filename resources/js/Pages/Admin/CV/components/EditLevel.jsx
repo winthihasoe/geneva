@@ -75,7 +75,7 @@ function EditLevel({ cv }) {
                     </Select>
                 </Box> */}
 
-                <Box>
+                {/* <Box>
                     <Stack direction="row" alignItems="center" gap={1} mb={1}>
                         <BabyIcon color="secondary" />
                         <Typography variant="body1" fontWeight="bold">
@@ -99,7 +99,7 @@ function EditLevel({ cv }) {
                             Advanced Nanny
                         </MenuItem>
                     </Select>
-                </Box>
+                </Box> */}
 
                 <Box>
                     <Stack direction="row" alignItems="center" gap={1} mb={1}>
@@ -124,12 +124,11 @@ function EditLevel({ cv }) {
                         <MenuItem value="">
                             <em>Select Level</em>
                         </MenuItem>
-                        <MenuItem value="Skilled Caregiver">
-                            Skilled Caregiver
-                        </MenuItem>
-                        <MenuItem value="Advanced Caregiver">
-                            Advanced Caregiver
-                        </MenuItem>
+                        <MenuItem value="Skilled">Skilled</MenuItem>
+                        <MenuItem value="Advanced">Advanced</MenuItem>
+                        <MenuItem value="Special Nurse">Special Nurse</MenuItem>
+                        <MenuItem value="D.Midwife">D.Midwife</MenuItem>
+                        <MenuItem value="B.N.Sc">B.N.Sc</MenuItem>
                     </Select>
                 </Box>
             </Stack>

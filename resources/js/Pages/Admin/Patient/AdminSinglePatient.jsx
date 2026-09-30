@@ -6,6 +6,7 @@ import {
     Button,
     IconButton,
     FormControl,
+    FormHelperText,
     InputLabel,
     Select,
     MenuItem,
@@ -35,10 +36,13 @@ import PatientBanner from "./components/PatientBanner";
 import PatientDetails from "./components/PatientDetails";
 import { careTypeLabel } from "@/utils/careTypeLabel";
 import AddIcon from "@mui/icons-material/Add";
-import {
-    AssignmentNotes,
-    PatientFeedbackNotes,
-} from "./components/CareNotes";
+import EditIcon from "@mui/icons-material/Edit";
+import { AssignmentNotes, PatientFeedbackNotes } from "./components/CareNotes";
+import { Edit } from "@mui/icons-material";
+
+const caregiverLevels = ["Skilled", "Advanced", "Special Nurse"];
+const assignmentDurations = ["Daily", "Monthly"];
+const assignmentDuties = ["Day", "Night", "24 hr"];
 
 const caseStatusLabel = {
     open: "Open",
@@ -80,6 +84,9 @@ function AdminSinglePatient({
 }) {
     const [showAdditionalForm, setShowAdditionalForm] = useState(false);
     const [endDialogOpen, setEndDialogOpen] = useState(false);
+    const [editAssignmentOpen, setEditAssignmentOpen] = useState(false);
+    const [selectedAssignmentToEdit, setSelectedAssignmentToEdit] =
+        useState(null);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [publicCareLogLinkLoadingId, setPublicCareLogLinkLoadingId] =
         useState(null);
@@ -108,7 +115,9 @@ function AdminSinglePatient({
         cv_id: "",
         start_date: "",
         end_date: "",
-        assignment_reason: "", // Now it store the duty
+        level: "",
+        duration: "",
+        assignment_reason: "",
     });
 
     // End assignment form. Date is chosen in the dialog; today is only the starting value.
@@ -159,6 +168,52 @@ function AdminSinglePatient({
                 },
             );
         }
+    };
+
+    const editAssignmentForm = useForm({
+        start_date: "",
+        level: "",
+        duration: "",
+        assignment_reason: "",
+    });
+
+    const knownOption = (value, options) =>
+        options.includes(value) ? value : "";
+
+    const openEditDialog = (assignment) => {
+        setSelectedAssignmentToEdit(assignment);
+        editAssignmentForm.clearErrors();
+        editAssignmentForm.setData({
+            start_date: dateInputValue(assignment.start_date) || "",
+            level: knownOption(assignment.level, caregiverLevels),
+            duration: knownOption(assignment.duration, assignmentDurations),
+            assignment_reason: knownOption(
+                assignment.assignment_reason,
+                assignmentDuties,
+            ),
+        });
+        setEditAssignmentOpen(true);
+    };
+
+    const handleUpdateAssignment = (e) => {
+        e.preventDefault();
+        if (!selectedAssignmentToEdit) {
+            return;
+        }
+
+        editAssignmentForm.put(
+            route(
+                "admin.patient.caregiver.update",
+                selectedAssignmentToEdit.id,
+            ),
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setEditAssignmentOpen(false);
+                    setSelectedAssignmentToEdit(null);
+                },
+            },
+        );
     };
 
     const openEndDialog = (assignment) => {
@@ -306,11 +361,41 @@ function AdminSinglePatient({
                                                     >
                                                         Caregiver #{index + 1}
                                                     </Typography>
-                                                    <Chip
-                                                        label="Active"
-                                                        color="success"
-                                                        size="small"
-                                                    />
+                                                    <Box
+                                                        sx={{
+                                                            display: "flex",
+                                                            alignItems:
+                                                                "center",
+                                                            gap: 0.5,
+                                                        }}
+                                                    >
+                                                        <IconButton
+                                                            size="small"
+                                                            aria-label="Edit assignment"
+                                                            onClick={() =>
+                                                                openEditDialog(
+                                                                    assignment,
+                                                                )
+                                                            }
+                                                            sx={{
+                                                                border: "1px solid",
+                                                                borderColor:
+                                                                    "divider",
+                                                                borderRadius: 1,
+                                                            }}
+                                                        >
+                                                            <Edit
+                                                                sx={{
+                                                                    fontSize: 16,
+                                                                }}
+                                                            />
+                                                        </IconButton>
+                                                        <Chip
+                                                            label="Active"
+                                                            color="success"
+                                                            size="small"
+                                                        />
+                                                    </Box>
                                                 </Box>
                                                 <Box
                                                     sx={{
@@ -372,6 +457,26 @@ function AdminSinglePatient({
                                                         assignment.start_date,
                                                     )}
                                                 </Typography>
+                                                {assignment.level && (
+                                                    <Typography
+                                                        variant="body2"
+                                                        sx={{ mb: 0.5 }}
+                                                    >
+                                                        <strong>Level:</strong>{" "}
+                                                        {assignment.level}
+                                                    </Typography>
+                                                )}
+                                                {assignment.duration && (
+                                                    <Typography
+                                                        variant="body2"
+                                                        sx={{ mb: 0.5 }}
+                                                    >
+                                                        <strong>
+                                                            Duration:
+                                                        </strong>{" "}
+                                                        {assignment.duration}
+                                                    </Typography>
+                                                )}
                                                 {assignment.assignment_reason && (
                                                     <Typography
                                                         variant="body2"
@@ -385,7 +490,9 @@ function AdminSinglePatient({
                                                 )}
                                                 <AssignmentNotes
                                                     assignmentId={assignment.id}
-                                                    notes={assignment.notes || []}
+                                                    notes={
+                                                        assignment.notes || []
+                                                    }
                                                 />
                                                 <Box
                                                     sx={{
@@ -694,24 +801,153 @@ function AdminSinglePatient({
                                             sx={{ mb: 2 }}
                                         />
 
-                                        <TextField
+                                        <FormControl
                                             fullWidth
-                                            label="Assign duty"
-                                            placeholder="Live-out / Day duty"
-                                            multiline
-                                            rows={2}
-                                            value={
-                                                additionalAssignmentForm.data
-                                                    .assignment_reason
-                                            }
-                                            onChange={(e) =>
-                                                additionalAssignmentForm.setData(
-                                                    "assignment_reason",
-                                                    e.target.value,
-                                                )
-                                            }
                                             sx={{ mb: 2 }}
-                                        />
+                                            required
+                                            error={
+                                                !!additionalAssignmentForm
+                                                    .errors.level
+                                            }
+                                        >
+                                            <InputLabel>Level</InputLabel>
+                                            <Select
+                                                variant="standard"
+                                                value={
+                                                    additionalAssignmentForm
+                                                        .data.level
+                                                }
+                                                onChange={(e) =>
+                                                    additionalAssignmentForm.setData(
+                                                        "level",
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                label="Level"
+                                            >
+                                                <MenuItem value="">
+                                                    <em>Choose a level</em>
+                                                </MenuItem>
+                                                {caregiverLevels.map(
+                                                    (level) => (
+                                                        <MenuItem
+                                                            key={level}
+                                                            value={level}
+                                                        >
+                                                            {level}
+                                                        </MenuItem>
+                                                    ),
+                                                )}
+                                            </Select>
+                                            {additionalAssignmentForm.errors
+                                                .level && (
+                                                <FormHelperText>
+                                                    {
+                                                        additionalAssignmentForm
+                                                            .errors.level
+                                                    }
+                                                </FormHelperText>
+                                            )}
+                                        </FormControl>
+
+                                        <FormControl
+                                            fullWidth
+                                            sx={{ mb: 2 }}
+                                            required
+                                            error={
+                                                !!additionalAssignmentForm
+                                                    .errors.duration
+                                            }
+                                        >
+                                            <InputLabel>Duration</InputLabel>
+                                            <Select
+                                                variant="standard"
+                                                value={
+                                                    additionalAssignmentForm
+                                                        .data.duration
+                                                }
+                                                onChange={(e) =>
+                                                    additionalAssignmentForm.setData(
+                                                        "duration",
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                label="Duration"
+                                            >
+                                                <MenuItem value="">
+                                                    <em>Choose a duration</em>
+                                                </MenuItem>
+                                                {assignmentDurations.map(
+                                                    (duration) => (
+                                                        <MenuItem
+                                                            key={duration}
+                                                            value={duration}
+                                                        >
+                                                            {duration}
+                                                        </MenuItem>
+                                                    ),
+                                                )}
+                                            </Select>
+                                            {additionalAssignmentForm.errors
+                                                .duration && (
+                                                <FormHelperText>
+                                                    {
+                                                        additionalAssignmentForm
+                                                            .errors.duration
+                                                    }
+                                                </FormHelperText>
+                                            )}
+                                        </FormControl>
+
+                                        <FormControl
+                                            fullWidth
+                                            sx={{ mb: 2 }}
+                                            required
+                                            error={
+                                                !!additionalAssignmentForm
+                                                    .errors.assignment_reason
+                                            }
+                                        >
+                                            <InputLabel>Assign duty</InputLabel>
+                                            <Select
+                                                variant="standard"
+                                                value={
+                                                    additionalAssignmentForm
+                                                        .data.assignment_reason
+                                                }
+                                                onChange={(e) =>
+                                                    additionalAssignmentForm.setData(
+                                                        "assignment_reason",
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                label="Assign duty"
+                                            >
+                                                <MenuItem value="">
+                                                    <em>Choose a duty</em>
+                                                </MenuItem>
+                                                {assignmentDuties.map(
+                                                    (duty) => (
+                                                        <MenuItem
+                                                            key={duty}
+                                                            value={duty}
+                                                        >
+                                                            {duty}
+                                                        </MenuItem>
+                                                    ),
+                                                )}
+                                            </Select>
+                                            {additionalAssignmentForm.errors
+                                                .assignment_reason && (
+                                                <FormHelperText>
+                                                    {
+                                                        additionalAssignmentForm
+                                                            .errors
+                                                            .assignment_reason
+                                                    }
+                                                </FormHelperText>
+                                            )}
+                                        </FormControl>
 
                                         <Button
                                             type="submit"
@@ -817,6 +1053,26 @@ function AdminSinglePatient({
                                                     assignment.end_date,
                                                 )}
                                             </Typography>
+                                            {assignment.level && (
+                                                <Typography
+                                                    variant="caption"
+                                                    display="block"
+                                                    sx={{ mb: 0.5 }}
+                                                >
+                                                    <strong>Level:</strong>{" "}
+                                                    {assignment.level}
+                                                </Typography>
+                                            )}
+                                            {assignment.duration && (
+                                                <Typography
+                                                    variant="caption"
+                                                    display="block"
+                                                    sx={{ mb: 0.5 }}
+                                                >
+                                                    <strong>Duration:</strong>{" "}
+                                                    {assignment.duration}
+                                                </Typography>
+                                            )}
                                             {assignment.assignment_reason && (
                                                 <Typography
                                                     variant="caption"
@@ -1043,8 +1299,9 @@ function AdminSinglePatient({
                                 color="text.secondary"
                                 sx={{ mb: 2 }}
                             >
-                                Notes from a customer service call with this
-                                patient.
+                                Notes from a customer service call. Label each
+                                note as daily or monthly feedback, and when to
+                                follow up.
                             </Typography>
                             <PatientFeedbackNotes
                                 patientId={patient.id}
@@ -1058,6 +1315,209 @@ function AdminSinglePatient({
                             onClose={() => setEditDialogOpen(false)}
                             patient={patient}
                         />
+
+                        <Dialog
+                            open={editAssignmentOpen}
+                            onClose={() => setEditAssignmentOpen(false)}
+                            fullWidth
+                            maxWidth="xs"
+                            PaperProps={{
+                                sx: {
+                                    p: 2,
+                                    bgcolor: "warning.50",
+                                    borderRadius: 2,
+                                    border: "2px solid",
+                                    borderColor: "warning.main",
+                                },
+                            }}
+                        >
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    mb: 2,
+                                }}
+                            >
+                                <Typography
+                                    variant="subtitle1"
+                                    fontWeight="bold"
+                                >
+                                    Edit Assignment
+                                </Typography>
+                                <IconButton
+                                    size="small"
+                                    aria-label="Close"
+                                    onClick={() => setEditAssignmentOpen(false)}
+                                >
+                                    <CloseIcon />
+                                </IconButton>
+                            </Box>
+                            {selectedAssignmentToEdit?.caregiver?.full_name && (
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    sx={{ mb: 2 }}
+                                >
+                                    {
+                                        selectedAssignmentToEdit.caregiver
+                                            .full_name
+                                    }
+                                </Typography>
+                            )}
+                            <form onSubmit={handleUpdateAssignment}>
+                                <TextField
+                                    fullWidth
+                                    label="Start Date"
+                                    type="date"
+                                    value={editAssignmentForm.data.start_date}
+                                    onChange={(e) =>
+                                        editAssignmentForm.setData(
+                                            "start_date",
+                                            e.target.value,
+                                        )
+                                    }
+                                    InputLabelProps={{ shrink: true }}
+                                    error={
+                                        !!editAssignmentForm.errors.start_date
+                                    }
+                                    helperText={
+                                        editAssignmentForm.errors.start_date
+                                    }
+                                    sx={{ mb: 2 }}
+                                    required
+                                />
+
+                                <FormControl
+                                    fullWidth
+                                    sx={{ mb: 2 }}
+                                    required
+                                    error={!!editAssignmentForm.errors.level}
+                                >
+                                    <InputLabel>Level</InputLabel>
+                                    <Select
+                                        variant="standard"
+                                        value={editAssignmentForm.data.level}
+                                        onChange={(e) =>
+                                            editAssignmentForm.setData(
+                                                "level",
+                                                e.target.value,
+                                            )
+                                        }
+                                        label="Level"
+                                    >
+                                        <MenuItem value="">
+                                            <em>Choose a level</em>
+                                        </MenuItem>
+                                        {caregiverLevels.map((level) => (
+                                            <MenuItem key={level} value={level}>
+                                                {level}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                    {editAssignmentForm.errors.level && (
+                                        <FormHelperText>
+                                            {editAssignmentForm.errors.level}
+                                        </FormHelperText>
+                                    )}
+                                </FormControl>
+
+                                <FormControl
+                                    fullWidth
+                                    sx={{ mb: 2 }}
+                                    required
+                                    error={!!editAssignmentForm.errors.duration}
+                                >
+                                    <InputLabel>Duration</InputLabel>
+                                    <Select
+                                        variant="standard"
+                                        value={editAssignmentForm.data.duration}
+                                        onChange={(e) =>
+                                            editAssignmentForm.setData(
+                                                "duration",
+                                                e.target.value,
+                                            )
+                                        }
+                                        label="Duration"
+                                    >
+                                        <MenuItem value="">
+                                            <em>Choose a duration</em>
+                                        </MenuItem>
+                                        {assignmentDurations.map((duration) => (
+                                            <MenuItem
+                                                key={duration}
+                                                value={duration}
+                                            >
+                                                {duration}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                    {editAssignmentForm.errors.duration && (
+                                        <FormHelperText>
+                                            {editAssignmentForm.errors.duration}
+                                        </FormHelperText>
+                                    )}
+                                </FormControl>
+
+                                <FormControl
+                                    fullWidth
+                                    sx={{ mb: 2 }}
+                                    required
+                                    error={
+                                        !!editAssignmentForm.errors
+                                            .assignment_reason
+                                    }
+                                >
+                                    <InputLabel>Assign duty</InputLabel>
+                                    <Select
+                                        variant="standard"
+                                        value={
+                                            editAssignmentForm.data
+                                                .assignment_reason
+                                        }
+                                        onChange={(e) =>
+                                            editAssignmentForm.setData(
+                                                "assignment_reason",
+                                                e.target.value,
+                                            )
+                                        }
+                                        label="Assign duty"
+                                    >
+                                        <MenuItem value="">
+                                            <em>Choose a duty</em>
+                                        </MenuItem>
+                                        {assignmentDuties.map((duty) => (
+                                            <MenuItem key={duty} value={duty}>
+                                                {duty}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                    {editAssignmentForm.errors
+                                        .assignment_reason && (
+                                        <FormHelperText>
+                                            {
+                                                editAssignmentForm.errors
+                                                    .assignment_reason
+                                            }
+                                        </FormHelperText>
+                                    )}
+                                </FormControl>
+
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={editAssignmentForm.processing}
+                                    sx={{ borderRadius: 20 }}
+                                    fullWidth
+                                    size="small"
+                                >
+                                    {editAssignmentForm.processing
+                                        ? "Saving..."
+                                        : "Save"}
+                                </Button>
+                            </form>
+                        </Dialog>
 
                         {/* End Assignment Dialog */}
                         <Dialog

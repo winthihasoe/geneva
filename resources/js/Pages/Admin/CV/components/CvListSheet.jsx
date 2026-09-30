@@ -1,4 +1,3 @@
-import useViewportTableHeight from "@/hooks/useViewportTableHeight";
 import { router } from "@inertiajs/react";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import {
@@ -18,7 +17,7 @@ import {
     Typography,
 } from "@mui/material";
 import dayjs from "dayjs";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 const displayText = (value) => {
     if (value === null || value === undefined || value === "") {
@@ -81,6 +80,74 @@ const displayServices = (value) => {
     return displayText(value);
 };
 
+const DUTY_LABELS = ["Day duty", "Night duty"];
+
+const collectDutyLabels = (value, found) => {
+    if (Array.isArray(value)) {
+        const pieces = [];
+
+        value.forEach((item) => {
+            if (DUTY_LABELS.includes(item)) {
+                found.push(item);
+                return;
+            }
+
+            if (typeof item === "string" || item == null) {
+                pieces.push(item == null ? " " : item);
+                return;
+            }
+
+            collectDutyLabels(item, found);
+        });
+
+        if (pieces.length > 0) {
+            collectDutyLabels(pieces.join(""), found);
+        }
+
+        return;
+    }
+
+    if (typeof value !== "string") {
+        return;
+    }
+
+    const trimmed = value.trim();
+    if (!trimmed || trimmed === "[]") {
+        return;
+    }
+
+    if (DUTY_LABELS.includes(trimmed)) {
+        found.push(trimmed);
+        return;
+    }
+
+    if (trimmed.startsWith("[") || trimmed.startsWith('"')) {
+        try {
+            const parsed = JSON.parse(trimmed);
+            if (parsed !== trimmed) {
+                collectDutyLabels(parsed, found);
+                return;
+            }
+        } catch {
+            // The text is not JSON, so keep scanning it for known labels.
+        }
+    }
+
+    DUTY_LABELS.forEach((label) => {
+        if (trimmed.includes(label)) {
+            found.push(label);
+        }
+    });
+};
+
+const displayDuty = (value) => {
+    const found = [];
+    collectDutyLabels(value, found);
+    const labels = DUTY_LABELS.filter((label) => found.includes(label));
+
+    return labels.length > 0 ? labels.join(", ") : "-";
+};
+
 const displayRating = (record) => {
     if (!record.reviews_count) {
         return "-";
@@ -94,7 +161,7 @@ const displayRating = (record) => {
 const columns = [
     {
         key: "name",
-        label: "No. Name",
+        label: "Name",
         minWidth: 180,
         wrap: true,
         getValue: (record) => displayText(record.full_name),
@@ -118,11 +185,13 @@ const columns = [
         getValue: (record) => displayAge(record.date_of_birth),
     },
     {
-        key: "date_of_birth",
-        label: "Date of birth",
-        minWidth: 112,
-        getValue: (record) => formatShortDate(record.date_of_birth) || "-",
+        key: "duty",
+        label: "Duty preference",
+        minWidth: 148,
+        wrap: true,
+        getValue: (record) => displayDuty(record.duty),
     },
+
     {
         key: "service_area",
         label: "Service area",
@@ -148,6 +217,12 @@ const columns = [
         label: "Phone",
         minWidth: 124,
         getValue: (record) => displayText(record.phone),
+    },
+    {
+        key: "date_of_birth",
+        label: "Date of birth",
+        minWidth: 112,
+        getValue: (record) => formatShortDate(record.date_of_birth) || "-",
     },
     {
         key: "height",
@@ -222,7 +297,7 @@ function ColumnFilterPopover({
     }, [open, column?.key]);
 
     const visibleOptions = options.filter((option) =>
-        option.toLowerCase().includes(query.trim().toLowerCase())
+        option.toLowerCase().includes(query.trim().toLowerCase()),
     );
     const selectedSet = selected ? new Set(selected) : null;
     const isChecked = (option) => !selectedSet || selectedSet.has(option);
@@ -317,7 +392,9 @@ function ColumnFilterPopover({
                             checked={allVisibleChecked}
                             indeterminate={
                                 !allVisibleChecked &&
-                                visibleOptions.some((option) => isChecked(option))
+                                visibleOptions.some((option) =>
+                                    isChecked(option),
+                                )
                             }
                             onChange={toggleVisible}
                             sx={{ p: 0.5 }}
@@ -361,7 +438,11 @@ function ColumnFilterPopover({
                             </Box>
                         ))
                     ) : (
-                        <Typography variant="body2" color="text.secondary" sx={{ py: 1 }}>
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ py: 1 }}
+                        >
                             No values
                         </Typography>
                     )}
@@ -372,8 +453,6 @@ function ColumnFilterPopover({
 }
 
 export default function CvListSheet({ cvs = [], startNo = 1 }) {
-    const tableRef = useRef(null);
-    const tableHeight = useViewportTableHeight(tableRef);
     const [columnFilters, setColumnFilters] = useState({});
     const [filterMenu, setFilterMenu] = useState({ key: null, anchorEl: null });
 
@@ -383,7 +462,7 @@ export default function CvListSheet({ cvs = [], startNo = 1 }) {
                 ...record,
                 rowNo: startNo + index,
             })),
-        [cvs, startNo]
+        [cvs, startNo],
     );
 
     const visibleRecords = useMemo(
@@ -396,9 +475,9 @@ export default function CvListSheet({ cvs = [], startNo = 1 }) {
                     }
 
                     return allowed.includes(column.getValue(record));
-                })
+                }),
             ),
-        [numberedRecords, columnFilters]
+        [numberedRecords, columnFilters],
     );
 
     const openColumn = columns.find((column) => column.key === filterMenu.key);
@@ -452,15 +531,12 @@ export default function CvListSheet({ cvs = [], startNo = 1 }) {
     return (
         <>
             <TableContainer
-                ref={tableRef}
                 component={Paper}
                 elevation={0}
                 sx={{
                     width: "100%",
                     maxWidth: "100%",
-                    overflow: "auto",
-                    height: tableHeight,
-                    maxHeight: tableHeight,
+                    overflowX: "auto",
                     border: 1,
                     borderColor: "divider",
                     borderRadius: 1,
@@ -470,7 +546,7 @@ export default function CvListSheet({ cvs = [], startNo = 1 }) {
                     stickyHeader
                     size="small"
                     sx={{
-                        minWidth: 1560,
+                        minWidth: 1710,
                         borderCollapse: "separate",
                         borderSpacing: 0,
                     }}
@@ -481,8 +557,10 @@ export default function CvListSheet({ cvs = [], startNo = 1 }) {
                                 "& th": {
                                     bgcolor: "primary.main",
                                     color: "#fff",
-                                    borderRight: "1px solid rgba(255,255,255,0.28)",
-                                    borderBottom: "1px solid rgba(255,255,255,0.28)",
+                                    borderRight:
+                                        "1px solid rgba(255,255,255,0.28)",
+                                    borderBottom:
+                                        "1px solid rgba(255,255,255,0.28)",
                                     py: 0.75,
                                     px: 1,
                                     verticalAlign: "bottom",
@@ -495,7 +573,9 @@ export default function CvListSheet({ cvs = [], startNo = 1 }) {
                             }}
                         >
                             {columns.map((column) => {
-                                const filtered = Boolean(columnFilters[column.key]);
+                                const filtered = Boolean(
+                                    columnFilters[column.key],
+                                );
 
                                 return (
                                     <TableCell
@@ -529,7 +609,7 @@ export default function CvListSheet({ cvs = [], startNo = 1 }) {
                                                 onClick={(event) =>
                                                     openFilter(
                                                         column,
-                                                        event.currentTarget
+                                                        event.currentTarget,
                                                     )
                                                 }
                                                 sx={{
@@ -542,7 +622,9 @@ export default function CvListSheet({ cvs = [], startNo = 1 }) {
                                                         : "transparent",
                                                 }}
                                             >
-                                                <ArrowDropDownIcon sx={{ fontSize: 18 }} />
+                                                <ArrowDropDownIcon
+                                                    sx={{ fontSize: 18 }}
+                                                />
                                             </IconButton>
                                         </Box>
                                     </TableCell>
@@ -559,7 +641,7 @@ export default function CvListSheet({ cvs = [], startNo = 1 }) {
                                         router.visit(
                                             route("admin.cv.single", {
                                                 cvId: record.id,
-                                            })
+                                            }),
                                         )
                                     }
                                     sx={(theme) => {
@@ -594,7 +676,8 @@ export default function CvListSheet({ cvs = [], startNo = 1 }) {
                                                 left: 0,
                                                 zIndex: 1,
                                                 maxWidth: { xs: 168, md: 280 },
-                                                boxShadow: "2px 0 0 rgba(0,0,0,0.06)",
+                                                boxShadow:
+                                                    "2px 0 0 rgba(0,0,0,0.06)",
                                             },
                                         };
                                     }}
@@ -615,7 +698,8 @@ export default function CvListSheet({ cvs = [], startNo = 1 }) {
                                                     sx={{
                                                         display: "flex",
                                                         gap: 0.75,
-                                                        alignItems: "flex-start",
+                                                        alignItems:
+                                                            "flex-start",
                                                     }}
                                                 >
                                                     <Box
@@ -634,7 +718,8 @@ export default function CvListSheet({ cvs = [], startNo = 1 }) {
                                                         component="span"
                                                         sx={{ fontWeight: 700 }}
                                                     >
-                                                        {record.full_name || "-"}
+                                                        {record.full_name ||
+                                                            "-"}
                                                     </Box>
                                                 </Box>
                                             ) : (
@@ -650,7 +735,10 @@ export default function CvListSheet({ cvs = [], startNo = 1 }) {
                                     colSpan={columns.length}
                                     sx={{ py: 4, textAlign: "center" }}
                                 >
-                                    <Typography variant="body2" color="text.secondary">
+                                    <Typography
+                                        variant="body2"
+                                        color="text.secondary"
+                                    >
                                         {hasColumnFilters
                                             ? "No CVs match these column filters."
                                             : "No CVs."}
