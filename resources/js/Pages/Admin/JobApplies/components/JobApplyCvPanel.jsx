@@ -38,12 +38,25 @@ function CvResult({ cv, onLink, linkingId }) {
                 <Typography variant="caption" color="text.secondary" display="block">
                     {[cv.geneva_id, cv.gender, cv.phone].filter(Boolean).join(" · ")}
                 </Typography>
+                {cv.linked_candidate ? (
+                    <Typography variant="caption" color="warning.main" display="block">
+                        Linked to another candidate
+                        {cv.linked_candidate.name
+                            ? ` (${cv.linked_candidate.name})`
+                            : ""}
+                    </Typography>
+                ) : null}
             </Box>
             <Button
+                type="button"
                 size="small"
                 variant="outlined"
-                disabled={linkingId === cv.id}
-                onClick={() => onLink(cv)}
+                disabled={Boolean(cv.linked_candidate) || linkingId === cv.id}
+                onClick={() => {
+                    if (!cv.linked_candidate) {
+                        onLink(cv);
+                    }
+                }}
             >
                 {linkingId === cv.id ? "Linking" : "Link"}
             </Button>
@@ -66,8 +79,11 @@ export default function JobApplyCvPanel({
     const [unlinking, setUnlinking] = useState(false);
 
     useEffect(() => {
+        if (query.trim() !== "") {
+            return;
+        }
         setResults(matchingCvs);
-    }, [matchingCvs]);
+    }, [matchingCvs, query]);
 
     if (!apply?.id) {
         return null;
@@ -81,11 +97,16 @@ export default function JobApplyCvPanel({
     }
 
     const runSearch = async (value) => {
+        const term = value.trim();
+        setQuery(term);
         setSearching(true);
         try {
             const url = route("admin.job.apply.cvs.search", apply.id);
-            const response = await fetch(`${url}?q=${encodeURIComponent(value)}`, {
-                headers: { Accept: "application/json" },
+            const response = await fetch(`${url}?q=${encodeURIComponent(term)}`, {
+                headers: {
+                    Accept: "application/json",
+                    "X-Requested-With": "XMLHttpRequest",
+                },
             });
             if (!response.ok) {
                 return;
@@ -95,6 +116,12 @@ export default function JobApplyCvPanel({
         } finally {
             setSearching(false);
         }
+    };
+
+    const submitSearch = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        runSearch(query);
     };
 
     const handleLink = (cvId) => {
@@ -178,6 +205,7 @@ export default function JobApplyCvPanel({
                         ) : null}
                     </Typography>
                     <Button
+                        type="button"
                         size="small"
                         color="inherit"
                         onClick={() => setConfirmUnlink(true)}
@@ -193,6 +221,7 @@ export default function JobApplyCvPanel({
                     </Typography>
                     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
                         <Button
+                            type="button"
                             variant="contained"
                             size="small"
                             onClick={() =>
@@ -204,6 +233,7 @@ export default function JobApplyCvPanel({
                             Create CV
                         </Button>
                         <Button
+                            type="button"
                             variant="outlined"
                             size="small"
                             onClick={() => {
@@ -218,15 +248,22 @@ export default function JobApplyCvPanel({
                 </>
             )}
 
-            <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm">
+            <Dialog
+                open={open}
+                onClose={() => setOpen(false)}
+                fullWidth
+                maxWidth="sm"
+                onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                        event.stopPropagation();
+                    }
+                }}
+            >
                 <DialogTitle>Link existing CV</DialogTitle>
                 <DialogContent>
                     <Box
                         component="form"
-                        onSubmit={(event) => {
-                            event.preventDefault();
-                            runSearch(query.trim());
-                        }}
+                        onSubmit={submitSearch}
                         sx={{ mt: 0.5 }}
                     >
                         <TextField
@@ -266,7 +303,9 @@ export default function JobApplyCvPanel({
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpen(false)}>Close</Button>
+                    <Button type="button" onClick={() => setOpen(false)}>
+                        Close
+                    </Button>
                 </DialogActions>
             </Dialog>
 
@@ -288,10 +327,15 @@ export default function JobApplyCvPanel({
                     </Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setPendingCv(null)} disabled={Boolean(linkingId)}>
+                    <Button
+                        type="button"
+                        onClick={() => setPendingCv(null)}
+                        disabled={Boolean(linkingId)}
+                    >
                         Cancel
                     </Button>
                     <Button
+                        type="button"
                         variant="contained"
                         disabled={!pendingCv || Boolean(linkingId)}
                         onClick={() => handleLink(pendingCv.id)}
@@ -319,10 +363,15 @@ export default function JobApplyCvPanel({
                     </Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setConfirmUnlink(false)} disabled={unlinking}>
+                    <Button
+                        type="button"
+                        onClick={() => setConfirmUnlink(false)}
+                        disabled={unlinking}
+                    >
                         Cancel
                     </Button>
                     <Button
+                        type="button"
                         variant="contained"
                         color="inherit"
                         disabled={unlinking}

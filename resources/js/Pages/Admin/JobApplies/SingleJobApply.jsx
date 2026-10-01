@@ -50,6 +50,9 @@ function SingleJobApply({
 
     const handlePipelineSubmit = (event) => {
         event.preventDefault();
+        if (event.target !== event.currentTarget) {
+            return;
+        }
         put(route("admin.job.apply.update", apply.id), {
             preserveScroll: true,
         });

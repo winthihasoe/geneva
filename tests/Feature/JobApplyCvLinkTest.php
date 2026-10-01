@@ -187,6 +187,56 @@ class JobApplyCvLinkTest extends TestCase
         $this->assertSame('0999888777', $cv->phone);
     }
 
+    public function test_search_marks_a_cv_already_linked_to_another_candidate(): void
+    {
+        $admin = $this->createAdminUser();
+        $cv = $this->createCv($admin, ['full_name' => 'Shared Caregiver']);
+        $this->createApply([
+            'name' => 'Already Linked',
+            'decision' => 'recruit',
+            'status' => 'recruit',
+            'cv_id' => $cv->id,
+        ]);
+        $apply = $this->createApply([
+            'name' => 'Needs A CV',
+            'decision' => 'recruit',
+            'status' => 'recruit',
+        ]);
+
+        $this->actingAs($admin)
+            ->getJson(route('admin.job.apply.cvs.search', ['id' => $apply->id, 'q' => 'Shared']))
+            ->assertOk()
+            ->assertJsonPath('0.full_name', 'Shared Caregiver')
+            ->assertJsonPath('0.linked_candidate.name', 'Already Linked');
+    }
+
+    public function test_cannot_link_a_cv_already_linked_to_another_candidate(): void
+    {
+        $admin = $this->createAdminUser();
+        $cv = $this->createCv($admin, ['full_name' => 'Taken Caregiver']);
+        $this->createApply([
+            'name' => 'Already Linked',
+            'decision' => 'recruit',
+            'status' => 'recruit',
+            'cv_id' => $cv->id,
+        ]);
+        $apply = $this->createApply([
+            'name' => 'Needs A CV',
+            'decision' => 'recruit',
+            'status' => 'recruit',
+        ]);
+
+        $this->actingAs($admin)
+            ->from(route('admin.job.apply.single', $apply->id))
+            ->post(route('admin.job.apply.link-cv', $apply->id), [
+                'cv_id' => $cv->id,
+            ])
+            ->assertRedirect(route('admin.job.apply.single', $apply->id))
+            ->assertSessionHasErrors('cv_id');
+
+        $this->assertNull($apply->fresh()->cv_id);
+    }
+
     public function test_job_apply_list_includes_cv_summary(): void
     {
         $admin = $this->createAdminUser();

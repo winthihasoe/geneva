@@ -236,7 +236,7 @@ class JobApplyController extends Controller
                 ? JobApply::WEBSITE_STATUSES
                 : JobApply::DECISIONS,
             'matchingCvs' => $apply->canLinkCv()
-                ? $this->presentCvs($this->matchingCvs($apply))
+                ? $this->presentCvs($this->matchingCvs($apply), $apply)
                 : [],
         ]);
     }
@@ -305,7 +305,7 @@ class JobApplyController extends Controller
             ? $this->matchingCvs($apply)
             : CV::query()->matchingSearch($search)->orderByDesc('id')->limit(15)->get();
 
-        return response()->json($this->presentCvs($cvs));
+        return response()->json($this->presentCvs($cvs, $apply));
     }
 
     public function linkCv(Request $request, $id)
@@ -316,6 +316,17 @@ class JobApplyController extends Controller
         $validated = $request->validate([
             'cv_id' => ['required', 'exists:c_v_s,id'],
         ]);
+
+        $alreadyLinked = JobApply::query()
+            ->where('cv_id', $validated['cv_id'])
+            ->whereKeyNot($apply->id)
+            ->exists();
+
+        if ($alreadyLinked) {
+            return back()->withErrors([
+                'cv_id' => 'This CV is linked to another candidate.',
+            ]);
+        }
 
         $apply->update(['cv_id' => $validated['cv_id']]);
 
@@ -498,10 +509,29 @@ class JobApplyController extends Controller
             ->get();
     }
 
-    private function presentCvs(Collection $cvs): array
+    private function presentCvs(Collection $cvs, ?JobApply $except = null): array
     {
+        $ids = $cvs->pluck('id')->filter()->values();
+        $linkedByCv = $ids->isEmpty()
+            ? collect()
+            : JobApply::query()
+                ->whereIn('cv_id', $ids)
+                ->when($except, fn ($query) => $query->whereKeyNot($except->id))
+                ->orderBy('id')
+                ->get(['id', 'name', 'cv_id'])
+                ->groupBy('cv_id');
+
         return $cvs
-            ->map(fn (CV $cv) => $this->presentCvSummary($cv))
+            ->map(function (CV $cv) use ($linkedByCv) {
+                $summary = $this->presentCvSummary($cv);
+                $other = $linkedByCv->get($cv->id)?->first();
+                $summary['linked_candidate'] = $other ? [
+                    'id' => $other->id,
+                    'name' => $other->name,
+                ] : null;
+
+                return $summary;
+            })
             ->values()
             ->all();
     }
