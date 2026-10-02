@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\CV;
 use App\Models\JobApply;
 use App\Models\User;
+use App\Support\TypedNameConfirmation;
 use Illuminate\Support\Collection;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Mailjet\LaravelMailjet\Facades\Mailjet;
@@ -249,6 +251,41 @@ class JobApplyController extends Controller
         return redirect()
             ->route('admin.job.apply.single', $apply->id)
             ->with('success', 'Candidate updated.');
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $apply = JobApply::findOrFail($id);
+
+        $request->validate([
+            'confirm_name' => ['required', 'string', 'max:255'],
+        ]);
+
+        if (! TypedNameConfirmation::matches($apply->name, $request->input('confirm_name'))) {
+            return back()->withErrors([
+                'confirm_name' => TypedNameConfirmation::rejectionMessage('candidate name'),
+            ]);
+        }
+
+        try {
+            $paths = $this->storedFilePaths($apply);
+            if ($paths !== []) {
+                Storage::disk('public')->delete($paths);
+            }
+
+            $apply->delete();
+        } catch (Exception $exception) {
+            Log::error('Failed to delete job application.', [
+                'job_apply_id' => $apply->id,
+                'message' => $exception->getMessage(),
+            ]);
+
+            return back()->withErrors([
+                'confirm_name' => 'Could not delete this application. Please try again.',
+            ]);
+        }
+
+        return back()->with('success', 'Job application deleted.');
     }
 
     public function adminSearchJobApply(Request $request)
@@ -704,6 +741,20 @@ class JobApplyController extends Controller
         }
 
         return $data;
+    }
+
+    private function storedFilePaths(JobApply $apply): array
+    {
+        $certificates = is_array($apply->certificates) ? $apply->certificates : [];
+        $candidates = [$apply->passport, $apply->visa, ...$certificates];
+
+        return array_values(array_filter(
+            $candidates,
+            fn ($path) => is_string($path)
+                && $path !== ''
+                && ! str_contains($path, '..')
+                && ! str_starts_with($path, 'http')
+        ));
     }
 
     private function emptyToNull(array $data, array $keys): array

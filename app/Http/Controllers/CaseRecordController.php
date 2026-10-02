@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\CaseRecord;
 use App\Models\Patient;
+use App\Support\TypedNameConfirmation;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
@@ -131,6 +134,34 @@ class CaseRecordController extends Controller
         return redirect()
             ->route('admin.cases.index')
             ->with('success', 'Case record updated.');
+    }
+
+    public function destroy(Request $request, CaseRecord $case)
+    {
+        $request->validate([
+            'confirm_name' => ['required', 'string', 'max:255'],
+        ]);
+
+        if (! TypedNameConfirmation::matches($case->name, $request->input('confirm_name'))) {
+            return back()->withErrors([
+                'confirm_name' => TypedNameConfirmation::rejectionMessage('name'),
+            ]);
+        }
+
+        try {
+            $case->delete();
+        } catch (Exception $exception) {
+            Log::error('Failed to delete case record.', [
+                'case_id' => $case->id,
+                'message' => $exception->getMessage(),
+            ]);
+
+            return back()->withErrors([
+                'confirm_name' => 'Could not delete this case. Please try again.',
+            ]);
+        }
+
+        return back()->with('success', 'Case deleted.');
     }
 
     public function searchPatients(Request $request, CaseRecord $case)

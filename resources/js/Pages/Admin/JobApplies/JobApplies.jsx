@@ -66,7 +66,10 @@ function MonthJumpDialog({
                     >
                         <ChevronLeftIcon />
                     </IconButton>
-                    <Typography fontWeight={700} sx={{ minWidth: 72, textAlign: "center" }}>
+                    <Typography
+                        fontWeight={700}
+                        sx={{ minWidth: 72, textAlign: "center" }}
+                    >
                         {year}
                     </Typography>
                     <IconButton
@@ -137,7 +140,9 @@ function JobApplies({
     const searching = search !== "";
     const [searchInput, setSearchInput] = useState(search);
     const [monthDialogOpen, setMonthDialogOpen] = useState(false);
-    const [pickerYear, setPickerYear] = useState(() => Number(month.slice(0, 4)));
+    const [pickerYear, setPickerYear] = useState(() =>
+        Number(month.slice(0, 4)),
+    );
 
     useEffect(() => {
         setSearchInput(search);
@@ -146,7 +151,7 @@ function JobApplies({
     useEffect(() => {
         sessionStorage.setItem(
             "admin.job.apply.return",
-            window.location.pathname + window.location.search
+            window.location.pathname + window.location.search,
         );
     }, [month, serviceArea, search]);
 
@@ -193,7 +198,10 @@ function JobApplies({
 
     return (
         <AdminLayout>
-            <Container maxWidth={false} sx={{ pb: 0, px: { xs: 0 }, minWidth: 0 }}>
+            <Container
+                maxWidth={false}
+                sx={{ pb: 0, px: { xs: 0 }, minWidth: 0 }}
+            >
                 <Head title="Job Applies" />
                 <Box
                     sx={{
@@ -230,7 +238,7 @@ function JobApplies({
                         </Box>
                     </Box>
                     <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-                        <PerformanceExcelImport />
+                        {/* <PerformanceExcelImport /> */}
                         <Button
                             size="small"
                             variant="contained"
@@ -259,7 +267,11 @@ function JobApplies({
                             <Button
                                 key={area}
                                 size="small"
-                                variant={serviceArea === area ? "contained" : "outlined"}
+                                variant={
+                                    serviceArea === area
+                                        ? "contained"
+                                        : "outlined"
+                                }
                                 onClick={() =>
                                     visit({
                                         service_area:
@@ -334,7 +346,8 @@ function JobApplies({
                         }}
                     >
                         <Typography fontWeight={700} color="primary">
-                            {count || 0} matches for "{search}" across all months
+                            {count || 0} matches for "{search}" across all
+                            months
                         </Typography>
                         <Button size="small" onClick={clearSearch}>
                             Clear search

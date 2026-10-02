@@ -1,6 +1,8 @@
+import ConfirmTypedNameDeleteDialog from "@/Components/Admin/ConfirmTypedNameDeleteDialog";
 import useViewportTableHeight from "@/hooks/useViewportTableHeight";
 import { Link, router } from "@inertiajs/react";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
     Box,
     Button,
@@ -91,7 +93,7 @@ const columns = [
     {
         key: "name",
         label: "Name",
-        minWidth: 120,
+        minWidth: 156,
         wrap: true,
         getValue: (record) => displayText(record.name),
     },
@@ -416,6 +418,7 @@ export default function AdminJobApplyTable({ applications = [] }) {
     const tableHeight = useViewportTableHeight(tableRef);
     const [columnFilters, setColumnFilters] = useState({});
     const [filterMenu, setFilterMenu] = useState({ key: null, anchorEl: null });
+    const [pendingDelete, setPendingDelete] = useState(null);
 
     const numberedRecords = useMemo(
         () =>
@@ -705,10 +708,35 @@ export default function AdminJobApplyTable({ applications = [] }) {
                                                     </Box>
                                                     <Box
                                                         component="span"
-                                                        sx={{ fontWeight: 700 }}
+                                                        sx={{
+                                                            flex: 1,
+                                                            fontWeight: 700,
+                                                        }}
                                                     >
                                                         {record.name || "-"}
                                                     </Box>
+                                                    <IconButton
+                                                        size="small"
+                                                        color="error"
+                                                        aria-label={`Delete ${record.name || "application"}`}
+                                                        onClick={(event) => {
+                                                            event.stopPropagation();
+                                                            setPendingDelete(
+                                                                record,
+                                                            );
+                                                        }}
+                                                        sx={{
+                                                            p: 0.25,
+                                                            mt: -0.25,
+                                                            flexShrink: 0,
+                                                        }}
+                                                    >
+                                                        <DeleteIcon
+                                                            sx={{
+                                                                fontSize: 16,
+                                                            }}
+                                                        />
+                                                    </IconButton>
                                                 </Box>
                                             ) : (
                                                 column.getValue(record)
@@ -746,6 +774,19 @@ export default function AdminJobApplyTable({ applications = [] }) {
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            <ConfirmTypedNameDeleteDialog
+                open={Boolean(pendingDelete)}
+                expectedName={pendingDelete?.name || ""}
+                subject="job application"
+                nameKind="candidate name"
+                deleteUrl={
+                    pendingDelete
+                        ? route("admin.job.apply.destroy", pendingDelete.id)
+                        : ""
+                }
+                onClose={() => setPendingDelete(null)}
+            />
 
             <ColumnFilterPopover
                 anchorEl={filterMenu.anchorEl}

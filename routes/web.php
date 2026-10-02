@@ -316,6 +316,7 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::post('cases', [CaseRecordController::class, 'store'])->name('admin.cases.store');
     Route::get('cases/{case}/edit', [CaseRecordController::class, 'edit'])->name('admin.cases.edit');
     Route::put('cases/{case}', [CaseRecordController::class, 'update'])->name('admin.cases.update');
+    Route::delete('cases/{case}', [CaseRecordController::class, 'destroy'])->name('admin.cases.destroy');
     Route::get('cases/{case}/patients/search', [CaseRecordController::class, 'searchPatients'])->name('admin.cases.patients.search');
     Route::post('cases/{case}/patient', [CaseRecordController::class, 'linkPatient'])->name('admin.cases.link-patient');
     Route::delete('cases/{case}/patient', [CaseRecordController::class, 'unlinkPatient'])->name('admin.cases.unlink-patient');
@@ -329,6 +330,7 @@ Route::prefix('admin')->middleware(['auth', 'is.admin'])->group(function () {
     Route::delete('job-applies/{id}/cv', [JobApplyController::class, 'unlinkCv'])->name('admin.job.apply.unlink-cv');
     Route::get('job-applies/{id}', [JobApplyController::class, 'adminSingleJobApply'])->name('admin.job.apply.single');
     Route::put('job-applies/{id}', [JobApplyController::class, 'adminUpdate'])->name('admin.job.apply.update');
+    Route::delete('job-applies/{id}', [JobApplyController::class, 'destroy'])->name('admin.job.apply.destroy');
     Route::get('job-search-result', [JobApplyController::class, 'adminSearchJobApply'])->name('admin.job.apply.search');
     Route::put('/admin/job-applies/{id}/update-status', [JobApplyController::class, 'updateStatus'])->name('admin.job.apply.update.status');
 

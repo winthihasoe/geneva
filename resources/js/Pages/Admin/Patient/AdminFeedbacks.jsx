@@ -120,13 +120,21 @@ export default function AdminFeedbacks({
         const next = filtersFromProps(initialFilters);
         setFilters(next);
         setSearch(next.search);
-    }, [initialFilters.search, initialFilters.service_area, initialFilters.type]);
+    }, [
+        initialFilters.search,
+        initialFilters.service_area,
+        initialFilters.type,
+    ]);
 
     const visit = (nextFilters, page) => {
-        router.get(route("admin.patient.feedbacks"), filtersToQuery(nextFilters, page), {
-            preserveState: true,
-            preserveScroll: !page,
-        });
+        router.get(
+            route("admin.patient.feedbacks"),
+            filtersToQuery(nextFilters, page),
+            {
+                preserveState: true,
+                preserveScroll: !page,
+            },
+        );
     };
 
     const handleSearchSubmit = (event) => {
@@ -192,7 +200,7 @@ export default function AdminFeedbacks({
                     <Typography
                         variant="h4"
                         color="primary"
-                        fontFamily="Roboto Slab"
+                        fontFamily={"Roboto Slab"}
                         fontWeight="bold"
                     >
                         Feedbacks
@@ -248,7 +256,9 @@ export default function AdminFeedbacks({
                             type="button"
                             aria-label="Open filters"
                             aria-expanded={filterOpen}
-                            onClick={(event) => setAnchorEl(event.currentTarget)}
+                            onClick={(event) =>
+                                setAnchorEl(event.currentTarget)
+                            }
                             sx={{
                                 width: 40,
                                 height: 40,
@@ -341,11 +351,15 @@ export default function AdminFeedbacks({
                                 <Button
                                     key={area}
                                     size="small"
-                                    variant={selected ? "contained" : "outlined"}
+                                    variant={
+                                        selected ? "contained" : "outlined"
+                                    }
                                     color="primary"
                                     onClick={() => handleServiceAreaClick(area)}
                                     sx={{
-                                        color: selected ? "#fff" : "primary.main",
+                                        color: selected
+                                            ? "#fff"
+                                            : "primary.main",
                                         borderColor: "primary.main",
                                         bgcolor: selected
                                             ? "primary.main"
@@ -372,21 +386,31 @@ export default function AdminFeedbacks({
                         >
                             <MenuItem value="">All</MenuItem>
                             {PATIENT_TYPE_OPTIONS.map((option) => (
-                                <MenuItem key={option.value} value={option.value}>
+                                <MenuItem
+                                    key={option.value}
+                                    value={option.value}
+                                >
                                     {option.label}
                                 </MenuItem>
                             ))}
                         </Select>
                     </FormControl>
 
-                    <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            gap: 1,
+                        }}
+                    >
                         <Button
                             variant="outlined"
                             color="primary"
                             size="small"
                             onClick={handleClearFilters}
                             disabled={
-                                appliedCount === 0 && activeFilterCount(filters) === 0
+                                appliedCount === 0 &&
+                                activeFilterCount(filters) === 0
                             }
                         >
                             Clear
@@ -402,7 +426,14 @@ export default function AdminFeedbacks({
                 </Popover>
 
                 {appliedCount > 0 || appliedFilters.search ? (
-                    <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            gap: 1,
+                            flexWrap: "wrap",
+                            mb: 2,
+                        }}
+                    >
                         {appliedFilters.search && (
                             <Chip
                                 size="small"
@@ -421,7 +452,9 @@ export default function AdminFeedbacks({
                                 color="primary"
                                 variant="outlined"
                                 label={appliedFilters.service_area}
-                                onDelete={() => removeAppliedFilter("service_area")}
+                                onDelete={() =>
+                                    removeAppliedFilter("service_area")
+                                }
                             />
                         )}
                         {appliedFilters.type && (
@@ -453,7 +486,9 @@ export default function AdminFeedbacks({
                         <Pagination
                             count={list.last_page}
                             page={list.current_page}
-                            onChange={(event, value) => visit(appliedFilters, value)}
+                            onChange={(event, value) =>
+                                visit(appliedFilters, value)
+                            }
                             color="primary"
                         />
                     </Box>

@@ -191,13 +191,10 @@ function AdminCareLogs() {
                     }}
                 >
                     <Typography
-                        component="h1"
+                        variant="h4"
                         color="primary"
+                        fontFamily={"Roboto Slab"}
                         fontWeight="bold"
-                        sx={{
-                            fontSize: { xs: "1.15rem", sm: "1.35rem" },
-                            lineHeight: 1.2,
-                        }}
                     >
                         Care Logs
                     </Typography>

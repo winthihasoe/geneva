@@ -1,9 +1,11 @@
+import ConfirmTypedNameDeleteDialog from "@/Components/Admin/ConfirmTypedNameDeleteDialog";
 import useViewportTableHeight from "@/hooks/useViewportTableHeight";
 import AdminLayout from "@/Layouts/AdminLayout";
 import PerformanceExcelImport from "@/Components/Admin/PerformanceExcelImport";
 import { careTypeLabel, patientDisplayName } from "@/utils/careTypeLabel";
 import { Head, Link, router } from "@inertiajs/react";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import DeleteIcon from "@mui/icons-material/Delete";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import CloseIcon from "@mui/icons-material/Close";
@@ -128,7 +130,7 @@ const columns = [
     {
         key: "name",
         label: "No. Name",
-        minWidth: 130,
+        minWidth: 168,
         wrap: true,
         getValue: (record) => displayText(record.name),
     },
@@ -571,6 +573,7 @@ export default function AdminCases({
     const [searchInput, setSearchInput] = useState(search);
     const [columnFilters, setColumnFilters] = useState({});
     const [filterMenu, setFilterMenu] = useState({ key: null, anchorEl: null });
+    const [pendingDelete, setPendingDelete] = useState(null);
     const [monthDialogOpen, setMonthDialogOpen] = useState(false);
     const [pickerYear, setPickerYear] = useState(() =>
         Number(month.slice(0, 4)),
@@ -745,7 +748,7 @@ export default function AdminCases({
                         </Box>
                     </Box>
                     <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-                        <PerformanceExcelImport />
+                        {/* <PerformanceExcelImport /> */}
                         <Button
                             size="small"
                             variant="contained"
@@ -1092,7 +1095,10 @@ export default function AdminCases({
                                                             {record.rowNo}
                                                         </Box>
                                                         <Box
-                                                            sx={{ minWidth: 0 }}
+                                                            sx={{
+                                                                minWidth: 0,
+                                                                flex: 1,
+                                                            }}
                                                         >
                                                             <Box
                                                                 component="span"
@@ -1118,6 +1124,30 @@ export default function AdminCases({
                                                                     </Typography>
                                                                 )}
                                                         </Box>
+                                                        <IconButton
+                                                            size="small"
+                                                            color="error"
+                                                            aria-label={`Delete ${record.name || "case"}`}
+                                                            onClick={(
+                                                                event,
+                                                            ) => {
+                                                                event.stopPropagation();
+                                                                setPendingDelete(
+                                                                    record,
+                                                                );
+                                                            }}
+                                                            sx={{
+                                                                p: 0.25,
+                                                                mt: -0.25,
+                                                                flexShrink: 0,
+                                                            }}
+                                                        >
+                                                            <DeleteIcon
+                                                                sx={{
+                                                                    fontSize: 16,
+                                                                }}
+                                                            />
+                                                        </IconButton>
                                                     </Box>
                                                 ) : column.key === "patient" &&
                                                   record.patient ? (
@@ -1195,6 +1225,19 @@ export default function AdminCases({
                         </TableBody>
                     </Table>
                 </TableContainer>
+
+                <ConfirmTypedNameDeleteDialog
+                    open={Boolean(pendingDelete)}
+                    expectedName={pendingDelete?.name || ""}
+                    subject="case"
+                    nameKind="name"
+                    deleteUrl={
+                        pendingDelete
+                            ? route("admin.cases.destroy", pendingDelete.id)
+                            : ""
+                    }
+                    onClose={() => setPendingDelete(null)}
+                />
 
                 <ColumnFilterPopover
                     anchorEl={filterMenu.anchorEl}
